@@ -77,6 +77,11 @@ button:disabled{opacity:.5;cursor:default}
   min-width:26px;height:26px;padding-inline:7px;display:grid;place-items:center;font-weight:700;font-size:14px}
 
 h2{font-size:17px;font-weight:700;margin:0}
+h3.cat{font-size:14px;font-weight:600;margin:0;color:var(--muted);border-block-end:1.5px solid var(--line);padding-block-end:4px}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px;min-height:48px;min-width:0}
+.set .row.item{flex-wrap:wrap;padding-block-end:8px;border-block-end:1px solid var(--line)}
+.set .row.item .nm{flex:1 1 150px}
+.set .row.item select{flex:1 1 130px}
 .wait{display:flex;flex-direction:column;gap:8px}
 .wrow{display:flex;align-items:center;gap:10px;background:var(--red-bg);border-radius:12px;padding:8px 10px 8px 8px}
 .wrow .who{font-family:var(--display);font-size:24px;line-height:1;color:var(--red);min-width:34px;text-align:center}
@@ -192,14 +197,28 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
 ]};
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
-const CORN={small:5,big:10}, CODERED={plain:6,flav:12};
-const RX={fries:/بطاطس/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/};
+const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20};
+const RX={fries:/بطاطس/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/};
+const CATS=[["corn","كورن دوق وذرة"],["fries","البطاطس"],["cold","المشروبات الباردة"],["hot","المشروبات الحارة"],["hookah","المعسلات"],["sweet","الحلا"],["nuts","المكسرات"],["other","أخرى"]];
+function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
+  const n=String(name);
+  if(RX.corn.test(n)||RX.dog.test(n)) return "corn";
+  if(RX.fries.test(n)) return "fries";
+  if(/معسل/.test(n)) return "hookah";
+  if(/كيك|كوكيز|حلا|وافل|كريب/.test(n)) return "sweet";
+  if(/^مكسرات/.test(n)) return "nuts";
+  if(/حار|شاهي|دل[ةه]|كرك/.test(n)) return "hot";
+  if(/بارد|موهيتو|مو[يى][ةه]|سفن|بيبسي|عصير/.test(n)||RX.cr.test(n)||RX.rb.test(n)) return "cold";
+  return "other";
+}
+const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
 function specFor(name){ // الأصناف اللي لها اختيارات، حسب الاسم
   const n=String(name);
   if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات",opts:EXTRAS,all:true};
   if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
   if(RX.moj.test(n)) return {k:"moj",title:"اختر النكهة",opts:FLAV};
   if(RX.cr.test(n)) return {k:"cr",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
+  if(RX.rb.test(n)) return {k:"rb",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
   if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
   return null;
 }
@@ -210,7 +229,8 @@ function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسع
     if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size};
     return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0};
   }
-  if(spec.k==="cr") return v.ex?{...base,price:CODERED.plain,note:"بدون نكهة"}:{...base,name:it.name+" بنكهة",price:CODERED.flav,note:and,ok:on.length>0};
+  if(spec.k==="cr"||spec.k==="rb"){ const P=spec.k==="cr"?CODERED:REDBULL;
+    return v.ex?{...base,price:P.plain,note:"بدون نكهة"}:{...base,name:it.name+" بنكهة",price:P.flav,note:and,ok:on.length>0}; }
   if(spec.k==="moj") return {...base,note:and,ok:on.length>0};
   if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
   return base;
@@ -219,6 +239,7 @@ function menuPrice(it){
   const sp=specFor(it.name);
   if(sp&&sp.k==="corn") return CORN.small+" أو "+CORN.big+" ريال";
   if(sp&&sp.k==="cr") return CODERED.plain+" أو "+CODERED.flav+" ريال";
+  if(sp&&sp.k==="rb") return REDBULL.plain+" أو "+REDBULL.flav+" ريال";
   return Number(it.price)+" ريال";
 }
 function extrasNote(sel){
@@ -345,7 +366,8 @@ function seatHtml(id){
       <button class="del ${sure==="del:"+o.id?"sure":""}" data-act="del" data-oid="${esc(o.id)}">${sure==="del:"+o.id?"تأكيد":"حذف"}</button>
     </div>`).join(""):`<p class="empty">ما في طلبات. اضغط الصنف تحت عشان تضيفه.</p>`}</div>
   <h2>أضف طلب</h2>
-  <div class="menu">${cfg.items.map((it,i)=>`<button data-act="add" data-i="${i}"><b>${esc(it.name)}</b><span class="num">${menuPrice(it)}</span></button>`).join("")}</div>
+  ${CATS.map(([k,t])=>{ const bs=cfg.items.map((it,i)=>itemCat(it)===k?`<button data-act="add" data-i="${i}"><b>${esc(it.name)}</b><span class="num">${menuPrice(it)}</span></button>`:"").join("");
+    return bs?`<h3 class="cat">${t}</h3><div class="menu">${bs}</div>`:""; }).join("")}
   ${s.type==="hour"?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour} ريال)</button>`:""}
   <div class="foot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
     <button class="primary" data-act="pay">الحساب</button></div>
@@ -418,9 +440,10 @@ function settingsHtml(){
     <div class="row"><label for="c-count">عدد الجلسات</label><input class="pr num" id="c-count" data-f="count" inputmode="numeric" value="${esc(d.count)}"></div>
   </div>
   <h2>الأصناف</h2>
-  <div class="set">${d.items.map((it,i)=>`<div class="row">
+  <div class="set">${d.items.map((it,i)=>`<div class="row item">
     <input class="nm" id="i-n-${i}" data-i="${i}" data-k="name" placeholder="اسم الصنف" aria-label="اسم الصنف" value="${esc(it.name)}">
     <input class="pr num" id="i-p-${i}" data-i="${i}" data-k="price" inputmode="decimal" placeholder="السعر" aria-label="السعر" value="${esc(it.price)}">
+    <select id="i-c-${i}" data-i="${i}" data-k="cat" aria-label="القسم">${CATS.map(([k,t])=>`<option value="${k}" ${itemCat(it)===k?"selected":""}>${t}</option>`).join("")}</select>
     <button class="close" data-act="rmitem" data-i="${i}" aria-label="حذف الصنف">×</button></div>`).join("")}
     <button class="ghost" data-act="additem">+ صنف جديد</button>
   </div>
@@ -477,12 +500,12 @@ document.addEventListener("click",e=>{
       startedAt:s.startedAt,closedAt:now});
     for(const o of os) await db.doc("orders/"+o.id).delete();
     await db.doc("seats/"+id).delete(); closeSheet(); toast((take?"تقفل حساب السفري":"تقفل حساب الجلسة "+seatNo(id))+(pay==="cash"?" · كاش":" · شبكة")); }) }
-  if(a==="additem"){draft.items.push({name:"",price:""});return renderSheet()}
+  if(a==="additem"){draft.items.push({name:"",price:"",cat:"other"});return renderSheet()}
   if(a==="rmitem"){draft.items.splice(+b.dataset.i,1);return renderSheet()}
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
     const out={mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
-      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price)})).filter(i=>i.name)};
+      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i)})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ")});
   }
@@ -493,12 +516,25 @@ function refresh(){renderMain(); if(view&&view.kind!=="settings") renderSheet()}
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=6; let migrating=false;
-function migrate(){ // تعديل قائمة الأصناف مرة وحدة: حذف موهيتو كودرد، سعر الكودرد، إضافة الذرة والكورن دوق
-  if(migrating||(cfg.mig||0)>=MIG) return; migrating=true;
-  let items=cfg.items.filter(i=>!(RX.moj.test(i.name)&&RX.cr.test(i.name))).map(i=>RX.cr.test(i.name)?{name:i.name,price:CODERED.plain}:{name:i.name,price:i.price});
-  if(!items.some(i=>RX.corn.test(i.name))) items.push({name:"ذرة",price:CORN.big});
-  if(!items.some(i=>RX.dog.test(i.name))) items.push({name:"كورن دوق",price:10});
+const MIG=7; let migrating=false;
+function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
+  const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
+  let items=cfg.items.map(i=>({...i}));
+  const put=(rx,name,price)=>{const e=items.find(i=>rx.test(i.name)); if(e) e.price=price; else items.push({name,price})};
+  if(m<6){
+    items=items.filter(i=>!(RX.moj.test(i.name)&&RX.cr.test(i.name)));
+    items.forEach(i=>{if(RX.cr.test(i.name)) i.price=CODERED.plain});
+    if(!items.some(i=>RX.corn.test(i.name))) items.push({name:"ذرة",price:CORN.big});
+    if(!items.some(i=>RX.dog.test(i.name))) items.push({name:"كورن دوق",price:10});
+  }
+  if(m<7){
+    items=items.filter(i=>!RX.rb.test(i.name)&&!(/كوكيز/.test(i.name)&&!/شوكو?لا|فانيل/.test(i.name)));
+    put(/كوكيز.*شوكو?لا/,"كوكيز شوكولاتة",7); put(/كوكيز.*فانيل/,"كوكيز فانيليا",7);
+    put(/(v\s*60|في\s*60).*حار/i,"V60 حار",17); put(/(v\s*60|في\s*60).*بارد/i,"V60 بارد",17);
+    put(/^مكسرات/,"مكسرات",5); put(/^شاهي/,"شاهي",4); put(/دل[ةه]\s*شاهي/,"دلة شاهي",15);
+    items.push({name:"ريد بول",price:REDBULL.plain});
+    items.forEach(i=>{if(!i.cat) i.cat=catOf(i.name)});
+  }
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
 }
 function listen(){
@@ -521,7 +557,7 @@ $("gate-form").addEventListener("submit",async e=>{
   catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v6";
+const VER="v7";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
