@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="خزامى">
+<meta name="robots" content="noindex">
+<title>خزامى</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone screen — status strip, 3-column seat board, waiting-orders list; every task opens as a full sheet. */
+:root{
+  --bg:#eef2f0; --surface:#ffffff; --ink:#14201d; --muted:#5d6b67; --line:#d3dcd8;
+  --accent:#a85a06; --accent-ink:#ffffff;
+  --busy:#17302b; --busy-ink:#f1f6f4; --busy-muted:#a9c2bb;
+  --red:#c02a2a; --red-bg:#fbe3e1; --green:#17713f; --green-bg:#dcf2e5;
+  --warn:#8f5200; --warn-bg:#fdebc8; --shade:rgba(10,20,18,.55);
+  --display:"Lalezar","Readex Pro",Tahoma,sans-serif;
+  --body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1614; --surface:#18231f; --ink:#e9f0ed; --muted:#93a39e; --line:#2b3a35;
+  --accent:#f0a23a; --accent-ink:#1a1204;
+  --busy:#24453d; --busy-ink:#f1f6f4; --busy-muted:#a9c2bb;
+  --red:#ff8077; --red-bg:#3b1a18; --green:#62d498; --green-bg:#14301f;
+  --warn:#f3b556; --warn-bg:#3a2a0e; --shade:rgba(0,0,0,.65); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0e1614; --surface:#18231f; --ink:#e9f0ed; --muted:#93a39e; --line:#2b3a35;
+  --accent:#f0a23a; --accent-ink:#1a1204;
+  --busy:#24453d; --busy-ink:#f1f6f4; --busy-muted:#a9c2bb;
+  --red:#ff8077; --red-bg:#3b1a18; --green:#62d498; --green-bg:#14301f;
+  --warn:#f3b556; --warn-bg:#3a2a0e; --shade:rgba(0,0,0,.65); color-scheme:dark }
+
+*{box-sizing:border-box}
+html{padding-block:env(safe-area-inset-top,0px) env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;direction:rtl}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;text-align:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:720px;margin-inline:auto;padding-inline:16px;padding-block:16px 40px;display:flex;flex-direction:column;gap:18px}
+
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top h1{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.1;margin:0;flex:1;min-width:0}
+.ghost{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;font-weight:600;font-size:15px;min-height:46px}
+
+.notice{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 14px;font-weight:500;font-size:15px}
+
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.strip div{border-block-start:3px solid var(--line);padding-block-start:8px;min-width:0}
+.strip b{display:block;font-family:var(--display);font-weight:400;font-size:30px;line-height:1}
+.strip span{font-size:13px;color:var(--muted)}
+.strip .alert{border-color:var(--red)} .strip .alert b{color:var(--red)}
+
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (min-width:560px){.board{grid-template-columns:repeat(5,1fr)}}
+.seat{position:relative;display:flex;flex-direction:column;gap:2px;min-height:112px;padding:10px;border-radius:14px;
+  border:1.5px dashed var(--line);background:transparent;min-width:0}
+.seat .n{font-family:var(--display);font-size:34px;line-height:1}
+.seat .st{font-size:13px;color:var(--muted)}
+.seat.on{border:1.5px solid var(--busy);background:var(--busy);color:var(--busy-ink)}
+.seat.on .st{color:var(--busy-muted)}
+.seat.on .tm{font-weight:600;font-size:15px}
+.seat.on .tt{font-size:13px;color:var(--busy-muted)}
+.seat.over{border-color:var(--warn)} .seat.over .tm{color:#ffc56b}
+.seat .dot{position:absolute;inset-block-start:8px;inset-inline-end:8px;background:#d43a35;color:#fff;border-radius:999px;
+  min-width:26px;height:26px;padding-inline:7px;display:grid;place-items:center;font-weight:700;font-size:14px}
+
+h2{font-size:17px;font-weight:700;margin:0}
+.wait{display:flex;flex-direction:column;gap:8px}
+.wrow{display:flex;align-items:center;gap:10px;background:var(--red-bg);border-radius:12px;padding:8px 10px 8px 8px}
+.wrow .who{font-family:var(--display);font-size:24px;line-height:1;color:var(--red);min-width:34px;text-align:center}
+.wrow .what{flex:1;min-width:0;font-weight:600}
+.wrow .what small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.done{background:var(--green);color:#fff;border-radius:10px;padding:10px 16px;font-weight:700;min-height:46px}
+:root[data-theme="dark"] .done{color:#06200f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .done{color:#06200f}}
+.empty{color:var(--muted);font-size:15px;margin:0}
+
+.sheet{position:fixed;inset:0;z-index:10;background:var(--shade);display:flex;align-items:flex-end;justify-content:center}
+.panel{background:var(--bg);width:100%;max-width:720px;max-height:100%;overflow-y:auto;border-radius:20px 20px 0 0;
+  padding:16px;padding-block-end:calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px}
+.phead{display:flex;align-items:center;gap:12px}
+.phead .big{font-family:var(--display);font-size:44px;line-height:1}
+.phead .meta{flex:1;min-width:0}
+.phead .meta b{display:block;font-size:17px}
+.phead .meta span{color:var(--muted);font-size:14px}
+.close{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;min-width:46px;min-height:46px;font-size:22px;text-align:center}
+
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pick button{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 12px;text-align:center}
+.pick b{display:block;font-size:20px}
+.pick span{font-family:var(--display);font-size:30px;color:var(--accent);line-height:1.2}
+
+.orders{display:flex;flex-direction:column;gap:8px}
+.ord{display:flex;gap:8px;align-items:stretch}
+.ord .tog{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border-radius:12px;padding:10px 12px;min-height:54px;border:2px solid}
+.ord .tog .nm{flex:1;min-width:0;font-weight:600}
+.ord .tog .tag{font-weight:700;font-size:14px;white-space:nowrap}
+.ord.p .tog{background:var(--red-bg);border-color:var(--red)} .ord.p .tag{color:var(--red)}
+.ord.s .tog{background:var(--green-bg);border-color:var(--green)} .ord.s .tag{color:var(--green)}
+.ord .del{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;min-width:50px;padding-inline:8px;font-size:14px;font-weight:600;color:var(--muted);text-align:center}
+.ord .del.sure{background:var(--red);border-color:var(--red);color:#fff}
+
+.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media (min-width:560px){.menu{grid-template-columns:repeat(3,1fr)}}
+.menu button{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;min-height:60px;
+  display:flex;flex-direction:column;justify-content:center;min-width:0}
+.menu button b{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.menu button span{color:var(--accent);font-weight:700;font-size:14px}
+.menu button:active{border-color:var(--accent)}
+
+.foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-block-start:1.5px solid var(--line);padding-block-start:14px}
+.foot .sum{flex:1;min-width:0}
+.foot .sum span{display:block;color:var(--muted);font-size:13px}
+.foot .sum b{font-family:var(--display);font-weight:400;font-size:34px;line-height:1}
+.primary{background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:14px 20px;font-weight:700;font-size:17px;min-height:54px;text-align:center}
+.wide{width:100%}
+.link{color:var(--muted);text-decoration:underline;font-size:14px;padding:10px 4px;min-height:44px}
+.link.sure{color:var(--red);font-weight:700}
+
+.bill{background:var(--surface);border-radius:14px;padding:6px 14px}
+.bill .r{display:flex;gap:10px;padding-block:9px;border-block-end:1px solid var(--line)}
+.bill .r:last-child{border:0}
+.bill .r span:first-child{flex:1;min-width:0}
+.bill .r.tot{font-weight:700;font-size:19px}
+.bill .r .q{color:var(--muted)}
+.step{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.step button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;min-width:50px;min-height:50px;font-size:24px;text-align:center}
+.step b{font-family:var(--display);font-weight:400;font-size:30px;min-width:28px;text-align:center}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 16px;font-weight:600;min-height:46px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.set{display:flex;flex-direction:column;gap:8px}
+.set .row{display:flex;gap:8px;align-items:center}
+.set label{font-size:14px;color:var(--muted);flex:1;min-width:0}
+input{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;min-height:48px;min-width:0;width:100%}
+.set .row input.nm{flex:1} .set .row input.pr{flex:0 0 84px;width:84px;text-align:center}
+
+.toast{position:fixed;inset-inline:16px;inset-block-end:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;
+  background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 16px;font-weight:600;text-align:center;max-width:520px;margin-inline:auto}
+@media (prefers-reduced-motion:no-preference){ .panel{animation:up .18s ease-out} @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}} }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="top">
+    <h1>جلسات الفوترك</h1>
+    <button class="ghost" data-act="summary" id="btn-summary">ملخص اليوم</button>
+    <button class="ghost" data-act="settings" id="btn-settings">الأصناف</button>
+  </div>
+  <div class="notice" id="notice">جاري الاتصال…</div>
+  <div class="strip" id="strip"></div>
+  <div class="board" id="board"></div>
+  <h2>طلبات ما نزلت</h2>
+  <div class="wait" id="wait"></div>
+</div>
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<div class="sheet" id="gate" hidden style="z-index:30;align-items:center"><form class="panel" id="gate-form" style="border-radius:20px;max-width:360px;margin:16px">
+  <div class="phead"><div class="meta"><b>رمز الدخول</b><span>اكتب الرمز مرة وحدة على هذا الجوال</span></div></div>
+  <input id="gate-code" inputmode="numeric" autocomplete="off" aria-label="رمز الدخول" style="text-align:center;font-size:24px;letter-spacing:.2em">
+  <p class="empty" id="gate-msg" style="color:var(--red)"></p>
+  <button class="primary wide" id="gate-btn" type="submit">دخول</button></form></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const DEFAULTS = { hour:15, open:30, count:15, items:[
+  {name:"معسل تفاحتين",price:30},{name:"معسل عنب توت",price:30},{name:"معسل عنب نعناع",price:30},
+  {name:"ميني بانكيك",price:10},{name:"موهيتو سفن",price:10},{name:"موهيتو كودرد",price:12},
+  {name:"كودرد",price:7},{name:"قهوة اليوم حار",price:7},{name:"قهوة اليوم بارد",price:7},{name:"موية",price:1}
+]};
+const GRACE = 10; // دقائق سماح قبل احتساب ساعة جديدة
+
+let db=null, ready=false, cfg=DEFAULTS, seats={}, orders=[], sales=[];
+let view=null, draft=null, sure=null, sureTimer=null;
+const flying=new Set();
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const sid=n=>"s"+String(n).padStart(2,"0");
+const seatNo=id=>parseInt(id.slice(1),10);
+const money=n=>(Math.round(n*100)/100)+" ريال";
+const mins=t=>Math.max(0,Math.floor((Date.now()-t)/60000));
+const clock=m=>Math.floor(m/60)+":"+String(m%60).padStart(2,"0");
+function dayKey(ts){const d=new Date(ts-6*3600e3);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+const TODAY=dayKey(Date.now());
+const seatOrders=id=>{const s=seats[id];return s?orders.filter(o=>o.seat===id&&o.sid===s.sid).sort((a,b)=>a.at-b.at):[]};
+const autoHours=s=>Math.max(1,Math.ceil((mins(s.startedAt)-GRACE)/60));
+
+function fee(id,v){
+  const s=seats[id]; if(!s) return 0;
+  if(s.type==="open"||(v&&v.asOpen)) return cfg.open;
+  return ((v&&v.hours)||autoHours(s))*cfg.hour;
+}
+const itemsTotal=id=>seatOrders(id).reduce((a,o)=>a+Number(o.price||0),0);
+
+function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,3200)}
+function fail(e){
+  const c=e&&e.code;
+  toast(c==="permission-denied"?"ما عندك صلاحية تعديل على هذي الصفحة":
+        c==="quota_exceeded"?"المساحة امتلأت، احذفوا بيانات قديمة":"ما تسجل، حاول مرة ثانية");
+}
+async function run(key,fn){
+  if(!db){toast("الصفحة مو متصلة");return}
+  if(flying.has(key)) return; flying.add(key);
+  try{await fn()}catch(e){fail(e)}finally{flying.delete(key)}
+}
+function arm(key){ // ضغطتين للتأكيد
+  if(sure===key){sure=null;clearTimeout(sureTimer);return true}
+  sure=key;clearTimeout(sureTimer);sureTimer=setTimeout(()=>{sure=null;renderSheet()},3500);renderSheet();return false;
+}
+
+/* ---------- الرئيسية ---------- */
+function allSeatIds(){
+  const ids=[];for(let i=1;i<=cfg.count;i++)ids.push(sid(i));
+  Object.keys(seats).forEach(k=>{if(!ids.includes(k))ids.push(k)});
+  return ids.sort();
+}
+function renderMain(){
+  const ids=allSeatIds(), busy=ids.filter(i=>seats[i]);
+  const pend=orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at);
+  $("strip").innerHTML=
+    `<div><b class="num">${busy.length}</b><span>مشغولة</span></div>`+
+    `<div><b class="num">${ids.length-busy.length}</b><span>فاضية</span></div>`+
+    `<div class="${pend.length?"alert":""}"><b class="num">${pend.length}</b><span>طلب ما نزل</span></div>`;
+  $("board").innerHTML=ids.map(id=>{
+    const s=seats[id], n=seatNo(id);
+    if(!s) return `<button class="seat" data-act="seat" data-id="${id}"><span class="n num">${n}</span><span class="st">فاضية</span></button>`;
+    const m=mins(s.startedAt), over=s.type==="hour"&&m>60+GRACE, p=seatOrders(id).filter(o=>!o.served).length;
+    return `<button class="seat on ${over?"over":""}" data-act="seat" data-id="${id}">
+      ${p?`<span class="dot num">${p}</span>`:""}
+      <span class="n num">${n}</span>
+      <span class="st">${s.type==="open"?"مفتوح":over?"تجاوز الساعة":"ساعة"}</span>
+      <span class="tm num">${clock(m)}</span>
+      <span class="tt num">${money(fee(id)+itemsTotal(id))}</span></button>`;
+  }).join("");
+  $("wait").innerHTML=pend.length?pend.map(o=>
+    `<div class="wrow"><span class="who num">${seatNo(o.seat)}</span>
+      <span class="what">${esc(o.name)}<small class="num">من ${mins(o.at)} دقيقة</small></span>
+      <button class="done" data-act="serve" data-oid="${esc(o.id)}">نزل</button></div>`).join("")
+    :`<p class="empty">${ready?"كل الطلبات نزلت.":"تظهر هنا الطلبات اللي انطلبت وما نزلت."}</p>`;
+}
+
+/* ---------- النوافذ ---------- */
+function openSheet(v){view=v;sure=null;$("sheet").hidden=false;renderSheet()}
+function closeSheet(){view=null;draft=null;sure=null;$("sheet").hidden=true}
+const xBtn=`<button class="close" data-act="close" aria-label="إغلاق">×</button>`;
+
+function renderSheet(){
+  if(!view) return;
+  const p=$("panel");
+  if(view.kind==="seat"||view.kind==="pay"){
+    if(!seats[view.id]){ if(view.kind==="pay"){closeSheet();return} p.innerHTML=freeHtml(view.id);return }
+    p.innerHTML=view.kind==="pay"?payHtml(view.id):seatHtml(view.id);
+  } else if(view.kind==="summary") p.innerHTML=summaryHtml();
+  else if(view.kind==="settings") p.innerHTML=settingsHtml();
+}
+function freeHtml(id){
+  return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>جلسة فاضية</b><span>اختر نوع الجلسة ويبدأ الوقت</span></div>${xBtn}</div>
+  <div class="pick">
+    <button data-act="start" data-type="hour"><b>ساعة</b><span class="num">${cfg.hour}</span></button>
+    <button data-act="start" data-type="open"><b>وقت مفتوح</b><span class="num">${cfg.open}</span></button>
+  </div>`;
+}
+function seatHtml(id){
+  const s=seats[id], os=seatOrders(id), m=mins(s.startedAt);
+  return `<div class="phead"><span class="big num">${seatNo(id)}</span>
+    <div class="meta"><b>${s.type==="open"?"وقت مفتوح":"ساعة"}</b><span class="num">الوقت ${clock(m)}</span></div>${xBtn}</div>
+  <div class="orders">${os.length?os.map(o=>
+    `<div class="ord ${o.served?"s":"p"}">
+      <button class="tog" data-act="toggle" data-oid="${esc(o.id)}"><span class="nm">${esc(o.name)}</span><span class="num">${Number(o.price)}</span><span class="tag">${o.served?"نزل":"ما نزل"}</span></button>
+      <button class="del ${sure==="del:"+o.id?"sure":""}" data-act="del" data-oid="${esc(o.id)}">${sure==="del:"+o.id?"تأكيد":"حذف"}</button>
+    </div>`).join(""):`<p class="empty">ما في طلبات. اضغط الصنف تحت عشان تضيفه.</p>`}</div>
+  <h2>أضف طلب</h2>
+  <div class="menu">${cfg.items.map((it,i)=>`<button data-act="add" data-i="${i}"><b>${esc(it.name)}</b><span class="num">${Number(it.price)} ريال</span></button>`).join("")}</div>
+  <div class="foot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
+    <button class="primary" data-act="pay">الحساب</button></div>
+  <button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية لإلغاء الجلسة بدون حساب":"إلغاء الجلسة بدون حساب (فتحت بالغلط)"}</button>`;
+}
+function payHtml(id){
+  const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), pend=os.filter(o=>!o.served).length;
+  if(s.type==="hour"&&!view.hours) view.hours=autoHours(s);
+  const f=fee(id,view), total=f+itemsTotal(id);
+  const g={};os.forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{name:o.name,price:Number(o.price),q:0}).q++});
+  const feeLabel=s.type==="open"||view.asOpen?"جلسة وقت مفتوح":`جلسة ${view.hours} ساعة`;
+  return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>الحساب</b><span class="num">جلس ${clock(m)}</span></div>${xBtn}</div>
+  ${pend?`<div class="notice" style="background:var(--red-bg);color:var(--red)">في ${pend} طلب ما نزل ومحسوب في الفاتورة. لو ما وصل للزبون ارجع واحذفه.</div>`:""}
+  ${s.type==="hour"?`<div class="step"><button data-act="hminus" aria-label="نقص ساعة">−</button><b class="num">${view.hours}</b><button data-act="hplus" aria-label="زود ساعة">+</button><span>ساعة</span>
+    <button class="chip ${view.asOpen?"on":""}" data-act="asopen">احسبها مفتوح ${cfg.open}</button></div>
+    ${!view.asOpen&&view.hours*cfg.hour>=cfg.open?`<p class="empty">المفتوح أرخص أو يساوي حساب الساعات.</p>`:""}`:""}
+  <div class="bill">
+    <div class="r"><span>${feeLabel}</span><span class="num">${money(f)}</span></div>
+    ${Object.values(g).map(x=>`<div class="r"><span>${esc(x.name)} <span class="q num">× ${x.q}</span></span><span class="num">${money(x.price*x.q)}</span></div>`).join("")}
+    <div class="r tot"><span>المجموع</span><span class="num">${money(total)}</span></div>
+  </div>
+  <button class="primary wide" data-act="paid">تم الدفع، أغلق الجلسة</button>
+  <button class="link" data-act="back">رجوع للطلبات</button>`;
+}
+function summaryHtml(){
+  const tot=sales.reduce((a,s)=>a+Number(s.total||0),0), fees=sales.reduce((a,s)=>a+Number(s.fee||0),0);
+  const g={};sales.forEach(s=>(s.items||[]).forEach(o=>{const x=g[o.name]=g[o.name]||{q:0,sum:0};x.q++;x.sum+=Number(o.price||0)}));
+  const rows=Object.entries(g).sort((a,b)=>b[1].q-a[1].q);
+  const openNow=Object.keys(seats).reduce((a,id)=>a+fee(id)+itemsTotal(id),0);
+  return `<div class="phead"><div class="meta"><b>ملخص اليوم</b><span>الجلسات اللي تقفل حسابها من 6 الصبح</span></div>${xBtn}</div>
+  <div class="strip"><div><b class="num">${Math.round(tot*100)/100}</b><span>ريال دخل</span></div><div><b class="num">${sales.length}</b><span>جلسة مقفلة</span></div><div><b class="num">${Math.round(openNow*100)/100}</b><span>ريال لسه مفتوح</span></div></div>
+  ${sales.length?`<div class="bill">
+    <div class="r"><span>الجلسات</span><span class="num">${money(fees)}</span></div>
+    ${rows.map(([n,x])=>`<div class="r"><span>${esc(n)} <span class="q num">× ${x.q}</span></span><span class="num">${money(x.sum)}</span></div>`).join("")}
+    <div class="r tot"><span>المجموع</span><span class="num">${money(tot)}</span></div></div>`
+  :`<p class="empty">ما تقفل أي حساب اليوم. أول جلسة تقفلونها تظهر هنا.</p>`}`;
+}
+function settingsHtml(){
+  const d=draft;
+  return `<div class="phead"><div class="meta"><b>الأصناف والأسعار</b><span>التعديل يظهر عند الكل بعد الحفظ</span></div>${xBtn}</div>
+  <div class="set">
+    <div class="row"><label for="c-hour">سعر الساعة</label><input class="pr num" id="c-hour" data-f="hour" inputmode="decimal" value="${esc(d.hour)}"></div>
+    <div class="row"><label for="c-open">سعر الوقت المفتوح</label><input class="pr num" id="c-open" data-f="open" inputmode="decimal" value="${esc(d.open)}"></div>
+    <div class="row"><label for="c-count">عدد الجلسات</label><input class="pr num" id="c-count" data-f="count" inputmode="numeric" value="${esc(d.count)}"></div>
+  </div>
+  <h2>الأصناف</h2>
+  <div class="set">${d.items.map((it,i)=>`<div class="row">
+    <input class="nm" id="i-n-${i}" data-i="${i}" data-k="name" placeholder="اسم الصنف" aria-label="اسم الصنف" value="${esc(it.name)}">
+    <input class="pr num" id="i-p-${i}" data-i="${i}" data-k="price" inputmode="decimal" placeholder="السعر" aria-label="السعر" value="${esc(it.price)}">
+    <button class="close" data-act="rmitem" data-i="${i}" aria-label="حذف الصنف">×</button></div>`).join("")}
+    <button class="ghost" data-act="additem">+ صنف جديد</button>
+  </div>
+  <button class="primary wide" data-act="savecfg">حفظ</button>`;
+}
+
+/* ---------- الأحداث ---------- */
+document.addEventListener("input",e=>{
+  if(!draft) return; const t=e.target;
+  if(t.dataset.f) draft[t.dataset.f]=t.value;
+  else if(t.dataset.k) draft.items[+t.dataset.i][t.dataset.k]=t.value;
+});
+$("sheet").addEventListener("click",e=>{if(e.target===$("sheet"))closeSheet()});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"); if(!b) return;
+  const a=b.dataset.act, id=view&&view.id, oid=b.dataset.oid;
+  if(a==="close") return closeSheet();
+  if(a==="seat") return openSheet({kind:"seat",id:b.dataset.id});
+  if(a==="summary") return openSheet({kind:"summary"});
+  if(a==="settings"){draft=JSON.parse(JSON.stringify(cfg));return openSheet({kind:"settings"})}
+  if(a==="start") return run("seat:"+id,()=>db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:b.dataset.type,startedAt:Date.now()}));
+  if(a==="add"){const it=cfg.items[+b.dataset.i],s=seats[id]; if(!it||!s) return;
+    return run("add:"+Date.now()+Math.random(),()=>db.collection("orders").add({seat:id,sid:s.sid,name:it.name,price:Number(it.price),served:false,at:Date.now()}))}
+  if(a==="toggle"||a==="serve"){const o=orders.find(x=>x.id===oid); if(!o) return;
+    return run("o:"+oid,()=>db.doc("orders/"+oid).update({served:a==="serve"?true:!o.served,servedAt:Date.now()}))}
+  if(a==="del"){ if(!arm("del:"+oid)) return; return run("o:"+oid,()=>db.doc("orders/"+oid).delete()) }
+  if(a==="pay") return openSheet({kind:"pay",id});
+  if(a==="back") return openSheet({kind:"seat",id});
+  if(a==="hplus"){view.hours++;return renderSheet()}
+  if(a==="hminus"){view.hours=Math.max(1,view.hours-1);return renderSheet()}
+  if(a==="asopen"){view.asOpen=!view.asOpen;return renderSheet()}
+  if(a==="cancel"){ if(!arm("cancel")) return; return run("seat:"+id,async()=>{
+    for(const o of seatOrders(id)) await db.doc("orders/"+o.id).delete();
+    await db.doc("seats/"+id).delete(); closeSheet(); }) }
+  if(a==="paid"){ const s=seats[id], v=view; if(!s) return; return run("seat:"+id,async()=>{
+    const os=seatOrders(id), f=fee(id,v), now=Date.now();
+    await db.collection("sales").add({day:dayKey(now),seat:seatNo(id),type:(s.type==="open"||v.asOpen)?"open":"hour",
+      hours:s.type==="hour"&&!v.asOpen?v.hours:0,minutes:mins(s.startedAt),fee:f,
+      items:os.map(o=>({name:o.name,price:Number(o.price),served:!!o.served})),total:f+os.reduce((x,o)=>x+Number(o.price||0),0),
+      startedAt:s.startedAt,closedAt:now});
+    for(const o of os) await db.doc("orders/"+o.id).delete();
+    await db.doc("seats/"+id).delete(); closeSheet(); toast("تقفل حساب الجلسة "+seatNo(id)); }) }
+  if(a==="additem"){draft.items.push({name:"",price:""});return renderSheet()}
+  if(a==="rmitem"){draft.items.splice(+b.dataset.i,1);return renderSheet()}
+  if(a==="savecfg"){
+    const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
+    const out={hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
+      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price)})).filter(i=>i.name)};
+    if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
+    return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ")});
+  }
+});
+
+/* ---------- الاتصال ---------- */
+function refresh(){renderMain(); if(view&&view.kind!=="settings") renderSheet()}
+function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
+const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
+let fdb=null, uid=null;
+function listen(){
+  db=fdb; $("gate").hidden=true;
+  db.doc("config/menu").onSnapshot(d=>{
+    const x=d.exists?d.data():null;
+    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items}:DEFAULTS;
+    refresh();
+  },dead);
+  db.collection("seats").onSnapshot(s=>{seats={};s.docs.forEach(d=>seats[d.id]=d.data());ready=true;$("notice").hidden=true;refresh()},dead);
+  db.collection("orders").onSnapshot(s=>{orders=s.docs.map(d=>Object.assign({id:d.id},d.data()));refresh()},dead);
+  db.collection("sales").where("day","==",TODAY).onSnapshot(s=>{sales=s.docs.map(d=>d.data());if(view&&view.kind==="summary")renderSheet()},dead);
+  setInterval(()=>{renderMain(); if(view&&view.kind==="seat"&&!sure) renderSheet()},30000);
+}
+$("gate-form").addEventListener("submit",async e=>{
+  e.preventDefault(); const code=$("gate-code").value.trim(); if(!code||!uid) return;
+  $("gate-btn").disabled=true; $("gate-msg").textContent="";
+  try{ await fdb.doc("access/"+uid).set({code}); listen(); }
+  catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
+  $("gate-btn").disabled=false;
+});
+async function start(){
+  renderMain();
+  try{
+    firebase.initializeApp(CFG); fdb=firebase.firestore();
+    uid=(await firebase.auth().signInAnonymously()).user.uid;
+    const a=await fdb.doc("access/"+uid).get();
+    if(a.exists) listen(); else { $("gate").hidden=false; $("gate-code").focus(); }
+  }catch(e){ $("notice").textContent="ما قدرنا نتصل. تأكد من الإنترنت وحدّث الصفحة."; }
+}
+start();
+</script>
+
+</body>
+</html>
