@@ -56,8 +56,8 @@ button:disabled{opacity:.5;cursor:default}
 .strip span{font-size:13px;color:var(--muted)}
 .strip .alert{border-color:var(--red)} .strip .alert b{color:var(--red)}
 
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media (min-width:560px){.board{grid-template-columns:repeat(5,1fr)}}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;direction:ltr;max-width:460px;width:100%;margin-inline:auto}
+.seat{direction:rtl}
 .seat{position:relative;display:flex;flex-direction:column;gap:2px;min-height:112px;padding:10px;border-radius:14px;
   border:1.5px dashed var(--line);background:transparent;min-width:0}
 .seat .n{font-family:var(--display);font-size:34px;line-height:1}
@@ -219,19 +219,24 @@ function arm(key){ // ضغطتين للتأكيد
 }
 
 /* ---------- الرئيسية ---------- */
-function allSeatIds(){
-  const ids=[];for(let i=1;i<=cfg.count;i++)ids.push(sid(i));
-  Object.keys(seats).forEach(k=>{if(!ids.includes(k))ids.push(k)});
-  return ids.sort();
+const LAYOUT=[5,6,15,4,7,14,3,8,13,2,9,12,1,10,11]; // ترتيب الجلسات على الأرض، صف صف من اليسار
+function allSeatIds(){ // null = خانة فاضية تحفظ مكانها في الشبكة
+  const live=n=>n<=cfg.count||seats[sid(n)];
+  const ids=LAYOUT.map(n=>live(n)?sid(n):null);
+  const extra=new Set();
+  for(let i=16;i<=cfg.count;i++)extra.add(sid(i));
+  Object.keys(seats).forEach(k=>{if(seatNo(k)>15)extra.add(k)});
+  return ids.concat([...extra].sort());
 }
 function renderMain(){
-  const ids=allSeatIds(), busy=ids.filter(i=>seats[i]);
+  const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
   const pend=orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at);
   $("strip").innerHTML=
     `<div><b class="num">${busy.length}</b><span>مشغولة</span></div>`+
     `<div><b class="num">${ids.length-busy.length}</b><span>فاضية</span></div>`+
     `<div class="${pend.length?"alert":""}"><b class="num">${pend.length}</b><span>طلب ما نزل</span></div>`;
-  $("board").innerHTML=ids.map(id=>{
+  $("board").innerHTML=cells.map(id=>{
+    if(!id) return `<span></span>`;
     const s=seats[id], n=seatNo(id);
     if(!s) return `<button class="seat" data-act="seat" data-id="${id}"><span class="n num">${n}</span><span class="st">فاضية</span></button>`;
     const m=mins(s.startedAt), over=s.type==="hour"&&m>60+GRACE, p=seatOrders(id).filter(o=>!o.served).length;
