@@ -99,6 +99,9 @@ button:disabled{opacity:.5;cursor:default}
 .menu .xopt.paint.on{opacity:1;outline:4px solid var(--ink);outline-offset:2px}
 .menu .xopt.paint.on::after{content:"✓";position:absolute;inset-block-start:6px;inset-inline-start:8px;background:#fff;color:#111;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;font-weight:700;text-shadow:none}
 h2{font-size:17px;font-weight:700;margin:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+h3.cat.st{font-size:16px;color:var(--ink);margin-block-start:8px;display:flex;justify-content:space-between}
+h3.cat.st.hot{color:var(--red);border-color:var(--red)}
 h3.cat{font-size:14px;font-weight:600;margin:0;color:var(--muted);border-block-end:1.5px solid var(--line);padding-block-end:4px}
 select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px;min-height:48px;min-width:0}
 .set .row.item{flex-wrap:wrap;padding-block-end:8px;border-block-end:1px solid var(--line)}
@@ -141,6 +144,10 @@ select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px soli
 .ord.p .tog{background:var(--red-bg);border-color:var(--red)} .ord.p .tag{color:var(--red)}
 .ord.s .tog{background:var(--green-bg);border-color:var(--green)} .ord.s .tag{color:var(--green)}
 .ord .del{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;min-width:50px;padding-inline:8px;font-size:14px;font-weight:600;color:var(--muted);text-align:center}
+.ord .del.qb{font-size:22px;min-width:46px;padding-inline:4px;color:var(--ink)}
+.ord .del.qb.sure{font-size:14px}
+.xq{color:var(--accent);font-weight:700;white-space:nowrap}
+.wrow .xq{color:var(--red)}
 .ord .del.sure{background:var(--red);border-color:var(--red);color:#fff}
 
 .menu{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
@@ -169,6 +176,7 @@ select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px soli
 .bill .r.sub{color:var(--muted);font-size:15px;padding-inline-start:14px}
 .step{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .step button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;min-width:50px;min-height:50px;font-size:24px;text-align:center}
+.step.qstep{justify-content:center}
 .step b{font-family:var(--display);font-weight:400;font-size:30px;min-width:28px;text-align:center}
 .chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 16px;font-weight:600;min-height:46px}
 .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -200,6 +208,7 @@ input{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid
   <h2>سفري</h2>
   <div class="board" id="take"></div>
   <h2>طلبات ما نزلت</h2>
+  <div class="chips" id="stpick"></div>
   <div class="wait" id="wait"></div>
 </div>
 <div class="sheet" id="sheet" hidden><div class="panel" id="panel"></div></div>
@@ -321,7 +330,15 @@ function fee(id,v){
   if(s.type==="open"||(v&&v.asOpen)) return cfg.open;
   return ((v&&v.hours)||autoHours(s))*cfg.hour;
 }
-const itemsTotal=id=>seatOrders(id).reduce((a,o)=>a+Number(o.price||0),0);
+const qty=o=>Math.max(1,Math.round(Number(o.qty)||1));
+const r2=n=>Math.round(n*100)/100;
+const itemsTotal=id=>seatOrders(id).reduce((a,o)=>a+Number(o.price||0)*qty(o),0);
+const sameLine=(a,b)=>a.seat===b.seat&&a.sid===b.sid&&a.name===b.name&&Number(a.price)===Number(b.price)&&(a.note||"")===(b.note||"")&&!!a.served===!!b.served;
+function groupOrders(list){ // يجمع الأسطر المتطابقة في سطر واحد بكمية
+  const out=[]; list.forEach(o=>{const g=out.find(x=>sameLine(x.o,o)); if(g){g.docs.push(o);g.q+=qty(o)} else out.push({o,docs:[o],q:qty(o)})}); return out; }
+const units=list=>list.reduce((a,o)=>a+qty(o),0);
+function bump(o,n){ // يغيّر كمية سطر محفوظ
+  return db.doc("orders/"+o.id).update({qty:o.qty==null?1+n:firebase.firestore.FieldValue.increment(n)}); }
 
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,3200)}
 function fail(e){
@@ -349,12 +366,14 @@ function allSeatIds(){ // null = خانة فاضية تحفظ مكانها في 
   Object.keys(seats).forEach(k=>{if(seatNo(k)>15)extra.add(k)});
   return ids.concat([...extra].sort());
 }
+let myStation=-1; // قسم هذا الجوال في قائمة الطلبات: -1 الكل
+try{const v=parseInt(localStorage.getItem("kz-station"),10); if(v>=0&&v<=2) myStation=v}catch(e){}
 function tile(id){
   const s=seats[id], A=`data-act="seat" data-id="${esc(id)}"`;
   if(!s) return `<button class="seat" ${A}><span class="n num">${seatNo(id)}</span><span class="st">فاضية</span></button>`;
-  const p=seatOrders(id).filter(o=>!o.served).length, dot=p?`<span class="dot num">${p}</span>`:"";
+  const p=units(seatOrders(id).filter(o=>!o.served)), dot=p?`<span class="dot num">${p}</span>`:"";
   const tot=`<span class="tt num">${money(fee(id)+itemsTotal(id))}</span>`;
-  if(s.type==="take") return `<button class="seat on" ${A}>${dot}<span class="n num">${esc(lab(id))}</span><span class="st">سفري</span>${tot}</button>`;
+  if(s.type==="take") return `<button class="seat on" ${A}>${dot}<span class="n num">${esc(lab(id))}</span><span class="st">سفري · من</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
   if(s.type==="open") return `<button class="seat on" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">مفتوح</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
   const l=left(s);
   return `<button class="seat on ${l<=5?"alarm":""}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">${l<=0?"انتهى الوقت":"ساعة · باقي"}</span><span class="tm num">${l<0?"زاد "+clock(-l):clock(l)}</span>${tot}</button>`;
@@ -362,18 +381,23 @@ function tile(id){
 function renderMain(){
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
   const takes=Object.keys(seats).filter(isTake).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
-  const pend=orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at);
+  const pend=groupOrders(orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at));
+  const cnt=l=>l.reduce((a,g)=>a+g.q,0);
   $("strip").innerHTML=
     `<div><b class="num">${busy.length}</b><span>مشغولة</span></div>`+
     `<div><b class="num">${ids.length-busy.length}</b><span>فاضية</span></div>`+
-    `<div class="${pend.length?"alert":""}"><b class="num">${pend.length}</b><span>طلب ما نزل</span></div>`;
+    `<div class="${pend.length?"alert":""}"><b class="num">${cnt(pend)}</b><span>طلب ما نزل</span></div>`;
   $("board").innerHTML=cells.map(id=>id?tile(id):`<span></span>`).join("");
   $("take").innerHTML=`<button class="seat add" data-act="newtake"><span class="n">+</span><span class="st">سفري جديد</span></button>`+takes.map(tile).join("");
-  $("wait").innerHTML=pend.length?pend.map(o=>
+  const stations=[["طلبات البطاطس",n=>RX.fries.test(n)],["طلبات الكورن دوق والذرة",n=>RX.dog.test(n)||RX.corn.test(n)],["طلبات الترك",()=>true]];
+  const buckets=stations.map(()=>[]); pend.forEach(g=>buckets[stations.findIndex(x=>x[1](String(g.o.name||"")))].push(g));
+  $("stpick").innerHTML=[["الكل",-1],["البطاطس",0],["الكورن دوق",1],["الترك",2]].map(([t,k])=>`<button class="chip ${myStation===k?"on":""}" data-act="station" data-k="${k}">${t}${k>=0&&buckets[k].length?` <span class="num">${cnt(buckets[k])}</span>`:""}</button>`).join("");
+  $("wait").innerHTML=stations.map(([t],k)=>myStation>=0&&myStation!==k?"":`<h3 class="cat st ${buckets[k].length?"hot":""}">${t} <span class="num">${cnt(buckets[k])}</span></h3>`+
+    (buckets[k].length?buckets[k].map(({o,q})=>
     `<div class="wrow"><span class="who num">${esc(lab(o.seat))}</span>
-      <span class="what">${esc(o.name)}<small class="num">${o.note?esc(o.note)+" · ":""}من ${mins(o.at)} دقيقة</small></span>
+      <span class="what">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}<small class="num">${o.note?esc(o.note)+" · ":""}من ${mins(o.at)} دقيقة</small></span>
       <button class="done" data-act="serve" data-oid="${esc(o.id)}">نزل</button></div>`).join("")
-    :`<p class="empty">${ready?"كل الطلبات نزلت.":"تظهر هنا الطلبات اللي انطلبت وما نزلت."}</p>`;
+    :`<p class="empty">${ready?"ما في طلبات.":"…"}</p>`)).join("");
 }
 
 /* ---------- النوافذ ---------- */
@@ -403,14 +427,14 @@ function freeHtml(id){
 function seatHtml(id){
   const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), take=s.type==="take", l=s.type==="hour"?left(s):0;
   const title=take?"سفري":s.type==="open"?"وقت مفتوح":"ساعة"+(bookedH(s)>1?" × "+bookedH(s):"");
-  const sub=take?"طلب بدون جلسة":s.type==="open"?"الوقت "+clock(m):l>=0?"باقي "+clock(l):"زاد "+clock(-l);
+  const sub=take?"مفتوح من "+clock(m):s.type==="open"?"الوقت "+clock(m):l>=0?"باقي "+clock(l):"زاد "+clock(-l);
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
     <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
-  <div class="orders">${os.length?os.map(o=>
-    `<div class="ord ${o.served?"s":"p"}">
-      <button class="tog" data-act="toggle" data-oid="${esc(o.id)}"><span class="nm">${esc(o.name)}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${Number(o.price)}</span><span class="tag">${o.served?"نزل":"ما نزل"}</span></button>
-      <button class="del ${sure==="del:"+o.id?"sure":""}" data-act="del" data-oid="${esc(o.id)}">${sure==="del:"+o.id?"تأكيد":"حذف"}</button>
-    </div>`).join(""):`<p class="empty">ما في طلبات. اضغط الصنف تحت عشان تضيفه.</p>`}</div>
+  <div class="orders">${os.length?groupOrders(os).map(({o,q})=>{const k="del:"+o.id; return `<div class="ord ${o.served?"s":"p"}">
+      <button class="tog" data-act="toggle" data-oid="${esc(o.id)}"><span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${r2(Number(o.price)*q)}</span><span class="tag">${o.served?"نزل":"ما نزل"}</span></button>
+      <button class="del qb ${sure===k?"sure":""}" data-act="qdec" data-oid="${esc(o.id)}" aria-label="نقص حبة">${sure===k?"حذف؟":"−"}</button>
+      <button class="del qb" data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button>
+    </div>`}).join(""):`<p class="empty">ما في طلبات. اختر القسم تحت وأضف.</p>`}</div>
   <h2>أضف طلب</h2>
   ${menuHtml()}
   ${s.type==="hour"?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour} ريال)</button>`:""}
@@ -419,22 +443,23 @@ function seatHtml(id){
   <button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`;
 }
 function extrasHtml(){
-  const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name), r=resolve(sp,it,view);
-  return `<div class="phead"><span class="big num">${esc(lab(view.id))}</span><div class="meta"><b>${esc(it.name)}</b><span>${sp.title}</span></div>${xBtn}</div>
-  ${sp.all?`<button class="chip ${view.sel.length===sp.opts.length?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
-  <div class="menu">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b></button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return `<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span class="pic">${L[0]}</span>`:""}<b>${esc(x)}</b></button>`}).join("")}</div>
-  ${sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu">
+  const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name), r=sp?resolve(sp,it,view):{name:it.name,price:Number(it.price),note:"",ok:true};
+  return `<div class="phead"><span class="big num">${esc(lab(view.id))}</span><div class="meta"><b>${esc(it.name)}</b><span>${sp?sp.title:"كم حبة؟"}</span></div>${xBtn}</div>
+  ${sp&&sp.all?`<button class="chip ${view.sel.length===sp.opts.length?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
+  ${sp?`<div class="menu">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b></button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return `<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span class="pic">${L[0]}</span>`:""}<b>${esc(x)}</b></button>`}).join("")}</div>`:""}
+  ${sp&&sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu">
     <button class="xopt ${view.size==="small"?"on":""}" data-act="xsize" data-s="small"><b>صغير</b><span class="num">${CORN.small} ريال</span></button>
     <button class="xopt ${view.size==="big"?"on":""}" data-act="xsize" data-s="big"><b>كبير</b><span class="num">${CORN.big} ريال</span></button></div>`:""}
-  <div class="foot"><div class="sum"><span>${r.ok?esc(r.name)+" · "+r.price+" ريال":"اختر أول"}</span><b style="font-family:var(--body);font-weight:700;font-size:18px;line-height:1.4">${esc(r.ok?r.note:"")}</b></div>
+  <div class="step qstep"><span>الكمية</span><button data-act="qminus" aria-label="نقص">−</button><b class="num">${view.q}</b><button data-act="qplus" aria-label="زود">+</button></div>
+  <div class="foot"><div class="sum"><span>${r.ok?esc(r.name)+(view.q>1?" × "+view.q:"")+" · "+r2(r.price*view.q)+" ريال":"اختر أول"}</span><b style="font-family:var(--body);font-weight:700;font-size:18px;line-height:1.4">${esc(r.ok?r.note:"")}</b></div>
     <button class="primary" data-act="xadd" ${r.ok?"":"disabled"}>أضف للطلب</button></div>
   <button class="link" data-act="back">رجوع بدون إضافة</button>`;
 }
 function payHtml(id){
-  const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), pend=os.filter(o=>!o.served).length, take=s.type==="take";
+  const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), pend=units(os.filter(o=>!o.served)), take=s.type==="take";
   if(s.type==="hour"&&!view.hours) view.hours=autoHours(s);
   const f=fee(id,view), total=f+itemsTotal(id);
-  const g={};os.forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{name:o.name,price:Number(o.price),q:0}).q++});
+  const g={};os.forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{name:o.name,price:Number(o.price),q:0}).q+=qty(o)});
   const feeLabel=s.type==="open"||view.asOpen?"جلسة وقت مفتوح":`جلسة ${view.hours} ساعة`;
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span><div class="meta"><b>الحساب</b><span class="num">${take?"سفري":"جلس "+clock(m)}</span></div>${xBtn}</div>
   ${pend?`<div class="notice" style="background:var(--red-bg);color:var(--red)">في ${pend} طلب ما نزل ومحسوب في الفاتورة. لو ما وصل للزبون ارجع واحذفه.</div>`:""}
@@ -451,12 +476,12 @@ function payHtml(id){
   <button class="link" data-act="back">رجوع للطلبات</button>`;
 }
 function summaryHtml(){
-  const r2=n=>Math.round(n*100)/100, pk=s=>s.pay==="cash"?"cash":s.pay==="card"?"card":"none";
+  const pk=s=>s.pay==="cash"?"cash":s.pay==="card"?"card":"none";
   const tot=sales.reduce((a,s)=>a+Number(s.total||0),0);
   const groups=[{t:"البطاطس",f:n=>RX.fries.test(n)},{t:"الكورن دوق والذرة",f:n=>RX.dog.test(n)||RX.corn.test(n)},{t:"باقي الأصناف",f:()=>true}];
   const g=groups.map(()=>({})), gp=groups.map(()=>({cash:0,card:0,none:0})), pay={cash:0,card:0,none:0}, fp={cash:0,card:0,none:0};
   sales.forEach(s=>{ const p=pk(s); pay[p]+=Number(s.total||0); fp[p]+=Number(s.fee||0);
-    (s.items||[]).forEach(o=>{const n=String(o.name||""),k=groups.findIndex(x=>x.f(n)),x=g[k][n]=g[k][n]||{q:0,sum:0},pr=Number(o.price||0);x.q++;x.sum+=pr;gp[k][p]+=pr}); });
+    (s.items||[]).forEach(o=>{const n=String(o.name||""),k=groups.findIndex(x=>x.f(n)),x=g[k][n]=g[k][n]||{q:0,sum:0},q=qty(o),pr=Number(o.price||0)*q;x.q+=q;x.sum+=pr;gp[k][p]+=pr}); });
   const fees=fp.cash+fp.card+fp.none;
   const openNow=Object.keys(seats).reduce((a,id)=>a+fee(id)+itemsTotal(id),0);
   const row=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</span><span class="num">${b}</span></div>`;
@@ -477,7 +502,7 @@ function summaryHtml(){
   <h2>الحسابات المقفلة</h2><p class="empty">لو تقفل حساب بالغلط احذفه من هنا، وينشال من الملخص.</p>
   <div class="orders">${sales.slice().sort((a,b)=>(b.closedAt||0)-(a.closedAt||0)).map(x=>{
     const d=new Date(x.closedAt||0), tm=d.getHours()+":"+String(d.getMinutes()).padStart(2,"0"), k="ds:"+x.id;
-    return `<div class="ord"><div class="tog" style="border-color:var(--line);background:var(--surface)"><span class="nm">${x.type==="take"?"سفري "+(x.tno||""):"جلسة "+(x.seat||"")}<small class="num">${tm} · ${x.pay==="cash"?"كاش":x.pay==="card"?"شبكة":"غير محدد"} · ${(x.items||[]).length} صنف</small></span><span class="num">${money(Number(x.total||0))}</span></div>
+    return `<div class="ord"><div class="tog" style="border-color:var(--line);background:var(--surface)"><span class="nm">${x.type==="take"?"سفري "+(x.tno||""):"جلسة "+(x.seat||"")}<small class="num">${tm} · ${x.pay==="cash"?"كاش":x.pay==="card"?"شبكة":"غير محدد"} · ${units(x.items||[])} حبة</small></span><span class="num">${money(Number(x.total||0))}</span></div>
       <button class="del ${sure===k?"sure":""}" data-act="delsale" data-sid="${esc(x.id)}">${sure===k?"تأكيد":"حذف"}</button></div>`;}).join("")}</div>`
   :`<p class="empty">ما تقفل أي حساب اليوم. أول حساب تقفلونه يظهر هنا.</p>`}`;
 }
@@ -519,14 +544,21 @@ document.addEventListener("click",e=>{
   if(a==="xex"){view.ex=!view.ex; view.sel=[]; view.size=null; return renderSheet()}
   if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
   if(a==="xall"){const n=specFor(cfg.items[view.i].name).opts.length; view.sel=view.sel.length===n?[]:Array.from({length:n},(_,i)=>i); return renderSheet()}
-  if(a==="xadd"){const it=cfg.items[view.i],s=seats[id]; if(!it||!s) return; const r=resolve(specFor(it.name),it,view); if(!r.ok) return;
-    run("add:"+Date.now()+Math.random(),()=>db.collection("orders").add({seat:id,sid:s.sid,name:r.name,price:r.price,note:r.note,served:false,at:Date.now()}));
+  if(a==="qplus"){view.q=Math.min(99,view.q+1); return renderSheet()}
+  if(a==="qminus"){view.q=Math.max(1,view.q-1); return renderSheet()}
+  if(a==="xadd"){const it=cfg.items[view.i],s=seats[id]; if(!it||!s) return; const sp=specFor(it.name), r=sp?resolve(sp,it,view):{name:it.name,price:Number(it.price),note:"",ok:true}; if(!r.ok) return;
+    const n=view.q, line={seat:id,sid:s.sid,name:r.name,price:r.price,note:r.note,served:false}, old=seatOrders(id).find(o=>sameLine(o,line));
+    run("add:"+Date.now()+Math.random(),()=>old?bump(old,n):db.collection("orders").add({...line,qty:n,at:Date.now()}));
     return openSheet({kind:"seat",id,cat:view.cat})}
-  if(a==="add"){const it=cfg.items[+b.dataset.i],s=seats[id]; if(!it||!s) return;
-    if(specFor(it.name)) return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null,cat:view.cat});
-    return run("add:"+Date.now()+Math.random(),()=>db.collection("orders").add({seat:id,sid:s.sid,name:it.name,price:Number(it.price),served:false,at:Date.now()}))}
-  if(a==="toggle"||a==="serve"){const o=orders.find(x=>x.id===oid); if(!o) return;
-    return run("o:"+oid,()=>db.doc("orders/"+oid).update({served:a==="serve"?true:!o.served,servedAt:Date.now()}))}
+  if(a==="add"){const it=cfg.items[+b.dataset.i]; if(!it||!seats[id]) return;
+    return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null,q:1,cat:view.cat})}
+  if(a==="toggle"||a==="serve"||a==="qinc"||a==="qdec"){const o=orders.find(x=>x.id===oid); if(!o) return; const docs=orders.filter(x=>sameLine(x,o));
+    if(a==="qinc") return run("o:"+oid,()=>bump(o,1));
+    if(a==="qdec"){ const big=docs.find(x=>qty(x)>1);
+      if(units(docs)<=1){ if(!arm("del:"+oid)) return; return run("o:"+oid,()=>db.doc("orders/"+oid).delete()) }
+      return run("o:"+oid,()=>big?bump(big,-1):db.doc("orders/"+docs[docs.length-1].id).delete()); }
+    const v=a==="serve"?true:!o.served;
+    return run("o:"+oid,async()=>{for(const x of docs) await db.doc("orders/"+x.id).update({served:v,servedAt:Date.now()})})}
   if(a==="del"){ if(!arm("del:"+oid)) return; return run("o:"+oid,()=>db.doc("orders/"+oid).delete()) }
   if(a==="newtake"){
     const nid="t"+Date.now().toString(36), tno=1+Math.max(0,...Object.keys(seats).filter(isTake).map(k=>Number(seats[k].tno)||0),...sales.filter(x=>x.type==="take").map(x=>Number(x.tno)||0));
@@ -534,6 +566,7 @@ document.addEventListener("click",e=>{
     return openSheet({kind:"seat",id:nid,wait:true}); }
   if(a==="addhour"){const s=seats[id]; if(!s) return; return run("seat:"+id,()=>db.doc("seats/"+id).update({hours:bookedH(s)+1}))}
   if(a==="delsale"){ const k=b.dataset.sid; if(!arm("ds:"+k)) return; return run("sale:"+k,async()=>{await db.doc("sales/"+k).delete(); toast("انحذف الحساب")}) }
+  if(a==="station"){myStation=+b.dataset.k; try{localStorage.setItem("kz-station",String(myStation))}catch(e){} return renderMain()}
   if(a==="cat"){view.cat=b.dataset.c||null; return renderSheet()}
   if(a==="pay") return openSheet({kind:"pay",id});
   if(a==="back") return openSheet({kind:"seat",id,cat:view.cat});
@@ -548,7 +581,7 @@ document.addEventListener("click",e=>{
     await db.collection("sales").add({day:dayKey(now),seat:take?0:seatNo(id),tno:Number(s.tno)||0,pay,
       type:take?"take":(s.type==="open"||v.asOpen)?"open":"hour",
       hours:s.type==="hour"&&!v.asOpen?v.hours:0,minutes:mins(s.startedAt),fee:f,
-      items:os.map(o=>({name:o.name,price:Number(o.price),note:o.note||"",served:!!o.served})),total:f+os.reduce((x,o)=>x+Number(o.price||0),0),
+      items:os.map(o=>({name:o.name,price:Number(o.price),qty:qty(o),note:o.note||"",served:!!o.served})),total:f+os.reduce((x,o)=>x+Number(o.price||0)*qty(o),0),
       startedAt:s.startedAt,closedAt:now});
     for(const o of os) await db.doc("orders/"+o.id).delete();
     await db.doc("seats/"+id).delete(); closeSheet(); toast((take?"تقفل حساب السفري":"تقفل حساب الجلسة "+seatNo(id))+(pay==="cash"?" · كاش":" · شبكة")); }) }
@@ -609,7 +642,7 @@ $("gate-form").addEventListener("submit",async e=>{
   catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v9";
+const VER="v12";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
