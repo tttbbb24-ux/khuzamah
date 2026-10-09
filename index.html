@@ -108,7 +108,7 @@ h2{font-size:17px;font-weight:700;margin:0}
 .ord .tog .nm{flex:1;min-width:0;font-weight:600}
 .ord .tog .nm small{display:block;font-weight:400;font-size:13px;color:var(--muted)}
 .menu .xopt{align-items:center;text-align:center}
-.menu .xopt.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.menu .xopt.on,.menu .xopt.on span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .ord .tog .tag{font-weight:700;font-size:14px;white-space:nowrap}
 .ord.p .tog{background:var(--red-bg);border-color:var(--red)} .ord.p .tag{color:var(--red)}
 .ord.s .tog{background:var(--green-bg);border-color:var(--green)} .ord.s .tag{color:var(--green)}
@@ -138,6 +138,7 @@ h2{font-size:17px;font-weight:700;margin:0}
 .bill .r span:first-child{flex:1;min-width:0}
 .bill .r.tot{font-weight:700;font-size:19px}
 .bill .r .q{color:var(--muted)}
+.bill .r.sub{color:var(--muted);font-size:15px;padding-inline-start:14px}
 .step{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .step button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;min-width:50px;min-height:50px;font-size:24px;text-align:center}
 .step b{font-family:var(--display);font-weight:400;font-size:30px;min-width:28px;text-align:center}
@@ -160,7 +161,7 @@ input{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid
 
 <div class="wrap">
   <div class="top">
-    <h1>جلسات الفوترك</h1>
+    <h1>جلسات الفوترك <small id="ver" style="font-family:var(--body);font-size:11px;color:var(--muted)"></small></h1>
     <button class="ghost" data-act="summary" id="btn-summary">ملخص اليوم</button>
     <button class="ghost" data-act="settings" id="btn-settings">الأصناف</button>
   </div>
@@ -190,7 +191,36 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
   {name:"كودرد",price:7},{name:"قهوة اليوم حار",price:7},{name:"قهوة اليوم بارد",price:7},{name:"موية",price:1}
 ]};
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"];
-const hasExtras=name=>String(name).includes("بطاطس");
+const FLAV=["فراولة","حبحب","توت أزرق"];
+const CORN={small:5,big:10}, CODERED={plain:6,flav:12};
+const RX={fries:/بطاطس/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/};
+function specFor(name){ // الأصناف اللي لها اختيارات، حسب الاسم
+  const n=String(name);
+  if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات",opts:EXTRAS,all:true};
+  if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
+  if(RX.moj.test(n)) return {k:"moj",title:"اختر النكهة",opts:FLAV};
+  if(RX.cr.test(n)) return {k:"cr",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
+  if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
+  return null;
+}
+function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسعر وملاحظة
+  const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
+  if(spec.k==="fries") return {...base,note:extrasNote(v.sel)};
+  if(spec.k==="corn"){
+    if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size};
+    return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0};
+  }
+  if(spec.k==="cr") return v.ex?{...base,price:CODERED.plain,note:"بدون نكهة"}:{...base,name:it.name+" بنكهة",price:CODERED.flav,note:and,ok:on.length>0};
+  if(spec.k==="moj") return {...base,note:and,ok:on.length>0};
+  if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
+  return base;
+}
+function menuPrice(it){
+  const sp=specFor(it.name);
+  if(sp&&sp.k==="corn") return CORN.small+" أو "+CORN.big+" ريال";
+  if(sp&&sp.k==="cr") return CODERED.plain+" أو "+CODERED.flav+" ريال";
+  return Number(it.price)+" ريال";
+}
 function extrasNote(sel){
   const on=EXTRAS.filter((_,i)=>sel.includes(i)), off=EXTRAS.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات";
@@ -315,19 +345,22 @@ function seatHtml(id){
       <button class="del ${sure==="del:"+o.id?"sure":""}" data-act="del" data-oid="${esc(o.id)}">${sure==="del:"+o.id?"تأكيد":"حذف"}</button>
     </div>`).join(""):`<p class="empty">ما في طلبات. اضغط الصنف تحت عشان تضيفه.</p>`}</div>
   <h2>أضف طلب</h2>
-  <div class="menu">${cfg.items.map((it,i)=>`<button data-act="add" data-i="${i}"><b>${esc(it.name)}</b><span class="num">${Number(it.price)} ريال</span></button>`).join("")}</div>
+  <div class="menu">${cfg.items.map((it,i)=>`<button data-act="add" data-i="${i}"><b>${esc(it.name)}</b><span class="num">${menuPrice(it)}</span></button>`).join("")}</div>
   ${s.type==="hour"?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour} ريال)</button>`:""}
   <div class="foot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
     <button class="primary" data-act="pay">الحساب</button></div>
   <button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`;
 }
 function extrasHtml(){
-  const it=cfg.items[view.i]||{name:"",price:0}, all=view.sel.length===EXTRAS.length;
-  return `<div class="phead"><span class="big num">${seatNo(view.id)}</span><div class="meta"><b>${esc(it.name)}</b><span>اختر الصوصات والإضافات</span></div>${xBtn}</div>
-  <button class="chip ${all?"on":""}" data-act="xall" style="text-align:center">كل شي</button>
-  <div class="menu">${EXTRAS.map((x,i)=>`<button class="xopt ${view.sel.includes(i)?"on":""}" data-act="xtoggle" data-x="${i}"><b>${esc(x)}</b></button>`).join("")}</div>
-  <div class="foot"><div class="sum"><span>ينكتب على الطلب</span><b style="font-family:var(--body);font-weight:700;font-size:18px;line-height:1.4">${esc(extrasNote(view.sel))}</b></div>
-    <button class="primary" data-act="xadd">أضف للطلب</button></div>
+  const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name), r=resolve(sp,it,view);
+  return `<div class="phead"><span class="big num">${esc(lab(view.id))}</span><div class="meta"><b>${esc(it.name)}</b><span>${sp.title}</span></div>${xBtn}</div>
+  ${sp.all?`<button class="chip ${view.sel.length===sp.opts.length?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
+  <div class="menu">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b></button>`:""}${sp.opts.map((x,i)=>`<button class="xopt ${view.sel.includes(i)?"on":""}" data-act="xtoggle" data-x="${i}"><b>${esc(x)}</b></button>`).join("")}</div>
+  ${sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu">
+    <button class="xopt ${view.size==="small"?"on":""}" data-act="xsize" data-s="small"><b>صغير</b><span class="num">${CORN.small} ريال</span></button>
+    <button class="xopt ${view.size==="big"?"on":""}" data-act="xsize" data-s="big"><b>كبير</b><span class="num">${CORN.big} ريال</span></button></div>`:""}
+  <div class="foot"><div class="sum"><span>${r.ok?esc(r.name)+" · "+r.price+" ريال":"اختر أول"}</span><b style="font-family:var(--body);font-weight:700;font-size:18px;line-height:1.4">${esc(r.ok?r.note:"")}</b></div>
+    <button class="primary" data-act="xadd" ${r.ok?"":"disabled"}>أضف للطلب</button></div>
   <button class="link" data-act="back">رجوع بدون إضافة</button>`;
 }
 function payHtml(id){
@@ -351,24 +384,28 @@ function payHtml(id){
   <button class="link" data-act="back">رجوع للطلبات</button>`;
 }
 function summaryHtml(){
-  const r2=n=>Math.round(n*100)/100;
-  const tot=sales.reduce((a,s)=>a+Number(s.total||0),0), fees=sales.reduce((a,s)=>a+Number(s.fee||0),0);
-  const groups=[{t:"البطاطس",f:n=>n.includes("بطاطس")},{t:"الكورن دوق",f:n=>n.includes("كورن")},{t:"باقي الأصناف",f:()=>true}];
-  const g=groups.map(()=>({}));
-  sales.forEach(s=>(s.items||[]).forEach(o=>{const n=String(o.name||""),k=groups.findIndex(x=>x.f(n)),x=g[k][n]=g[k][n]||{q:0,sum:0};x.q++;x.sum+=Number(o.price||0)}));
-  const pay={cash:0,card:0,none:0};sales.forEach(s=>{pay[s.pay==="cash"?"cash":s.pay==="card"?"card":"none"]+=Number(s.total||0)});
+  const r2=n=>Math.round(n*100)/100, pk=s=>s.pay==="cash"?"cash":s.pay==="card"?"card":"none";
+  const tot=sales.reduce((a,s)=>a+Number(s.total||0),0);
+  const groups=[{t:"البطاطس",f:n=>RX.fries.test(n)},{t:"الكورن دوق والذرة",f:n=>RX.dog.test(n)||RX.corn.test(n)},{t:"باقي الأصناف",f:()=>true}];
+  const g=groups.map(()=>({})), gp=groups.map(()=>({cash:0,card:0,none:0})), pay={cash:0,card:0,none:0}, fp={cash:0,card:0,none:0};
+  sales.forEach(s=>{ const p=pk(s); pay[p]+=Number(s.total||0); fp[p]+=Number(s.fee||0);
+    (s.items||[]).forEach(o=>{const n=String(o.name||""),k=groups.findIndex(x=>x.f(n)),x=g[k][n]=g[k][n]||{q:0,sum:0},pr=Number(o.price||0);x.q++;x.sum+=pr;gp[k][p]+=pr}); });
+  const fees=fp.cash+fp.card+fp.none;
   const openNow=Object.keys(seats).reduce((a,id)=>a+fee(id)+itemsTotal(id),0);
   const row=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</span><span class="num">${b}</span></div>`;
+  const split=p=>row("كاش",money(p.cash),"sub")+row("شبكة",money(p.card),"sub")+(p.none?row("غير محدد",money(p.none),"sub"):"");
   const block=(i,extra)=>{
-    const rows=Object.entries(g[i]).sort((a,b)=>b[1].q-a[1].q), sum=rows.reduce((a,[,x])=>a+x.sum,0)+(extra?fees:0);
+    const rows=Object.entries(g[i]).sort((a,b)=>b[1].q-a[1].q), p={...gp[i]};
+    if(extra){p.cash+=fp.cash;p.card+=fp.card;p.none+=fp.none}
+    const sum=p.cash+p.card+p.none;
     return `<h2>${groups[i].t}</h2><div class="bill">${extra?row("الجلسات",money(fees)):""}
       ${rows.map(([n,x])=>row(`${esc(n)} <span class="q num">× ${x.q}</span>`,money(x.sum))).join("")}
       ${!rows.length&&!extra?row(`<span class="q">ما انباع منها شي اليوم</span>`,""):""}
-      ${row("المجموع",money(sum),"tot")}</div>`;
+      ${row("المجموع",money(sum),"tot")}${split(p)}</div>`;
   };
   return `<div class="phead"><div class="meta"><b>ملخص اليوم</b><span>الحسابات اللي تقفلت من 6 الصبح</span></div>${xBtn}</div>
   <div class="strip"><div><b class="num">${r2(tot)}</b><span>ريال دخل</span></div><div><b class="num">${sales.length}</b><span>حساب مقفل</span></div><div><b class="num">${r2(openNow)}</b><span>ريال لسه مفتوح</span></div></div>
-  ${sales.length?`<h2>طريقة الدفع</h2><div class="bill">${row("كاش",money(pay.cash))}${row("شبكة",money(pay.card))}${pay.none?row("غير محدد",money(pay.none)):""}${row("المجموع",money(tot),"tot")}</div>
+  ${sales.length?`<h2>كل الدخل</h2><div class="bill">${row("المجموع",money(tot),"tot")}${split(pay)}</div>
   ${block(0)}${block(1)}${block(2,true)}`
   :`<p class="empty">ما تقفل أي حساب اليوم. أول حساب تقفلونه يظهر هنا.</p>`}`;
 }
@@ -405,13 +442,15 @@ document.addEventListener("click",e=>{
   if(a==="summary") return openSheet({kind:"summary"});
   if(a==="settings"){draft=JSON.parse(JSON.stringify(cfg));return openSheet({kind:"settings"})}
   if(a==="start") return run("seat:"+id,()=>db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:b.dataset.type,startedAt:Date.now()}));
-  if(a==="xtoggle"){const x=+b.dataset.x,k=view.sel.indexOf(x); if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
-  if(a==="xall"){view.sel=view.sel.length===EXTRAS.length?[]:EXTRAS.map((_,i)=>i); return renderSheet()}
-  if(a==="xadd"){const it=cfg.items[view.i],s=seats[id],note=extrasNote(view.sel); if(!it||!s) return;
-    run("add:"+Date.now()+Math.random(),()=>db.collection("orders").add({seat:id,sid:s.sid,name:it.name,price:Number(it.price),note,served:false,at:Date.now()}));
+  if(a==="xtoggle"){const x=+b.dataset.x,k=view.sel.indexOf(x); view.ex=false; view.size=null; if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
+  if(a==="xex"){view.ex=!view.ex; view.sel=[]; view.size=null; return renderSheet()}
+  if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
+  if(a==="xall"){const n=specFor(cfg.items[view.i].name).opts.length; view.sel=view.sel.length===n?[]:Array.from({length:n},(_,i)=>i); return renderSheet()}
+  if(a==="xadd"){const it=cfg.items[view.i],s=seats[id]; if(!it||!s) return; const r=resolve(specFor(it.name),it,view); if(!r.ok) return;
+    run("add:"+Date.now()+Math.random(),()=>db.collection("orders").add({seat:id,sid:s.sid,name:r.name,price:r.price,note:r.note,served:false,at:Date.now()}));
     return openSheet({kind:"seat",id})}
   if(a==="add"){const it=cfg.items[+b.dataset.i],s=seats[id]; if(!it||!s) return;
-    if(hasExtras(it.name)) return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[]});
+    if(specFor(it.name)) return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null});
     return run("add:"+Date.now()+Math.random(),()=>db.collection("orders").add({seat:id,sid:s.sid,name:it.name,price:Number(it.price),served:false,at:Date.now()}))}
   if(a==="toggle"||a==="serve"){const o=orders.find(x=>x.id===oid); if(!o) return;
     return run("o:"+oid,()=>db.doc("orders/"+oid).update({served:a==="serve"?true:!o.served,servedAt:Date.now()}))}
@@ -442,7 +481,7 @@ document.addEventListener("click",e=>{
   if(a==="rmitem"){draft.items.splice(+b.dataset.i,1);return renderSheet()}
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
-    const out={hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
+    const out={mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
       items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price)})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ")});
@@ -454,11 +493,20 @@ function refresh(){renderMain(); if(view&&view.kind!=="settings") renderSheet()}
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
+const MIG=6; let migrating=false;
+function migrate(){ // تعديل قائمة الأصناف مرة وحدة: حذف موهيتو كودرد، سعر الكودرد، إضافة الذرة والكورن دوق
+  if(migrating||(cfg.mig||0)>=MIG) return; migrating=true;
+  let items=cfg.items.filter(i=>!(RX.moj.test(i.name)&&RX.cr.test(i.name))).map(i=>RX.cr.test(i.name)?{name:i.name,price:CODERED.plain}:{name:i.name,price:i.price});
+  if(!items.some(i=>RX.corn.test(i.name))) items.push({name:"ذرة",price:CORN.big});
+  if(!items.some(i=>RX.dog.test(i.name))) items.push({name:"كورن دوق",price:10});
+  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
+}
 function listen(){
   db=fdb; $("gate").hidden=true;
   db.doc("config/menu").onSnapshot(d=>{
     const x=d.exists?d.data():null;
-    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items}:DEFAULTS;
+    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0}:DEFAULTS;
+    if(!(d.metadata&&d.metadata.fromCache)) migrate();
     refresh();
   },dead);
   db.collection("seats").onSnapshot(s=>{seats={};s.docs.forEach(d=>seats[d.id]=d.data());ready=true;$("notice").hidden=true;refresh()},dead);
@@ -473,8 +521,15 @@ $("gate-form").addEventListener("submit",async e=>{
   catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
+const VER="v6";
+function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
+  fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
+    const m=t.match(/const VER="([^"]+)"/);
+    if(m&&m[1]!==VER&&!location.search.includes("v="+m[1])) location.replace(location.pathname+"?v="+m[1]);
+  }).catch(()=>{});
+}
 async function start(){
-  renderMain();
+  renderMain(); checkUpdate();
   try{
     firebase.initializeApp(CFG); fdb=firebase.firestore();
     uid=(await firebase.auth().signInAnonymously()).user.uid;
@@ -482,6 +537,7 @@ async function start(){
     if(a.exists) listen(); else { $("gate").hidden=false; $("gate-code").focus(); }
   }catch(e){ $("notice").textContent="ما قدرنا نتصل. تأكد من الإنترنت وحدّث الصفحة."; }
 }
+$("ver").textContent=VER;
 start();
 </script>
 
