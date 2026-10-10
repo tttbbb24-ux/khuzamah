@@ -290,7 +290,6 @@ button:active{transform:scale(.97)}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script>
 const DEFAULTS = { hour:15, open:30, count:15, items:[
   {name:"معسل تفاحتين",price:30},{name:"معسل عنب توت",price:30},{name:"معسل عنب نعناع",price:30},
@@ -475,8 +474,15 @@ async function pushSync(ask){ // يسجل هذا الجوال عشان توصل�
   await db.doc("push/"+uid).set({sub:JSON.stringify(sub),user:me.id,role:me.role,station:me.role==="station"?me.station:2,at:Date.now()});
   pushOn=true; return "on";
 }
-function pushSend(target,title,body,tag){ // يطلب من الخادم يرسل إشعار لأصحاب القسم
-  try{ firebase.app().functions("europe-west1").httpsCallable("notify")({target,title,body,tag}).catch(()=>{}) }catch(e){} }
+let pushUrl=""; // رابط خادم الإشعارات، محفوظ في قاعدة البيانات ويحطه شريك مرة وحدة
+async function pushSend(target,title,body,tag){ // يطلب من الخادم يرسل إشعار لأصحاب القسم
+  if(!pushUrl) return;
+  try{ const token=await firebase.auth().currentUser.getIdToken();
+    await fetch(pushUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,target,title,body,tag})}); }catch(e){} }
+async function timePush(key,title,body,tag){ // تنبيه الوقت ينرسل مرة وحدة حتى لو أكثر من جوال شريك مفتوح
+  if(!pushUrl||!db) return;
+  try{ const ref=db.doc("alerts/"+key), first=await db.runTransaction(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
+    if(first) pushSend(2,title,body,tag); }catch(e){} }
 const pushLabel=()=>pushOn?"مفعّلة على هذا الجوال":legacy?"تشتغل بعد تفعيل المستخدمين":!pushCan()?"افتح التطبيق من أيقونته على الشاشة الرئيسية":typeof Notification!=="undefined"&&Notification.permission==="denied"?"مرفوضة، اسمح لها من إعدادات الجوال":"اضغط للتفعيل";
 const notes=[]; let unread=0, noteSeeded=false; const noteQty=new Map();
 function note(text){ notes.unshift({at:Date.now(),text}); if(notes.length>60) notes.pop(); unread++; paintBell(); if(view&&view.kind==="notes") renderSheet(); }
@@ -493,7 +499,7 @@ function scanOrders(local){ // يطلع إشعار لكل طلب جديد يخص
 function checkTimes(){ // تنبيه لما يبقى 5 دقايق ولما تخلص الساعة، للشركاء
   if(!P()){timesSeeded=true;return}
   Object.keys(seats).forEach(id=>{const s=seats[id]; if(s.type!=="hour") return; const l=left(s), k=s.sid+":"+bookedH(s);
-    [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded){beep(tones); note(m?"الجلسة "+seatNo(id)+" باقي لها 5 دقايق":"الجلسة "+seatNo(id)+" خلص وقتها")}} }); });
+    [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded){beep(tones); const tx=m?"الجلسة "+seatNo(id)+" باقي لها 5 دقايق":"الجلسة "+seatNo(id)+" خلص وقتها"; note(tx); timePush(k.replace(/[^A-Za-z0-9]/g,"_")+"_"+m,m?"باقي 5 دقايق":"خلص الوقت",tx,"time-"+id)}} }); });
   timesSeeded=true;
 }
 let mainTab="seats", theme="dark"; const seenWait=new Set(); let waitSeeded=false;
@@ -580,6 +586,8 @@ function renderSheet(){
       ${P()?`<button data-act="settings" id="btn-settings">الأصناف والأسعار<span>تعديل القائمة</span></button>`:""}
       <button data-act="who">${P()?"المستخدمين والصلاحيات":"حسابي"}<span>${legacy?"لسه ما تفعّلوا":""}</span></button>
       <button data-act="pushon">إشعارات والجوال مقفل<span>${pushLabel()}</span></button>
+      ${P()&&!legacy?`<div class="set pbox"><label for="push-url" style="font-size:14px;color:var(--muted)">رابط خادم الإشعارات ${pushUrl?"(محفوظ)":"(ما انحط للحين)"}</label>
+        <div class="row"><input id="push-url" dir="ltr" inputmode="url" autocomplete="off" placeholder="https://....workers.dev" value="${esc(pushUrl)}"><button class="ghost" data-act="pushurl">حفظ</button></div></div>`:""}
       <button data-act="mute" id="btn-mute">صوت التنبيه<span>${muted?"مكتوم":"شغال"}</span></button>
       <button data-act="theme">المظهر<span>${theme==="dark"?"ليلي":"نهاري"}</span></button>
     </div><p class="empty">النسخة ${VER}</p>`;
@@ -849,6 +857,8 @@ document.addEventListener("click",e=>{
   if(a==="who") return openSheet({kind:"users"});
   if(a==="tab"){ mainTab=b.dataset.t; window.scrollTo(0,0); return renderMain() }
   if(a==="more") return openSheet({kind:"more"});
+  if(a==="pushurl"){ if(!P()) return; const u=$("push-url").value.trim(); if(u&&!/^https:\/\/[a-z0-9.-]+\.workers\.dev\/?$/i.test(u)){toast("الرابط لازم يبدأ بـ https وينتهي بـ workers.dev");return}
+    return run("pushurl",async()=>{await db.doc("config/push").set({url:u}); toast(u?"انحفظ رابط الخادم":"انحذف الرابط")}) }
   if(a==="pushon"){ if(pushOn){toast("مفعّلة");return} return pushSync(true).then(r=>{ toast(r==="on"?"تفعّلت الإشعارات على هذا الجوال":r==="denied"?"الإشعارات مرفوضة، اسمح لها من إعدادات الجوال":r==="unsupported"?pushLabel():"ما تفعّلت"); if(view&&view.kind==="more") renderSheet(); }).catch(()=>toast("ما قدرنا نفعّل الإشعارات، حاول مرة ثانية")) }
   if(a==="notes"){ unread=0; paintBell(); return openSheet({kind:"notes"}) }
   if(a==="theme"){ theme=theme==="dark"?"light":"dark"; try{localStorage.setItem("kz-theme",theme)}catch(e){} applyTheme(); return renderSheet() }
@@ -976,6 +986,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
 function listen(){
   db=fdb; $("gate").hidden=true; if(!P()){ myStation=me.station; mainTab="orders"; }
   pushSync(false).catch(()=>{});
+  db.doc("config/push").onSnapshot(d=>{pushUrl=(d.exists&&d.data().url)||""; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{});
   const quiet=()=>{};
   db.collection("users").onSnapshot(s=>{users={};s.docs.forEach(d=>users[d.id]=d.data());
     if(me&&me.id&&users[me.id]&&!users[me.id].active) return location.reload();
@@ -1019,7 +1030,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v23";
+const VER="v24";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
