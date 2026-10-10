@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>خزامى</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Lalezar&family=Readex+Pro:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: one phone screen — status strip, 3-column seat board, waiting-orders list; every task opens as a full sheet. */
 :root{
@@ -277,11 +277,41 @@ button:active{transform:scale(.97)}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 12px;min-height:38px;font-size:13px;font-weight:600}
 .chip.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+:root{--kz-dark:radial-gradient(ellipse 85% 55% at 50% 47%,#42156c 0%,#34115a 30%,#1c0834 62%,#0b0217 88%,#06000e 100%)}
+.splash{background:#06000e;display:block}
+.splash video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.splash::before{content:"";position:absolute;inset:0;background:var(--kz-dark)}
+.splash #sp-f{position:absolute;inset:0;margin:auto;width:220px;height:auto;border-radius:0;box-shadow:none;animation:none}
+.gate{background:var(--kz-dark),#06000e}
+.gate::before,.gate::after{display:none}
+.gate form{background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;gap:16px}
+.glogo{width:200px;height:auto;border-radius:0;box-shadow:none;margin-block-end:18px;filter:drop-shadow(0 6px 24px rgba(160,100,255,.35))}
+.gsub{color:#cdbbe6;letter-spacing:.02em}
+.gate input{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.28);box-shadow:none;caret-color:#e9c77b}
+.gate input:focus{outline:none;border-color:#e9c77b;box-shadow:0 0 0 3px rgba(233,199,123,.18)}
+.gate #gate-btn{background:linear-gradient(180deg,#f3ddb0,#d9a94e);color:#2a0d4a;box-shadow:0 10px 28px rgba(0,0,0,.45)}
+.welcome{position:fixed;inset:0;z-index:35;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:24px;text-align:center;background:var(--kz-dark),#06000e;color:#fff;transition:opacity .55s ease}
+.welcome.out{opacity:0}
+.welcome span{font-family:"Aref Ruqaa",var(--display);font-size:34px;color:#e6d9f5;line-height:1.3}
+.welcome b{font-family:"Aref Ruqaa",var(--display);font-weight:700;font-size:clamp(64px,22vw,112px);line-height:1.35;padding-inline:.15em;background:linear-gradient(180deg,#fbeecb 10%,#e9c77b 50%,#c08a2e 95%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 26px rgba(233,199,123,.28))}
+.welcome i{width:120px;height:2px;margin-block-start:10px;background:linear-gradient(90deg,transparent,#e9c77b,transparent)}
+@media (prefers-reduced-motion:no-preference){
+  .welcome span{animation:spTxt .6s ease-out both}
+  .welcome b{animation:wIn .9s .15s cubic-bezier(.2,.9,.3,1) both}
+  .welcome i{animation:wLine .8s .6s ease-out both}
+  @keyframes wIn{from{transform:translateY(22px) scale(.92);opacity:0;letter-spacing:.08em}to{transform:none;opacity:1;letter-spacing:0}}
+  @keyframes wLine{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
+}
 </style>
 </head>
 <body>
-<div class="splash" id="splash" aria-hidden="true"><i style="inset-inline-start:8%;animation-delay:0s;scale:0.8"></i><i style="inset-inline-start:22%;animation-delay:0.7s;scale:1.1"></i><i style="inset-inline-start:37%;animation-delay:0.3s;scale:0.7"></i><i style="inset-inline-start:52%;animation-delay:1.1s;scale:1"></i><i style="inset-inline-start:66%;animation-delay:0.5s;scale:0.85"></i><i style="inset-inline-start:79%;animation-delay:0.9s;scale:1.2"></i><i style="inset-inline-start:91%;animation-delay:0.2s;scale:0.75"></i><img src="icon.png" alt="" width="150" height="150" onerror="this.hidden=true"></div>
-<script>setTimeout(function(){var s=document.getElementById("splash");if(s){s.classList.add("out");setTimeout(function(){s.remove()},600)}},1900)</script>
+<div class="splash" id="splash" aria-hidden="true"><video id="sp-v" muted playsinline autoplay preload="auto" src="intro.mp4"></video><img id="sp-f" src="logo-white.png" alt="" width="220" hidden></div>
+<script>(function(){var s=document.getElementById("splash"),v=document.getElementById("sp-v"),f=document.getElementById("sp-f"),done=false,fell=false;
+function out(){if(done)return;done=true;s.classList.add("out");setTimeout(function(){s.remove()},600)}
+function fb(){if(fell||done)return;fell=true;try{v.pause()}catch(e){}v.remove();f.hidden=false;setTimeout(out,1500)} // الفيديو ما اشتغل: شعار ثابت
+v.muted=true;v.addEventListener("ended",out);v.addEventListener("error",fb);
+try{var p=v.play();if(p&&p.catch)p.catch(fb)}catch(e){fb()}
+setTimeout(function(){if(!done&&!fell&&!(v.currentTime>0.05))fb()},1800);setTimeout(out,6500);s.addEventListener("click",out)})()</script>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("kz-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 
 
@@ -316,8 +346,9 @@ button:active{transform:scale(.97)}
 <div class="sheet" id="sheet" hidden><div class="panel" id="panel"></div></div>
 <div class="toast" id="toast" hidden></div>
 
+<div class="welcome" id="welcome" hidden><span>أهلاً</span><b id="welcome-n"></b><i></i></div>
 <div class="gate" id="gate" hidden><form id="gate-form">
-  <img class="glogo" src="icon.png" alt="" width="170" height="170" onerror="this.hidden=true">
+  <img class="glogo" src="logo-white.png" alt="خزامى" width="200" onerror="this.src='icon.png'">
   <p class="gsub">اكتب رمزك الشخصي</p>
   <input id="gate-code" inputmode="numeric" autocomplete="off" aria-label="رمز الدخول">
   <p id="gate-msg"></p>
@@ -1078,6 +1109,7 @@ function listen(){
   db.collection("sales").where("day","==",TODAY).onSnapshot(s=>{sales=s.docs.map(d=>Object.assign({id:d.id},d.data()));if(view&&view.kind==="summary")renderSheet()},dead);
   setInterval(()=>{ if(dayKey(Date.now())!==TODAY&&!view) return location.reload(); checkTimes(); renderMain(); if(view&&view.kind==="seat"&&!sure) renderSheet()},30000);
 }
+function welcome(n){ const w=$("welcome"); $("welcome-n").textContent=n; w.hidden=false; w.classList.remove("out"); setTimeout(()=>w.classList.add("out"),2100); setTimeout(()=>{w.hidden=true},2700); w.onclick=()=>{w.hidden=true}; }
 function gate(msg){ $("gate").hidden=false; $("gate-msg").textContent=msg||""; $("gate-code").value=""; $("gate-code").focus(); }
 async function enter(){ // يحدد مين داخل على هذا الجوال
   let a=null; try{a=await fdb.doc("access/"+uid).get()}catch(e){}
@@ -1098,10 +1130,11 @@ $("gate-form").addEventListener("submit",async e=>{
     let c=null; try{c=await fdb.doc("codes/"+code).get()}catch(e){}
     if(c&&c.exists) await fdb.doc("access/"+uid).set({code,user:c.data().user}); else await fdb.doc("access/"+uid).set({code});
     await enter();
+    if(me&&me.name&&$("gate").hidden) welcome(me.name);
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v26";
+const VER="v27";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
