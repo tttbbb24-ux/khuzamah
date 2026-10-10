@@ -29,6 +29,16 @@ button:focus-visible{outline:2px solid #e9c77b;outline-offset:2px}
 .status.go{background:rgba(233,199,123,.14);border:1px solid rgba(233,199,123,.6);color:#fbeecb}
 .status.bad{background:rgba(212,58,53,.16);border:1px solid rgba(240,110,105,.5);color:#ffd0cb}
 .status small{display:block;font-weight:400;font-size:14px;opacity:.85}
+.mbtn{max-width:380px;min-height:60px;justify-content:center;background:linear-gradient(180deg,rgba(233,199,123,.2),rgba(233,199,123,.08));border-color:rgba(233,199,123,.6);color:#fbeecb;font-size:18px}
+.mbtn .e{font-size:24px}
+.menu{width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px}
+.menu h2{font-size:17px;font-weight:700;color:#e9c77b;display:flex;align-items:center;gap:8px;margin-block-end:6px}
+.menu .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:6px 14px}
+.menu .r{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-block-end:1px solid rgba(255,255,255,.1);font-size:16px}
+.menu .r:last-child{border:0}
+.menu .r b{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.menu .note{color:#a996c4;font-size:13px;text-align:center}
+.sar{display:inline-block;width:.82em;height:.88em;fill:currentColor;vertical-align:-.07em;margin-inline-start:.16em}
 .foot{margin-block-start:auto;color:#8f7bab;font-size:13px}
 @media (prefers-reduced-motion:no-preference){ .status:not([hidden]){animation:in .35s ease-out} @keyframes in{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}} }
 </style>
@@ -43,6 +53,8 @@ button:focus-visible{outline:2px solid #e9c77b;outline-offset:2px}
   <button data-k="coal"><span class="e">🔥</span>تغيير الفحم</button>
 </div>
 <div class="status" id="status" role="status" aria-live="polite" hidden></div>
+<button class="mbtn" id="mbtn" aria-expanded="false"><span class="e">📋</span>المنيو والأسعار</button>
+<div class="menu" id="menu" hidden></div>
 <p class="foot">خزامى · Lavender</p>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -77,6 +89,23 @@ async function start(){
   }catch(e){ show("bad","ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>"); }
 }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// المنيو: للعرض فقط
+const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
+const CATS=[["corn","🌽","كورن دوق وذرة"],["fries","🍟","البطاطس"],["cold","🧊","المشروبات الباردة"],["hot","☕","المشروبات الحارة"],["hookah","💨","المعسلات"],["sweet","🍰","الحلا"],["nuts","🥜","المكسرات"],["other","🍽️","أخرى"]];
+const TWO=[[/ذر[ةه]/,"5 أو 10"],[/كود\s*ري?د/,"6، وبنكهة 12"],[/ريد\s*بول/,"15، وبنكهة 20"],[/كنز[ةه]/,"3، وبثلج 5"]];
+const priceOf=it=>{const t=TWO.find(x=>x[0].test(it.name)); return (t?t[1]:Number(it.price))+RS};
+let menuLoaded=false;
+$("mbtn").addEventListener("click",async()=>{
+  const m=$("menu"), open=m.hidden; m.hidden=!open; $("mbtn").setAttribute("aria-expanded",String(open)); if(!open) return;
+  if(menuLoaded){ m.scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  m.innerHTML='<p class="note">جاري تحميل المنيو…</p>';
+  try{
+    if(!db) throw 0; const d=await db.doc("config/menu").get(); if(!d.exists) throw 0; const x=d.data(), items=Array.isArray(x.items)?x.items:[];
+    const sec=CATS.map(([k,e,t])=>{const l=items.filter(i=>(i.cat||"other")===k); return l.length?`<section><h2><span>${e}</span>${t}</h2><div class="box">${l.map(i=>`<div class="r"><span>${esc(i.name)}</span><b>${priceOf(i)}</b></div>`).join("")}</div></section>`:""}).join("");
+    m.innerHTML=`<section><h2><span>🪑</span>الجلسات</h2><div class="box"><div class="r"><span>ساعة</span><b>${Number(x.hour)||15}${RS}</b></div><div class="r"><span>وقت مفتوح</span><b>${Number(x.open)||30}${RS}</b></div></div></section>${sec}<p class="note">للطلب اضغط «أبغى أطلب» فوق ونجيك.</p>`;
+    menuLoaded=true; m.scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){ m.innerHTML='<p class="note">ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.</p>'; }
+});
 document.getElementById("btns").addEventListener("click",async e=>{
   const b=e.target.closest("button[data-k]"); if(!b||busy||!db) return;
   const kind=b.dataset.k, left=WAIT-(Date.now()-lastAt);
