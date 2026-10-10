@@ -302,6 +302,16 @@ button:active{transform:scale(.97)}
   @keyframes wIn{from{transform:translateY(22px) scale(.92);opacity:0;letter-spacing:.08em}to{transform:none;opacity:1;letter-spacing:0}}
   @keyframes wLine{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
 }
+#callbar{display:flex;flex-direction:column;gap:8px}
+#callbar:empty{display:none}
+.callrow{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(233,199,123,.22),rgba(233,199,123,.1));border:1.5px solid #e9c77b;border-radius:14px;padding:10px 12px}
+.callrow .e{font-size:28px;line-height:1;flex:none}
+.callrow .t{flex:1;min-width:0;font-size:15px;line-height:1.5}
+.callrow .t small{display:block;color:var(--muted);font-size:12px}
+.callrow .primary{flex:none;min-height:44px;padding:8px 14px}
+.seat.calling{outline:3px solid #e9c77b;outline-offset:2px}
+.seat .callb{position:absolute;inset-block-start:38px;inset-inline-end:8px;font-size:22px;line-height:1}
+@media (prefers-reduced-motion:no-preference){ .seat.calling{animation:callP 1.1s ease-in-out infinite} @keyframes callP{50%{outline-color:transparent}} .callrow .e{animation:callW 1s ease-in-out infinite} @keyframes callW{50%{transform:rotate(-14deg) scale(1.12)}} }
 </style>
 </head>
 <body>
@@ -323,6 +333,7 @@ setTimeout(function(){if(!done&&!fell&&!(v.currentTime>0.05))fb()},1800);setTime
     <button class="ghost who" data-act="who" id="btn-who" hidden></button>
   </div>
   <div class="notice" id="notice">جاري الاتصال…</div>
+  <div id="callbar"></div>
   <section id="pg-seats">
     <div class="strip" id="strip"></div>
     <div class="legend" id="legend"></div>
@@ -594,7 +605,22 @@ const BY=()=>({by:(me&&me.id)||"",byName:(me&&me.name)||""});
 function logIt(what){ if(!db) return; const now=Date.now(); db.collection("log").add({day:dayKey(now),at:now,what,...BY()}).catch(()=>{}); }
 let myStation=-1; // قسم هذا الجوال في قائمة الطلبات: -1 الكل
 try{const v=parseInt(localStorage.getItem("kz-station"),10); if(v>=0&&v<=2) myStation=v}catch(e){}
-function tile(id){
+// نداء الزباين من ملصق الجلسة
+let calls={}, callsOff=false, callsSeeded=false; const callSeen=new Set(), callSwept=new Set();
+const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"]};
+const tsMs=t=>t&&t.toMillis?t.toMillis():Number(t)||0;
+const callInfo=c=>CALLK[c.kind]||CALLK.order;
+const liveCall=id=>{const c=calls[id]; return c&&!c.ack&&seats[id]&&c.at&&Date.now()-tsMs(c.at)<20*60000?c:null};
+function scanCalls(){ if(!P()||!db||!ready) return;
+  Object.keys(calls).forEach(id=>{ const c=calls[id], k=id+":"+tsMs(c.at);
+    if(liveCall(id)){ if(!callSeen.has(k)){ callSeen.add(k); if(callsSeeded){ note(callInfo(c)[0]+" جلسة "+seatNo(id)+" "+callInfo(c)[1],"c:"+id); beep([988,1319,988,1319]); } } }
+    else if(c.at&&!callSwept.has(k)&&(!seats[id]||Date.now()-tsMs(c.at)>20*60000)){ callSwept.add(k); db.doc("calls/"+id).delete().catch(()=>{}); } }); // نداء قديم أو جلسة تقفلت
+  dropNotes(x=>x.ref.startsWith("c:")&&!liveCall(x.ref.slice(2)));
+  callsSeeded=true; }
+const callRow=id=>{const c=liveCall(id); if(!c||!P()) return ""; const m=Math.floor((Date.now()-tsMs(c.at))/60000);
+  return `<div class="callrow"><span class="e">${callInfo(c)[0]}</span><span class="t"><b>جلسة ${seatNo(id)}</b> ${callInfo(c)[1]}<small class="num">${m<1?"الحين":"قبل "+m+" د"}</small></span><button class="primary" data-act="callack" data-id="${esc(id)}">رايح لها</button></div>`};
+function tile(id){ const h=tile0(id), c=P()&&liveCall(id); return c?h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`):h; }
+function tile0(id){
   const s=seats[id], A=P()||s?`data-act="seat" data-id="${esc(id)}"`:`data-id="${esc(id)}"`;
   if(!s) return `<button class="seat" ${A}><span class="n num">${seatNo(id)}</span><span class="st">فاضية</span></button>`;
   const p=units(seatOrders(id).filter(o=>!o.served)), dot=p?`<span class="dot num">${p}</span>`:"";
@@ -607,6 +633,7 @@ function tile(id){
   return `<button class="seat on ${l<=5?"alarm":"st-hour"}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">${l<=0?"انتهى الوقت":"ساعة · باقي"}</span><span class="tm num">${l<0?"زاد "+clock(-l):clock(l)}</span>${tot}</button>`;
 }
 function renderMain(){
+  scanCalls(); $("callbar").innerHTML=P()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"";
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
   const takes=Object.keys(seats).filter(isTake).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
   const pend=groupOrders(orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at));
@@ -666,6 +693,8 @@ function renderSheet(){
       <button data-act="pushon">إشعارات والجوال مقفل<span>${pushLabel()}</span></button>
       ${P()&&!legacy?`<div class="set pbox"><label for="push-url" style="font-size:14px;color:var(--muted)">رابط خادم الإشعارات ${pushUrl?"(محفوظ)":"(ما انحط للحين)"}</label>
         <div class="row"><input id="push-url" dir="ltr" inputmode="url" autocomplete="off" placeholder="https://....workers.dev" value="${esc(pushUrl)}"><button class="ghost" data-act="pushurl">حفظ</button></div></div>`:""}
+      ${P()&&!legacy?`<button data-act="calltoggle">نداء الزباين من الجلسات<span>${callsOff?"موقف":"شغال"}</span></button>
+      <button data-act="stickers">ملصقات الجلسات<span>للطباعة</span></button>`:""}
       <button data-act="mute" id="btn-mute">صوت التنبيه<span>${muted?"مكتوم":"شغال"}</span></button>
       <button data-act="theme">المظهر<span>${theme==="dark"?"ليلي":"نهاري"}</span></button>
     </div><p class="empty">النسخة ${VER}</p>`;
@@ -698,6 +727,7 @@ function seatHtml(id){
   ${full&&!take?`<button class="ghost" data-act="move">نقل لجلسة ثانية</button>`:""}`;
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
     <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
+  ${callRow(id)}
   <div class="tabs"><button class="tabb ${tab==="orders"?"on":""}" data-act="stab" data-t="orders">الطلبات${n?` <span class="num">${n}</span>`:""}</button><button class="tabb ${tab==="add"?"on":""}" data-act="stab" data-t="add">أضف طلب</button></div>
   ${tab==="orders"?list:menuHtml()}
   ${full?`<div class="foot stickyfoot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
@@ -953,6 +983,9 @@ document.addEventListener("click",e=>{
       await db.doc("closings/"+day).set(doc); v.closing=doc; toast("انحفظت التسوية"); if(view===v) renderSheet(); }); }
   if(a==="payday"){ view.today=!view.today; return renderSheet() }
   if(a==="who") return openSheet({kind:"users"});
+  if(a==="callack"){ const cid=b.dataset.id; if(!P()||!calls[cid]) return; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); toast("تمام، الزبون شاف إنك جاي")}) }
+  if(a==="calltoggle"){ if(!P()) return; return run("calloff",async()=>{ if(callsOff) await db.doc("config/callsOff").delete(); else await db.doc("config/callsOff").set({at:Date.now(),...BY()}); toast(callsOff?"رجع نداء الزباين":"توقف نداء الزباين") }) }
+  if(a==="stickers") return void window.open("stickers.html","_blank");
   if(a==="log"){ if(!P()) return; return openLog(TODAY) }
   if(a==="lday"){ const d=b.dataset.d; if(d>TODAY) return; return openLog(d) }
   if(a==="lwho"){ view.who=b.dataset.w; return renderSheet() }
@@ -1090,6 +1123,8 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
 function listen(){
   db=fdb; $("gate").hidden=true; if(!P()){ myStation=me.station; mainTab="orders"; }
   pushSync(false).catch(()=>{});
+  if(P()){ db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
+    db.doc("config/callsOff").onSnapshot(d=>{callsOff=d.exists; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{}); }
   db.doc("config/push").onSnapshot(d=>{pushUrl=(d.exists&&d.data().url)||""; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{});
   const quiet=()=>{};
   db.collection("users").onSnapshot(s=>{users={};s.docs.forEach(d=>users[d.id]=d.data());
@@ -1136,7 +1171,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v28";
+const VER="v29";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
