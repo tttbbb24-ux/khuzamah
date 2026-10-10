@@ -244,9 +244,39 @@ button:active{transform:scale(.97)}
   .wrow.pop{animation:pop .5s ease-out} @keyframes pop{0%{transform:scale(.92);opacity:.3}60%{transform:scale(1.02)}100%{transform:none;opacity:1}}
   button{transition:transform .08s}
 }
+.fcancel{flex-basis:100%;order:3;min-height:36px;padding:2px 4px;text-align:center;font-size:13px}
+.nx{flex:none;width:36px;height:36px;border-radius:50%;color:var(--muted);font-size:15px}
+.gate{background:radial-gradient(120% 80% at 80% 0%,#8a3fd1 0%,transparent 60%),radial-gradient(100% 70% at 0% 100%,#b65ad6 0%,transparent 55%),linear-gradient(160deg,#3a0f66,#531989 55%,#2a0a4d);overflow:hidden auto}
+.gate::before,.gate::after{content:"";position:absolute;border-radius:50%;filter:blur(50px);opacity:.45;pointer-events:none}
+.gate::before{width:260px;height:260px;background:#c9a2ff;inset-block-start:-70px;inset-inline-start:-80px}
+.gate::after{width:300px;height:300px;background:#ff8fd0;inset-block-end:-110px;inset-inline-end:-100px;opacity:.28}
+.gate form{position:relative;z-index:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:28px;padding:28px 22px 24px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 24px 60px rgba(20,0,45,.45)}
+.glogo{width:132px;height:132px;border-radius:30px;box-shadow:0 14px 34px rgba(20,0,45,.5)}
+.gname{margin:4px 0 0;font-family:var(--display);font-size:40px;line-height:1.1;font-weight:400}
+.gate input{box-shadow:0 6px 18px rgba(20,0,45,.25)}
+.gate #gate-btn{box-shadow:0 8px 22px rgba(20,0,45,.35)}
+.splash{position:fixed;inset:0;z-index:40;display:grid;place-items:center;align-content:center;gap:18px;color:#fff;background:radial-gradient(90% 60% at 50% 40%,#8a3fd1 0%,transparent 70%),linear-gradient(160deg,#3a0f66,#531989 55%,#2a0a4d);transition:opacity .45s ease,visibility .45s;overflow:hidden}
+.splash.out{opacity:0;visibility:hidden;pointer-events:none}
+.splash img{width:150px;height:150px;border-radius:34px;box-shadow:0 0 0 0 rgba(201,162,255,.55),0 18px 44px rgba(20,0,45,.55)}
+.splash b{font-family:var(--display);font-weight:400;font-size:46px;line-height:1}
+.splash i{position:absolute;inset-block-end:-30px;width:14px;height:22px;border-radius:60% 60% 60% 60%/80% 80% 40% 40%;background:#d9b8ff;opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  .splash img{animation:spIn .7s cubic-bezier(.2,1.4,.4,1) both,spGlow 1.6s .7s ease-out infinite}
+  .splash b{animation:spTxt .6s .35s ease-out both}
+  .splash i{animation:spPetal 2.4s ease-in infinite}
+  .glogo{animation:gFloat 4s ease-in-out infinite}
+  .gate form{animation:spTxt .5s ease-out both}
+  @keyframes spIn{from{transform:scale(.3) rotate(-14deg);opacity:0}to{transform:none;opacity:1}}
+  @keyframes spGlow{from{box-shadow:0 0 0 0 rgba(201,162,255,.55),0 18px 44px rgba(20,0,45,.55)}to{box-shadow:0 0 0 34px rgba(201,162,255,0),0 18px 44px rgba(20,0,45,.55)}}
+  @keyframes spTxt{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes spPetal{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:.7}100%{transform:translateY(-105vh) rotate(260deg);opacity:0}}
+  @keyframes gFloat{50%{transform:translateY(-7px)}}
+}
 </style>
 </head>
 <body>
+<div class="splash" id="splash" aria-hidden="true"><i style="inset-inline-start:8%;animation-delay:0s;scale:0.8"></i><i style="inset-inline-start:22%;animation-delay:0.7s;scale:1.1"></i><i style="inset-inline-start:37%;animation-delay:0.3s;scale:0.7"></i><i style="inset-inline-start:52%;animation-delay:1.1s;scale:1"></i><i style="inset-inline-start:66%;animation-delay:0.5s;scale:0.85"></i><i style="inset-inline-start:79%;animation-delay:0.9s;scale:1.2"></i><i style="inset-inline-start:91%;animation-delay:0.2s;scale:0.75"></i><img src="icon.png" alt="" width="150" height="150" onerror="this.hidden=true"></div>
+<script>setTimeout(function(){var s=document.getElementById("splash");if(s){s.classList.add("out");setTimeout(function(){s.remove()},600)}},1900)</script>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("kz-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 
 
@@ -485,21 +515,25 @@ async function timePush(key,title,body,tag){ // تنبيه الوقت ينرسل
     if(first) pushSend(2,title,body,tag); }catch(e){} }
 const pushLabel=()=>pushOn?"مفعّلة على هذا الجوال":legacy?"تشتغل بعد تفعيل المستخدمين":!pushCan()?"افتح التطبيق من أيقونته على الشاشة الرئيسية":typeof Notification!=="undefined"&&Notification.permission==="denied"?"مرفوضة، اسمح لها من إعدادات الجوال":"اضغط للتفعيل";
 const notes=[]; let unread=0, noteSeeded=false; const noteQty=new Map();
-function note(text){ notes.unshift({at:Date.now(),text}); if(notes.length>60) notes.pop(); unread++; paintBell(); if(view&&view.kind==="notes") renderSheet(); }
+let noteId=0;
+function dropNotes(f){ let n=0; for(let i=notes.length-1;i>=0;i--) if(f(notes[i])){notes.splice(i,1);n++} if(n){ unread=Math.min(unread,notes.length); paintBell(); if(view&&view.kind==="notes") renderSheet(); } }
+function note(text,ref){ notes.unshift({id:++noteId,at:Date.now(),text,ref:ref||""}); if(notes.length>60) notes.pop(); unread++; paintBell(); if(view&&view.kind==="notes") renderSheet(); }
 function paintBell(){ const b=$("btn-bell"); if(!b) return; b.hidden=!me; $("bell-n").hidden=!unread; $("bell-n").textContent=unread; }
 function scanOrders(local){ // يطلع إشعار لكل طلب جديد يخص هذا المستخدم
   let fresh=0; const live=new Set();
   orders.filter(inScope).forEach(o=>{ live.add(o.id); const q=qty(o), was=noteQty.get(o.id); noteQty.set(o.id,q);
     if(!noteSeeded||local) return; const where=isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat);
-    if(was==null){ fresh++; note("طلب جديد: "+o.name+(q>1?" × "+q:"")+(o.note?" ("+o.note+")":"")+" · "+where); }
-    else if(q>was){ fresh++; note("زاد الطلب: "+o.name+" × "+(q-was)+" · "+where); } });
+    if(was==null){ fresh++; note("طلب جديد: "+o.name+(q>1?" × "+q:"")+(o.note?" ("+o.note+")":"")+" · "+where,"o:"+o.id); }
+    else if(q>was){ fresh++; note("زاد الطلب: "+o.name+" × "+(q-was)+" · "+where,"o:"+o.id); } });
+  const pend=new Set(orders.filter(o=>!o.served).map(o=>"o:"+o.id)); dropNotes(x=>x.ref.startsWith("o:")&&!pend.has(x.ref)); // نزل الطلب أو انحذف: يروح إشعاره
   [...noteQty.keys()].forEach(k=>{if(!live.has(k)) noteQty.delete(k)});
   noteSeeded=true; return fresh;
 }
 function checkTimes(){ // تنبيه لما يبقى 5 دقايق ولما تخلص الساعة، للشركاء
   if(!P()){timesSeeded=true;return}
   Object.keys(seats).forEach(id=>{const s=seats[id]; if(s.type!=="hour") return; const l=left(s), k=s.sid+":"+bookedH(s);
-    [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded){beep(tones); const tx=m?"الجلسة "+seatNo(id)+" باقي لها 5 دقايق":"الجلسة "+seatNo(id)+" خلص وقتها"; note(tx); timePush(k.replace(/[^A-Za-z0-9]/g,"_")+"_"+m,m?"باقي 5 دقايق":"خلص الوقت",tx,"time-"+id)}} }); });
+    [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded){beep(tones); const tx=m?"الجلسة "+seatNo(id)+" باقي لها 5 دقايق":"الجلسة "+seatNo(id)+" خلص وقتها"; note(tx,"s:"+id+":"+s.sid); timePush(k.replace(/[^A-Za-z0-9]/g,"_")+"_"+m,m?"باقي 5 دقايق":"خلص الوقت",tx,"time-"+id)}} }); });
+  dropNotes(x=>{ if(!x.ref.startsWith("s:")) return false; const [,id,sid]=x.ref.split(":"); return !seats[id]||seats[id].sid!==sid }); // تقفلت الجلسة: يروح تنبيه وقتها
   timesSeeded=true;
 }
 let mainTab="seats", theme="dark"; const seenWait=new Set(); let waitSeeded=false;
@@ -580,7 +614,8 @@ function renderSheet(){
   else if(view.kind==="settings") p.innerHTML=settingsHtml();
   else if(view.kind==="users") p.innerHTML=usersHtml();
   else if(view.kind==="notes") p.innerHTML=`<div class="phead"><div class="meta"><b>الإشعارات</b><span>${P()?"طلبات الترك وأوقات الجلسات":"طلبات قسمك"}</span></div>${xBtn}</div>
-    <div class="bill">${notes.length?notes.map(x=>`<div class="r"><span>${esc(x.text)}</span><span class="q num">${tclock(x.at)}</span></div>`).join(""):`<div class="r"><span class="q">ما في إشعارات من يوم فتحت التطبيق.</span><span></span></div>`}</div>`;
+    ${notes.length?`<button class="ghost" data-act="noteclr">مسح الكل</button>`:""}
+    <div class="bill">${notes.length?notes.map(x=>`<div class="r"><span>${esc(x.text)}</span><span class="q num">${tclock(x.at)}</span><button class="nx" data-act="notedel" data-n="${x.id}" aria-label="حذف الإشعار">✕</button></div>`).join(""):`<div class="r"><span class="q">ما في إشعارات من يوم فتحت التطبيق.</span><span></span></div>`}</div>`;
   else if(view.kind==="more") p.innerHTML=`<div class="phead"><div class="meta"><b>المزيد</b><span>${esc((me&&me.name)||"")}</span></div>${xBtn}</div>
     <div class="more">
       ${P()?`<button data-act="settings" id="btn-settings">الأصناف والأسعار<span>تعديل القائمة</span></button>`:""}
@@ -622,9 +657,9 @@ function seatHtml(id){
     <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
   <div class="tabs"><button class="tabb ${tab==="orders"?"on":""}" data-act="stab" data-t="orders">الطلبات${n?` <span class="num">${n}</span>`:""}</button><button class="tabb ${tab==="add"?"on":""}" data-act="stab" data-t="add">أضف طلب</button></div>
   ${tab==="orders"?list:menuHtml()}
-  ${full?`<button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`:""}
   ${full?`<div class="foot stickyfoot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
-    <button class="primary" data-act="pay">الحساب</button></div>`
+    <button class="primary" data-act="pay">الحساب</button>
+    <button class="link fcancel ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button></div>`
   :`<p class="empty">الحساب عند الشركاء. اللي تسجله هنا ينضاف على الفاتورة.</p>`}`;
 }
 function priced(r){ // ضيافة للصنف أو سعر خاص، للشركاء بس
@@ -860,6 +895,8 @@ document.addEventListener("click",e=>{
   if(a==="pushurl"){ if(!P()) return; const u=$("push-url").value.trim(); if(u&&!/^https:\/\/[a-z0-9.-]+\.workers\.dev\/?$/i.test(u)){toast("الرابط لازم يبدأ بـ https وينتهي بـ workers.dev");return}
     return run("pushurl",async()=>{await db.doc("config/push").set({url:u}); toast(u?"انحفظ رابط الخادم":"انحذف الرابط")}) }
   if(a==="pushon"){ if(pushOn){toast("مفعّلة");return} return pushSync(true).then(r=>{ toast(r==="on"?"تفعّلت الإشعارات على هذا الجوال":r==="denied"?"الإشعارات مرفوضة، اسمح لها من إعدادات الجوال":r==="unsupported"?pushLabel():"ما تفعّلت"); if(view&&view.kind==="more") renderSheet(); }).catch(()=>toast("ما قدرنا نفعّل الإشعارات، حاول مرة ثانية")) }
+  if(a==="noteclr") return dropNotes(()=>true);
+  if(a==="notedel"){ const n=Number(b.dataset.n); return dropNotes(x=>x.id===n) }
   if(a==="notes"){ unread=0; paintBell(); return openSheet({kind:"notes"}) }
   if(a==="theme"){ theme=theme==="dark"?"light":"dark"; try{localStorage.setItem("kz-theme",theme)}catch(e){} applyTheme(); return renderSheet() }
   if(a==="stab"){ view.tab=b.dataset.t; return renderSheet() }
@@ -1030,7 +1067,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v24";
+const VER="v25";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
