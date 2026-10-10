@@ -559,7 +559,8 @@ function usersHtml(){
     <label style="flex:1 1 100%"><b style="color:var(--ink);font-size:16px">${esc(u.name)}</b> · ${ROLE(u)}${u.active?"":` · <span style="color:var(--red)">موقوف</span>`}${hasCode(id)?"":` · <span style="color:var(--red)">بدون رمز</span>`}</label>
     <input class="nm num" id="uc-${esc(id)}" inputmode="numeric" autocomplete="off" placeholder="${hasCode(id)?"رمز جديد (يستبدل القديم)":"اكتب رمزه"}" aria-label="رمز ${esc(u.name)}">
     <button class="ghost" data-act="ucode" data-u="${esc(id)}">حفظ الرمز</button>
-    <button class="ghost" data-act="uact" data-u="${esc(id)}">${u.active?"إيقاف":"تفعيل"}</button></div>`).join("")||`<p class="empty">ما في مستخدمين للحين.</p>`}</div>
+    <button class="ghost" data-act="uact" data-u="${esc(id)}">${u.active?"إيقاف":"تفعيل"}</button>
+    <button class="ghost" style="${sure==="ud:"+id?"background:var(--red);color:#fff":"color:var(--red)"}" data-act="udel" data-u="${esc(id)}">${sure==="ud:"+id?"تأكيد الحذف":"حذف"}</button></div>`).join("")||`<p class="empty">ما في مستخدمين للحين.</p>`}</div>
   <h2>مستخدم جديد</h2>
   <div class="set"><div class="row item">
     <input class="nm" id="nu-name" placeholder="الاسم" aria-label="الاسم" autocomplete="off">
@@ -742,6 +743,12 @@ document.addEventListener("click",e=>{
     if(x.active&&me&&me.id===u){toast("ما تقدر توقف نفسك");return}
     if(x.active&&x.role==="partner"&&Object.values(users).filter(y=>y.role==="partner"&&y.active).length<=1){toast("لازم يبقى شريك واحد مفعّل");return}
     return run("users",()=>db.doc("users/"+u).update({active:!x.active})); }
+  if(a==="udel"){ const u=b.dataset.u, x=users[u]; if(!x) return;
+    if(me&&me.id===u){toast("ما تقدر تحذف نفسك");return}
+    if(x.role==="partner"&&x.active&&Object.values(users).filter(y=>y.role==="partner"&&y.active).length<=1){toast("لازم يبقى شريك واحد مفعّل");return}
+    if(!arm("ud:"+u)) return;
+    return run("users",async()=>{ for(const c of Object.keys(codeOwners)) if(codeOwners[c]===u) await db.doc("codes/"+c).delete();
+      await db.doc("users/"+u).delete(); logIt("حذف المستخدم "+x.name); toast("انحذف "+x.name); }); }
   if(a==="ugo"){ if(!arm("ugo")) return; return run("users",async()=>{await db.doc("config/usersReady").set({on:true,at:Date.now()}); toast("تفعّل. ادخل برمزك"); setTimeout(()=>location.reload(),900)}) }
   if(!P()&&["settings","delsale","start","pay","paid","comp","cancel","move","moveto","addhour","bmode","hplus","hminus"].includes(a)) return;
   if(a==="bmode"){view.mode=b.dataset.m; if(view.mode==="hour"&&!view.hours) view.hours=autoHours(seats[id]); return renderSheet()}
@@ -884,7 +891,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v18";
+const VER="v19";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
