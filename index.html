@@ -552,6 +552,8 @@ async function timePush(key,title,body,tag){ // تنبيه الوقت ينرسل
   if(!pushUrl||!db) return;
   try{ const ref=db.doc("alerts/"+key), first=await db.runTransaction(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
     if(first) pushSend(2,title,body,tag); }catch(e){} }
+const pIcon=it=>{const e=CAT_ICON[itemCat(it)]; return e&&!/</.test(e)?e+" ":""};
+const pBody=(r,n)=>r.name+(n>1?" × "+n:"")+(r.note?" ("+r.note+")":"")+(me&&me.name?" · سجّله "+me.name:"");
 const pushLabel=()=>pushOn?"مفعّلة على هذا الجوال":legacy?"تشتغل بعد تفعيل المستخدمين":!pushCan()?"افتح التطبيق من أيقونته على الشاشة الرئيسية":typeof Notification!=="undefined"&&Notification.permission==="denied"?"مرفوضة، اسمح لها من إعدادات الجوال":"اضغط للتفعيل";
 const notes=[]; let unread=0, noteSeeded=false; const noteQty=new Map();
 let noteId=0;
@@ -1007,11 +1009,11 @@ document.addEventListener("click",e=>{
       const nid="t"+Date.now().toString(36);
       await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:Date.now(),...BY()});
       await db.collection("orders").add({seat:nid,sid:nid,name:r.name,price:r.price,note:r.note,served:false,...extra});
-      pushSend(stationOf(r.name),"طلب جديد",r.name+(n>1?" × "+n:"")+(r.note?" ("+r.note+")":"")+" · سفري "+tno,"o"+Date.now());
+      pushSend(stationOf(r.name),pIcon(it)+"سفري "+tno,pBody(r,n),"o"+Date.now());
       openSheet({kind:"seat",id:nid,cat,wait:true,tab:"add"}); toast("انفتح سفري "+tno+" · "+r.name+(n>1?" × "+n:"")); });
     const line={seat:id,sid:s.sid,name:r.name,price:r.price,note:r.note,served:false,by:BY().by}, old=seatOrders(id).find(o=>sameLine(o,line));
     run("add:"+Date.now()+Math.random(),()=>old?bump(old,n):db.collection("orders").add({...line,...extra}));
-    pushSend(stationOf(r.name),"طلب جديد",r.name+(n>1?" × "+n:"")+(r.note?" ("+r.note+")":"")+" · "+(isTake(id)?"سفري "+lab(id):"جلسة "+seatNo(id)),"o"+Date.now());
+    pushSend(stationOf(r.name),pIcon(it)+(isTake(id)?"سفري "+lab(id):"جلسة "+seatNo(id)),pBody(r,n),"o"+Date.now());
     toast("انضاف: "+r.name+(n>1?" × "+n:"")); return openSheet({kind:"seat",id,cat,tab:"add"})}
   if(a==="add"){const it=cfg.items[+b.dataset.i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)) return;
     return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake})}
@@ -1134,7 +1136,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v27";
+const VER="v28";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
