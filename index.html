@@ -193,37 +193,96 @@ input{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid
 .toast{position:fixed;inset-inline:16px;inset-block-end:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;
   background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 16px;font-weight:600;text-align:center;max-width:520px;margin-inline:auto}
 @media (prefers-reduced-motion:no-preference){ .panel{animation:up .18s ease-out} @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}} }
+
+/* ---- v20: شريط سفلي، تبويبات الجلسة، ألوان الحالات، خط الأرقام ---- */
+:root{--num:"Readex Pro","Segoe UI",Tahoma,sans-serif;--st-open:#531989;--st-hour:#b895ea;--st-free:#85808f;--st-conv:#b85a08;--st-take:#22304f}
+.wrap{padding-block-end:104px}
+.wrap section{display:flex;flex-direction:column;gap:18px}
+.ghost.who{font-size:14px;padding:8px 12px;min-height:40px;max-width:44%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav{position:fixed;inset-inline:0;inset-block-end:0;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-block-start:1.5px solid var(--line);padding-block-end:env(safe-area-inset-bottom,0px)}
+.nav button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;padding:8px 4px;font-size:12px;font-weight:600;color:var(--muted)}
+.nav button.on{color:var(--accent)}
+.nav button.on::before{content:"";position:absolute;inset-block-start:-1.5px;inset-inline:22%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+.nav svg{width:24px;height:24px}
+.nav .bdg{position:absolute;inset-block-start:5px;inset-inline-start:calc(50% + 4px);min-width:20px;height:20px;padding-inline:5px;border-radius:999px;background:#d43a35;color:#fff;font-style:normal;font-size:12px;font-weight:700;display:grid;place-items:center}
+.toast{inset-block-end:calc(84px + env(safe-area-inset-bottom,0px))}
+.strip b,.seat .n,.seat .tm,.wrow .who,.phead .big,.pick span,.foot .sum b,.step b,.tabb .num{font-family:var(--num);font-weight:700;font-variant-numeric:tabular-nums}
+.strip b{font-size:27px} .seat .n{font-size:28px} .phead .big{font-size:38px} .pick span{font-size:27px} .foot .sum b{font-size:29px} .wrow .who{font-size:21px} .step b{font-size:26px}
+.bill .r>.num:last-child{font-weight:600}
+.seat.on{border-color:transparent;color:#fff}
+.seat.on .st,.seat.on .tt{color:rgba(255,255,255,.84)}
+.seat.on .tm{font-size:23px;line-height:1.15}
+.seat.st-open{background:var(--st-open)} .seat.st-free{background:var(--st-free)} .seat.st-conv{background:var(--st-conv)} .seat.st-take{background:var(--st-take)}
+.seat.st-hour{background:var(--st-hour);color:#1d1426} .seat.st-hour .st,.seat.st-hour .tt{color:#3d2c5a}
+.seat.alarm{background:var(--alarm);color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:4px;flex:none;box-shadow:0 0 0 1.5px var(--muted)}
+.tile.cat{border-color:transparent} .tile.cat .num{color:inherit;opacity:.85}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:4px}
+.tabb{min-height:46px;border-radius:10px;font-weight:700;text-align:center;color:var(--muted)}
+.tabb.on{background:var(--accent);color:var(--accent-ink)}
+.stickyfoot{position:sticky;inset-block-end:0;z-index:2;background:var(--bg);margin-block-end:calc(-20px - env(safe-area-inset-bottom,0px));padding-block-end:calc(14px + env(safe-area-inset-bottom,0px))}
+.more{display:flex;flex-direction:column;gap:8px}
+.more button{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:14px;min-height:56px;font-weight:600}
+.more button span{color:var(--muted);font-weight:400;font-size:14px}
+.gate{position:fixed;inset:0;z-index:30;background:#531989;color:#fff;display:grid;place-items:center;padding:24px;overflow-y:auto}
+.gate form{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:320px}
+.glogo{width:170px;height:170px;border-radius:32px}
+.gsub{margin:0;font-size:16px;color:#e6d9f5}
+.gate input{background:#fff;color:#1d1426;border:0;text-align:center;font-size:26px;letter-spacing:.2em;min-height:60px;border-radius:14px}
+.gate #gate-msg{margin:0;min-height:22px;color:#ffd0cb;font-weight:600}
+.gate #gate-btn{width:100%;min-height:56px;border-radius:14px;background:#fff;color:#531989;font-weight:700;font-size:18px;text-align:center}
+.flash{position:fixed;inset:0;z-index:25;margin:auto;width:120px;height:120px;border-radius:50%;background:var(--green);color:#fff;font-size:64px;display:grid;place-items:center;pointer-events:none}
+button:active{transform:scale(.97)}
+@media (prefers-reduced-motion:no-preference){
+  .flash{animation:flash .75s ease-out both} @keyframes flash{0%{transform:scale(.5);opacity:0}25%{transform:scale(1.05);opacity:1}70%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:0}}
+  .toast{animation:tin .2s ease-out} @keyframes tin{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+  .wrow.pop{animation:pop .5s ease-out} @keyframes pop{0%{transform:scale(.92);opacity:.3}60%{transform:scale(1.02)}100%{transform:none;opacity:1}}
+  button{transition:transform .08s}
+}
 </style>
 </head>
 <body>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("kz-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 
 
 <div class="wrap">
   <div class="top">
     <img class="logo" src="icon.png" alt="" width="46" height="46" onerror="this.hidden=true">
     <h1>خزامى <small id="ver" style="font-family:var(--body);font-size:11px;color:var(--muted)"></small></h1>
-    <button class="ghost" data-act="mute" id="btn-mute" aria-label="صوت التنبيه"></button>
-    <button class="ghost" data-act="who" id="btn-who" hidden></button>
-    <button class="ghost" data-act="summary" id="btn-summary">ملخص اليوم</button>
-    <button class="ghost" data-act="settings" id="btn-settings">الأصناف</button>
+    <button class="ghost who" data-act="who" id="btn-who" hidden></button>
   </div>
   <div class="notice" id="notice">جاري الاتصال…</div>
-  <div class="strip" id="strip"></div>
-  <div class="board" id="board"></div>
-  <h2>سفري</h2>
-  <div class="board" id="take"></div>
-  <h2>طلبات ما نزلت</h2>
-  <div class="chips" id="stpick"></div>
-  <div class="wait" id="wait"></div>
+  <section id="pg-seats">
+    <div class="strip" id="strip"></div>
+    <div class="legend" id="legend"></div>
+    <div class="board" id="board"></div>
+    <h2>سفري</h2>
+    <div class="board" id="take"></div>
+  </section>
+  <section id="pg-orders" hidden>
+    <h2>طلبات ما نزلت</h2>
+    <div class="chips" id="stpick"></div>
+    <div class="wait" id="wait"></div>
+  </section>
 </div>
+<nav class="nav" id="nav" aria-label="التنقل">
+  <button data-act="tab" data-t="seats" id="nav-seats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>الجلسات</span></button>
+  <button data-act="tab" data-t="orders" id="nav-orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span>الطلبات</span><i class="bdg num" id="nav-badge" hidden></i></button>
+  <button data-act="summary" id="btn-summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>الملخص</span></button>
+  <button data-act="more" id="nav-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3.2"/></svg><span>المزيد</span></button>
+</nav>
+<div class="flash" id="flash" hidden>✓</div>
 <div class="sheet" id="sheet" hidden><div class="panel" id="panel"></div></div>
 <div class="toast" id="toast" hidden></div>
 
-<div class="sheet" id="gate" hidden style="z-index:30;align-items:center"><form class="panel" id="gate-form" style="border-radius:20px;max-width:360px;margin:16px">
-  <div class="phead"><div class="meta"><b>رمز الدخول</b><span>اكتب رمزك الشخصي</span></div></div>
-  <input id="gate-code" inputmode="numeric" autocomplete="off" aria-label="رمز الدخول" style="text-align:center;font-size:24px;letter-spacing:.2em">
-  <p class="empty" id="gate-msg" style="color:var(--red)"></p>
-  <button class="primary wide" id="gate-btn" type="submit">دخول</button></form></div>
+<div class="gate" id="gate" hidden><form id="gate-form">
+  <img class="glogo" src="icon.png" alt="" width="170" height="170" onerror="this.hidden=true">
+  <p class="gsub">اكتب رمزك الشخصي</p>
+  <input id="gate-code" inputmode="numeric" autocomplete="off" aria-label="رمز الدخول">
+  <p id="gate-msg"></p>
+  <button id="gate-btn" type="submit">دخول</button></form></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -269,7 +328,7 @@ function menuHtml(){ // الأقسام أول، وبعد الضغط أصناف �
   if(!live.length) return `<p class="empty">ما في أصناف لقسمك في القائمة.</p>`;
   if(live.length===1) view.cat=live[0][0];
   if(!view.cat||!by(view.cat).length)
-    return `<div class="tiles cats">${CATS.map(([k,t])=>{const n=by(k).length; return n?`<button class="tile cat" data-act="cat" data-c="${k}"><span class="pic">${CAT_ICON[k]}</span><b>${t}</b><span class="num">${n} صنف</span></button>`:""}).join("")}</div>`;
+    return `<div class="tiles cats">${CATS.map(([k,t])=>{const n=by(k).length; return n?`<button class="tile cat" style="background:${CAT_LOOK[k][0]};color:${CAT_LOOK[k][1]}" data-act="cat" data-c="${k}"><span class="pic">${CAT_ICON[k]}</span><b>${t}</b><span class="num">${n} صنف</span></button>`:""}).join("")}</div>`;
   return `<div class="crumb">${live.length>1?`<button class="ghost" data-act="cat" data-c="">رجوع للأقسام</button>`:""}<b>${CATS.find(c=>c[0]===view.cat)[1]}</b></div>
   <div class="tiles">${by(view.cat).map(([it,i])=>{const hb=hookahBg(it.name);
     return `<button class="tile ${hb?"paint":""}" ${hb?`style="background:${hb}"`:""} data-act="add" data-i="${i}"><span class="pic">${icon(it.name)}</span><b>${esc(it.name)}</b><span class="num">${menuPrice(it)}</span></button>`}).join("")}</div>`;
@@ -401,6 +460,13 @@ function checkTimes(){ // تنبيه لما يبقى 5 دقايق ولما تخ�
     [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded) beep(tones)} }); });
   timesSeeded=true;
 }
+let mainTab="seats", theme="dark"; const seenWait=new Set(); let waitSeeded=false;
+try{theme=localStorage.getItem("kz-theme")||"dark"}catch(e){}
+function applyTheme(){ document.documentElement.dataset.theme=theme; const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content=theme==="dark"?"#120b1a":"#531989"; }
+function flash(){ const f=$("flash"); f.hidden=true; void f.offsetWidth; f.hidden=false; clearTimeout(flash.t); flash.t=setTimeout(()=>f.hidden=true,800); }
+const CAT_LOOK={corn:["#a86f00","#fff"],fries:["#e3b000","#2b2100"],cold:["#1f78c1","#fff"],hot:["#7a4a2b","#fff"],hookah:["#b3261e","#fff"],sweet:["#c2457e","#fff"],nuts:["#8a6d3b","#fff"],other:["#6b6475","#fff"]};
+const seatState=s=>s.type==="take"?"take":s.type==="free"?"free":s.type==="open"?"open":billMode(s)==="open"?"conv":left(s)<=5?"alarm":"hour";
+const STATE_LOOK={open:["var(--st-open)","وقت مفتوح"],hour:["var(--st-hour)","ساعة"],free:["var(--st-free)","مجاناً"],conv:["var(--st-conv)","طلب ساعة وتحولت مفتوح"],alarm:["var(--alarm)","ساعة قربت تخلص أو خلصت"],take:["var(--st-take)","سفري"]};
 let me=null, legacy=false, users={}, codeOwners={}, logs=[];
 const P=()=>!!me&&me.role==="partner";
 const ROLE=u=>u.role==="partner"?"شريك":u.station===0?"قسم البطاطس":"قسم الكورن دوق والذرة";
@@ -416,12 +482,12 @@ function tile(id){
   if(!s) return `<button class="seat" ${A}><span class="n num">${seatNo(id)}</span><span class="st">فاضية</span></button>`;
   const p=units(seatOrders(id).filter(o=>!o.served)), dot=p?`<span class="dot num">${p}</span>`:"";
   const tot=`<span class="tt num">${money(fee(id)+itemsTotal(id))}</span>`;
-  if(s.type==="take") return `<button class="seat on" ${A}>${dot}<span class="n num">${esc(lab(id))}</span><span class="st">سفري · من</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
-  if(s.type==="free") return `<button class="seat on" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">مجاناً</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
-  if(s.type==="open") return `<button class="seat on" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">مفتوح</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
+  if(s.type==="take") return `<button class="seat on st-${seatState(s)}" ${A}>${dot}<span class="n num">${esc(lab(id))}</span><span class="st">سفري · من</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
+  if(s.type==="free") return `<button class="seat on st-${seatState(s)}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">مجاناً</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
+  if(s.type==="open") return `<button class="seat on st-${seatState(s)}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">مفتوح</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
   const l=left(s);
-  if(billMode(s)==="open") return `<button class="seat on" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">ساعة ← مفتوح</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
-  return `<button class="seat on ${l<=5?"alarm":""}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">${l<=0?"انتهى الوقت":"ساعة · باقي"}</span><span class="tm num">${l<0?"زاد "+clock(-l):clock(l)}</span>${tot}</button>`;
+  if(billMode(s)==="open") return `<button class="seat on st-${seatState(s)}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">ساعة ← مفتوح</span><span class="tm num">${clock(mins(s.startedAt))}</span>${tot}</button>`;
+  return `<button class="seat on ${l<=5?"alarm":"st-hour"}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">${l<=0?"انتهى الوقت":"ساعة · باقي"}</span><span class="tm num">${l<0?"زاد "+clock(-l):clock(l)}</span>${tot}</button>`;
 }
 function renderMain(){
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
@@ -433,7 +499,11 @@ function renderMain(){
     `<div><b class="num">${ids.length-busy.length}</b><span>فاضية</span></div>`+
     `<div class="${pend.length?"alert":""}"><b class="num">${cnt(pend)}</b><span>طلب ما نزل</span></div>`;
   $("board").innerHTML=cells.map(id=>id?tile(id):`<span></span>`).join("");
-  $("btn-who").hidden=!me; $("btn-who").textContent=legacy?"المستخدمين":(me&&me.name)||""; $("btn-settings").hidden=!P(); $("stpick").hidden=!P();
+  $("btn-who").hidden=!me; $("btn-who").textContent=legacy?"المستخدمين":(me&&me.name)||""; $("stpick").hidden=!P();
+  $("pg-seats").hidden=mainTab!=="seats"; $("pg-orders").hidden=mainTab!=="orders";
+  $("nav-seats").classList.toggle("on",mainTab==="seats"); $("nav-orders").classList.toggle("on",mainTab==="orders");
+  const present=[...new Set(Object.values(seats).map(seatState))];
+  $("legend").innerHTML=["open","hour","free","conv","alarm","take"].filter(k=>present.includes(k)).map(k=>`<span><i style="background:${STATE_LOOK[k][0]}"></i>${STATE_LOOK[k][1]}</span>`).join("");
   if(legacy&&ready){$("notice").hidden=false;$("notice").textContent="لسه الدخول بالرمز المشترك. افتح «المستخدمين» وأنشئ رمز لكل واحد ثم فعّل."}
   $("take").innerHTML=(me?`<button class="seat add" data-act="newtake"><span class="n">+</span><span class="st">سفري جديد</span></button>`:"")+takes.map(tile).join("");
   const stations=STATIONS;
@@ -441,10 +511,12 @@ function renderMain(){
   $("stpick").innerHTML=[["الكل",-1],["البطاطس",0],["الكورن دوق",1],["الترك",2]].map(([t,k])=>`<button class="chip ${myStation===k?"on":""}" data-act="station" data-k="${k}">${t}${k>=0&&buckets[k].length?` <span class="num">${cnt(buckets[k])}</span>`:""}</button>`).join("");
   $("wait").innerHTML=stations.map(([t],k)=>myStation>=0&&myStation!==k?"":`<h3 class="cat st ${buckets[k].length?"hot":""}">${t} <span class="num">${cnt(buckets[k])}</span></h3>`+
     (buckets[k].length?buckets[k].map(({o,q})=>
-    `<div class="wrow"><span class="who num">${esc(lab(o.seat))}</span>
+    `<div class="wrow ${waitSeeded&&!seenWait.has(o.id)?"pop":""}"><span class="who num">${esc(lab(o.seat))}</span>
       <span class="what">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}<small class="num">${o.note?esc(o.note)+" · ":""}من ${mins(o.at)} دقيقة</small></span>
       <button class="done" data-act="serve" data-oid="${esc(o.id)}">نزل</button></div>`).join("")
     :`<p class="empty">${ready?"ما في طلبات.":"…"}</p>`)).join("");
+  const mineN=myStation<0?cnt(pend):cnt(buckets[myStation]||[]); $("nav-badge").hidden=!mineN; $("nav-badge").textContent=mineN;
+  if(ready){ pend.forEach(g=>g.docs.forEach(d=>seenWait.add(d.id))); waitSeeded=true; }
 }
 
 /* ---------- النوافذ ---------- */
@@ -465,6 +537,13 @@ function renderSheet(){
   } else if(view.kind==="summary") p.innerHTML=summaryHtml();
   else if(view.kind==="settings") p.innerHTML=settingsHtml();
   else if(view.kind==="users") p.innerHTML=usersHtml();
+  else if(view.kind==="more") p.innerHTML=`<div class="phead"><div class="meta"><b>المزيد</b><span>${esc((me&&me.name)||"")}</span></div>${xBtn}</div>
+    <div class="more">
+      ${P()?`<button data-act="settings" id="btn-settings">الأصناف والأسعار<span>تعديل القائمة</span></button>`:""}
+      <button data-act="who">${P()?"المستخدمين والصلاحيات":"حسابي"}<span>${legacy?"لسه ما تفعّلوا":""}</span></button>
+      <button data-act="mute" id="btn-mute">صوت التنبيه<span>${muted?"مكتوم":"شغال"}</span></button>
+      <button data-act="theme">المظهر<span>${theme==="dark"?"ليلي":"نهاري"}</span></button>
+    </div><p class="empty">النسخة ${VER}</p>`;
 }
 function freeHtml(id){
   return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>جلسة فاضية</b><span>اختر نوع الجلسة ويبدأ الوقت</span></div>${xBtn}</div>
@@ -482,22 +561,23 @@ function seatHtml(id){
   const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), take=s.type==="take", l=s.type==="hour"?left(s):0, conv=s.type==="hour"&&billMode(s)==="open", full=P();
   const title=take?"سفري":s.type==="free"?"جلسة مجاناً":s.type==="open"?"وقت مفتوح":conv?"طلب ساعة · تحولت مفتوح":"ساعة"+(bookedH(s)>1?" × "+bookedH(s):"");
   const sub=(take?"من "+clock(m):s.type!=="hour"||conv?"الوقت "+clock(m):l>=0?"باقي "+clock(l):"زاد "+clock(-l))+" · "+(take?"انفتح ":"دخل ")+tclock(s.startedAt);
-  return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
-    <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
-  <div class="orders">${os.length?groupOrders(os).map(({o,q})=>{const k="del:"+o.id, inner=`<span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${r2(Number(o.price)*q)}</span><span class="tag">${o.served?"نزل":"ما نزل"}</span>`;
+  const tab=view.tab||(os.length?"orders":"add"), n=units(os);
+  const list=`<div class="orders">${os.length?groupOrders(os).map(({o,q})=>{const k="del:"+o.id, inner=`<span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${r2(Number(o.price)*q)}</span><span class="tag">${o.served?"نزل":"ما نزل"}</span>`;
     if(!mine(o.name)) return `<div class="ord ${o.served?"s":"p"}" style="opacity:.55"><div class="tog">${inner}</div></div>`;
     return `<div class="ord ${o.served?"s":"p"}">
       <button class="tog" data-act="toggle" data-oid="${esc(o.id)}">${inner}</button>
       <button class="del qb ${sure===k?"sure":""}" data-act="qdec" data-oid="${esc(o.id)}" aria-label="نقص حبة">${sure===k?"حذف؟":"−"}</button>
       <button class="del qb" data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button>
-    </div>`}).join(""):`<p class="empty">ما في طلبات. اختر من تحت وأضف.</p>`}</div>
-  <h2>أضف طلب</h2>
-  ${menuHtml()}
+    </div>`}).join(""):`<p class="empty">ما في طلبات. اضغط «أضف طلب» فوق.</p>`}</div>
   ${full&&s.type==="hour"&&!conv?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour} ريال)</button>`:""}
   ${full&&!take?`<button class="ghost" data-act="move">نقل لجلسة ثانية</button>`:""}
-  ${full?`<div class="foot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
-    <button class="primary" data-act="pay">الحساب</button></div>
-  <button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`
+  ${full?`<button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`:""}`;
+  return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
+    <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
+  <div class="tabs"><button class="tabb ${tab==="orders"?"on":""}" data-act="stab" data-t="orders">الطلبات${n?` <span class="num">${n}</span>`:""}</button><button class="tabb ${tab==="add"?"on":""}" data-act="stab" data-t="add">أضف طلب</button></div>
+  ${tab==="orders"?list:menuHtml()}
+  ${full?`<div class="foot stickyfoot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
+    <button class="primary" data-act="pay">الحساب</button></div>`
   :`<p class="empty">الحساب عند الشركاء. اللي تسجله هنا ينضاف على الفاتورة.</p>`}`;
 }
 function priced(r){ // ضيافة للصنف أو سعر خاص، للشركاء بس
@@ -542,7 +622,7 @@ function closeBill(id,pay){
       items:os.map(o=>({name:o.name,price:Number(o.price),qty:qty(o),note:o.note||"",served:!!o.served,...(o.comp?{comp:true,orig:Number(o.orig)||0}:{})})),total,
       startedAt:s.startedAt,closedAt:now});
     for(const o of os) await db.doc("orders/"+o.id).delete();
-    await db.doc("seats/"+id).delete(); closeSheet();
+    await db.doc("seats/"+id).delete(); closeSheet(); flash();
     toast((take?"تقفل حساب السفري "+(s.tno||""):"تقفل حساب الجلسة "+seatNo(id))+" · "+({cash:"كاش",card:"شبكة",split:"مقسوم",comp:"ضيافة"}[pay]));
   });
 }
@@ -728,6 +808,10 @@ document.addEventListener("click",e=>{
       await db.doc("closings/"+day).set(doc); v.closing=doc; toast("انحفظت التسوية"); if(view===v) renderSheet(); }); }
   if(a==="payday"){ view.today=!view.today; return renderSheet() }
   if(a==="who") return openSheet({kind:"users"});
+  if(a==="tab"){ mainTab=b.dataset.t; window.scrollTo(0,0); return renderMain() }
+  if(a==="more") return openSheet({kind:"more"});
+  if(a==="theme"){ theme=theme==="dark"?"light":"dark"; try{localStorage.setItem("kz-theme",theme)}catch(e){} applyTheme(); return renderSheet() }
+  if(a==="stab"){ view.tab=b.dataset.t; return renderSheet() }
   if(a==="logout") return run("me",async()=>{try{await fdb.doc("access/"+uid).delete()}catch(e){} location.reload()});
   if(a==="useed") return run("users",async()=>{for(const [name,r] of PRESET) await db.collection("users").add({name,active:true,...roleFields(r)})});
   if(a==="uadd"){ const name=$("nu-name").value.trim(), code=digits($("nu-code").value), r=$("nu-role").value;
@@ -770,10 +854,10 @@ document.addEventListener("click",e=>{
       const nid="t"+Date.now().toString(36);
       await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:Date.now(),...BY()});
       await db.collection("orders").add({seat:nid,sid:nid,name:r.name,price:r.price,note:r.note,served:false,...extra});
-      openSheet({kind:"seat",id:nid,cat,wait:true}); });
+      openSheet({kind:"seat",id:nid,cat,wait:true,tab:"add"}); toast("انفتح سفري "+tno+" · "+r.name+(n>1?" × "+n:"")); });
     const line={seat:id,sid:s.sid,name:r.name,price:r.price,note:r.note,served:false}, old=seatOrders(id).find(o=>sameLine(o,line));
     run("add:"+Date.now()+Math.random(),()=>old?bump(old,n):db.collection("orders").add({...line,...extra}));
-    return openSheet({kind:"seat",id,cat})}
+    toast("انضاف: "+r.name+(n>1?" × "+n:"")); return openSheet({kind:"seat",id,cat,tab:"add"})}
   if(a==="add"){const it=cfg.items[+b.dataset.i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)) return;
     return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake})}
   if(a==="toggle"||a==="serve"||a==="qinc"||a==="qdec"){const o=orders.find(x=>x.id===oid); if(!o||!mine(o.name)) return; const docs=orders.filter(x=>sameLine(x,o));
@@ -795,11 +879,11 @@ document.addEventListener("click",e=>{
       await db.doc("seats/"+id).delete(); openSheet({kind:"seat",id:to}); toast("انتقلت من "+seatNo(id)+" إلى "+seatNo(to)); }); }
   if(a==="addhour"){const s=seats[id]; if(!s) return; return run("seat:"+id,()=>db.doc("seats/"+id).update({hours:bookedH(s)+1}))}
   if(a==="delsale"){ const k=b.dataset.sid, v=view; if(!arm("ds:"+k)) return; return run("sale:"+k,async()=>{const x=((v.day||TODAY)===TODAY?sales:(v.sales||[])).find(y=>y.id===k); await db.doc("sales/"+k).delete(); logIt("حذف حساب مقفل: "+(x?(x.type==="take"?"سفري "+(x.tno||""):"جلسة "+(x.seat||""))+" بقيمة "+money(Number(x.total||0)):"")); toast("انحذف الحساب"); v.week=null; if(view===v&&v.kind==="summary") loadDay(v); }) }
-  if(a==="mute"){muted=!muted; try{localStorage.setItem("kz-mute",muted?"1":"0")}catch(e){} paintMute(); if(!muted) beep([880]); return}
+  if(a==="mute"){muted=!muted; try{localStorage.setItem("kz-mute",muted?"1":"0")}catch(e){} if(!muted) beep([880]); return renderSheet()}
   if(a==="station"){myStation=+b.dataset.k; try{localStorage.setItem("kz-station",String(myStation))}catch(e){} prevPend=myPending(); return renderMain()}
   if(a==="cat"){view.cat=b.dataset.c||null; return renderSheet()}
   if(a==="pay") return openSheet({kind:"pay",id});
-  if(a==="back") return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake});
+  if(a==="back") return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,tab:view.kind==="extras"?"add":view.tab});
   if(a==="hplus"){view.hours++;return renderSheet()}
   if(a==="hminus"){view.hours=Math.max(1,view.hours-1);return renderSheet()}
   if(a==="asopen"){view.asOpen=!view.asOpen;return renderSheet()}
@@ -847,7 +931,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
 }
 function listen(){
-  db=fdb; $("gate").hidden=true; if(!P()) myStation=me.station;
+  db=fdb; $("gate").hidden=true; if(!P()){ myStation=me.station; mainTab="orders"; }
   const quiet=()=>{};
   db.collection("users").onSnapshot(s=>{users={};s.docs.forEach(d=>users[d.id]=d.data());
     if(me&&me.id&&users[me.id]&&!users[me.id].active) return location.reload();
@@ -891,7 +975,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v19";
+const VER="v20";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
@@ -906,7 +990,7 @@ async function start(){
     await enter();
   }catch(e){ $("notice").textContent="ما قدرنا نتصل. تأكد من الإنترنت وحدّث الصفحة."; }
 }
-$("ver").textContent=VER; const paintMute=()=>{$("btn-mute").textContent=muted?"🔕":"🔔"}; paintMute();
+$("ver").textContent=VER; applyTheme();
 start();
 </script>
 
