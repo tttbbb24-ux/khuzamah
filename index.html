@@ -198,6 +198,9 @@ input{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid
 :root{--num:"Readex Pro","Segoe UI",Tahoma,sans-serif;--st-open:#531989;--st-hour:#b895ea;--st-free:#85808f;--st-conv:#b85a08;--st-take:#22304f}
 .wrap{padding-block-end:104px}
 .wrap section{display:flex;flex-direction:column;gap:18px}
+.ghost.bell{position:relative;min-width:44px;min-height:40px;padding:8px;display:grid;place-items:center}
+.ghost.bell svg{width:22px;height:22px}
+.ghost.bell .bdg{position:absolute;inset-block-start:-6px;inset-inline-start:-6px;min-width:20px;height:20px;padding-inline:5px;border-radius:999px;background:#d43a35;color:#fff;font-style:normal;font-size:12px;font-weight:700;display:grid;place-items:center}
 .ghost.who{font-size:14px;padding:8px 12px;min-height:40px;max-width:44%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nav{position:fixed;inset-inline:0;inset-block-end:0;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-block-start:1.5px solid var(--line);padding-block-end:env(safe-area-inset-bottom,0px)}
 .nav button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;padding:8px 4px;font-size:12px;font-weight:600;color:var(--muted)}
@@ -251,6 +254,7 @@ button:active{transform:scale(.97)}
   <div class="top">
     <img class="logo" src="icon.png" alt="" width="46" height="46" onerror="this.hidden=true">
     <h1>خزامى <small id="ver" style="font-family:var(--body);font-size:11px;color:var(--muted)"></small></h1>
+    <button class="ghost bell" data-act="notes" id="btn-bell" aria-label="الإشعارات" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 7H4c0-1 2-2 2-7M10 20a2 2 0 0 0 4 0"/></svg><i class="bdg num" id="bell-n" hidden></i></button>
     <button class="ghost who" data-act="who" id="btn-who" hidden></button>
   </div>
   <div class="notice" id="notice">جاري الاتصال…</div>
@@ -286,6 +290,7 @@ button:active{transform:scale(.97)}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script>
 const DEFAULTS = { hour:15, open:30, count:15, items:[
   {name:"معسل تفاحتين",price:30},{name:"معسل عنب توت",price:30},{name:"معسل عنب نعناع",price:30},
@@ -454,10 +459,41 @@ function beep(tones){
       g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.6,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.28);
       o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+0.3); t+=0.34;}); }catch(e){}
 }
-const myPending=()=>units(orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served&&(myStation<0||stationOf(o.name)===myStation)));
-function checkTimes(){ // تنبيه لما يبقى 5 دقايق ولما تخلص الساعة
+const scope=()=>P()?2:(me?me.station:-1); // طلبات مين توصل لهذا المستخدم: الشركاء للترك، وصاحب القسم لقسمه
+const inScope=o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served&&stationOf(o.name)===scope();
+const myPending=()=>units(orders.filter(inScope));
+const VAPID="BIi-Tb3fvZWRTvdliJf38JLGogAP9U1Dc6C9MVbRd7YR_opU6ZaMRNqMSR8YiyHQqvitCMv7rw0dAip0IGrkjnc";
+const b64u=x=>{const p="=".repeat((4-x.length%4)%4), b=atob((x+p).replace(/-/g,"+").replace(/_/g,"/")); return Uint8Array.from(b,c=>c.charCodeAt(0))};
+const pushCan=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+let pushOn=false;
+async function pushSync(ask){ // يسجل هذا الجوال عشان توصله الإشعارات وهو مقفل
+  if(!pushCan()||!db||!me||legacy) return "unsupported";
+  if(Notification.permission==="default"){ if(!ask) return "off"; if(await Notification.requestPermission()!=="granted") return "denied"; }
+  if(Notification.permission!=="granted") return "denied";
+  const reg=await navigator.serviceWorker.register("sw.js"); await navigator.serviceWorker.ready;
+  let sub=await reg.pushManager.getSubscription(); if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)});
+  await db.doc("push/"+uid).set({sub:JSON.stringify(sub),user:me.id,role:me.role,station:me.role==="station"?me.station:2,at:Date.now()});
+  pushOn=true; return "on";
+}
+function pushSend(target,title,body,tag){ // يطلب من الخادم يرسل إشعار لأصحاب القسم
+  try{ firebase.app().functions("europe-west1").httpsCallable("notify")({target,title,body,tag}).catch(()=>{}) }catch(e){} }
+const pushLabel=()=>pushOn?"مفعّلة على هذا الجوال":legacy?"تشتغل بعد تفعيل المستخدمين":!pushCan()?"افتح التطبيق من أيقونته على الشاشة الرئيسية":typeof Notification!=="undefined"&&Notification.permission==="denied"?"مرفوضة، اسمح لها من إعدادات الجوال":"اضغط للتفعيل";
+const notes=[]; let unread=0, noteSeeded=false; const noteQty=new Map();
+function note(text){ notes.unshift({at:Date.now(),text}); if(notes.length>60) notes.pop(); unread++; paintBell(); if(view&&view.kind==="notes") renderSheet(); }
+function paintBell(){ const b=$("btn-bell"); if(!b) return; b.hidden=!me; $("bell-n").hidden=!unread; $("bell-n").textContent=unread; }
+function scanOrders(local){ // يطلع إشعار لكل طلب جديد يخص هذا المستخدم
+  let fresh=0; const live=new Set();
+  orders.filter(inScope).forEach(o=>{ live.add(o.id); const q=qty(o), was=noteQty.get(o.id); noteQty.set(o.id,q);
+    if(!noteSeeded||local) return; const where=isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat);
+    if(was==null){ fresh++; note("طلب جديد: "+o.name+(q>1?" × "+q:"")+(o.note?" ("+o.note+")":"")+" · "+where); }
+    else if(q>was){ fresh++; note("زاد الطلب: "+o.name+" × "+(q-was)+" · "+where); } });
+  [...noteQty.keys()].forEach(k=>{if(!live.has(k)) noteQty.delete(k)});
+  noteSeeded=true; return fresh;
+}
+function checkTimes(){ // تنبيه لما يبقى 5 دقايق ولما تخلص الساعة، للشركاء
+  if(!P()){timesSeeded=true;return}
   Object.keys(seats).forEach(id=>{const s=seats[id]; if(s.type!=="hour") return; const l=left(s), k=s.sid+":"+bookedH(s);
-    [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded) beep(tones)} }); });
+    [[5,[660]],[0,[660,660,660]]].forEach(([m,tones])=>{ if(l<=m&&!alerted.has(k+":"+m)){alerted.add(k+":"+m); if(timesSeeded){beep(tones); note(m?"الجلسة "+seatNo(id)+" باقي لها 5 دقايق":"الجلسة "+seatNo(id)+" خلص وقتها")}} }); });
   timesSeeded=true;
 }
 let mainTab="seats", theme="dark"; const seenWait=new Set(); let waitSeeded=false;
@@ -515,7 +551,7 @@ function renderMain(){
       <span class="what">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}<small class="num">${o.note?esc(o.note)+" · ":""}من ${mins(o.at)} دقيقة</small></span>
       <button class="done" data-act="serve" data-oid="${esc(o.id)}">نزل</button></div>`).join("")
     :`<p class="empty">${ready?"ما في طلبات.":"…"}</p>`)).join("");
-  const mineN=myStation<0?cnt(pend):cnt(buckets[myStation]||[]); $("nav-badge").hidden=!mineN; $("nav-badge").textContent=mineN;
+  const mineN=me?cnt(buckets[scope()]||[]):0; $("nav-badge").hidden=!mineN; $("nav-badge").textContent=mineN; paintBell();
   if(ready){ pend.forEach(g=>g.docs.forEach(d=>seenWait.add(d.id))); waitSeeded=true; }
 }
 
@@ -537,10 +573,13 @@ function renderSheet(){
   } else if(view.kind==="summary") p.innerHTML=summaryHtml();
   else if(view.kind==="settings") p.innerHTML=settingsHtml();
   else if(view.kind==="users") p.innerHTML=usersHtml();
+  else if(view.kind==="notes") p.innerHTML=`<div class="phead"><div class="meta"><b>الإشعارات</b><span>${P()?"طلبات الترك وأوقات الجلسات":"طلبات قسمك"}</span></div>${xBtn}</div>
+    <div class="bill">${notes.length?notes.map(x=>`<div class="r"><span>${esc(x.text)}</span><span class="q num">${tclock(x.at)}</span></div>`).join(""):`<div class="r"><span class="q">ما في إشعارات من يوم فتحت التطبيق.</span><span></span></div>`}</div>`;
   else if(view.kind==="more") p.innerHTML=`<div class="phead"><div class="meta"><b>المزيد</b><span>${esc((me&&me.name)||"")}</span></div>${xBtn}</div>
     <div class="more">
       ${P()?`<button data-act="settings" id="btn-settings">الأصناف والأسعار<span>تعديل القائمة</span></button>`:""}
       <button data-act="who">${P()?"المستخدمين والصلاحيات":"حسابي"}<span>${legacy?"لسه ما تفعّلوا":""}</span></button>
+      <button data-act="pushon">إشعارات والجوال مقفل<span>${pushLabel()}</span></button>
       <button data-act="mute" id="btn-mute">صوت التنبيه<span>${muted?"مكتوم":"شغال"}</span></button>
       <button data-act="theme">المظهر<span>${theme==="dark"?"ليلي":"نهاري"}</span></button>
     </div><p class="empty">النسخة ${VER}</p>`;
@@ -570,12 +609,12 @@ function seatHtml(id){
       <button class="del qb" data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button>
     </div>`}).join(""):`<p class="empty">ما في طلبات. اضغط «أضف طلب» فوق.</p>`}</div>
   ${full&&s.type==="hour"&&!conv?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour} ريال)</button>`:""}
-  ${full&&!take?`<button class="ghost" data-act="move">نقل لجلسة ثانية</button>`:""}
-  ${full?`<button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`:""}`;
+  ${full&&!take?`<button class="ghost" data-act="move">نقل لجلسة ثانية</button>`:""}`;
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
     <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
   <div class="tabs"><button class="tabb ${tab==="orders"?"on":""}" data-act="stab" data-t="orders">الطلبات${n?` <span class="num">${n}</span>`:""}</button><button class="tabb ${tab==="add"?"on":""}" data-act="stab" data-t="add">أضف طلب</button></div>
   ${tab==="orders"?list:menuHtml()}
+  ${full?`<button class="link ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`:""}
   ${full?`<div class="foot stickyfoot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
     <button class="primary" data-act="pay">الحساب</button></div>`
   :`<p class="empty">الحساب عند الشركاء. اللي تسجله هنا ينضاف على الفاتورة.</p>`}`;
@@ -810,9 +849,11 @@ document.addEventListener("click",e=>{
   if(a==="who") return openSheet({kind:"users"});
   if(a==="tab"){ mainTab=b.dataset.t; window.scrollTo(0,0); return renderMain() }
   if(a==="more") return openSheet({kind:"more"});
+  if(a==="pushon"){ if(pushOn){toast("مفعّلة");return} return pushSync(true).then(r=>{ toast(r==="on"?"تفعّلت الإشعارات على هذا الجوال":r==="denied"?"الإشعارات مرفوضة، اسمح لها من إعدادات الجوال":r==="unsupported"?pushLabel():"ما تفعّلت"); if(view&&view.kind==="more") renderSheet(); }).catch(()=>toast("ما قدرنا نفعّل الإشعارات، حاول مرة ثانية")) }
+  if(a==="notes"){ unread=0; paintBell(); return openSheet({kind:"notes"}) }
   if(a==="theme"){ theme=theme==="dark"?"light":"dark"; try{localStorage.setItem("kz-theme",theme)}catch(e){} applyTheme(); return renderSheet() }
   if(a==="stab"){ view.tab=b.dataset.t; return renderSheet() }
-  if(a==="logout") return run("me",async()=>{try{await fdb.doc("access/"+uid).delete()}catch(e){} location.reload()});
+  if(a==="logout") return run("me",async()=>{try{await fdb.doc("push/"+uid).delete()}catch(e){} try{await fdb.doc("access/"+uid).delete()}catch(e){} location.reload()});
   if(a==="useed") return run("users",async()=>{for(const [name,r] of PRESET) await db.collection("users").add({name,active:true,...roleFields(r)})});
   if(a==="uadd"){ const name=$("nu-name").value.trim(), code=digits($("nu-code").value), r=$("nu-role").value;
     if(!name||!/^[0-9]{4,8}$/.test(code)){toast("اكتب الاسم ورمز من 4 إلى 8 أرقام");return}
@@ -854,14 +895,16 @@ document.addEventListener("click",e=>{
       const nid="t"+Date.now().toString(36);
       await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:Date.now(),...BY()});
       await db.collection("orders").add({seat:nid,sid:nid,name:r.name,price:r.price,note:r.note,served:false,...extra});
+      pushSend(stationOf(r.name),"طلب جديد",r.name+(n>1?" × "+n:"")+(r.note?" ("+r.note+")":"")+" · سفري "+tno,"o"+Date.now());
       openSheet({kind:"seat",id:nid,cat,wait:true,tab:"add"}); toast("انفتح سفري "+tno+" · "+r.name+(n>1?" × "+n:"")); });
     const line={seat:id,sid:s.sid,name:r.name,price:r.price,note:r.note,served:false}, old=seatOrders(id).find(o=>sameLine(o,line));
     run("add:"+Date.now()+Math.random(),()=>old?bump(old,n):db.collection("orders").add({...line,...extra}));
+    pushSend(stationOf(r.name),"طلب جديد",r.name+(n>1?" × "+n:"")+(r.note?" ("+r.note+")":"")+" · "+(isTake(id)?"سفري "+lab(id):"جلسة "+seatNo(id)),"o"+Date.now());
     toast("انضاف: "+r.name+(n>1?" × "+n:"")); return openSheet({kind:"seat",id,cat,tab:"add"})}
   if(a==="add"){const it=cfg.items[+b.dataset.i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)) return;
     return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake})}
   if(a==="toggle"||a==="serve"||a==="qinc"||a==="qdec"){const o=orders.find(x=>x.id===oid); if(!o||!mine(o.name)) return; const docs=orders.filter(x=>sameLine(x,o));
-    if(a==="qinc") return run("o:"+oid,()=>bump(o,1));
+    if(a==="qinc"){ pushSend(stationOf(o.name),"زاد الطلب",o.name+" × 1 · "+(isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat)),"o"+Date.now()); return run("o:"+oid,()=>bump(o,1)); }
     if(a==="qdec"){ const big=docs.find(x=>qty(x)>1);
       const where=isTake(o.seat)?"سفري":"الجلسة "+seatNo(o.seat);
       if(units(docs)<=1){ if(!arm("del:"+oid)) return; return run("o:"+oid,async()=>{await db.doc("orders/"+oid).delete(); logIt("حذف "+o.name+" من "+where);
@@ -880,7 +923,7 @@ document.addEventListener("click",e=>{
   if(a==="addhour"){const s=seats[id]; if(!s) return; return run("seat:"+id,()=>db.doc("seats/"+id).update({hours:bookedH(s)+1}))}
   if(a==="delsale"){ const k=b.dataset.sid, v=view; if(!arm("ds:"+k)) return; return run("sale:"+k,async()=>{const x=((v.day||TODAY)===TODAY?sales:(v.sales||[])).find(y=>y.id===k); await db.doc("sales/"+k).delete(); logIt("حذف حساب مقفل: "+(x?(x.type==="take"?"سفري "+(x.tno||""):"جلسة "+(x.seat||""))+" بقيمة "+money(Number(x.total||0)):"")); toast("انحذف الحساب"); v.week=null; if(view===v&&v.kind==="summary") loadDay(v); }) }
   if(a==="mute"){muted=!muted; try{localStorage.setItem("kz-mute",muted?"1":"0")}catch(e){} if(!muted) beep([880]); return renderSheet()}
-  if(a==="station"){myStation=+b.dataset.k; try{localStorage.setItem("kz-station",String(myStation))}catch(e){} prevPend=myPending(); return renderMain()}
+  if(a==="station"){myStation=+b.dataset.k; try{localStorage.setItem("kz-station",String(myStation))}catch(e){} return renderMain()}
   if(a==="cat"){view.cat=b.dataset.c||null; return renderSheet()}
   if(a==="pay") return openSheet({kind:"pay",id});
   if(a==="back") return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,tab:view.kind==="extras"?"add":view.tab});
@@ -932,6 +975,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
 }
 function listen(){
   db=fdb; $("gate").hidden=true; if(!P()){ myStation=me.station; mainTab="orders"; }
+  pushSync(false).catch(()=>{});
   const quiet=()=>{};
   db.collection("users").onSnapshot(s=>{users={};s.docs.forEach(d=>users[d.id]=d.data());
     if(me&&me.id&&users[me.id]&&!users[me.id].active) return location.reload();
@@ -948,7 +992,7 @@ function listen(){
   },dead);
   db.collection("seats").onSnapshot(s=>{seats={};s.docs.forEach(d=>seats[d.id]=d.data());ready=true;$("notice").hidden=true;checkTimes();refresh()},dead);
   db.collection("orders").onSnapshot(s=>{orders=s.docs.map(d=>Object.assign({id:d.id},d.data()));
-    const n=myPending(); if(prevPend!==null&&n>prevPend&&!(s.metadata&&s.metadata.hasPendingWrites)) beep([880,1175]); prevPend=n; refresh()},dead);
+    if(scanOrders(!!(s.metadata&&s.metadata.hasPendingWrites))) beep([880,1175]); refresh()},dead);
   db.collection("sales").where("day","==",TODAY).onSnapshot(s=>{sales=s.docs.map(d=>Object.assign({id:d.id},d.data()));if(view&&view.kind==="summary")renderSheet()},dead);
   setInterval(()=>{ if(dayKey(Date.now())!==TODAY&&!view) return location.reload(); checkTimes(); renderMain(); if(view&&view.kind==="seat"&&!sure) renderSheet()},30000);
 }
@@ -975,7 +1019,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v20";
+const VER="v23";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
