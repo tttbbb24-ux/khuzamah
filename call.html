@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;600;700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
 html,body{min-height:100%}
 body{font-family:"Readex Pro",Tahoma,sans-serif;color:#fff;background:radial-gradient(ellipse 85% 55% at 50% 40%,#42156c 0%,#34115a 30%,#1c0834 62%,#0b0217 88%,#06000e 100%),#06000e;background-attachment:fixed;
   display:flex;flex-direction:column;align-items:center;gap:18px;padding:calc(28px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px));min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent}
@@ -39,22 +40,41 @@ button:focus-visible{outline:2px solid #e9c77b;outline-offset:2px}
 .menu .r b{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .menu .note{color:#a996c4;font-size:13px;text-align:center}
 .sar{display:inline-block;width:.82em;height:.88em;fill:currentColor;vertical-align:-.07em;margin-inline-start:.16em}
+.lang{position:absolute;inset-block-start:calc(12px + env(safe-area-inset-top,0px));inset-inline-end:14px;width:auto;min-height:36px;padding:6px 14px;border-radius:999px;font-size:14px;gap:0}
+body{position:relative}
+.mine{width:100%;max-width:380px;background:rgba(255,255,255,.07);border:1px solid rgba(233,199,123,.45);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.mine .two{display:flex;gap:10px}
+.mine .two div{flex:1;text-align:center}
+.mine .two span{display:block;color:#cdbbe6;font-size:13px}
+.mine .two b{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;color:#fbeecb}
+.mine .two b.red{color:#ffb0a8}
+.mine details summary{cursor:pointer;color:#cdbbe6;font-size:14px;text-align:center;list-style:none}
+.mine details summary::-webkit-details-marker{display:none}
+.mine .r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-block-end:1px solid rgba(255,255,255,.1);font-size:15px}
+.mine .r:last-child{border:0}
+.mine .note{color:#a996c4;font-size:12px;text-align:center}
+.tt{max-width:380px;min-height:54px;justify-content:center;font-size:16px;text-decoration:none;color:#fff;display:flex;align-items:center;gap:10px;width:100%;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2)}
+.tt svg{width:22px;height:22px;fill:currentColor}
+html[dir=ltr] button{text-align:left}
 .foot{margin-block-start:auto;color:#8f7bab;font-size:13px}
 @media (prefers-reduced-motion:no-preference){ .status:not([hidden]){animation:in .35s ease-out} @keyframes in{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}} }
 </style>
 </head>
 <body>
+<button class="lang" id="lang" aria-label="Language"></button>
 <img class="logo" src="logo-white.png" alt="خزامى" width="150">
 <div class="seat" id="seat"></div>
-<p class="hint" id="hint">اضغط اللي تحتاجه ونجيك لين عندك</p>
+<div class="mine" id="mine" hidden></div>
+<p class="hint" id="hint"></p>
 <div class="btns" id="btns">
-  <button data-k="order"><span class="e">🙋</span>أبغى أطلب</button>
-  <button data-k="bill"><span class="e">🧾</span>الحساب</button>
-  <button data-k="coal"><span class="e">🔥</span>تغيير الفحم</button>
+  <button data-k="order"><span class="e">🙋</span><span data-t="b_order"></span></button>
+  <button data-k="bill"><span class="e">🧾</span><span data-t="b_bill"></span></button>
+  <button data-k="coal"><span class="e">🔥</span><span data-t="b_coal"></span></button>
 </div>
 <div class="status" id="status" role="status" aria-live="polite" hidden></div>
-<button class="mbtn" id="mbtn" aria-expanded="false"><span class="e">📋</span>المنيو والأسعار</button>
+<button class="mbtn" id="mbtn" aria-expanded="false"><span class="e">📋</span><span data-t="b_menu"></span></button>
 <div class="menu" id="menu" hidden></div>
+<a class="tt" href="https://www.tiktok.com/@khuzama_6" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8a4.3 4.3 0 0 1-1-2.8h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9a7.3 7.3 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.3-1.5Z"/></svg><span data-t="tiktok"></span></a>
 <p class="foot">خزامى · Lavender</p>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -63,66 +83,113 @@ button:focus-visible{outline:2px solid #e9c77b;outline-offset:2px}
 "use strict";
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 const PUSH="https://khuzamah-push.tttbbb24.workers.dev";
-const KIND={order:"تبغى تطلب",bill:"تبغى الحساب",coal:"تبغى تغيير الفحم"};
 const WAIT=120000; // نفس مهلة قاعدة البيانات: نداء كل دقيقتين
 const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const STR={
+ ar:{seat:"جلسة",hint:"اضغط اللي تحتاجه ونجيك لين عندك",b_order:"أبغى أطلب",b_bill:"الحساب",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تابعنا على تيك توك",other:"English",
+  k_order:"تبغى تطلب",k_bill:"تبغى الحساب",k_coal:"تبغى تغيير الفحم",
+  noseat:"الرابط ناقص رقم الجلسة.<small>صوّر الرمز اللي على جلستك مرة ثانية.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
+  coming:n=>(n?esc(n)+" جاي لك الحين":"جايين لك الحين")+" 👋",still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
+  sent:k=>"وصل نداؤك ✓<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"ما قدرنا نرسل النداء.<small>يمكن جلستك لسا ما انفتحت عندنا، أو أرسلت نداء قبل شوي. نادِ الموظف لو سمحت.</small>",
+  retry:"ما قدرنا نتصل.<small>تأكد من النت وجرّب مرة ثانية.</small>",loading:"جاري تحميل المنيو…",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
+  sessions:"الجلسات",hour:"ساعة",open:"وقت مفتوح",toorder:"للطلب اضغط «أبغى أطلب» فوق ونجيك.",or:" أو ",flav:"، وبنكهة ",ice:"، وبثلج ",
+  left:"باقي من وقتك",over:"زاد على وقتك",sat:"جلست",bill:"حسابك لين الحين",details:"تفاصيل الحساب ▾",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الحساب النهائي عند الموظف."},
+ en:{seat:"Table",hint:"Tap what you need and we will come to you",b_order:"I want to order",b_bill:"The bill",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"Follow us on TikTok",other:"عربي",
+  k_order:"want to order",k_bill:"want the bill",k_coal:"want the coal changed",
+  noseat:"This link has no table number.<small>Scan the code on your table again.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
+  coming:n=>(n?esc(n)+" is coming":"We are coming")+" 👋",still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
+  sent:k=>"Call received ✓<small>We know you "+k+". We will be right there.</small>",denied:"Could not send the call.<small>Your table may not be opened yet, or you just called. Please call the staff.</small>",
+  retry:"Could not connect.<small>Check your internet and try again.</small>",loading:"Loading the menu…",menufail:"Could not load the menu. Try again or ask the staff.",
+  sessions:"Seating",hour:"One hour",open:"Open time",toorder:"To order, tap “I want to order” above.",or:" or ",flav:", flavored ",ice:", with ice ",
+  left:"Time left",over:"Over your time",sat:"Seated for",bill:"Your bill so far",details:"Bill details ▾",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff."}};
+let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
+const L=k=>STR[lang][k];
+// ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
+const EN=[[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+ [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
+ [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],
+ [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
+ [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
+ [/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
+const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
+const CATS=[["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["fries","🍟","البطاطس","Fries"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hot","☕","المشروبات الحارة","Hot drinks"],["hookah","💨","المعسلات","Shisha"],["sweet","🍰","الحلا","Desserts"],["nuts","🥜","المكسرات","Nuts"],["other","🍽️","أخرى","Other"]];
+const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
+const priceOf=it=>{ const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 const n=parseInt(new URLSearchParams(location.search).get("s"),10), valid=n>=1&&n<=99, sid="s"+String(n).padStart(2,"0");
-let db=null, uid="", busy=false, lastAt=0, acked=false;
+let db=null, uid="", busy=false, lastAt=0, acked=false, menuData=null, pub=null;
 try{ lastAt=Number(sessionStorage.getItem("kz-call-"+sid))||0 }catch(e){}
 function show(cls,html){ const s=$("status"); s.className="status "+cls; s.innerHTML=html; s.hidden=false; }
 function lock(on){ document.querySelectorAll("#btns button").forEach(b=>b.disabled=on); }
-if(!valid){ $("seat").textContent="خزامى"; $("hint").textContent=""; $("btns").hidden=true; show("bad","الرابط ناقص رقم الجلسة.<small>صوّر الرمز اللي على جلستك مرة ثانية.</small>"); }
-else{
-  $("seat").textContent="جلسة "+n; document.title="خزامى · جلسة "+n;
-  start();
+const clock=m=>Math.floor(m/60)+":"+String(m%60).padStart(2,"0");
+function paintMine(){ // وقت الزبون وحسابه، من النسخة اللي يحدّثها تطبيق الموظفين
+  const m=$("mine"); if(!pub){ m.hidden=true; return }
+  const mins=Math.max(0,Math.floor((Date.now()-Number(pub.s||0))/60000)), hourly=pub.m==="hour", left=Number(pub.h||1)*60-mins;
+  const tl=hourly?(left>=0?[L("left"),clock(left),left<=5]:[L("over"),clock(-left),true]):[L("sat"),clock(mins),false];
+  const feeName=pub.m==="hour"?L("fee_hour"):pub.m==="open"?L("fee_open"):L("fee_free"), items=Array.isArray(pub.items)?pub.items:[];
+  const open=m.querySelector("details")&&m.querySelector("details").open;
+  m.innerHTML=`<div class="two"><div><span>${tl[0]}</span><b class="${tl[2]?"red":""}">${tl[1]}</b></div><div><span>${L("bill")}</span><b>${Number(pub.total)||0}${RS}</b></div></div>
+    <details ${open?"open":""}><summary>${L("details")}</summary><div class="r"><span>${feeName}</span><b>${Number(pub.fee)||0}${RS}</b></div>${items.map(i=>`<div class="r"><span>${esc(nameOf(i.n))}${i.q>1?" × "+i.q:""}</span><b>${Math.round(i.p*i.q*100)/100}${RS}</b></div>`).join("")}<p class="note">${L("final")}</p></details>`;
+  m.hidden=false;
 }
+function paintMenu(){ const m=$("menu"), x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
+  const sec=CATS.map(([k,e,ta,te])=>{const l=items.filter(i=>(i.cat||"other")===k); return l.length?`<section><h2><span>${e}</span>${lang==="en"?te:ta}</h2><div class="box">${l.map(i=>`<div class="r"><span>${esc(nameOf(i.name))}</span><b>${priceOf(i)}</b></div>`).join("")}</div></section>`:""}).join("");
+  m.innerHTML=`<section><h2><span>🪑</span>${L("sessions")}</h2><div class="box"><div class="r"><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="r"><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div></div></section>${sec}<p class="note">${L("toorder")}</p>`;
+}
+function applyLang(){
+  document.documentElement.lang=lang; document.documentElement.dir=lang==="en"?"ltr":"rtl";
+  document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=L(el.dataset.t)}); $("lang").textContent=L("other");
+  if(valid){ $("seat").textContent=L("seat")+" "+n; $("hint").textContent=L("hint"); } else { $("seat").textContent=lang==="en"?"Lavender":"خزامى"; $("hint").textContent=""; show("bad",L("noseat")); }
+  paintMine(); paintMenu();
+}
+$("lang").addEventListener("click",()=>{ lang=lang==="en"?"ar":"en"; try{localStorage.setItem("kz-lang",lang)}catch(e){} $("status").hidden=true; applyLang(); });
+applyLang();
+if(!valid){ $("btns").hidden=true; }
+else{ document.title="خزامى · "+n; }
+start();
 async function start(){
   lock(true);
   try{
     firebase.initializeApp(CFG); db=firebase.firestore();
     uid=(await firebase.auth().signInAnonymously()).user.uid;
-    lock(false);
+    lock(false); if(!valid) return;
     // نتابع النداء: لما الموظف يضغط "رايح لها" يطلع للزبون
     db.doc("calls/"+sid).onSnapshot(d=>{ const x=d.exists?d.data():null;
-      if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go",(x.ackName?esc(x.ackName)+" جاي لك الحين":"جايين لك الحين")+" 👋"); }
+      if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go",L("coming")(x.ackName)); }
     },()=>{});
-  }catch(e){ show("bad","ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>"); }
+    db.doc("pub/"+sid).onSnapshot(d=>{ pub=d.exists?d.data():null; paintMine(); },()=>{});
+    setInterval(paintMine,30000);
+  }catch(e){ show("bad",L("noconn")); }
 }
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 // المنيو: للعرض فقط
-const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
-const CATS=[["corn","🌽","كورن دوق وذرة"],["fries","🍟","البطاطس"],["cold","🧊","المشروبات الباردة"],["hot","☕","المشروبات الحارة"],["hookah","💨","المعسلات"],["sweet","🍰","الحلا"],["nuts","🥜","المكسرات"],["other","🍽️","أخرى"]];
-const TWO=[[/ذر[ةه]/,"5 أو 10"],[/كود\s*ري?د/,"6، وبنكهة 12"],[/ريد\s*بول/,"15، وبنكهة 20"],[/كنز[ةه]/,"3، وبثلج 5"]];
-const priceOf=it=>{const t=TWO.find(x=>x[0].test(it.name)); return (t?t[1]:Number(it.price))+RS};
-let menuLoaded=false;
+const plain=v=>v==null?null:"stringValue" in v?v.stringValue:"integerValue" in v?Number(v.integerValue):"doubleValue" in v?v.doubleValue:"booleanValue" in v?v.booleanValue:"arrayValue" in v?(v.arrayValue.values||[]).map(plain):"mapValue" in v?Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,y])=>[k,plain(y)])):null;
+async function loadMenu(){ // يجرب القراءة العادية مرتين، وبعدها طريق ثاني مباشر
+  let last=null;
+  for(let i=0;i<2;i++){ try{ if(!db) throw new Error("not-ready"); const d=await db.doc("config/menu").get(); if(d.exists) return d.data(); last=new Error("no-menu"); }catch(e){ last=e; } await new Promise(r=>setTimeout(r,900)); }
+  try{ const u=firebase.auth().currentUser, h=u?{Authorization:"Bearer "+await u.getIdToken()}:{};
+    const r=await fetch("https://firestore.googleapis.com/v1/projects/"+CFG.projectId+"/databases/(default)/documents/config/menu",{headers:h});
+    if(!r.ok) throw new Error("rest-"+r.status); return plain({mapValue:await r.json()}); }catch(e){ throw last&&last.code?last:e; }
+}
 $("mbtn").addEventListener("click",async()=>{
   const m=$("menu"), open=m.hidden; m.hidden=!open; $("mbtn").setAttribute("aria-expanded",String(open)); if(!open) return;
-  if(menuLoaded){ m.scrollIntoView({behavior:"smooth",block:"start"}); return; }
-  m.innerHTML='<p class="note">جاري تحميل المنيو…</p>';
-  try{
-    if(!db) throw 0; const d=await db.doc("config/menu").get(); if(!d.exists) throw 0; const x=d.data(), items=Array.isArray(x.items)?x.items:[];
-    const sec=CATS.map(([k,e,t])=>{const l=items.filter(i=>(i.cat||"other")===k); return l.length?`<section><h2><span>${e}</span>${t}</h2><div class="box">${l.map(i=>`<div class="r"><span>${esc(i.name)}</span><b>${priceOf(i)}</b></div>`).join("")}</div></section>`:""}).join("");
-    m.innerHTML=`<section><h2><span>🪑</span>الجلسات</h2><div class="box"><div class="r"><span>ساعة</span><b>${Number(x.hour)||15}${RS}</b></div><div class="r"><span>وقت مفتوح</span><b>${Number(x.open)||30}${RS}</b></div></div></section>${sec}<p class="note">للطلب اضغط «أبغى أطلب» فوق ونجيك.</p>`;
-    menuLoaded=true; m.scrollIntoView({behavior:"smooth",block:"start"});
-  }catch(e){ m.innerHTML='<p class="note">ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.</p>'; }
+  if(menuData){ m.scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  m.innerHTML='<p class="note">'+L("loading")+'</p>';
+  try{ menuData=await loadMenu(); paintMenu(); m.scrollIntoView({behavior:"smooth",block:"start"}); }
+  catch(e){ m.innerHTML='<p class="note">'+L("menufail")+'<br><span dir="ltr" style="opacity:.6;font-size:11px">'+esc(String((e&&(e.code||e.message))||e).slice(0,60))+'</span></p>'; }
 });
 document.getElementById("btns").addEventListener("click",async e=>{
   const b=e.target.closest("button[data-k]"); if(!b||busy||!db) return;
   const kind=b.dataset.k, left=WAIT-(Date.now()-lastAt);
-  if(left>0&&!acked){ show("ok","نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+Math.ceil(left/60000)+" دقيقة.</small>"); return; }
+  if(left>0&&!acked){ show("ok",L("still")(Math.ceil(left/60000))); return; }
   busy=true; lock(true);
   try{
     await db.doc("calls/"+sid).set({kind,uid,at:firebase.firestore.FieldValue.serverTimestamp()});
     lastAt=Date.now(); acked=false; try{sessionStorage.setItem("kz-call-"+sid,String(lastAt))}catch(e){}
-    show("ok","وصل نداؤك ✓<small>عرفنا إنك "+KIND[kind]+"، لحظات ونجيك.</small>");
+    show("ok",L("sent")(L("k_"+kind)));
     // إشعار لجوالات الموظفين حتى لو مقفلة. لو فشل، النداء نفسه واصل للتطبيق.
     try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken();
       await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,call:sid})}); }catch(e){}
-  }catch(err){
-    show("bad",err&&err.code==="permission-denied"
-      ?"ما قدرنا نرسل النداء.<small>يمكن جلستك لسا ما انفتحت عندنا، أو أرسلت نداء قبل شوي. نادِ الموظف لو سمحت.</small>"
-      :"ما قدرنا نتصل.<small>تأكد من النت وجرّب مرة ثانية.</small>");
-  }
+  }catch(err){ show("bad",err&&err.code==="permission-denied"?L("denied"):L("retry")); }
   busy=false; lock(false);
 });
 </script>

@@ -318,6 +318,15 @@ button:active{transform:scale(.97)}
 .ord .tog.psel{border-color:var(--line);background:var(--surface)}
 .ord.s .tog.psel{border-color:var(--green);background:var(--green-bg,rgba(46,160,90,.16))}
 .menu .xopt .num{font-size:15px;opacity:.9}
+.xnote{font-size:14px;min-height:42px;padding:8px 12px}
+.wrow.late{outline:2px solid var(--red)}
+.wrow.late small{color:var(--red);font-weight:600}
+.seat.rsv{border-style:solid;border-color:#e9c77b;background:rgba(233,199,123,.1)}
+.seat.rsv .st{color:#e9c77b;font-weight:700}
+.seat .rn{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.ghost.wide{width:100%}
+.bdgi{display:inline-grid;place-items:center;min-width:22px;height:22px;padding-inline:6px;border-radius:999px;background:#d43a35;color:#fff;font-size:12px;margin-inline-start:6px}
+#wlbar:empty{display:none}
 </style>
 </head>
 <body>
@@ -343,6 +352,7 @@ setTimeout(function(){if(!done&&!fell&&!(v.currentTime>0.05))fb()},1800);setTime
   <section id="pg-seats">
     <div class="strip" id="strip"></div>
     <div class="legend" id="legend"></div>
+    <div id="wlbar"></div>
     <div class="board" id="board"></div>
     <h2>سفري</h2>
     <div class="board" id="take"></div>
@@ -621,6 +631,29 @@ const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحس�
 const tsMs=t=>t&&t.toMillis?t.toMillis():Number(t)||0;
 const callInfo=c=>CALLK[c.kind]||CALLK.order;
 const liveCall=id=>{const c=calls[id]; return c&&!c.ack&&seats[id]&&c.at&&Date.now()-tsMs(c.at)<20*60000?c:null};
+let pubs={}, pubReady=false, pubTimer=null;
+function pubWant(id){ const s=seats[id], g={}; seatOrders(id).forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{n:o.name,p:Number(o.price),q:0}).q+=qty(o)});
+  return {sid:s.sid,t:s.type,s:s.startedAt,h:bookedH(s),m:billMode(s),fee:fee(id),total:r2(fee(id)+itemsTotal(id)),items:Object.values(g)}; }
+function syncPub(){ // يحدّث اللي يشوفه الزبون من ملصق جلسته
+  if(!db||!ready||!me||!pubReady||pubTimer) return;
+  pubTimer=setTimeout(()=>{ pubTimer=null; if(!db) return;
+    Object.keys(seats).filter(x=>!isTake(x)).forEach(id=>{ const w=pubWant(id); if(JSON.stringify(w)!==JSON.stringify(pubs[id]||null)){ pubs[id]=w; db.doc("pub/"+id).set(w).catch(()=>{}) } });
+    Object.keys(pubs).forEach(id=>{ if(!seats[id]){ delete pubs[id]; db.doc("pub/"+id).delete().catch(()=>{}) } });
+  },1500); }
+const LATE=10; // دقايق، بعدها الطلب اللي ما نزل ينحسب متأخر
+const isLate=o=>!o.served&&mins(o.at)>=LATE;
+const lateSeen=new Set();
+async function latePush(o,title,body){ // إشعار التأخير ينرسل مرة وحدة: للقسم صاحب الطلب وللشركاء
+  if(!P()||!pushUrl||!db) return;
+  try{ const ref=db.doc("alerts/late_"+o.id), first=await db.runTransaction(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
+    if(first){ const st=stationOf(o.name); pushSend(2,title,body,"late-"+o.id); if(st!==2) pushSend(st,title,body,"late-"+o.id); } }catch(e){} }
+function scanLate(){ if(!me||!db||!ready) return; let fresh=0;
+  orders.forEach(o=>{ const s=seats[o.seat]; if(!s||s.sid!==o.sid||!isLate(o)||mins(o.at)>180||lateSeen.has(o.id)) return; lateSeen.add(o.id);
+    if(!P()&&stationOf(o.name)!==me.station) return; // الشركاء يشوفون تأخير كل الأقسام، وصاحب القسم قسمه بس
+    const where=isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat), what=o.name+(qty(o)>1?" × "+qty(o):"")+(o.note?" ("+o.note+")":"");
+    note("⏰ تأخر "+mins(o.at)+" د: "+what+" · "+where,"o:"+o.id); fresh++;
+    latePush(o,"⏰ طلب متأخر · "+where,what+" · من "+mins(o.at)+" دقيقة"); });
+  if(fresh) beep([523,523,523]); }
 function scanCalls(){ if(!P()||!db||!ready) return;
   Object.keys(calls).forEach(id=>{ const c=calls[id], k=id+":"+tsMs(c.at);
     if(liveCall(id)){ if(!callSeen.has(k)){ callSeen.add(k); if(callsSeeded){ note(callInfo(c)[0]+" جلسة "+seatNo(id)+" "+callInfo(c)[1],"c:"+id); beep([988,1319,988,1319]); } } }
@@ -630,8 +663,11 @@ function scanCalls(){ if(!P()||!db||!ready) return;
 const callRow=id=>{const c=liveCall(id); if(!c||!P()) return ""; const m=Math.floor((Date.now()-tsMs(c.at))/60000);
   return `<div class="callrow"><span class="e">${callInfo(c)[0]}</span><span class="t"><b>جلسة ${seatNo(id)}</b> ${callInfo(c)[1]}<small class="num">${m<1?"الحين":"قبل "+m+" د"}</small></span><button class="primary" data-act="callack" data-id="${esc(id)}">رايح لها</button></div>`};
 function tile(id){ const h=tile0(id), c=P()&&liveCall(id); return c?h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`):h; }
+let reserves={}, waitlist=[];
+const rsv=id=>(!seats[id]&&reserves[id])||null;
 function tile0(id){
   const s=seats[id], A=P()||s?`data-act="seat" data-id="${esc(id)}"`:`data-id="${esc(id)}"`;
+  if(!s&&rsv(id)) return `<button class="seat rsv" ${A}><span class="n num">${seatNo(id)}</span><span class="st">محجوزة</span><span class="rn">${esc(rsv(id).name||"")}</span></button>`;
   if(!s) return `<button class="seat" ${A}><span class="n num">${seatNo(id)}</span><span class="st">فاضية</span></button>`;
   const p=units(seatOrders(id).filter(o=>!o.served)), dot=p?`<span class="dot num">${p}</span>`:"";
   const tot=`<span class="tt num">${money(fee(id)+itemsTotal(id))}</span>`;
@@ -643,6 +679,7 @@ function tile0(id){
   return `<button class="seat on ${l<=5?"alarm":"st-hour"}" ${A}>${dot}<span class="n num">${seatNo(id)}</span><span class="st">${l<=0?"انتهى الوقت":"ساعة · باقي"}</span><span class="tm num">${l<0?"زاد "+clock(-l):clock(l)}</span>${tot}</button>`;
 }
 function renderMain(){
+  scanLate(); syncPub();
   scanCalls(); $("callbar").innerHTML=P()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"";
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
   const takes=Object.keys(seats).filter(isTake).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
@@ -659,14 +696,15 @@ function renderMain(){
   const present=[...new Set(Object.values(seats).map(seatState))];
   $("legend").innerHTML=["open","hour","free","conv","alarm","take"].filter(k=>present.includes(k)).map(k=>`<span><i style="background:${STATE_LOOK[k][0]}"></i>${STATE_LOOK[k][1]}</span>`).join("");
   if(legacy&&ready){$("notice").hidden=false;$("notice").textContent="لسه الدخول بالرمز المشترك. افتح «المستخدمين» وأنشئ رمز لكل واحد ثم فعّل."}
+  $("wlbar").innerHTML=P()&&!legacy?`<button class="ghost wide" data-act="wl">قائمة الانتظار${waitlist.length?` <span class="bdgi num">${waitlist.length}</span>`:""}</button>`:"";
   $("take").innerHTML=(me?`<button class="seat add" data-act="newtake"><span class="n">+</span><span class="st">سفري جديد</span></button>`:"")+takes.map(tile).join("");
   const stations=STATIONS;
   const buckets=stations.map(()=>[]); pend.forEach(g=>buckets[stationOf(g.o.name)].push(g));
   $("stpick").innerHTML=[["الكل",-1],["البطاطس",0],["الكورن دوق",1],["الترك",2]].map(([t,k])=>`<button class="chip ${myStation===k?"on":""}" data-act="station" data-k="${k}">${t}${k>=0&&buckets[k].length?` <span class="num">${cnt(buckets[k])}</span>`:""}</button>`).join("");
   $("wait").innerHTML=stations.map(([t],k)=>myStation>=0&&myStation!==k?"":`<h3 class="cat st ${buckets[k].length?"hot":""}">${t} <span class="num">${cnt(buckets[k])}</span></h3>`+
     (buckets[k].length?buckets[k].map(({o,q})=>
-    `<div class="wrow ${waitSeeded&&!seenWait.has(o.id)?"pop":""}"><span class="who num">${esc(lab(o.seat))}</span>
-      <span class="what">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}<small class="num">${o.note?esc(o.note)+" · ":""}من ${mins(o.at)} دقيقة</small></span>
+    `<div class="wrow ${isLate(o)?"late":""} ${waitSeeded&&!seenWait.has(o.id)?"pop":""}"><span class="who num">${esc(lab(o.seat))}</span>
+      <span class="what">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}<small class="num">${o.note?esc(o.note)+" · ":""}${isLate(o)?"⏰ متأخر · ":""}من ${mins(o.at)} دقيقة</small></span>
       <button class="done" data-act="serve" data-oid="${esc(o.id)}">نزل</button></div>`).join("")
     :`<p class="empty">${ready?"ما في طلبات.":"…"}</p>`)).join("");
   const mineN=me?cnt(buckets[scope()]||[]):0; $("nav-badge").hidden=!mineN; $("nav-badge").textContent=mineN; paintBell();
@@ -681,17 +719,19 @@ const xBtn=`<button class="close" data-act="close" aria-label="إغلاق">×</b
 function renderSheet(){
   if(!view) return;
   const p=$("panel");
-  if(view.kind==="seat"||view.kind==="pay"||view.kind==="extras"||view.kind==="move"){
+  if(view.kind==="seat"||view.kind==="pay"||view.kind==="extras"||view.kind==="move"||view.kind==="mvitem"){
     if(view.newTake){ p.innerHTML=view.kind==="extras"?extrasHtml():takeDraftHtml(); return }
     if(!seats[view.id]){
       if(isTake(view.id)){ if(view.wait){p.innerHTML=`<p class="empty">جاري فتح الطلب…</p>`;return} closeSheet();return }
       if(view.kind!=="seat"){closeSheet();return} p.innerHTML=freeHtml(view.id);return }
     view.wait=false;
-    p.innerHTML=view.kind==="pay"?payHtml(view.id):view.kind==="extras"?extrasHtml():view.kind==="move"?moveHtml():seatHtml(view.id);
+    p.innerHTML=view.kind==="pay"?payHtml(view.id):view.kind==="extras"?extrasHtml():view.kind==="move"?moveHtml():view.kind==="mvitem"?mvItemHtml(view.id):seatHtml(view.id);
   } else if(view.kind==="summary") p.innerHTML=summaryHtml();
   else if(view.kind==="settings") p.innerHTML=settingsHtml();
   else if(view.kind==="users") p.innerHTML=usersHtml();
   else if(view.kind==="log") p.innerHTML=logHtml();
+  else if(view.kind==="wl") p.innerHTML=wlHtml();
+  else if(view.kind==="month") p.innerHTML=monthHtml();
   else if(view.kind==="notes") p.innerHTML=`<div class="phead"><div class="meta"><b>الإشعارات</b><span>${P()?"طلبات الترك وأوقات الجلسات":"طلبات قسمك"}</span></div>${xBtn}</div>
     ${notes.length?`<button class="ghost" data-act="noteclr">مسح الكل</button>`:""}
     <div class="bill">${notes.length?notes.map(x=>`<div class="r"><span>${esc(x.text)}</span><span class="q num">${tclock(x.at)}</span><button class="nx" data-act="notedel" data-n="${x.id}" aria-label="حذف الإشعار">✕</button></div>`).join(""):`<div class="r"><span class="q">ما في إشعارات من يوم فتحت التطبيق.</span><span></span></div>`}</div>`;
@@ -709,14 +749,36 @@ function renderSheet(){
       <button data-act="theme">المظهر<span>${theme==="dark"?"ليلي":"نهاري"}</span></button>
     </div><p class="empty">النسخة ${VER}</p>`;
 }
-function freeHtml(id){
-  return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>جلسة فاضية</b><span>اختر نوع الجلسة ويبدأ الوقت</span></div>${xBtn}</div>
+function freeHtml(id){ const r=rsv(id);
+  return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>${r?"جلسة محجوزة":"جلسة فاضية"}</b><span>اختر نوع الجلسة ويبدأ الوقت</span></div>${xBtn}</div>
+  ${r?`<div class="callrow"><span class="e">📌</span><span class="t"><b>محجوزة${r.name?" لـ "+esc(r.name):""}</b><small class="num">حجزها ${esc(r.byName||"")} · ${tclock(r.at)}</small></span><button class="ghost" data-act="unrsv">إلغاء الحجز</button></div>`:""}
   <div class="pick">
     <button data-act="start" data-type="hour"><b>ساعة</b><span class="num">${cfg.hour}${RS}</span></button>
     <button data-act="start" data-type="open"><b>وقت مفتوح</b><span class="num">${cfg.open}${RS}</span></button>
     <button data-act="start" data-type="free" style="grid-column:1/-1;padding:12px"><b>جلسة مجاناً</b><span class="num" style="font-size:20px">0</span></button>
-  </div>`;
+  </div>
+  ${r?"":`<div class="set pbox"><div class="row"><input class="nm" id="rsv-name" maxlength="30" autocomplete="off" placeholder="احجزها لزبون جاي: الاسم (اختياري)" aria-label="اسم الحجز"><button class="ghost" data-act="rsv">احجز</button></div></div>`}`;
 }
+function wlHtml(){
+  const L=waitlist.slice().sort((a,b)=>a.at-b.at), free=allSeatIds().filter(x=>x&&!seats[x]&&!rsv(x)).length;
+  return `<div class="phead"><div class="meta"><b>قائمة الانتظار</b><span>${free?"في "+free+" جلسة فاضية الحين":"كل الجلسات مشغولة"}</span></div>${xBtn}</div>
+  <div class="set"><div class="row item"><input class="nm" id="wl-name" maxlength="30" autocomplete="off" placeholder="الاسم" aria-label="الاسم">
+    <input class="nm num" id="wl-phone" inputmode="tel" maxlength="15" autocomplete="off" placeholder="رقم الجوال" aria-label="رقم الجوال" dir="ltr">
+    <button class="primary" data-act="wladd">أضف للانتظار</button></div></div>
+  <p class="empty">يكفي الاسم أو الرقم، واحد منهم.</p>
+  <div class="orders">${L.length?L.map((x,i)=>`<div class="ord"><div class="tog" style="border-color:var(--line);background:var(--surface)"><span class="who num" style="font-family:var(--num);font-weight:700;font-size:20px;min-width:24px">${i+1}</span><span class="nm">${esc(x.name||"بدون اسم")}<small class="num" dir="ltr" style="text-align:end">${esc(x.phone||"")}</small><small class="num">ينتظر من ${mins(x.at)} دقيقة · سجّله ${esc(x.byName||"")}</small></span></div>
+    ${x.phone?`<a class="del qb" href="tel:${esc(x.phone)}" aria-label="اتصال" style="display:grid;place-items:center;text-decoration:none">📞</a>`:""}
+    <button class="del qb" data-act="wldone" data-w="${esc(x.id)}" aria-label="جلس أو مشى">✓</button></div>`).join(""):`<p class="empty">ما في أحد ينتظر.</p>`}</div>`;
+}
+function mvItemHtml(id){
+  const os=seatOrders(id), G=groupOrders(os), pick=view.oid&&orders.find(o=>o.id===view.oid), tg=Object.keys(seats).filter(x=>x!==id).sort((a,b)=>(isTake(a)?1:0)-(isTake(b)?1:0)||a.localeCompare(b));
+  return `<div class="phead"><span class="big num">${esc(lab(id))}</span><div class="meta"><b>نقل صنف</b><span>${pick?"اختر الجلسة اللي ينتقل لها":"اختر الصنف اللي تبغى تنقله"}</span></div>${xBtn}</div>
+  ${!pick?`<div class="orders">${G.map(({o,q})=>`<div class="ord ${o.served?"s":"p"}"><button class="tog" data-act="mvpick" data-oid="${esc(o.id)}"><span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span></button></div>`).join("")}</div>`
+  :`<div class="notice">${esc(pick.name)}${o_q(pick)>1?" × "+o_q(pick):""}</div>
+    ${tg.length?`<div class="tiles">${tg.map(x=>`<button class="tile" style="min-height:72px" data-act="mvto" data-to="${esc(x)}"><span class="n num" style="font-family:var(--display);font-size:28px;line-height:1">${esc(lab(x))}</span><span class="num">${isTake(x)?"سفري":"جلسة"}</span></button>`).join("")}</div>`:`<p class="empty">ما في جلسة ثانية مفتوحة.</p>`}`}
+  <button class="link" data-act="back">رجوع بدون نقل</button>`;
+}
+const o_q=o=>units(orders.filter(x=>sameLine(x,o)));
 function takeDraftHtml(){
   return `<div class="phead"><div class="meta"><b>طلب سفري جديد</b><span>ينفتح وياخذ رقمه ويبدأ وقته مع أول صنف</span></div>${xBtn}</div>
   ${menuHtml()}`;
@@ -726,7 +788,7 @@ function seatHtml(id){
   const title=take?"سفري":s.type==="free"?"جلسة مجاناً":s.type==="open"?"وقت مفتوح":conv?"طلب ساعة · تحولت مفتوح":"ساعة"+(bookedH(s)>1?" × "+bookedH(s):"");
   const sub=(take?"من "+clock(m):s.type!=="hour"||conv?"الوقت "+clock(m):l>=0?"باقي "+clock(l):"زاد "+clock(-l))+" · "+(take?"انفتح ":"دخل ")+tclock(s.startedAt);
   const tab=view.tab||(os.length?"orders":"add"), n=units(os);
-  const list=`<div class="orders">${os.length?groupOrders(os).map(({o,q})=>{const k="del:"+o.id, inner=`<span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}${o.byName?`<small class="by">سجّله ${esc(o.byName)} · ${tclock(o.at)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span><span class="tag">${o.served?"نزل":"ما نزل"}</span>`;
+  const list=`<div class="orders">${os.length?groupOrders(os).map(({o,q})=>{const k="del:"+o.id, inner=`<span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}${o.byName?`<small class="by">سجّله ${esc(o.byName)} · ${tclock(o.at)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span><span class="tag">${o.served?"نزل":isLate(o)?"⏰ "+mins(o.at)+" د":"ما نزل"}</span>`;
     if(!mine(o.name)) return `<div class="ord ${o.served?"s":"p"}" style="opacity:.55"><div class="tog">${inner}</div></div>`;
     return `<div class="ord ${o.served?"s":"p"}">
       <button class="tog" data-act="toggle" data-oid="${esc(o.id)}">${inner}</button>
@@ -734,7 +796,8 @@ function seatHtml(id){
       <button class="del qb" data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button>
     </div>`}).join(""):`<p class="empty">ما في طلبات. اضغط «أضف طلب» فوق.</p>`}</div>
   ${full&&s.type==="hour"&&!conv?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour}${RS})</button>`:""}
-  ${full&&!take?`<button class="ghost" data-act="move">نقل لجلسة ثانية</button>`:""}`;
+  ${full&&!take?`<button class="ghost" data-act="move">نقل الجلسة كلها لجلسة ثانية</button>`:""}
+  ${full&&os.length?`<button class="ghost" data-act="mvitem">نقل صنف لجلسة ثانية</button>`:""}`;
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
     <div class="meta"><b>${title}</b><span class="num">${sub}</span></div>${xBtn}</div>
   ${callRow(id)}
@@ -751,7 +814,8 @@ function priced(r){ // ضيافة للصنف أو سعر خاص، للشركاء
   const c=num(view.cprice); if(c>0&&c!==r.price) return {...r,orig:r.price,price:c,note:j(r.note,"سعر خاص"),custom:true};
   return r;
 }
-const pickLine=()=>{const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name); return priced(sp?resolve(sp,it,view):{name:it.name,price:Number(it.price),note:"",ok:true})};
+const pickLine=()=>{const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name), r=priced(sp?resolve(sp,it,view):{name:it.name,price:Number(it.price),note:"",ok:true}), u=String(view.unote||"").trim().slice(0,60);
+  if(u) r.note=[r.note,u].filter(Boolean).join(" · "); return r};
 const xSum=r=>r.ok?esc(r.name)+(view.q>1?" × "+view.q:"")+" · "+money(r.price*view.q):"اختر أول";
 function extrasHtml(){
   const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name), r=pickLine(), list=sp?resolve(sp,it,view):{price:Number(it.price)};
@@ -762,6 +826,7 @@ function extrasHtml(){
     <button class="xopt ${view.size==="small"?"on":""}" data-act="xsize" data-s="small"><b>صغير</b><span class="num">${CORN.small}${RS}</span></button>
     <button class="xopt ${view.size==="big"?"on":""}" data-act="xsize" data-s="big"><b>كبير</b><span class="num">${CORN.big}${RS}</span></button></div>`:""}
   <div class="step qstep"><span>الكمية</span><button data-act="qminus" aria-label="نقص">−</button><b class="num">${view.q}</b><button data-act="qplus" aria-label="زود">+</button></div>
+  <input class="xnote" id="x-note" maxlength="60" autocomplete="off" placeholder="ملاحظة (اختياري)" aria-label="ملاحظة على الصنف" value="${esc(view.unote||"")}">
   ${P()?`<div class="set pbox"><div class="row"><button class="chip ${view.comp?"on":""}" data-act="xcomp">ضيافة</button>
     <label for="x-price" style="text-align:end">أو سعر خاص للحبة</label><input class="pr num" id="x-price" inputmode="decimal" autocomplete="off" placeholder="${list.price||0}" value="${view.cprice?esc(view.cprice):""}" ${view.comp?"disabled":""}></div></div>`:""}
   <div class="foot"><div class="sum"><span id="x-sum">${xSum(r)}</span><b style="font-family:var(--body);font-weight:700;font-size:18px;line-height:1.4">${esc(r.ok?r.note:"")}</b></div>
@@ -937,9 +1002,10 @@ function summaryHtml(){
     const k="ds:"+x.id, open=view.openSale===x.id;
     return `<div class="ord" style="flex-wrap:wrap"><button class="tog" data-act="saleopen" data-sid="${esc(x.id)}" style="border-color:var(--line);background:var(--surface)"><span class="nm">${x.type==="take"?"سفري "+(x.tno||""):"جلسة "+(x.seat||"")}${x.partial?" · حساب جزئي":""}<small class="num">${x.type!=="take"&&x.startedAt?"دخل "+tclock(x.startedAt)+" · طلع ":""}${tclock(x.closedAt)}${x.converted?" · انفتحت "+(MODE[x.ordered]||"")+" وانحسبت "+(MODE[x.type]||""):x.type==="free"?" · جلسة مجاناً":""} · ${payName(x)}${x.pay==="split"?" ("+Number(x.cash||0)+" كاش)":""}${Number(x.disc)>0?" · خصم "+Number(x.disc):""} · ${units(x.items||[])} حبة${x.byName?" · "+esc(x.byName):""}</small></span><span class="num">${money(Number(x.total||0))}</span></button>
       ${open?`<div class="paybtns" style="flex:1 1 100%;grid-template-columns:1fr 1fr 1fr"><button class="ghost" data-act="salemove" data-sid="${esc(x.id)}" data-n="-1">انقله لليوم السابق</button><button class="ghost" data-act="salemove" data-sid="${esc(x.id)}" data-n="1" ${live?"disabled":""}>انقله لليوم التالي</button><button class="ghost ${sure===k?"sure":""}" style="${sure===k?"background:var(--red);color:#fff":"color:var(--red)"}" data-act="delsale" data-sid="${esc(x.id)}">${sure===k?"تأكيد الحذف":"حذف"}</button></div>`:""}</div>`;}).join("")}</div>
+  <button class="ghost wide" data-act="month">ملخص الشهر</button>
   <h2>سجل الحركات</h2><p class="empty">الإلغاء والحذف والتنقيص والضيافة وتعديل الأسعار، ومين سواها.</p>
   <div class="bill">${L.length?L.slice().sort((a,b)=>b.at-a.at).map(l=>`<div class="r"><span>${sarify(esc(l.what))}<br><span class="q num">${tclock(l.at)} · ${esc(l.byName||"بدون اسم")}</span></span><span></span></div>`).join(""):row(`<span class="q">ما في حركات</span>`,"")}</div>`
-  :`<p class="empty">ما في حسابات مقفلة على هذا اليوم.</p>`}
+  :`<p class="empty">ما في حسابات مقفلة على هذا اليوم.</p><button class="ghost wide" data-act="month">ملخص الشهر</button>`}
   ${week}`;
 }
 function logHtml(){ // كل اللي صار في اليوم: مين سجّل، مين قفل، ومين ألغى أو حذف
@@ -962,6 +1028,27 @@ function logHtml(){ // كل اللي صار في اليوم: مين سجّل، �
   <div class="bill">${list.length?list.map(e=>`<div class="r"><span>${e.t}<br><span class="q num">${e.at?tclock(e.at):"—"} · ${esc(e.who||"بدون اسم")} · ${KN[e.k]}</span></span><span></span></div>`).join(""):`<div class="r"><span class="q">ما في حركات</span><span></span></div>`}</div>`}`;
 }
 function openLog(day){ const o=view&&view.kind==="log"?view:{}; openSheet({kind:"log",day,who:o.who||"",lk:o.lk||"",week:o.week||{}}); loadDay(view); }
+const monthShift=(ym,n)=>{const [y,m]=ym.split("-").map(Number), t=new Date(y,m-1+n,1); return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")};
+const monthLabel=ym=>{const [y,m]=ym.split("-").map(Number); try{return new Date(y,m-1,1).toLocaleDateString("ar-u-ca-gregory-nu-latn",{month:"long",year:"numeric"})}catch(e){return ym}};
+function openMonth(ym){ openSheet({kind:"month",ym,sales:null}); const v=view;
+  db.collection("sales").where("day",">=",ym+"-01").get().then(a=>{ v.sales=a.docs.map(d=>Object.assign({id:d.id},d.data())).filter(x=>String(x.day).startsWith(ym)); if(view===v) renderSheet() }).catch(()=>{ v.sales=[]; if(view===v) renderSheet() }); }
+function monthHtml(){
+  const ym=view.ym, cur=TODAY.slice(0,7), S=view.sales, row=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</span><span class="num">${b}</span></div>`;
+  const nav=`<div class="crumb" style="justify-content:space-between"><button class="ghost" data-act="month" data-m="${monthShift(ym,-1)}">الشهر السابق</button><b>${esc(monthLabel(ym))}</b><button class="ghost" data-act="month" data-m="${monthShift(ym,1)}" ${ym>=cur?"disabled":""}>الشهر التالي</button></div>`;
+  if(!S) return `<div class="phead"><div class="meta"><b>ملخص الشهر</b><span>جاري التحميل…</span></div>${xBtn}</div>${nav}`;
+  const R=summarize(S), days={}; S.forEach(x=>{ if(x.pay!=="comp") days[x.day]=(days[x.day]||0)+Number(x.total||0) });
+  const dl=Object.keys(days).sort().reverse(), best=dl.slice().sort((a,b)=>days[b]-days[a])[0], all={};
+  R.g.forEach(g=>Object.entries(g).forEach(([n,x])=>{all[n]={q:x.q,sum:x.sum}}));
+  const top=Object.entries(all).sort((a,b)=>b[1].sum-a[1].sum).slice(0,10);
+  return `<div class="phead"><div class="meta"><b>ملخص الشهر</b><span>${esc(monthLabel(ym))}</span></div>${xBtn}</div>${nav}
+  <div class="strip"><div><b class="num">${money(R.tot)}</b><span>دخل الشهر</span></div><div><b class="num">${dl.length}</b><span>يوم شغل</span></div><div><b class="num">${dl.length?money(R.tot/dl.length):"—"}</b><span>متوسط اليوم</span></div></div>
+  ${S.length?`<h2>كل الدخل</h2><div class="bill">${row("المجموع",money(R.tot),"tot")}${row("كاش",money(R.pay.cash),"sub")}${row("شبكة",money(R.pay.card),"sub")}
+    ${R.discSum>0.004?row("خصومات انعطت",money(R.discSum),"sub"):""}${R.compV>0.004?row("ضيافة قيمتها",money(R.compV),"sub"):""}${best?row("أعلى يوم: "+esc(dayLabel(best)),money(days[best]),"sub"):""}</div>
+  <h2>نصيب كل قسم</h2><div class="bill">${row("البطاطس",money(R.shares[0]))}${row("الكورن دوق والذرة",money(R.shares[1]))}${row("الترك (منها الجلسات "+r2(R.fees)+")",money(R.shares[2]))}</div>
+  <h2>أكثر 10 أصناف دخلاً</h2><div class="bill">${top.map(([n,x])=>row(`${esc(n)} <span class="q num">× ${x.q}</span>`,money(x.sum))).join("")}</div>
+  <h2>الأيام</h2><p class="empty">اضغط اليوم عشان تفتح ملخصه.</p><div class="bill">${dl.map(d=>`<button class="r" style="width:100%" data-act="sday" data-d="${d}"><span>${esc(dayLabel(d))}</span><span class="num">${money(days[d])}</span></button>`).join("")}</div>`
+  :`<p class="empty">ما في حسابات في هذا الشهر.</p>`}`;
+}
 function openSummary(day){ openSheet({kind:"summary",day,week:view&&view.kind==="summary"?view.week:null}); loadDay(view); }
 async function loadDay(v){ // يجيب بيانات اليوم المعروض
   if(!db||!P()) return;
@@ -998,6 +1085,7 @@ document.addEventListener("input",e=>{
   const t=e.target;
   if(t.id==="cl-float"||t.id==="cl-count"){ if(!view||view.kind!=="summary") return; view[t.id==="cl-float"?"float":"count"]=t.value;
     const K=closeCalc(summarize((view.day||TODAY)===TODAY?sales:(view.sales||[]))); $("cl-diff").innerHTML="المفروض "+money(K.exp)+" · "+diffText(K); return; }
+  if(t.id==="x-note"){ if(view&&view.kind==="extras") view.unote=t.value; return; }
   if(t.id==="x-price"){ if(!view||view.kind!=="extras") return; view.cprice=t.value; $("x-sum").innerHTML=xSum(pickLine()); return; }
   if(t.id==="pay-disc"||t.id==="pay-cash"||t.id==="pay-pfee"){ if(!view||view.kind!=="pay") return; view[t.id==="pay-disc"?"disc":t.id==="pay-cash"?"cash":"pfee"]=t.value;
     if(t.id==="pay-pfee") document.querySelectorAll("#panel [data-act=paid]").forEach(x=>{if(x.id!=="pay-split") x.disabled=!partUnits(view.id,view)&&!payCalc(view.id,view).f});
@@ -1025,6 +1113,18 @@ document.addEventListener("click",e=>{
       await db.doc("closings/"+day).set(doc); v.closing=doc; toast("انحفظت التسوية"); if(view===v) renderSheet(); }); }
   if(a==="payday"){ view.today=!view.today; return renderSheet() }
   if(a==="who") return openSheet({kind:"users"});
+  if(a==="wl"){ if(!P()) return; return openSheet({kind:"wl"}) }
+  if(a==="wladd"){ if(!P()) return; const nm=$("wl-name").value.trim().slice(0,30), ph=digits($("wl-phone").value).slice(0,15); if(!nm&&!ph){toast("اكتب الاسم أو رقم الجوال");return}
+    return run("wl",async()=>{await db.doc("config/waitlist").set({items:[...waitlist,{id:Date.now().toString(36),name:nm,phone:ph,at:Date.now(),byName:(me&&me.name)||""}]}); toast("انضاف للانتظار")}) }
+  if(a==="wldone"){ if(!P()) return; const w=b.dataset.w; return run("wl",async()=>{await db.doc("config/waitlist").set({items:waitlist.filter(x=>x.id!==w)})}) }
+  if(a==="rsv"||a==="unrsv"){ if(!P()||!id||seats[id]) return; const m={...reserves}; if(a==="rsv") m[id]={name:$("rsv-name").value.trim().slice(0,30),at:Date.now(),byName:(me&&me.name)||""}; else delete m[id];
+    return run("rsv",async()=>{await db.doc("config/reserve").set(m); toast(a==="rsv"?"انحجزت الجلسة "+seatNo(id):"انلغى الحجز")}) }
+  if(a==="mvitem"){ if(!P()) return; return openSheet({kind:"mvitem",id,oid:null}) }
+  if(a==="mvpick"){ if(!P()) return; view.oid=oid; return renderSheet() }
+  if(a==="mvto"){ if(!P()) return; const to=b.dataset.to, o=orders.find(x=>x.id===view.oid), t=seats[to]; if(!o||!t) return; const docs=orders.filter(x=>sameLine(x,o)), n=units(docs), from=id;
+    return run("mv:"+o.id,async()=>{ for(const d of docs) await db.doc("orders/"+d.id).update({seat:to,sid:t.sid});
+      logIt("نقل "+o.name+(n>1?" × "+n:"")+" من "+(isTake(from)?"سفري ":"الجلسة ")+lab(from)+" إلى "+(isTake(to)?"سفري ":"الجلسة ")+lab(to)); toast("انتقل "+o.name+" إلى "+(isTake(to)?"سفري ":"جلسة ")+lab(to)); openSheet({kind:"seat",id:from,tab:"orders"}) }) }
+  if(a==="month"){ if(!P()) return; return openMonth(b.dataset.m||TODAY.slice(0,7)) }
   if(a==="callack"){ const cid=b.dataset.id; if(!P()||!calls[cid]) return; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); toast("تمام، الزبون شاف إنك جاي")}) }
   if(a==="calltoggle"){ if(!P()) return; return run("calloff",async()=>{ if(callsOff) await db.doc("config/callsOff").delete(); else await db.doc("config/callsOff").set({at:Date.now(),...BY()}); toast(callsOff?"رجع نداء الزباين":"توقف نداء الزباين") }) }
   if(a==="stickers") return void window.open("stickers.html","_blank");
@@ -1068,7 +1168,7 @@ document.addEventListener("click",e=>{
   if(!P()&&["settings","delsale","start","pay","paid","comp","cancel","move","moveto","addhour","bmode","hplus","hminus"].includes(a)) return;
   if(a==="bmode"){view.mode=b.dataset.m; if(view.mode==="hour"&&!view.hours) view.hours=autoHours(seats[id]); return renderSheet()}
   if(a==="settings"){draft=JSON.parse(JSON.stringify(cfg));return openSheet({kind:"settings"})}
-  if(a==="start") return run("seat:"+id,async()=>{await db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:b.dataset.type,startedAt:Date.now()}); if(b.dataset.type==="free") logIt("فتح الجلسة "+seatNo(id)+" مجاناً")});
+  if(a==="start") return run("seat:"+id,async()=>{ if(reserves[id]){ const m={...reserves}; delete m[id]; db.doc("config/reserve").set(m).catch(()=>{}) }await db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:b.dataset.type,startedAt:Date.now()}); if(b.dataset.type==="free") logIt("فتح الجلسة "+seatNo(id)+" مجاناً")});
   if(a==="xtoggle"){const x=+b.dataset.x,k=view.sel.indexOf(x); view.ex=false; view.size=null; if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
   if(a==="xex"){view.ex=!view.ex; view.sel=[]; view.size=null; return renderSheet()}
   if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
@@ -1171,6 +1271,9 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
 function listen(){
   db=fdb; $("gate").hidden=true; if(!P()){ myStation=me.station; mainTab="orders"; }
   pushSync(false).catch(()=>{});
+  db.doc("config/reserve").onSnapshot(d=>{reserves=d.exists?d.data():{}; refresh()},()=>{});
+  db.doc("config/waitlist").onSnapshot(d=>{waitlist=(d.exists&&Array.isArray(d.data().items))?d.data().items:[]; refresh()},()=>{});
+  db.collection("pub").onSnapshot(s=>{pubs={};s.docs.forEach(d=>pubs[d.id]=d.data());pubReady=true},()=>{});
   if(P()){ db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
     db.doc("config/callsOff").onSnapshot(d=>{callsOff=d.exists; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{}); }
   db.doc("config/push").onSnapshot(d=>{pushUrl=(d.exists&&d.data().url)||""; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{});
@@ -1219,7 +1322,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v31";
+const VER="v32";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
