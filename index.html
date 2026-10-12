@@ -327,6 +327,8 @@ button:active{transform:scale(.97)}
 .ghost.wide{width:100%}
 .bdgi{display:inline-grid;place-items:center;min-width:22px;height:22px;padding-inline:6px;border-radius:999px;background:#d43a35;color:#fff;font-size:12px;margin-inline-start:6px}
 #wlbar:empty{display:none}
+.qrwrap{background:#fff;border-radius:18px;padding:10px;align-self:center;width:min(100%,340px)}
+.qrbig{display:block;width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -499,8 +501,18 @@ const left=s=>bookedH(s)*60-mins(s.startedAt); // الدقائق الباقية 
 const autoHours=s=>s.type==="hour"?bookedH(s):1;
 const billMode=(s,v)=>s.type==="take"?"take":(v&&v.mode)||(s.type==="open"?"open":s.type==="free"?"free":mins(s.startedAt)>bookedH(s)*60+GRACE?"open":"hour"); // كيف تنحسب الجلسة
 const MODE={hour:"ساعة",open:"وقت مفتوح",free:"مجاناً"};
+const W=()=>!!me&&me.role==="waiter"; // العامل: يفتح جلسات ويسجل طلبات ويرد على النداء، بدون حساب
+const C=()=>P()||W(); // مين يوصله نداء الزباين
+const ownLine=o=>P()||!W()||(o.by===me.id&&!o.served); // العامل يعدّل كمية اللي سجله هو قبل ما ينزل
+const QRHEX=["feec793fc14a50906e8252cbb75b5055dba2e0aaec1010f107faaaaafe0160d100b742f7258e944f9bdf96b2d77197d5668d3b03add10ee7c0383ecef8a9994d58fcaa913c6e5684a2d650fcd1a6db9271791de292c07dcd3ba914ab430dc6b331059a8ffb49f90047ba463fb3266a105701b1fba0245fa5d72160b6eaa03fd90417e771fe9bed0a0", "feeb653fc13468506e97078bb7504c25dba8a7b2ec1585e507faaaaafe01b7ed008bf85dfcf257c1a321ae515942357fcc222df26acc86044e012dbbadfca22c9fe06e8d4da946d3f78333f36945550e00be0f6e186ad56b134a980c8d352459bbaf30de2c55f8806982c5bfae732b5044ddd13baf834fd5d27435e2e823b1e104f0fb00feb147a08", "fe9aa23fc16468506ea81bebb74f2195dbaef2e2ec10b37d07faaaaafe005812009f9bd3cb92e58887ab84fbf3f1345b5e6ba4ee1b0d8b444e027bca6ae18a8a448d3bc818fc700a9a35f891e77da2317f41fc24a0895c8eb7d8d22e079f8f1929e614c24d92fc804982c5bfb96f6a90533071ebaa161f85d642ee8ee81b526f043f04fffec2c9980", "fedaa23fc16468506eb81bebb7422195dbaff2e2ec10333d07faaaaafe006822009f8bd3cb96c58887bb84fbf3e13c5b5e6b20ee1b0e2b844e02bdca6ae188ba448d1ac818fc700a9a35e990677db3b9bf41f522c0895d0667d8d26c679f8f1939e614c25d92fc804982c5bfb86f6a905b7071ebaaf61f85d6c2ee8ee83b526f043f04fffed2c9980", "feec793fc17a50906e9252cbb75a5055dba060aaec1050f107faaaaafe0140c100b742f725ce944f9bff96b2d77897d56685b583add10e27c038beeef8a9b86d58fc8a913c6e1286a2d641fcd1a6c39ab1791ce2d2c07f6dfba914ad630dc6f301059aaffb49f90067ba463fba266a105b81b1fba6a45fa5d7a160b6eae03fd90437e771fe8bed0a0", "feeb653fc10468506e87078bb7514c25dbaa27b2ec15c5e507faaaaafe0197fd008bf85dfcb257c1a301ae51594b357fcc2aa3726acc86c44e01ad9badfc830c9fe04e8d4da902d1f78322f369454d06c0be0e6e586ad7cbd34a980aad3524198baf30fe2c55f8804982c5bfa7732b50485dd13ba9034fd5d2f435e2e863b1e104d0fb00fea147a08", "fe9aa23fc15468506eb81bebb74e2195dbac72e2ec10f37d07faaaaafe007802009f9bd3cbd2e588878b84fbf3f8345b5e632a6e1b0d8b844e02fbea6ae1abaa448d1bc818fc34089a35e991e77dba39bf41fd24e0895e2e77d8d228279f8f5919e614e24d92fc806982c5bfb06f6a905fb071ebac961f85d6c2ee8ee85b526f041f04fffed2c9980", "feac793fc14a50906e9252cbb7575055dba0e0aaec1010b107faaaaafe0140d100b742e725cab44f9bcf96b2d76817d566843703add28b67c038fc8ef8a9d86d58fc8b813c6e1286a2d643fcd1a6c296717910e612c07dc1eba91469230dc6f101059a8ffb49f90047ba463fb3a66a105bc1b1fba0645fa5d72160b6eae03fd90437e771fe8bed0a0", "feeb653fc11468506e9f078bb7544c25dbaa27b2ec15c5a507faaaaafe0197cd008be84dfcb677c1a321ae515943b57fcc2b65726acdaec44e01ebdbadfc810c9fe04e8d4da946d1f78313f3e9454d0a80be0aa8386ad5e3534a980a8d35243babaf30fe2c55f8806982c5bfb6f32b50405dd13ba9634fd5d3f435e2e803b1e104c0fb00feb147a08", "fe9f253fc11758506e96978bb75c1925dbac8eb2ec16c9a507faaaaafe0194cd008b995dfce43de1a32acbc95950a0b3cc2a35586acfe8f14e03cd65adfd7a1f9fe0b3ce4da9085ad7833c9c71454ab0ccbe042eb26ad522d64a98dc2b35240a80af32e6f555f8805ea2c5bfb1eb2b504811d13baca94fd5d0c135e2e9adb1e10417fb00feb647a08", "fe98393fc14960906e9bcacbb7560555dba4c9aaec13dcf107faaaaafe0163d100b723f725d8fe6f9be6f32ad77a82196681efa9add241d2c03ada70f8a8406e58fc77d23c6e180d82d66f9ac9a6dd2c3d791ee498c07e09aea914b9a50dc6821a0598973249f900709a463fb43e6a105b8db1fba3ce5fa5d5d460b6eb6e3fd904e0e771fe8ced0a0", "fe98393fc17940906e83c2cbb75a0555dba649aaec13dcf107faaaaafe0163d100b723f725dcde6f9be7f32ad76a8a1966812529add165d2c03a1e50f8a8216e58fc56d23c6e1c2d82d64d9249a6dd2c3d791a6038c07c8c7ea914f9e50dc6a33a0598b72249f900529a463fbcbe6a105bcdb1fba5ee5fa5d45460b6eb6e3fd904e0e771fe8ced0a0", "fed8393fc16940906e9bcacbb7570555dba7c9aaec139cf107faaaaafe0153d100b733f725d8fe6f9be5f32ad76a0219668de3a9add2e412c03a5c10f8a8036e58fc57d23c6e582f82d67d9ac9a6cdacbd791a20b8c07c293ea9147fe50dc6810a0598b72249f900729a463fac3e6a105f4db1fba34e5fa5d41460b6eb4e3fd904d0e771fe9ced0a0", "fed8393fc14970906e9bc2cbb7560555dba649aaec135cf107faaaaafe0163d100b723f725d8de6f9be7f32ad7620a196688af29add14852c03a9e50f8a8414e58fc77d23c6e1c0f82d65c9249a6cca0bd791364f8c07c2dfea914bde50dc6e32a0598962249f900709a463fbdbe6a105f8db1fba1ce5fa5d50460b6eb6e3fd904e0e771fe8ced0a0", "fe98393fc15970906e83cacbb75b0555dba7c9aaec131cf107faaaaafe0153d100b733f725dcfe6f9be5f32ad7628219668469a9add2c992c03adc10f8a8634e58fc76d23c6e580d82d66c9ac9a6dc203d79132478c07c88bea9143be50dc6c11a0598962249f900509a463fad3e6a105b0db1fba76e5fa5d54460b6eb4e3fd904d0e771fe9ced0a0"];
+function qrSvg(n){ const h=QRHEX[n-1]; if(!h) return ""; const N=33, Q=3; let bits=""; for(const c of h) bits+=parseInt(c,16).toString(2).padStart(4,"0"); let d="";
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++) if(bits[y*N+x]==="1") d+=`M${x+Q} ${y+Q}h1v1h-1z`;
+  return `<svg class="qrbig" viewBox="0 0 ${N+2*Q} ${N+2*Q}" shape-rendering="crispEdges" role="img" aria-label="رمز الجلسة ${n}"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`; }
+function qrHtml(id){ return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>رمز الجلسة ${seatNo(id)}</b><span>خلّ الزبون يصوره بكاميرا جواله</span></div>${xBtn}</div>
+  <div class="qrwrap">${qrSvg(seatNo(id))}</div><p class="empty">منه ينادي، يشوف المنيو، ووقته وحسابه.</p>
+  <button class="primary wide" data-act="back">تم</button>`; }
 const canPay=id=>P()||(!!me&&me.role==="station"&&me.station===0&&!!seats[id]&&isTake(id)&&seatOrders(id).length>0&&seatOrders(id).every(o=>mine(o.name))); // أصحاب البطاطس يحاسبون سفري كله بطاطس
-const mine=name=>P()||(!!me&&stationOf(name)===me.station); // هل الصنف من صلاحية هذا المستخدم
+const mine=name=>P()||W()||(!!me&&stationOf(name)===me.station); // هل الصنف من صلاحية هذا المستخدم
 
 function fee(id,v){
   const s=seats[id]; if(!s||s.type==="take") return 0;
@@ -617,9 +629,9 @@ const seatState=s=>s.type==="take"?"take":s.type==="free"?"free":s.type==="open"
 const STATE_LOOK={open:["var(--st-open)","وقت مفتوح"],hour:["var(--st-hour)","ساعة"],free:["var(--st-free)","مجاناً"],conv:["var(--st-conv)","طلب ساعة وتحولت مفتوح"],alarm:["var(--alarm)","ساعة قربت تخلص أو خلصت"],take:["var(--st-take)","سفري"]};
 let me=null, legacy=false, users={}, codeOwners={}, logs=[];
 const P=()=>!!me&&me.role==="partner";
-const ROLE=u=>u.role==="partner"?"شريك":u.station===0?"قسم البطاطس":"قسم الكورن دوق والذرة";
+const ROLE=u=>u.role==="partner"?"شريك":u.role==="waiter"?"عامل":u.station===0?"قسم البطاطس":"قسم الكورن دوق والذرة";
 const PRESET=[["ريان","partner"],["زهير","partner"],["بكري","partner"],["عز الدين","partner"],["سعيد","s0"],["سمعة","s0"],["فادي","s1"]];
-const roleFields=v=>v==="partner"?{role:"partner"}:{role:"station",station:v==="s1"?1:0};
+const roleFields=v=>v==="partner"?{role:"partner"}:v==="w"?{role:"waiter"}:{role:"station",station:v==="s1"?1:0};
 const digits=x=>String(x).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
 const BY=()=>({by:(me&&me.id)||"",byName:(me&&me.name)||""});
 function logIt(what){ if(!db) return; const now=Date.now(); db.collection("log").add({day:dayKey(now),at:now,what,...BY()}).catch(()=>{}); }
@@ -654,19 +666,19 @@ function scanLate(){ if(!me||!db||!ready) return; let fresh=0;
     note("⏰ تأخر "+mins(o.at)+" د: "+what+" · "+where,"o:"+o.id); fresh++;
     latePush(o,"⏰ طلب متأخر · "+where,what+" · من "+mins(o.at)+" دقيقة"); });
   if(fresh) beep([523,523,523]); }
-function scanCalls(){ if(!P()||!db||!ready) return;
+function scanCalls(){ if(!C()||!db||!ready) return;
   Object.keys(calls).forEach(id=>{ const c=calls[id], k=id+":"+tsMs(c.at);
     if(liveCall(id)){ if(!callSeen.has(k)){ callSeen.add(k); if(callsSeeded){ note(callInfo(c)[0]+" جلسة "+seatNo(id)+" "+callInfo(c)[1],"c:"+id); beep([988,1319,988,1319]); } } }
     else if(c.at&&!callSwept.has(k)&&(!seats[id]||Date.now()-tsMs(c.at)>20*60000)){ callSwept.add(k); db.doc("calls/"+id).delete().catch(()=>{}); } }); // نداء قديم أو جلسة تقفلت
   dropNotes(x=>x.ref.startsWith("c:")&&!liveCall(x.ref.slice(2)));
   callsSeeded=true; }
-const callRow=id=>{const c=liveCall(id); if(!c||!P()) return ""; const m=Math.floor((Date.now()-tsMs(c.at))/60000);
+const callRow=id=>{const c=liveCall(id); if(!c||!C()) return ""; const m=Math.floor((Date.now()-tsMs(c.at))/60000);
   return `<div class="callrow"><span class="e">${callInfo(c)[0]}</span><span class="t"><b>جلسة ${seatNo(id)}</b> ${callInfo(c)[1]}<small class="num">${m<1?"الحين":"قبل "+m+" د"}</small></span><button class="primary" data-act="callack" data-id="${esc(id)}">رايح لها</button></div>`};
-function tile(id){ const h=tile0(id), c=P()&&liveCall(id); return c?h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`):h; }
+function tile(id){ const h=tile0(id), c=C()&&liveCall(id); return c?h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`):h; }
 let reserves={}, waitlist=[];
 const rsv=id=>(!seats[id]&&reserves[id])||null;
 function tile0(id){
-  const s=seats[id], A=P()||s?`data-act="seat" data-id="${esc(id)}"`:`data-id="${esc(id)}"`;
+  const s=seats[id], A=C()||s?`data-act="seat" data-id="${esc(id)}"`:`data-id="${esc(id)}"`;
   if(!s&&rsv(id)) return `<button class="seat rsv" ${A}><span class="n num">${seatNo(id)}</span><span class="st">محجوزة</span><span class="rn">${esc(rsv(id).name||"")}</span></button>`;
   if(!s) return `<button class="seat" ${A}><span class="n num">${seatNo(id)}</span><span class="st">فاضية</span></button>`;
   const p=units(seatOrders(id).filter(o=>!o.served)), dot=p?`<span class="dot num">${p}</span>`:"";
@@ -680,7 +692,8 @@ function tile0(id){
 }
 function renderMain(){
   scanLate(); syncPub();
-  scanCalls(); $("callbar").innerHTML=P()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"";
+  if(P()&&db&&ready){ const st=Object.keys(reserves).filter(k=>seats[k]); if(st.length&&!renderMain.rc){ renderMain.rc=1; const m={...reserves}; st.forEach(k=>delete m[k]); db.doc("config/reserve").set(m).catch(()=>{}).then(()=>{renderMain.rc=0}) } }
+  scanCalls(); $("callbar").innerHTML=C()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"";
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
   const takes=Object.keys(seats).filter(isTake).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
   const pend=groupOrders(orders.filter(o=>seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at));
@@ -719,6 +732,7 @@ const xBtn=`<button class="close" data-act="close" aria-label="إغلاق">×</b
 function renderSheet(){
   if(!view) return;
   const p=$("panel");
+  if(view.kind==="qr"){ if(!seats[view.id]&&!view.wait){closeSheet();return} if(seats[view.id]) view.wait=false; p.innerHTML=qrHtml(view.id); return }
   if(view.kind==="seat"||view.kind==="pay"||view.kind==="extras"||view.kind==="move"||view.kind==="mvitem"){
     if(view.newTake){ p.innerHTML=view.kind==="extras"?extrasHtml():takeDraftHtml(); return }
     if(!seats[view.id]){
@@ -751,13 +765,13 @@ function renderSheet(){
 }
 function freeHtml(id){ const r=rsv(id);
   return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>${r?"جلسة محجوزة":"جلسة فاضية"}</b><span>اختر نوع الجلسة ويبدأ الوقت</span></div>${xBtn}</div>
-  ${r?`<div class="callrow"><span class="e">📌</span><span class="t"><b>محجوزة${r.name?" لـ "+esc(r.name):""}</b><small class="num">حجزها ${esc(r.byName||"")} · ${tclock(r.at)}</small></span><button class="ghost" data-act="unrsv">إلغاء الحجز</button></div>`:""}
+  ${r?`<div class="callrow"><span class="e">📌</span><span class="t"><b>محجوزة${r.name?" لـ "+esc(r.name):""}</b><small class="num">حجزها ${esc(r.byName||"")} · ${tclock(r.at)}</small></span><button class="ghost" data-act="unrsv" ${P()?"":"hidden"}>إلغاء الحجز</button></div>`:""}
   <div class="pick">
     <button data-act="start" data-type="hour"><b>ساعة</b><span class="num">${cfg.hour}${RS}</span></button>
     <button data-act="start" data-type="open"><b>وقت مفتوح</b><span class="num">${cfg.open}${RS}</span></button>
-    <button data-act="start" data-type="free" style="grid-column:1/-1;padding:12px"><b>جلسة مجاناً</b><span class="num" style="font-size:20px">0</span></button>
+    ${P()?`<button data-act="start" data-type="free" style="grid-column:1/-1;padding:12px"><b>جلسة مجاناً</b><span class="num" style="font-size:20px">0</span></button>`:""}
   </div>
-  ${r?"":`<div class="set pbox"><div class="row"><input class="nm" id="rsv-name" maxlength="30" autocomplete="off" placeholder="احجزها لزبون جاي: الاسم (اختياري)" aria-label="اسم الحجز"><button class="ghost" data-act="rsv">احجز</button></div></div>`}`;
+  ${r||!P()?"":`<div class="set pbox"><div class="row"><input class="nm" id="rsv-name" maxlength="30" autocomplete="off" placeholder="احجزها لزبون جاي: الاسم (اختياري)" aria-label="اسم الحجز"><button class="ghost" data-act="rsv">احجز</button></div></div>`}`;
 }
 function wlHtml(){
   const L=waitlist.slice().sort((a,b)=>a.at-b.at), free=allSeatIds().filter(x=>x&&!seats[x]&&!rsv(x)).length;
@@ -792,10 +806,11 @@ function seatHtml(id){
     if(!mine(o.name)) return `<div class="ord ${o.served?"s":"p"}" style="opacity:.55"><div class="tog">${inner}</div></div>`;
     return `<div class="ord ${o.served?"s":"p"}">
       <button class="tog" data-act="toggle" data-oid="${esc(o.id)}">${inner}</button>
-      <button class="del qb ${sure===k?"sure":""}" data-act="qdec" data-oid="${esc(o.id)}" aria-label="نقص حبة">${sure===k?"حذف؟":"−"}</button>
-      <button class="del qb" data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button>
+      ${ownLine(o)?`<button class="del qb ${sure===k?"sure":""}" data-act="qdec" data-oid="${esc(o.id)}" aria-label="نقص حبة">${sure===k?"حذف؟":"−"}</button>
+      <button class="del qb" data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button>`:""}
     </div>`}).join(""):`<p class="empty">ما في طلبات. اضغط «أضف طلب» فوق.</p>`}</div>
-  ${full&&s.type==="hour"&&!conv?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour}${RS})</button>`:""}
+  ${!take&&C()?`<button class="ghost" data-act="qr">رمز الجلسة للزبون</button>`:""}
+  ${(full||W())&&s.type==="hour"&&!conv?`<button class="ghost" data-act="addhour">+ ساعة ثانية (${cfg.hour}${RS})</button>`:""}
   ${full&&!take?`<button class="ghost" data-act="move">نقل الجلسة كلها لجلسة ثانية</button>`:""}
   ${full&&os.length?`<button class="ghost" data-act="mvitem">نقل صنف لجلسة ثانية</button>`:""}`;
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
@@ -806,7 +821,7 @@ function seatHtml(id){
   ${full||canPay(id)?`<div class="foot stickyfoot"><div class="sum"><span>الحساب لين الحين</span><b class="num">${money(fee(id)+itemsTotal(id))}</b></div>
     <button class="primary" data-act="pay">الحساب</button>
     ${full?`<button class="link fcancel ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء بدون حساب":"إلغاء بدون حساب (انفتح بالغلط)"}</button>`:""}</div>`
-  :`<p class="empty">${me&&me.station===0&&take?"تقدر تحاسب السفري لو كل أصنافه بطاطس. غير كذا الحساب عند الشركاء.":"الحساب عند الشركاء. اللي تسجله هنا ينضاف على الفاتورة."}</p>`}`;
+  :`<p class="empty">${W()?"الحساب عند الشركاء. سجّل الطلبات واضغط «نزل» لما توصّلها.":me&&me.station===0&&take?"تقدر تحاسب السفري لو كل أصنافه بطاطس. غير كذا الحساب عند الشركاء.":"الحساب عند الشركاء. اللي تسجله هنا ينضاف على الفاتورة."}</p>`}`;
 }
 function priced(r){ // ضيافة للصنف أو سعر خاص، للشركاء بس
   if(!r.ok||!P()) return r; const j=(a,b)=>a?a+" · "+b:b;
@@ -898,7 +913,7 @@ function usersHtml(){
   <h2>مستخدم جديد</h2>
   <div class="set"><div class="row item">
     <input class="nm" id="nu-name" placeholder="الاسم" aria-label="الاسم" autocomplete="off">
-    <select id="nu-role" aria-label="الدور"><option value="partner">شريك</option><option value="s0">قسم البطاطس</option><option value="s1">قسم الكورن دوق والذرة</option></select>
+    <select id="nu-role" aria-label="الدور"><option value="partner">شريك</option><option value="s0">قسم البطاطس</option><option value="s1">قسم الكورن دوق والذرة</option><option value="w">عامل (يفتح جلسات ويسجل طلبات)</option></select>
     <input class="nm num" id="nu-code" inputmode="numeric" autocomplete="off" placeholder="الرمز (4 إلى 8 أرقام)" aria-label="الرمز">
     <button class="ghost" data-act="uadd">أضف</button></div></div>
   ${legacy?`<div class="notice">بعد التفعيل ينلغي الرمز المشترك، وكل جوال (حتى هذا) يطلب الرمز الشخصي. تأكد إنك حافظ رمزك قبل ما تضغط.</div>
@@ -975,6 +990,7 @@ function summaryHtml(){
       ${!rows.length&&!extra?row(`<span class="q">ما انباع منها شي</span>`,""):""}
       ${row("المجموع",money(p.cash+p.card+p.none),"tot")}${split(p)}</div>`;
   };
+  if(W()) return `<div class="phead"><div class="meta"><b>الملخص</b><span>الأرقام عند الشركاء</span></div>${xBtn}</div><p class="empty">ما في ملخص لحسابك.</p>`;
   if(!P()) return `<div class="phead"><div class="meta"><b>ملخص قسمي اليوم</b><span>الحسابات اللي تقفلت من 6 الصبح</span></div>${xBtn}</div>${block(me?me.station:0)}`;
   const payName=x=>({cash:"كاش",card:"شبكة",split:"مقسوم",comp:"ضيافة"}[x.pay]||"غير محدد");
   const openNow=Object.keys(seats).reduce((a,id)=>a+fee(id)+itemsTotal(id),0), K=closeCalc(R), c=view.closing;
@@ -1099,7 +1115,7 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]"); if(!b) return;
   const a=b.dataset.act, id=view&&view.id, oid=b.dataset.oid;
   if(a==="close") return closeSheet();
-  if(a==="seat"){ if(!P()&&!seats[b.dataset.id]) return; return openSheet({kind:"seat",id:b.dataset.id}) }
+  if(a==="seat"){ if(!C()&&!seats[b.dataset.id]) return; return openSheet({kind:"seat",id:b.dataset.id}) }
   if(a==="summary") return P()?openSummary(TODAY):openSheet({kind:"summary"});
   if(a==="sday"){ const d=b.dataset.d; if(d>TODAY) return; return openSummary(d) }
   if(a==="saleopen"){ view.openSale=view.openSale===b.dataset.sid?null:b.dataset.sid; return renderSheet() }
@@ -1113,6 +1129,7 @@ document.addEventListener("click",e=>{
       await db.doc("closings/"+day).set(doc); v.closing=doc; toast("انحفظت التسوية"); if(view===v) renderSheet(); }); }
   if(a==="payday"){ view.today=!view.today; return renderSheet() }
   if(a==="who") return openSheet({kind:"users"});
+  if(a==="qr"){ if(!id||isTake(id)) return; return openSheet({kind:"qr",id}) }
   if(a==="wl"){ if(!P()) return; return openSheet({kind:"wl"}) }
   if(a==="wladd"){ if(!P()) return; const nm=$("wl-name").value.trim().slice(0,30), ph=digits($("wl-phone").value).slice(0,15); if(!nm&&!ph){toast("اكتب الاسم أو رقم الجوال");return}
     return run("wl",async()=>{await db.doc("config/waitlist").set({items:[...waitlist,{id:Date.now().toString(36),name:nm,phone:ph,at:Date.now(),byName:(me&&me.name)||""}]}); toast("انضاف للانتظار")}) }
@@ -1125,7 +1142,7 @@ document.addEventListener("click",e=>{
     return run("mv:"+o.id,async()=>{ for(const d of docs) await db.doc("orders/"+d.id).update({seat:to,sid:t.sid});
       logIt("نقل "+o.name+(n>1?" × "+n:"")+" من "+(isTake(from)?"سفري ":"الجلسة ")+lab(from)+" إلى "+(isTake(to)?"سفري ":"الجلسة ")+lab(to)); toast("انتقل "+o.name+" إلى "+(isTake(to)?"سفري ":"جلسة ")+lab(to)); openSheet({kind:"seat",id:from,tab:"orders"}) }) }
   if(a==="month"){ if(!P()) return; return openMonth(b.dataset.m||TODAY.slice(0,7)) }
-  if(a==="callack"){ const cid=b.dataset.id; if(!P()||!calls[cid]) return; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); toast("تمام، الزبون شاف إنك جاي")}) }
+  if(a==="callack"){ const cid=b.dataset.id; if(!C()||!calls[cid]) return; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); toast("تمام، الزبون شاف إنك جاي")}) }
   if(a==="calltoggle"){ if(!P()) return; return run("calloff",async()=>{ if(callsOff) await db.doc("config/callsOff").delete(); else await db.doc("config/callsOff").set({at:Date.now(),...BY()}); toast(callsOff?"رجع نداء الزباين":"توقف نداء الزباين") }) }
   if(a==="stickers") return void window.open("stickers.html","_blank");
   if(a==="log"){ if(!P()) return; return openLog(TODAY) }
@@ -1165,10 +1182,11 @@ document.addEventListener("click",e=>{
       await db.doc("users/"+u).delete(); logIt("حذف المستخدم "+x.name); toast("انحذف "+x.name); }); }
   if(a==="ugo"){ if(!arm("ugo")) return; return run("users",async()=>{await db.doc("config/usersReady").set({on:true,at:Date.now()}); toast("تفعّل. ادخل برمزك"); setTimeout(()=>location.reload(),900)}) }
   if(!P()&&(a==="pay"||a==="paid")&&canPay(id)&&!(view&&view.part)){ if(a==="pay") return openSheet({kind:"pay",id}); view.disc=""; return closeBill(id,b.dataset.pay) }
-  if(!P()&&["settings","delsale","start","pay","paid","comp","cancel","move","moveto","addhour","bmode","hplus","hminus"].includes(a)) return;
+  if(W()&&a==="start"&&b.dataset.type==="free") return;
+  if(!P()&&["settings","delsale","start","pay","paid","comp","cancel","move","moveto","addhour","bmode","hplus","hminus"].includes(a)&&!(W()&&(a==="start"||a==="addhour"))) return;
   if(a==="bmode"){view.mode=b.dataset.m; if(view.mode==="hour"&&!view.hours) view.hours=autoHours(seats[id]); return renderSheet()}
   if(a==="settings"){draft=JSON.parse(JSON.stringify(cfg));return openSheet({kind:"settings"})}
-  if(a==="start") return run("seat:"+id,async()=>{ if(reserves[id]){ const m={...reserves}; delete m[id]; db.doc("config/reserve").set(m).catch(()=>{}) }await db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:b.dataset.type,startedAt:Date.now()}); if(b.dataset.type==="free") logIt("فتح الجلسة "+seatNo(id)+" مجاناً")});
+  if(a==="start") return run("seat:"+id,async()=>{ if(reserves[id]){ const m={...reserves}; delete m[id]; db.doc("config/reserve").set(m).catch(()=>{}) }await db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:b.dataset.type,startedAt:Date.now()}); if(b.dataset.type==="free") logIt("فتح الجلسة "+seatNo(id)+" مجاناً"); if(W()){ const ty=b.dataset.type==="hour"?"ساعة":"وقت مفتوح"; logIt("فتح الجلسة "+seatNo(id)+" · "+ty); pushSend(2,"🪑 جلسة "+seatNo(id)+" انفتحت",ty+" · فتحها "+me.name,"open-"+id); openSheet({kind:"qr",id,wait:true}); } });
   if(a==="xtoggle"){const x=+b.dataset.x,k=view.sel.indexOf(x); view.ex=false; view.size=null; if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
   if(a==="xex"){view.ex=!view.ex; view.sel=[]; view.size=null; return renderSheet()}
   if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
@@ -1193,7 +1211,7 @@ document.addEventListener("click",e=>{
     toast("انضاف: "+r.name+(n>1?" × "+n:"")); return openSheet({kind:"seat",id,cat,tab:"add"})}
   if(a==="add"){const it=cfg.items[+b.dataset.i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)) return;
     return openSheet({kind:"extras",id,i:+b.dataset.i,sel:[],ex:false,size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake})}
-  if(a==="toggle"||a==="serve"||a==="qinc"||a==="qdec"){const o=orders.find(x=>x.id===oid); if(!o||!mine(o.name)) return; const docs=orders.filter(x=>sameLine(x,o));
+  if(a==="toggle"||a==="serve"||a==="qinc"||a==="qdec"){const o=orders.find(x=>x.id===oid); if(!o||!mine(o.name)) return; if((a==="qinc"||a==="qdec")&&!ownLine(o)) return; const docs=orders.filter(x=>sameLine(x,o));
     if(a==="qinc"){ pushSend(stationOf(o.name),"زاد الطلب",o.name+" × 1 · "+(isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat)),"o"+Date.now()); return run("o:"+oid,()=>bump(o,1)); }
     if(a==="qdec"){ const big=docs.find(x=>qty(x)>1);
       const where=isTake(o.seat)?"سفري":"الجلسة "+seatNo(o.seat);
@@ -1269,11 +1287,12 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
 }
 function listen(){
-  db=fdb; $("gate").hidden=true; if(!P()){ myStation=me.station; mainTab="orders"; }
+  db=fdb; $("gate").hidden=true; if(!P()&&!W()){ myStation=me.station; mainTab="orders"; }
   pushSync(false).catch(()=>{});
   db.doc("config/reserve").onSnapshot(d=>{reserves=d.exists?d.data():{}; refresh()},()=>{});
   db.doc("config/waitlist").onSnapshot(d=>{waitlist=(d.exists&&Array.isArray(d.data().items))?d.data().items:[]; refresh()},()=>{});
   db.collection("pub").onSnapshot(s=>{pubs={};s.docs.forEach(d=>pubs[d.id]=d.data());pubReady=true},()=>{});
+  if(W()) db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
   if(P()){ db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
     db.doc("config/callsOff").onSnapshot(d=>{callsOff=d.exists; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{}); }
   db.doc("config/push").onSnapshot(d=>{pushUrl=(d.exists&&d.data().url)||""; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{});
@@ -1322,7 +1341,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v32";
+const VER="v33";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
