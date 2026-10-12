@@ -96,7 +96,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const STR={
  ar:{seat:"جلسة",hint:"اضغط اللي تحتاجه ونجيك لين عندك",b_order:"أبغى أطلب",b_bill:"أبغى الفاتورة",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تابعنا على تيك توك",other:"English",
   k_order:"تبغى تطلب",k_bill:"تبغى الفاتورة",k_coal:"تبغى تغيير الفحم",
-  noseat:"الرابط ناقص رقم الجلسة.<small>صوّر الرمز اللي على جلستك مرة ثانية.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
+  noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>(n?esc(n)+" جاي لك الحين":"جايين لك الحين")+" 👋",still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"وصل نداؤك ✓<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"ما قدرنا نرسل النداء.<small>يمكن جلستك لسا ما انفتحت عندنا، أو أرسلت نداء قبل شوي. نادِ الموظف لو سمحت.</small>",
   retry:"ما قدرنا نتصل.<small>تأكد من النت وجرّب مرة ثانية.</small>",loading:"جاري تحميل المنيو…",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
@@ -104,7 +104,7 @@ const STR={
   left:"باقي من وقتك",over:"زاد على وقتك",sat:"جلست",bill:"فاتورتك لين الحين",details:"تفاصيل الفاتورة ▾",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف.",off:"غير متوفر",flavs:"النكهات: "},
  en:{seat:"Table",hint:"Tap what you need and we will come to you",b_order:"I want to order",b_bill:"I want the bill",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"Follow us on TikTok",other:"عربي",
   k_order:"want to order",k_bill:"want the bill",k_coal:"want the coal changed",
-  noseat:"This link has no table number.<small>Scan the code on your table again.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
+  noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>(n?esc(n)+" is coming":"We are coming")+" 👋",still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"Call received ✓<small>We know you "+k+". We will be right there.</small>",denied:"Could not send the call.<small>Your table may not be opened yet, or you just called. Please call the staff.</small>",
   retry:"Could not connect.<small>Check your internet and try again.</small>",loading:"Loading the menu…",menufail:"Could not load the menu. Try again or ask the staff.",
@@ -132,9 +132,10 @@ const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="i
 const FLV=[[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
 const priceOf=it=>{ if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
-const n=parseInt(new URLSearchParams(location.search).get("s"),10), valid=n>=1&&n<=99, sid="s"+String(n).padStart(2,"0");
+const K=(new URLSearchParams(location.search).get("k")||"").trim(), valid=/^[A-Za-z0-9]{8,16}$/.test(K);
+let sid="", n=0, ended=false, unCall=null; // الجلسة تنعرف من الرمز، وتتبعه لو انتقل الزبون لجلسة ثانية
 let db=null, uid="", busy=false, lastAt=0, acked=false, menuData=null, pub=null;
-try{ lastAt=Number(sessionStorage.getItem("kz-call-"+sid))||0 }catch(e){}
+try{ lastAt=Number(sessionStorage.getItem("kz-call-"+K))||0 }catch(e){}
 function show(cls,html){ const s=$("status"); s.className="status "+cls; s.innerHTML=html; s.hidden=false; }
 function lock(on){ document.querySelectorAll("#btns button").forEach(b=>b.disabled=on); }
 const clock=m=>Math.floor(m/60)+":"+String(m%60).padStart(2,"0");
@@ -155,13 +156,13 @@ function paintMenu(){ const m=$("menu"), x=menuData; if(!x) return; const items=
 function applyLang(){
   document.documentElement.lang=lang; document.documentElement.dir=lang==="en"?"ltr":"rtl";
   document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=L(el.dataset.t)}); $("lang").textContent=L("other");
-  if(valid){ $("seat").textContent=L("seat")+" "+n; $("hint").textContent=L("hint"); } else { $("seat").textContent=lang==="en"?"Lavender":"خزامى"; $("hint").textContent=""; show("bad",L("noseat")); }
+  if(valid&&n&&!ended){ $("seat").textContent=L("seat")+" "+n; $("hint").textContent=L("hint"); }
+  else { $("seat").textContent=lang==="en"?"Lavender":"خزامى"; $("hint").textContent=""; if(!valid) show("bad",L("noseat")); else if(ended) show("bad",L("ended")); }
+  $("btns").hidden=!valid||ended||!n;
   paintMine(); paintMenu();
 }
 $("lang").addEventListener("click",()=>{ lang=lang==="en"?"ar":"en"; try{localStorage.setItem("kz-lang",lang)}catch(e){} $("status").hidden=true; applyLang(); });
 applyLang();
-if(!valid){ $("btns").hidden=true; }
-else{ document.title="خزامى · "+n; }
 start();
 async function start(){
   lock(true);
@@ -170,10 +171,14 @@ async function start(){
     uid=(await firebase.auth().signInAnonymously()).user.uid;
     lock(false); if(!valid) return;
     // نتابع النداء: لما الموظف يضغط "رايح لها" يطلع للزبون
-    db.doc("calls/"+sid).onSnapshot(d=>{ const x=d.exists?d.data():null;
-      if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go",L("coming")(x.ackName)); }
-    },()=>{});
-    db.doc("pub/"+sid).onSnapshot(d=>{ pub=d.exists?d.data():null; paintMine(); },()=>{});
+    db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub;
+      const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
+      if(ns!==sid){ sid=ns; n=sid?parseInt(sid.slice(1),10):0; if(unCall){unCall();unCall=null}
+        // نتابع النداء: لما الموظف يضغط "رايح لها" يطلع للزبون
+        if(sid) unCall=db.doc("calls/"+sid).onSnapshot(c=>{ const x=c.exists?c.data():null;
+          if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go",L("coming")(x.ackName)); } },()=>{}); }
+      if(n) document.title="خزامى · "+n;
+      if(ended) $("status").hidden=true; applyLang(); },()=>{});
     setInterval(paintMine,30000);
   }catch(e){ show("bad",L("noconn")); }
 }
@@ -194,13 +199,13 @@ $("mbtn").addEventListener("click",async()=>{
   catch(e){ m.innerHTML='<p class="note">'+L("menufail")+'<br><span dir="ltr" style="opacity:.6;font-size:11px">'+esc(String((e&&(e.code||e.message))||e).slice(0,60))+'</span></p>'; }
 });
 document.getElementById("btns").addEventListener("click",async e=>{
-  const b=e.target.closest("button[data-k]"); if(!b||busy||!db) return;
+  const b=e.target.closest("button[data-k]"); if(!b||busy||!db||!sid||ended) return;
   const kind=b.dataset.k, left=WAIT-(Date.now()-lastAt);
   if(left>0&&!acked){ show("ok",L("still")(Math.ceil(left/60000))); return; }
   busy=true; lock(true);
   try{
-    await db.doc("calls/"+sid).set({kind,uid,at:firebase.firestore.FieldValue.serverTimestamp()});
-    lastAt=Date.now(); acked=false; try{sessionStorage.setItem("kz-call-"+sid,String(lastAt))}catch(e){}
+    await db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp()});
+    lastAt=Date.now(); acked=false; try{sessionStorage.setItem("kz-call-"+K,String(lastAt))}catch(e){}
     show("ok",L("sent")(L("k_"+kind)));
     // إشعار لجوالات الموظفين حتى لو مقفلة. لو فشل، النداء نفسه واصل للتطبيق.
     try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken();
