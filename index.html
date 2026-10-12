@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>خزامى</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Lalezar&family=Readex+Pro:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Ruwudu:wght@700&display=swap">
 <style>
 /* Layout: one phone screen — status strip, 3-column seat board, waiting-orders list; every task opens as a full sheet. */
 :root{
@@ -21,8 +21,8 @@
   --busy:#531989; --busy-ink:#ffffff; --busy-muted:#d9c8ee;
   --red:#c02a2a; --red-bg:#fbe3e1; --green:#17713f; --green-bg:#dcf2e5;
   --warn:#8f5200; --warn-bg:#fdebc8; --alarm:#b3261e; --shade:rgba(10,20,18,.55);
-  --display:"Lalezar","Readex Pro",Tahoma,sans-serif;
-  --body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
+  --display:"Noto Naskh Arabic",Tahoma,serif;
+  --body:"Noto Naskh Arabic","Segoe UI",Tahoma,serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#120b1a; --surface:#1e1429; --ink:#efe9f6; --muted:#a698b8; --line:#33264a;
@@ -195,7 +195,7 @@ input{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid
 @media (prefers-reduced-motion:no-preference){ .panel{animation:up .18s ease-out} @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}} }
 
 /* ---- v20: شريط سفلي، تبويبات الجلسة، ألوان الحالات، خط الأرقام ---- */
-:root{--num:"Readex Pro","Segoe UI",Tahoma,sans-serif;--st-open:#531989;--st-hour:#b895ea;--st-free:#85808f;--st-conv:#b85a08;--st-take:#22304f}
+:root{--num:"Noto Naskh Arabic","Segoe UI",Tahoma,serif;--st-open:#531989;--st-hour:#b895ea;--st-free:#85808f;--st-conv:#b85a08;--st-take:#22304f}
 .wrap{padding-block-end:104px}
 .wrap section{display:flex;flex-direction:column;gap:18px}
 .ghost.bell{position:relative;min-width:44px;min-height:40px;padding:8px;display:grid;place-items:center}
@@ -294,8 +294,8 @@ button:active{transform:scale(.97)}
 .gate #gate-btn{background:linear-gradient(180deg,#f3ddb0,#d9a94e);color:#2a0d4a;box-shadow:0 10px 28px rgba(0,0,0,.45)}
 .welcome{position:fixed;inset:0;z-index:35;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:24px;text-align:center;background:var(--kz-dark),#06000e;color:#fff;transition:opacity .55s ease}
 .welcome.out{opacity:0}
-.welcome span{font-family:"Aref Ruqaa",var(--display);font-size:34px;color:#e6d9f5;line-height:1.3}
-.welcome b{font-family:"Aref Ruqaa",var(--display);font-weight:700;font-size:clamp(64px,22vw,112px);line-height:1.35;padding-inline:.15em;background:linear-gradient(180deg,#fbeecb 10%,#e9c77b 50%,#c08a2e 95%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 26px rgba(233,199,123,.28))}
+.welcome span{font-family:"Ruwudu",var(--display);font-size:34px;color:#e6d9f5;line-height:1.3}
+.welcome b{font-family:"Ruwudu",var(--display);font-weight:700;font-size:clamp(64px,22vw,112px);line-height:1.35;padding-inline:.15em;background:linear-gradient(180deg,#fbeecb 10%,#e9c77b 50%,#c08a2e 95%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 26px rgba(233,199,123,.28))}
 .welcome i{width:120px;height:2px;margin-block-start:10px;background:linear-gradient(90deg,transparent,#e9c77b,transparent)}
 @media (prefers-reduced-motion:no-preference){
   .welcome span{animation:spTxt .6s ease-out both}
@@ -362,6 +362,9 @@ button:active{transform:scale(.97)}
 .shp{position:relative} .shp img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block} .shp .nx{position:absolute;top:4px;inset-inline-end:4px;background:rgba(0,0,0,.6);color:#fff;border-radius:999px;width:28px;height:28px}
 .shcam{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;aspect-ratio:3/4;border:2px dashed var(--line);border-radius:12px;font-size:34px;cursor:pointer} .shcam span{font-size:14px}
 .shr{align-items:flex-start} .shthumbs{display:flex;gap:4px} .shthumbs img{width:54px;height:72px;object-fit:cover;border-radius:8px}
+.top h1{display:flex;align-items:center;gap:8px}
+.top h1 .brand{display:inline-block;width:76px;height:63px;background:var(--ink);-webkit-mask:url(logo-white.png) center/contain no-repeat;mask:url(logo-white.png) center/contain no-repeat}
+.strip b,.foot .sum b,.step b,.gname,.splash b,.seat .n,.wrow .who,.phead .big,.pick span{font-weight:700}
 @keyframes okf{0%{opacity:0}12%{opacity:1}75%{opacity:1}100%{opacity:0}}
 </style>
 </head>
@@ -379,7 +382,7 @@ setTimeout(function(){if(!done&&!fell&&!(v.currentTime>0.05))fb()},1800);setTime
 <div class="wrap">
   <div class="top">
     <img class="logo" src="icon.png" alt="" width="46" height="46" onerror="this.hidden=true">
-    <h1>خزامى <small id="ver" style="font-family:var(--body);font-size:11px;color:var(--muted)"></small></h1>
+    <h1><span class="brand" role="img" aria-label="خزامى"></span> <small id="ver" style="font-family:var(--body);font-size:11px;color:var(--muted)"></small></h1>
     <button class="ghost bell" data-act="notes" id="btn-bell" aria-label="الإشعارات" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 7H4c0-1 2-2 2-7M10 20a2 2 0 0 0 4 0"/></svg><i class="bdg num" id="bell-n" hidden></i></button>
     <button class="ghost who" data-act="who" id="btn-who" hidden></button>
   </div>
@@ -2381,7 +2384,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v38";
+const VER="v39";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
