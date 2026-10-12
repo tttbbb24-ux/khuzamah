@@ -37,6 +37,13 @@ button:focus-visible{outline:2px solid #e9c77b;outline-offset:2px}
 .menu .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:6px 14px}
 .menu .r{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-block-end:1px solid rgba(255,255,255,.1);font-size:16px}
 .menu .r:last-child{border:0}
+.menu .r{align-items:center}
+.menu .r .th{flex:0 0 auto;width:60px;height:60px;border-radius:12px;object-fit:cover;background:#f4e8d8;display:block}
+.menu .r .nm{flex:1;min-width:0}
+.menu .r.isoff .th{opacity:.45;filter:grayscale(.8)}
+.menu .r small.fl{display:block;color:#cdbbe6;font-size:12.5px;margin-block-start:2px}
+.menu .r.isoff span{opacity:.55}
+.menu .r .offt{color:#ffb0a8;font-size:13px}
 .menu .r b{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .menu .note{color:#a996c4;font-size:13px;text-align:center}
 .sar{display:inline-block;width:.82em;height:.88em;fill:currentColor;vertical-align:-.07em;margin-inline-start:.16em}
@@ -87,35 +94,44 @@ const WAIT=120000; // نفس مهلة قاعدة البيانات: نداء كل
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const STR={
- ar:{seat:"جلسة",hint:"اضغط اللي تحتاجه ونجيك لين عندك",b_order:"أبغى أطلب",b_bill:"الحساب",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تابعنا على تيك توك",other:"English",
-  k_order:"تبغى تطلب",k_bill:"تبغى الحساب",k_coal:"تبغى تغيير الفحم",
+ ar:{seat:"جلسة",hint:"اضغط اللي تحتاجه ونجيك لين عندك",b_order:"أبغى أطلب",b_bill:"أبغى الفاتورة",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تابعنا على تيك توك",other:"English",
+  k_order:"تبغى تطلب",k_bill:"تبغى الفاتورة",k_coal:"تبغى تغيير الفحم",
   noseat:"الرابط ناقص رقم الجلسة.<small>صوّر الرمز اللي على جلستك مرة ثانية.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>(n?esc(n)+" جاي لك الحين":"جايين لك الحين")+" 👋",still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"وصل نداؤك ✓<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"ما قدرنا نرسل النداء.<small>يمكن جلستك لسا ما انفتحت عندنا، أو أرسلت نداء قبل شوي. نادِ الموظف لو سمحت.</small>",
   retry:"ما قدرنا نتصل.<small>تأكد من النت وجرّب مرة ثانية.</small>",loading:"جاري تحميل المنيو…",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
   sessions:"الجلسات",hour:"ساعة",open:"وقت مفتوح",toorder:"للطلب اضغط «أبغى أطلب» فوق ونجيك.",or:" أو ",flav:"، وبنكهة ",ice:"، وبثلج ",
-  left:"باقي من وقتك",over:"زاد على وقتك",sat:"جلست",bill:"حسابك لين الحين",details:"تفاصيل الحساب ▾",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الحساب النهائي عند الموظف."},
- en:{seat:"Table",hint:"Tap what you need and we will come to you",b_order:"I want to order",b_bill:"The bill",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"Follow us on TikTok",other:"عربي",
+  left:"باقي من وقتك",over:"زاد على وقتك",sat:"جلست",bill:"فاتورتك لين الحين",details:"تفاصيل الفاتورة ▾",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف.",off:"غير متوفر",flavs:"النكهات: "},
+ en:{seat:"Table",hint:"Tap what you need and we will come to you",b_order:"I want to order",b_bill:"I want the bill",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"Follow us on TikTok",other:"عربي",
   k_order:"want to order",k_bill:"want the bill",k_coal:"want the coal changed",
   noseat:"This link has no table number.<small>Scan the code on your table again.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>(n?esc(n)+" is coming":"We are coming")+" 👋",still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"Call received ✓<small>We know you "+k+". We will be right there.</small>",denied:"Could not send the call.<small>Your table may not be opened yet, or you just called. Please call the staff.</small>",
   retry:"Could not connect.<small>Check your internet and try again.</small>",loading:"Loading the menu…",menufail:"Could not load the menu. Try again or ask the staff.",
   sessions:"Seating",hour:"One hour",open:"Open time",toorder:"To order, tap “I want to order” above.",or:" or ",flav:", flavored ",ice:", with ice ",
-  left:"Time left",over:"Over your time",sat:"Seated for",bill:"Your bill so far",details:"Bill details ▾",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff."}};
+  left:"Time left",over:"Over your time",sat:"Seated for",bill:"Your bill so far",details:"Bill details ▾",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff.",off:"Not available",flavs:"Flavors: "}};
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
 const EN=[[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
- [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],
+ [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
+function photo(n){ n=String(n);
+  if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
+  if(/بطاطس/.test(n)) return "fries"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
+  if(/كنز[ةه]/.test(n)) return "kinza"; if(/مو[يى][ةه]/.test(n)) return "water"; if(/بان\s*كيك/.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
+  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
+  if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
+const thumb=n=>{const k=photo(n); return k?`<img class="th" src="img/${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
-const CATS=[["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["fries","🍟","البطاطس","Fries"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hot","☕","المشروبات الحارة","Hot drinks"],["hookah","💨","المعسلات","Shisha"],["sweet","🍰","الحلا","Desserts"],["nuts","🥜","المكسرات","Nuts"],["other","🍽️","أخرى","Other"]];
+const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["other","🍽️","أخرى","Other"]];
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
-const priceOf=it=>{ const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
+const FLV=[[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]]];
+const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
+const priceOf=it=>{ if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 const n=parseInt(new URLSearchParams(location.search).get("s"),10), valid=n>=1&&n<=99, sid="s"+String(n).padStart(2,"0");
 let db=null, uid="", busy=false, lastAt=0, acked=false, menuData=null, pub=null;
 try{ lastAt=Number(sessionStorage.getItem("kz-call-"+sid))||0 }catch(e){}
@@ -133,7 +149,7 @@ function paintMine(){ // وقت الزبون وحسابه، من النسخة ا
   m.hidden=false;
 }
 function paintMenu(){ const m=$("menu"), x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
-  const sec=CATS.map(([k,e,ta,te])=>{const l=items.filter(i=>(i.cat||"other")===k); return l.length?`<section><h2><span>${e}</span>${lang==="en"?te:ta}</h2><div class="box">${l.map(i=>`<div class="r"><span>${esc(nameOf(i.name))}</span><b>${priceOf(i)}</b></div>`).join("")}</div></section>`:""}).join("");
+  const sec=CATS.map(([k,e,ta,te])=>{const l=items.filter(i=>(i.cat||"other")===k); return l.length?`<section><h2><span>${e}</span>${lang==="en"?te:ta}</h2><div class="box">${l.map(i=>`<div class="r ${i.off?"isoff":""}">${thumb(i.name)}<span class="nm">${esc(nameOf(i.name))}${flavOf(i.name)}</span><b>${priceOf(i)}</b></div>`).join("")}</div></section>`:""}).join("");
   m.innerHTML=`<section><h2><span>🪑</span>${L("sessions")}</h2><div class="box"><div class="r"><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="r"><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div></div></section>${sec}<p class="note">${L("toorder")}</p>`;
 }
 function applyLang(){
