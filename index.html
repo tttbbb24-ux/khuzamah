@@ -352,6 +352,16 @@ button:active{transform:scale(.97)}
 .tiles.cats .txt{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
 .tiles.cats .tile b{font-size:clamp(18px,3.2vh,24px)}
 .ph.none{display:block}
+.shift{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.shift .sh{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--muted)}
+.shift .sh b{font-size:15px} .shift .sh span{font-size:13px}
+.shift .sh.next{background:#17713f;border-color:#17713f;color:#fff} .shift .sh.done{color:var(--ink);border-color:#17713f}
+.shrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center} .shrow span{font-size:14px}
+.far{color:#d43a35!important}
+.shpics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.shp{position:relative} .shp img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block} .shp .nx{position:absolute;top:4px;inset-inline-end:4px;background:rgba(0,0,0,.6);color:#fff;border-radius:999px;width:28px;height:28px}
+.shcam{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;aspect-ratio:3/4;border:2px dashed var(--line);border-radius:12px;font-size:34px;cursor:pointer} .shcam span{font-size:14px}
+.shr{align-items:flex-start} .shthumbs{display:flex;gap:4px} .shthumbs img{width:54px;height:72px;object-fit:cover;border-radius:8px}
 @keyframes okf{0%{opacity:0}12%{opacity:1}75%{opacity:1}100%{opacity:0}}
 </style>
 </head>
@@ -378,6 +388,7 @@ setTimeout(function(){if(!done&&!fell&&!(v.currentTime>0.05))fb()},1800);setTime
   <section id="pg-seats">
     <div class="strip" id="strip"></div>
     <div class="legend" id="legend"></div>
+    <div id="shiftbar"></div>
     <div id="wlbar"></div>
     <div class="board" id="board"></div>
     <h2>سفري</h2>
@@ -397,6 +408,7 @@ setTimeout(function(){if(!done&&!fell&&!(v.currentTime>0.05))fb()},1800);setTime
 </nav>
 <div class="flash" id="flash" hidden>✓</div>
 <div class="okflash" id="okflash" hidden><b id="okflash-t"></b><span id="okflash-l"></span></div>
+<input type="file" id="shotin" accept="image/*" capture="environment" hidden>
 <div class="sheet" id="sheet" hidden><div class="panel" id="panel"></div></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -761,6 +773,7 @@ function renderMain(){
   const present=[...new Set(Object.values(seats).map(seatState))];
   $("legend").innerHTML=["open","hour","free","conv","alarm","take"].filter(k=>present.includes(k)).map(k=>`<span><i style="background:${STATE_LOOK[k][0]}"></i>${STATE_LOOK[k][1]}</span>`).join("");
   if(legacy&&ready){$("notice").hidden=false;$("notice").textContent="لسه الدخول بالرمز المشترك. افتح «المستخدمين» وأنشئ رمز لكل واحد ثم فعّل."}
+  $("shiftbar").innerHTML=shiftBar();
   $("wlbar").innerHTML=P()&&!legacy?`<button class="ghost wide" data-act="wl">قائمة الانتظار${waitlist.length?` <span class="bdgi num">${waitlist.length}</span>`:""}</button>`:"";
   $("take").innerHTML=(me?`<button class="seat add" data-act="newtake"><span class="n">+</span><span class="st">سفري جديد</span></button>`:"")+takes.map(tile).join("");
   const stations=STATIONS;
@@ -776,6 +789,61 @@ function renderMain(){
   const mineN=me?cnt(buckets[scope()]||[]):0; $("nav-badge").hidden=!mineN; $("nav-badge").textContent=mineN; paintBell();
   if(ready){ pend.forEach(g=>g.docs.forEach(d=>seenWait.add(d.id))); waitSeeded=true; }
 }
+
+/* ---------- دوام العامل: وصلت، الترك جاهز، انصراف ---------- */
+const SITE=[[21.411661,39.762778],[21.411741,39.76355],[21.411611,39.763721],[21.411242,39.764],[21.411062,39.764097],[21.411042,39.764064],[21.410882,39.763764],[21.410749,39.763421],[21.410663,39.763142],[21.410793,39.763035],[21.411351,39.762821]];
+const SITE_PAD=15; // سماحية بالمتر حول المربع
+function siteCheck(lat,lng){ const k=111320, kx=k*Math.cos(lat*Math.PI/180), Q=SITE.map(([a,b])=>[(b-lng)*kx,(a-lat)*k]); let inside=false, d=1e9;
+  for(let i=0,j=Q.length-1;i<Q.length;j=i++){ const [xi,yi]=Q[i],[xj,yj]=Q[j];
+    if((yi>0)!==(yj>0)&&0<(xj-xi)*(-yi)/(yj-yi)+xi) inside=!inside;
+    const dx=xj-xi,dy=yj-yi,t=Math.max(0,Math.min(1,(-xi*dx-yi*dy)/(dx*dx+dy*dy))); d=Math.min(d,Math.hypot(xi+t*dx,yi+t*dy)); }
+  return {in:inside||d<=SITE_PAD, dist:inside?0:Math.round(d)}; }
+const getPos=()=>new Promise(res=>{ if(!navigator.geolocation) return res(null);
+  navigator.geolocation.getCurrentPosition(p=>res({lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy)}),()=>res(null),{enableHighAccuracy:true,timeout:15000,maximumAge:0}); });
+async function shrink(file,max=1024,q=.6){ const url=URL.createObjectURL(file);
+  try{ const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+    const r=Math.min(1,max/Math.max(img.width,img.height)), c=document.createElement("canvas"); c.width=Math.round(img.width*r); c.height=Math.round(img.height*r);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height); return c.toDataURL("image/jpeg",q); } finally{ URL.revokeObjectURL(url) } }
+let attends=[]; const attPics={};
+const SHK={arrive:{t:"وصلت",e:"📍",v:"وصل",pics:1},ready:{t:"الترك جاهز",e:"✅",v:"جهّز الترك",pics:3},leave:{t:"انصراف",e:"👋",v:"انصرف",pics:0}};
+const SHORDER=["arrive","ready","leave"];
+const attOf=(uid,k,day=TODAY)=>attends.find(a=>a.day===day&&a.user===uid&&a.kind===k);
+const posTxt=a=>!a||a.lat==null?"⚠ بدون موقع":a.in?"✓ عند الترك":`⚠ بعيد ${a.dist}م عن الترك`;
+function shiftBar(){
+  if(W()&&me&&me.id){ const next=SHORDER.find(k=>!attOf(me.id,k));
+    return `<div class="shift">${SHORDER.map(k=>{const a=attOf(me.id,k), on=k===next;
+      return `<button class="sh ${a?"done":""} ${on?"next":""}" ${on?`data-act="shdo" data-k="${k}"`:"disabled"}><b>${SHK[k].e} ${SHK[k].t}</b><span class="num">${a?tclock(tsMs(a.at)||a.cAt)+" ✓":on?"اضغط هنا":"—"}</span></button>`}).join("")}</div>`; }
+  if(P()&&!legacy){ const ws=Object.entries(users).filter(([,u])=>u.role==="waiter"&&u.active);
+    if(!ws.length) return "";
+    return ws.map(([id,u])=>`<button class="ghost wide shrow" data-act="shift"><b>${esc(u.name)}</b> ${SHORDER.map(k=>{const a=attOf(id,k);return `<span class="${a&&!a.in?"far":""}">${SHK[k].e} ${a?tclock(tsMs(a.at)||a.cAt):"—"}</span>`}).join("")}</button>`).join(""); }
+  return ""; }
+function shiftDoHtml(){ const v=view, k=v.k, S=SHK[k], pos=v.pos;
+  return `<div class="phead"><div class="meta"><b>${S.e} ${S.t}</b><span>${k==="leave"?"يسجل الوقت والموقع":k==="ready"?"صوّر الجلسات (لين 3 صور)":"صوّر إنك وصلت"}</span></div>${xBtn}</div>
+  <div class="callrow"><span class="t"><b>${v.locating?"جاري تحديد موقعك…":pos?posTxt(pos):"ما قدرنا نحدد موقعك"}</b>${pos?`<small class="num">دقة الموقع ${pos.acc}م</small>`:v.locating?"":`<small>اسمح للتطبيق بالموقع من إعدادات الجوال</small>`}</span>${v.locating?"":`<button class="ghost" data-act="shloc">إعادة</button>`}</div>
+  ${S.pics?`<div class="shpics">${v.pics.map((d,i)=>`<div class="shp"><img src="${d}" alt=""><button class="nx" data-act="shrm" data-n="${i}" aria-label="حذف الصورة">✕</button></div>`).join("")}
+    ${v.pics.length<S.pics?`<label class="shcam" for="shotin">📷<span>${v.busy?"جاري التجهيز…":v.pics.length?"صورة ثانية":"صوّر"}</span></label>`:""}</div>`:""}
+  <button class="primary" data-act="shsend" ${(S.pics&&!v.pics.length)||v.locating||v.busy?"disabled":""}>أرسل</button>`; }
+function shiftHtml(){ const days=[...new Set(attends.map(a=>a.day))].sort().reverse(), ws=Object.entries(users).filter(([,u])=>u.role==="waiter");
+  const t=view.test;
+  return `<div class="phead"><div class="meta"><b>دوام العمال</b><span>آخر 30 يوم</span></div>${xBtn}</div>
+  <button class="ghost wide" data-act="shtest">اختبر موقعي الحين${t?` · ${t==="…"?"جاري…":t}`:""}</button>
+  ${days.length?days.map(d=>`<h3 class="cat">${d===TODAY?"اليوم":d}</h3>`+ws.map(([id,u])=>{const L=SHORDER.map(k=>attOf(id,k,d)).filter(Boolean); if(!L.length) return "";
+    return `<div class="bill"><div class="r"><b>${esc(u.name)}</b><span></span></div>${L.map(a=>{const late=a.cAt&&tsMs(a.at)-a.cAt>180000;
+      return `<div class="r shr"><span>${SHK[a.kind].e} ${SHK[a.kind].v} <b class="num">${tclock(tsMs(a.at)||a.cAt)}</b>${late?` <small class="num">(تصوّر ${tclock(a.cAt)}، وصل متأخر بسبب النت)</small>`:""}<br><small class="${a.in?"":"far"}">${posTxt(a)}${a.acc?` · دقة ${a.acc}م`:""}</small></span>
+      ${a.pics?(attPics[a.id]?`<span class="shthumbs">${attPics[a.id].map(x=>`<img src="${x}" alt="" data-act="shbig">`).join("")}</span>`:`<button class="ghost" data-act="shpics" data-id="${esc(a.id)}">الصور (${a.pics})</button>`):"<span></span>"}</div>`}).join("")}</div>`}).join("")).join(""):`<p class="empty">ما في تسجيلات للحين.</p>`}`; }
+async function shLocate(){ const v=view; v.locating=true; renderSheet(); const p=await getPos(); if(view!==v) return; v.locating=false; v.pos=p?{...p,...siteCheck(p.lat,p.lng)}:null; renderSheet(); }
+function shSend(){ const v=view, k=v.k, S=SHK[k]; if(!me||!me.id||attOf(me.id,k)) return closeSheet();
+  const id=TODAY+"_"+me.id+"_"+k, pos=v.pos, now=Date.now();
+  const doc={day:TODAY,user:me.id,name:me.name||"",kind:k,at:firebase.firestore.FieldValue.serverTimestamp(),cAt:now,pics:v.pics.length,
+    lat:pos?pos.lat:null,lng:pos?pos.lng:null,acc:pos?pos.acc:null,in:!!(pos&&pos.in),dist:pos?pos.dist:null};
+  db.doc("attend/"+id).set(doc).catch(()=>{});
+  v.pics.forEach((d,i)=>db.doc("attendPics/"+id+"_"+i).set({aid:id,day:TODAY,user:me.id,at:firebase.firestore.FieldValue.serverTimestamp(),data:d}).catch(()=>{}));
+  attends.push({...doc,id,at:now}); // يبين على طول حتى لو النت ضعيف
+  pushSend(2,`${S.e} ${me.name||"العامل"} ${S.v}`,`${tclock(now)} · ${posTxt(pos)}${v.pics.length?` · ${v.pics.length} صورة`:""}`,"att"+k);
+  okFlash(S.t,navigator.onLine===false?"انحفظ، وبيرسل أول ما يجي نت":tclock(now)+" · "+posTxt(pos)); closeSheet(); renderMain(); }
+async function shPicsLoad(id){ try{ const s=await db.collection("attendPics").where("aid","==",id).get(); attPics[id]=s.docs.sort((a,b)=>a.id<b.id?-1:1).map(d=>d.data().data); }catch(e){ attPics[id]=[] } if(view&&view.kind==="shift") renderSheet(); }
+async function shCleanup(){ if(!P()||legacy||shCleanup.done) return; shCleanup.done=1; const old=dayKey(Date.now()-30*864e5);
+  try{ const s=await db.collection("attendPics").where("day","<",old).get(); s.docs.forEach(d=>d.ref.delete().catch(()=>{})); }catch(e){} }
 
 /* ---------- النوافذ ---------- */
 function openSheet(v){view=v;sure=null;$("sheet").hidden=false;renderSheet()}
@@ -798,6 +866,8 @@ function renderSheet(){
   else if(view.kind==="users") p.innerHTML=usersHtml();
   else if(view.kind==="log") p.innerHTML=logHtml();
   else if(view.kind==="wl") p.innerHTML=wlHtml();
+  else if(view.kind==="shiftdo") p.innerHTML=shiftDoHtml();
+  else if(view.kind==="shift") p.innerHTML=shiftHtml();
   else if(view.kind==="month") p.innerHTML=monthHtml();
   else if(view.kind==="notes") p.innerHTML=`<div class="phead"><div class="meta"><b>الإشعارات</b><span>${P()?"طلبات الترك وأوقات الجلسات":"طلبات قسمك"}</span></div>${xBtn}</div>
     ${notes.length?`<button class="ghost" data-act="noteclr">مسح الكل</button>`:""}
@@ -1153,6 +1223,9 @@ function settingsHtml(){
 }
 
 /* ---------- الأحداث ---------- */
+$("shotin").addEventListener("change",async e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=""; const v=view;
+  if(!f||!v||v.kind!=="shiftdo") return; v.busy=true; renderSheet();
+  try{ const d=await shrink(f); if(d.length<900000) v.pics.push(d); }catch(x){} v.busy=false; if(view===v) renderSheet(); });
 document.addEventListener("input",e=>{
   const t=e.target;
   if(t.id==="cl-float"||t.id==="cl-count"){ if(!view||view.kind!=="summary") return; view[t.id==="cl-float"?"float":"count"]=t.value;
@@ -1204,6 +1277,14 @@ document.addEventListener("click",e=>{
   if(a==="calltoggle"){ if(!P()) return; return run("calloff",async()=>{ if(callsOff) await db.doc("config/callsOff").delete(); else await db.doc("config/callsOff").set({at:Date.now(),...BY()}); toast(callsOff?"رجع نداء الزباين":"توقف نداء الزباين") }) }
   if(a==="stickers") return void window.open("stickers.html","_blank");
   if(a==="log"){ if(!P()) return; return openLog(TODAY) }
+  if(a==="shdo"){ if(!W()) return; openSheet({kind:"shiftdo",k:b.dataset.k,pics:[],pos:null}); return shLocate() }
+  if(a==="shloc") return shLocate();
+  if(a==="shrm"){ view.pics.splice(Number(b.dataset.n),1); return renderSheet() }
+  if(a==="shsend") return shSend();
+  if(a==="shift"){ if(!P()) return; shCleanup(); return openSheet({kind:"shift"}) }
+  if(a==="shpics"){ attPics[b.dataset.id]=null; return shPicsLoad(b.dataset.id) }
+  if(a==="shbig"){ const w=window.open(); if(w) w.document.write(`<img src="${b.src}" style="width:100%">`); return }
+  if(a==="shtest"){ const v=view; v.test="…"; renderSheet(); getPos().then(p=>{ v.test=p?posTxt(siteCheck(p.lat,p.lng))+` (دقة ${p.acc}م)`:"ما قدرنا نحدد الموقع"; if(view===v) renderSheet() }); return }
   if(a==="lday"){ const d=b.dataset.d; if(d>TODAY) return; return openLog(d) }
   if(a==="lwho"){ view.who=b.dataset.w; return renderSheet() }
   if(a==="lkind"){ view.lk=b.dataset.k; return renderSheet() }
@@ -1359,6 +1440,7 @@ function listen(){
   db.doc("config/reserve").onSnapshot(d=>{reserves=d.exists?d.data():{}; refresh()},()=>{});
   db.doc("config/waitlist").onSnapshot(d=>{waitlist=(d.exists&&Array.isArray(d.data().items))?d.data().items:[]; refresh()},()=>{});
   db.collection("pub").onSnapshot(s=>{pubs={};s.docs.forEach(d=>pubs[d.id]=d.data());pubReady=true},()=>{});
+  if(W()||P()) db.collection("attend").where("day",">=",dayKey(Date.now()-30*864e5)).onSnapshot(s=>{attends=s.docs.map(d=>Object.assign({id:d.id},d.data())); refresh()},()=>{});
   if(W()) db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
   if(P()){ db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
     db.doc("config/callsOff").onSnapshot(d=>{callsOff=d.exists; if(view&&view.kind==="more"&&document.activeElement!==$("push-url")) renderSheet()},()=>{}); }
@@ -1408,7 +1490,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; }
   $("gate-btn").disabled=false;
 });
-const VER="v36";
+const VER="v37";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
