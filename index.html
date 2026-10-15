@@ -448,7 +448,7 @@ button:active{transform:none}
 .kmenu button.red{color:var(--red)} .kmenu button.sure{background:var(--red);color:#fff}
 /* المنيو */
 .mwrap{display:flex;gap:8px;min-height:40dvh}
-.rail{width:76px;flex:none;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;align-self:flex-start;max-height:72dvh;overflow-y:auto;scrollbar-width:none}
+.rail{width:76px;flex:none;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;align-self:flex-start;max-height:72dvh;overflow-y:auto;scrollbar-width:none;padding-bottom:90px}
 .rail button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:14px;font-size:11.5px;line-height:1.3;text-align:center;color:var(--muted)}
 .rail button.on{background:var(--s2);color:var(--ink);box-shadow:inset -3px 0 0 var(--accent)}
 .rail img,.rail .ph0{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--s2);display:block}
@@ -467,6 +467,11 @@ button:active{transform:none}
 .cdrawer{position:sticky;inset-block-end:0;z-index:4;margin-inline:-16px;margin-block-end:calc(-20px - env(safe-area-inset-bottom,0px));padding:8px 16px calc(12px + env(safe-area-inset-bottom,0px))}
 .cdrawer.open{padding:0;background:var(--panel);border-radius:26px 26px 0 0;border-top:1px solid var(--line);box-shadow:0 -16px 40px rgba(0,0,0,.5);max-height:74dvh;display:flex;flex-direction:column}
 .cdhead{padding:8px 16px 6px;touch-action:none;cursor:grab}
+.tpay{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tpay .cartbar{margin:0;flex-direction:column;gap:2px;align-items:center;justify-content:center;padding:10px 8px}
+.tpay .tcash{background:var(--green);color:#06210f}.tpay .tcard{background:#7aa7ff;color:#0a1630}
+.pdt{font-style:normal;font-size:12px;color:var(--green);font-weight:700}
+.prepaid{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;border-radius:16px;background:var(--green-bg);color:var(--green);font-weight:700}
+.tpaid{margin:10px auto 0;width:max-content;padding:4px 14px;border:3px solid #2f9e62;color:#2f9e62;border-radius:10px;font-weight:800;font-size:18px;transform:rotate(-6deg)}
 .cdn{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:13px;background:var(--accent);color:#1a1030;font-size:14px;margin-inline-start:6px;vertical-align:middle}
 .grab2{display:block;width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 8px}
 .cdbody{overflow-y:auto;padding:2px 16px 8px;flex:1;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
@@ -1574,7 +1579,7 @@ function icon(name){ const n=String(name);
   if(RX.dog.test(n)) return "🌭"; if(RX.corn.test(n)) return "🌽"; if(RX.fries.test(n)) return "🍟";
   if(/معسل/.test(n)) return /تفاح/.test(n)?"🍎":/نعناع/.test(n)?"🌿":"🍇";
   if(RX.moj.test(n)) return "🍹"; if(RX.cr.test(n)||RX.kz.test(n)) return "🥤"; if(RX.rb.test(n)) return "⚡"; if(/مو[يى][ةه]/.test(n)) return "💧";
-  if(RX.pan.test(n)) return "🥞"; if(/كوكيز/.test(n)) return "🍪"; if(/كيك/.test(n)) return "🍰"; if(/مكسرات/.test(n)) return "🥜";
+  if(RX.pan.test(n)) return "🥞"; if(/كوكيز/.test(n)) return "🍪"; if(/كيك/.test(n)) return "🍰"; if(/مكسرات/.test(n)) return "🥜"; if(/جلس[ةه]/.test(n)) return "🪑";
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
 function photo(name){ const n=String(name); // صورة الصنف من مجلد img
@@ -1596,7 +1601,7 @@ function menuHtml(){ // قائمة جانبية للأقسام، والأصنا�
   const live=CATS.filter(c=>by(c[0]).length);
   if(!live.length) return `<p class="empty">ما في أصناف لقسمك في القائمة.</p>`;
   if(!view.cat||!by(view.cat).length) view.cat=live[0][0];
-  const rail=live.length>1?`<div class="rail">${live.map(([k,t])=>`<button class="${view.cat===k?"on":""}" data-act="cat" data-c="${k}">${CAT_IMG[k]?`<img src="${CAT_IMG[k]}.webp" alt="">`:`<span class="ph0"></span>`}${t.replace("المشروبات ","")}</button>`).join("")}</div>`:"";
+  const rail=live.length>1?`<div class="rail">${live.map(([k,t])=>`<button class="${view.cat===k?"on":""}" data-act="cat" data-c="${k}">${CAT_IMG[k]?`<img src="${CAT_IMG[k]}.webp" alt="">`:`<span class="ph0" style="display:grid;place-items:center;font-size:26px">${k==="other"?"➕":""}</span>`}${t.replace("المشروبات ","")}</button>`).join("")}</div>`:"";
   return `<div class="mwrap">${rail}<div class="mgrid">${by(view.cat).map(([it,i])=>{ const off=!!it.off, sp=specFor(it.name), ph=photo(it.name);
     return `<button class="mt ${off?"off":""}" data-act="${off?"offhint":"add"}" data-i="${i}" ${OPS()?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">غير متوفر</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}</div></div>`;
 }
@@ -1767,8 +1772,11 @@ function addHtml(id){ const nt=view.newTake, cart=nt?(view.cart||(view.cart=[]))
   return `<div class="phead">${nt?`<span class="big">🥡</span>`:`<span class="big num">${esc(lab(id))}</span>`}<div class="meta"><b>${nt?"سفري جديد":"أضف طلب"}</b><span>${nt?"سجّل الطلب، وبعدين أكّده":"اضغط الصنف ينضاف على طول"}</span></div>${xBtn}</div>
   ${menuHtml()}
   ${nt?`<div class="cartlist">${cart.map((c,i)=>`<div class="cl"><span>${esc(c.r.name)}${c.r.note?` <small>${esc(c.r.note)}</small>`:""}</span><b class="num">× ${c.q}</b><b class="num">${money(c.r.price*c.q)}</b><button class="nx" data-act="tcdel" data-n="${i}" aria-label="شيل">✕</button></div>`).join("")}</div>
-    <button class="cartbar" data-act="tconfirm" ${cart.length?"":"disabled"}><span>أكّد الطلب${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`
+    ${tPayer(cart)?`<div class="tpay"><button class="cartbar tcash" data-act="tconfirm" data-pay="cash" ${cart.length?"":"disabled"}><span>💵 كاش · أكّد</span><b class="num">${money(sum)}</b></button><button class="cartbar tcard" data-act="tconfirm" data-pay="card" ${cart.length?"":"disabled"}><span>💳 شبكة · أكّد</span><b class="num">${money(sum)}</b></button></div>
+    <button class="link" data-act="tconfirm" ${cart.length?"":"disabled"} style="display:block;margin:2px auto 0">أكّد، والدفع عند الاستلام</button>`
+    :`<button class="cartbar" data-act="tconfirm" ${cart.length?"":"disabled"}><span>أكّد الطلب${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`}`
   :`<button class="cartbar" data-act="stab" data-t="orders"><span>🧾 الطلبات${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`}`; }
+const tPayer=cart=>OPS()||(!!me&&me.role==="station"&&me.station===0&&cart.every(c=>mine(c.r.name))); // مين يقدر ياخذ فلوس السفري وقت الطلب
 function doAdd(it,r,n){ const id=view.id, s=seats[id], nt=view.newTake; if(!it||!r.ok||!mine(r.name)) return false;
   if(nt){ const c=view.cart||(view.cart=[]), ex=c.find(x=>x.r.name===r.name&&(x.r.note||"")===(r.note||"")&&x.r.price===r.price&&!!x.r.comp===!!r.comp);
     if(ex) ex.q+=n; else c.push({r,q:n,i:view.i}); toast("✓ انضاف "+r.name+(n>1?" × "+n:"")); return true; }
@@ -1784,7 +1792,7 @@ function ticketHtml(){ const v=view;
   return `<div style="text-align:center;color:var(--green);font-weight:700;font-size:18px">✓ انرسل الطلب للأقسام</div>
   <div class="tslot"></div><div class="tkwrap"><div class="ticket" id="tk"><div style="text-align:center;font-weight:700;font-size:22px">🥡 سفري ${esc(v.tno)}</div><div style="text-align:center;font-size:12px;color:#7b6a91">خزامى · ${tclock(v.at)}</div>
   ${v.cart.map(c=>`<div class="tl"><span>${esc(c.r.name)}${c.q>1?" × "+c.q:""}${c.r.note?`<br><small style="color:#7b6a91">${esc(c.r.note)}</small>`:""}</span><span class="num">${r2(c.r.price*c.q)}</span></div>`).join("")}
-  <div class="tl" style="font-weight:700;border-top:2px dashed #cbbde0"><span>المجموع</span><span class="num">${money(v.sum)}</span></div></div></div>
+  <div class="tl" style="font-weight:700;border-top:2px dashed #cbbde0"><span>المجموع</span><span class="num">${money(v.sum)}</span></div>${v.pay?`<div class="tpaid">مدفوع · ${v.pay==="card"?"شبكة":"كاش"}</div>`:`<div style="text-align:center;font-size:13px;color:#b4553f;margin-top:6px">الدفع عند الاستلام</div>`}</div></div>
   <div class="tbar" id="tbar"></div><p class="empty" style="text-align:center">يرجع للواجهة بعد ٣ ثواني</p>`; }
 
 /* ---------- v41: القطة ---------- */
@@ -1793,7 +1801,7 @@ const QHELP={eq:"المجموع يتقسم على الكل بالتساوي.",ex
 const PCOL=["#b88cf2","#62d498","#7aa7ff","#f3b556","#f472b6","#fb923c","#2dd4bf","#a3e635","#f87171","#818cf8"];
 const PN=i=>"شخص "+(i+1);
 function qUnits(id){ const f=fee(id,view), U=[]; if(f>0) U.push({k:"fee",n:"رسوم الجلسة",p:f});
-  groupOrders(seatOrders(id)).forEach(({o,q})=>{ for(let j=0;j<q;j++) U.push({k:o.id+":"+j,n:o.name+(q>1?" "+(j+1):""),p:Number(o.price)||0}) }); return U.filter(u=>u.p>0); }
+  groupOrders(seatOrders(id).filter(o=>!o.pd)).forEach(({o,q})=>{ for(let j=0;j<q;j++) U.push({k:o.id+":"+j,n:o.name+(q>1?" "+(j+1):""),p:Number(o.price)||0}) }); return U.filter(u=>u.p>0); }
 function qCalc(id){ const q=view.q, U=qUnits(id), n=q.n, own=Array(n).fill(0), det=Array.from({length:n},()=>[]); let shared=0;
   U.forEach(u=>{ const a=q.mode==="eq"?undefined:q.as[u.k]; if(a==null||a>=n) shared+=u.p; else { own[a]+=u.p; det[a].push(u.n) } });
   shared=Math.max(0,shared-num(view.disc));
@@ -1887,8 +1895,9 @@ function fee(id,v){
 }
 const qty=o=>Math.max(1,Math.round(Number(o.qty)||1));
 const r2=n=>Math.round(n*100)/100;
-const itemsTotal=id=>seatOrders(id).reduce((a,o)=>a+Number(o.price||0)*qty(o),0);
-const sameLine=(a,b)=>a.seat===b.seat&&a.sid===b.sid&&a.name===b.name&&Number(a.price)===Number(b.price)&&(a.note||"")===(b.note||"")&&!!a.served===!!b.served&&(a.by||"")===(b.by||"");
+const takeDone=id=>{ const s=seats[id]; if(!s||s.type!=="take"||!isTake(id)) return false; const os=seatOrders(id); return os.length>0&&os.every(o=>o.pd&&o.served) }; // سفري مدفوع ونزل كله: يختفي لحاله
+const itemsTotal=id=>seatOrders(id).filter(o=>!o.pd).reduce((a,o)=>a+Number(o.price||0)*qty(o),0);
+const sameLine=(a,b)=>a.seat===b.seat&&a.sid===b.sid&&a.name===b.name&&Number(a.price)===Number(b.price)&&(a.note||"")===(b.note||"")&&!!a.served===!!b.served&&(a.by||"")===(b.by||"")&&!a.pd===!b.pd;
 function groupOrders(list){ // يجمع الأسطر المتطابقة في سطر واحد بكمية
   const out=[]; list.forEach(o=>{const g=out.find(x=>sameLine(x.o,o)); if(g){g.docs.push(o);g.q+=qty(o)} else out.push({o,docs:[o],q:qty(o)})}); return out; }
 const units=list=>list.reduce((a,o)=>a+qty(o),0);
@@ -1917,7 +1926,9 @@ function arm(key){ // ضغطتين للتأكيد
 let hungIds=[];
 async function sweepHung(){ // الساعة ٨ الصبح: اللي ما تقفل من أمس يروح لـ«جلسات معلقة» والجلسة تفضى
   if(!OPS()||!db||legacy||sweepHung.busy) return; const old=Object.keys(seats).filter(id=>dayKey(seats[id].startedAt)<TODAY); if(!old.length) return; sweepHung.busy=1;
-  try{ for(const id of old){ const s=seats[id]; if(!s) continue; const nid="h_"+String(s.sid).replace(/[^A-Za-z0-9]/g,""), {tok,...rest}=s, os=(await db.collection("orders").where("seat","==",id).get()).docs.filter(d=>d.data().sid===s.sid);
+  try{ for(const id of old){ const s=seats[id]; if(!s) continue;
+      if(isTake(id)&&s.pre&&!seatOrders(id).some(o=>!o.pd)){ await db.doc("seats/"+id).delete(); for(const d of (await db.collection("orders").where("seat","==",id).get()).docs) await db.doc("orders/"+d.id).delete(); continue; }
+      const nid="h_"+String(s.sid).replace(/[^A-Za-z0-9]/g,""), {tok,...rest}=s, os=(await db.collection("orders").where("seat","==",id).get()).docs.filter(d=>d.data().sid===s.sid);
       await db.doc("seats/"+nid).set({...rest,hung:true,orig:isTake(id)?0:seatNo(id),from:id});
       for(const o of os) await db.doc("orders/"+o.id).update({seat:nid}); // كل طلبات الجلسة تنتقل معها
       await db.doc("seats/"+id).delete();
@@ -2103,10 +2114,12 @@ function renderMain(){
   scanLate(); syncPub();
   if(OPS()&&db&&ready){ const st=Object.keys(reserves).filter(k=>seats[k]); if(st.length&&!renderMain.rc){ renderMain.rc=1; const m={...reserves}; st.forEach(k=>delete m[k]); db.doc("config/reserve").set(m).catch(()=>{}).then(()=>{renderMain.rc=0}) } }
   if(OPS()&&db&&ready&&!legacy) Object.keys(seats).filter(x=>!isTake(x)&&!seats[x].tok).forEach(id=>{ if(renderMain.tk&&renderMain.tk[id]) return; (renderMain.tk=renderMain.tk||{})[id]=1; db.doc("seats/"+id).update({tok:newTok()}).catch(()=>{}).then(()=>{delete renderMain.tk[id]}) });
+  if(OPS()&&db&&ready&&!legacy) Object.keys(seats).filter(takeDone).forEach(id=>{ const R0=renderMain.rp||(renderMain.rp={}); if(R0[id]) return; R0[id]=1; const s=seats[id], os=seatOrders(id);
+    db.doc("seats/"+id).delete().then(()=>Promise.all(os.map(o=>db.doc("orders/"+o.id).delete()))).then(()=>{ if(view&&view.id===id) closeSheet(); toast("🥡 سفري "+(s.tno||"")+" تسلّم وانقفل") }).catch(()=>{}).then(()=>{delete R0[id]}) });
   scanCalls(); $("callbar").innerHTML=C()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"";
   $("callbar").querySelectorAll(".callrow[data-ck]").forEach(r=>{ if(!renderMain.cs) renderMain.cs=new Set(); if(renderMain.cs.has(r.dataset.ck)) return; renderMain.cs.add(r.dataset.ck); anim(r,[{transform:"translateY(-30px) scale(.96)",opacity:0},{transform:"none",opacity:1}],{duration:520,easing:SPRING}); });
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
-  const takes=Object.keys(seats).filter(isTake).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
+  const takes=Object.keys(seats).filter(x=>isTake(x)&&!takeDone(x)).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
   const pend=groupOrders(orders.filter(o=>!isHung(o.seat)&&seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at));
   const cnt=l=>l.reduce((a,g)=>a+g.q,0);
   $("strip").innerHTML=`<span class="stats num">${busy.length} مشغولة · ${ids.length-busy.length} فاضية${cnt(pend)?` · <b>${cnt(pend)} ما نزل</b>`:""}</span>`+(OPS()&&!legacy?`<button class="waitchip" data-act="wl">⏳ انتظار <b class="num">${waitlist.length}</b></button>`:"");
@@ -2127,7 +2140,7 @@ function renderMain(){
   if(legacy&&ready){$("notice").hidden=false;$("notice").textContent="لسه الدخول بالرمز المشترك. افتح «المستخدمين» وأنشئ رمز لكل واحد ثم فعّل."}
   $("shiftbar").innerHTML=shiftBar();
   $("wlbar").innerHTML="";
-  $("take").innerHTML=(OPS()&&hungIds.length?`<button class="tchip p" data-act="hung">⏳ جلسات معلقة · <i class="num">${hungIds.length}</i></button>`:"")+takes.map(id=>{ const p=units(seatOrders(id).filter(o=>!o.served)); return `<button class="tchip ${p?"p":""}" data-act="seat" data-id="${esc(id)}">🥡 سفري <span class="num">${esc(lab(id))}</span> · <i>${p?p+" ما نزل":"نزل ✓"}</i></button>`}).join("");
+  $("take").innerHTML=(OPS()&&hungIds.length?`<button class="tchip p" data-act="hung">⏳ جلسات معلقة · <i class="num">${hungIds.length}</i></button>`:"")+takes.map(id=>{ const p=units(seatOrders(id).filter(o=>!o.served)); return `<button class="tchip ${p?"p":""}" data-act="seat" data-id="${esc(id)}">${seats[id].pre&&itemsTotal(id)<=0.004?`<b class="pdt" style="margin-inline-end:4px">💳</b>`:""}🥡 سفري <span class="num">${esc(lab(id))}</span> · <i>${p?p+" ما نزل":"نزل ✓"}</i></button>`}).join("");
   $("fab").hidden=!me||mainTab!=="seats";
   const stations=STATIONS;
   const buckets=stations.map(()=>[]); pend.forEach(g=>buckets[stationOf(g.o.name)].push(g));
@@ -2268,7 +2281,7 @@ function wlHtml(){
     <button class="del qb" data-act="wldone" data-w="${esc(x.id)}" aria-label="جلس أو مشى">✓</button></div>`).join(""):`<p class="empty">ما في أحد ينتظر.</p>`}</div>`;
 }
 function mvItemHtml(id){
-  const os=seatOrders(id), G=groupOrders(os), pick=view.oid&&orders.find(o=>o.id===view.oid), tg=Object.keys(seats).filter(x=>x!==id).sort((a,b)=>(isTake(a)?1:0)-(isTake(b)?1:0)||a.localeCompare(b));
+  const os=seatOrders(id).filter(o=>!o.pd), G=groupOrders(os), pick=view.oid&&orders.find(o=>o.id===view.oid), tg=Object.keys(seats).filter(x=>x!==id).sort((a,b)=>(isTake(a)?1:0)-(isTake(b)?1:0)||a.localeCompare(b));
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span><div class="meta"><b>نقل صنف</b><span>${pick?"اختر الجلسة اللي ينتقل لها":"اختر الصنف اللي تبغى تنقله"}</span></div>${xBtn}</div>
   ${!pick?`<div class="orders">${G.map(({o,q})=>`<div class="ord ${o.served?"s":"p"}"><button class="tog" data-act="mvpick" data-oid="${esc(o.id)}"><span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span></button></div>`).join("")}</div>`
   :`<div class="notice">${esc(pick.name)}${o_q(pick)>1?" × "+o_q(pick):""}</div>
@@ -2292,18 +2305,18 @@ function seatHtml(id){
   if(P()) km.push(`<button class="red ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء":"✖ إلغاء بدون حساب"}</button>`);
   const kebab=km.length?`<div class="kebab"><button class="close" data-act="kmenu" aria-label="خيارات">⋮</button>${view.km?`<div class="kmenu">${km.join("")}</div>`:""}</div>`:"";
   const sess=take?"":`<div class="sess"><span class="t"><b>${title}</b><small class="num">${sub}</small></span>${full&&s.type!=="free"?`<div class="seg"><button class="${s.type==="hour"?"on":""}" data-act="stype" data-type="hour">ساعة</button><button class="${s.type==="open"?"on":""}" data-act="stype" data-type="open">مفتوح</button></div>`:""}<span class="pr num">${money(fee(id))}${s.feeOver!=null?` <small style="font-weight:400">خاص</small>`:""}</span>${peBtn(`data-act="pedit" data-k="fee"`)}</div>${s.paidSum?`<div class="notice" style="background:var(--green-bg);color:var(--green)">💳 دفعوا ${money(s.paidSum)} وقاعدين. لمن يقومون اضغط «قام» تحت.</div>`:""}${peHtml(id)}`;
-  const list=os.length?groupOrders(os).map(({o,q})=>{ const k="del:"+o.id, can=mine(o.name), own=can&&ownLine(o), ed=can&&canEdit(o);
-    const inner=`<span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}${o.byName?`<small class="by">سجّله ${esc(o.byName)} · ${tclock(o.at)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span><span class="tag">${o.served?"نزل ✓":isLate(o)?"⏰ "+mins(o.at)+" د":"ما نزل"}</span>`;
+  const list=os.length?groupOrders(os).map(({o,q})=>{ const k="del:"+o.id, can=mine(o.name), own=can&&!o.pd&&ownLine(o), ed=can&&!o.pd&&canEdit(o);
+    const inner=`<span class="nm">${esc(o.name)}${q>1?` <span class="xq num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}${o.byName?`<small class="by">سجّله ${esc(o.byName)} · ${tclock(o.at)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span><span class="tag">${o.pd?`<i class="pdt">💳 مدفوع</i> `:""}${o.served?"نزل ✓":isLate(o)?"⏰ "+mins(o.at)+" د":"ما نزل"}</span>`;
     if(!can) return `<div class="oc ${o.served?"s":""}" style="opacity:.55"><div class="fg"><div class="tog">${inner}</div></div></div>`;
     return `<div class="oc ${o.served?"s":""}" ${own?`data-sw="${esc(o.id)}"`:""}>${own?`<div class="swipebg">🗑 حذف</div>`:""}<div class="fg"><button class="tog" data-act="toggle" data-oid="${esc(o.id)}">${inner}</button>
       ${own||ed?`<div class="obar">${own?`<button data-act="qinc" data-oid="${esc(o.id)}" aria-label="زود حبة">+</button><b class="num">${q}</b><button class="${sure===k?"sure":""}" data-act="qdec" data-oid="${esc(o.id)}" aria-label="نقص حبة">${sure===k?"حذف؟":"−"}</button>`:`<span></span><b class="num">${q}</b><span></span>`}${ed?`<button data-act="oedit" data-oid="${esc(o.id)}" aria-label="تعديل">✎</button>`:"<span></span>"}${P()?`<button data-act="pedit" data-name="${esc(o.name)}" data-price="${Number(o.price)}" aria-label="تعديل السعر">ر.س ✎</button>`:""}</div>`:""}</div></div>`; }).join("")
     :`<p class="empty efloat" style="text-align:center;padding:10px 0"><span>🍟</span><br>ما فيه طلبات لين الحين، اضغط «أضف طلب»</p>`;
-  const foot=full||canPay(id)?(s.paidSum&&tot<=0.004&&full?`<button class="primary ${sure==="leave"?"sure":""}" data-act="leave" style="background:var(--green);color:#06210f">${sure==="leave"?"تأكيد: قاموا؟":"🚶 قاموا · قفّل"}</button>`:`<button class="ghost" data-act="pay" style="min-width:110px;font-size:17px">الحساب</button>`):"";
+  const foot=take&&s.pre&&tot<=0.004?`<span class="prepaid">💳 مدفوع ${s.pre==="card"?"شبكة":"كاش"} <br><small style="font-weight:400">يختفي أول ما ينزل</small></span>`:full||canPay(id)?(s.paidSum&&tot<=0.004&&full?`<button class="primary ${sure==="leave"?"sure":""}" data-act="leave" style="background:var(--green);color:#06210f">${sure==="leave"?"تأكيد: قاموا؟":"🚶 قاموا · قفّل"}</button>`:`<button class="ghost" data-act="pay" style="min-width:110px;font-size:17px">الحساب</button>`):"";
   return `<div class="phead"><span class="big num">${esc(lab(id))}</span>
     <div class="meta"><b>${take?"سفري "+esc(lab(id)):title}</b><span class="num">${sub}</span></div>${kebab}${xBtn}</div>
   ${callRow(id)}
   <div class="menuhost ${open?"dim":""}">${menuHtml()}</div>
-  <div class="cdrawer ${open?"open":""}" id="cdrawer">${open?`<div class="cdhead" id="cdhead"><i class="grab2"></i><div style="display:flex;align-items:center;gap:10px"><b style="flex:1;font-size:20px">الطلبات ${n?`<span class="num cdn">${n}</span>`:""}</b><b class="num" style="color:var(--accent);font-size:20px">${money(tot)}</b></div></div>
+  <div class="cdrawer ${open?"open":""}" id="cdrawer">${open?`<div class="cdhead" id="cdhead"><i class="grab2"></i><div style="display:flex;align-items:center;gap:10px"><b style="flex:1;font-size:20px">الطلبات ${n?`<span class="num cdn">${n}</span>`:""}</b>${take&&s.pre&&tot<=0.004?`<b class="pdt" style="font-size:16px">💳 مدفوع</b>`:`<b class="num" style="color:var(--accent);font-size:20px">${money(tot)}</b>`}</div></div>
     <div class="cdbody">${sess}<div class="orders">${list}</div>${!(full||canPay(id))?`<p class="empty" style="font-size:13px">${W()?"الحساب عند الشركاء. اضغط على الصنف لما توصّله.":"الحساب عند الشركاء. اللي تسجله ينضاف على الفاتورة."}</p>`:n?`<p class="empty" style="font-size:12px;text-align:center">اسحب الصنف يسار عشان تحذفه</p>`:""}</div>
     <div class="cdfoot">${foot}<button class="primary" data-act="stab" data-t="add" style="flex:1">＋ أضف طلب</button></div>`
   :`<button class="cartbar" data-act="stab" data-t="orders"><span><span class="cbn num">${n}</span> الطلبات</span><b class="num">${money(tot)}</b><i style="font-style:normal">⌃</i></button>`}</div>`;
@@ -2340,7 +2353,7 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
 }
 const num=x=>{const v=parseFloat(String(x).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(",","."));return isFinite(v)&&v>0?v:0};
 // حساب جزئي: الزبون يحاسب على أصناف معينة والجلسة تبقى مفتوحة
-function payGroups(id){ const g={}; seatOrders(id).forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{k,name:o.name,price:Number(o.price),q:0}).q+=qty(o)}); return g; }
+function payGroups(id){ const g={}; seatOrders(id).filter(o=>!o.pd).forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{k,name:o.name,price:Number(o.price),q:0}).q+=qty(o)}); return g; }
 const partQty=(v,x)=>Math.min(x.q,Math.max(0,Number(v.part&&v.part[x.k])||0));
 const partSum=(id,v)=>Object.values(payGroups(id)).reduce((a,x)=>a+x.price*partQty(v,x),0);
 const partUnits=(id,v)=>Object.values(payGroups(id)).reduce((a,x)=>a+partQty(v,x),0);
@@ -2360,15 +2373,17 @@ function closeBill(id,pay,ov,vv){
     const all={}; Object.values(payGroups(id)).forEach(x=>all[x.k]=x.q); const v2={...v,part:all,pfee:String(fee(id,v)),stayPay:true}, c2=payCalc(id,v2);
     if(!(c2.total>0)) return; return closePart(id,pay,c2,v2,ov); }
   return run("seat:"+id,async()=>{
-    const os=seatOrders(id), now=Date.now();
+    const all=seatOrders(id), os=all.filter(o=>!o.pd), now=Date.now();
     await db.collection("sales").add({...BY(),day:v.today?dayKey(now):dayKey(s.startedAt),seat:take?0:seatNo(id),tno:Number(s.tno)||0,pay,
       cash:ov?ov.cash:pay==="cash"?total:pay==="split"?c.cash:0, card:ov?ov.card:pay==="card"?total:pay==="split"?c.card:0, ...(ov&&ov.qitta?{qitta:ov.qitta}:{}),
       type:take?"take":mode, ordered:s.type, converted:!take&&s.type!==mode,
       hours:mode==="hour"?(v.hours||autoHours(s)):0,minutes:mins(s.startedAt),fee:c.f,gross:c.gross,disc:comp?0:c.disc,
       items:os.map(o=>({name:o.name,price:Number(o.price),qty:qty(o),note:o.note||"",served:!!o.served,by:o.byName||"",at:o.at||0,...(o.comp?{comp:true,orig:Number(o.orig)||0}:{})})),total,
       startedAt:s.startedAt,closedAt:now});
-    for(const o of os) await db.doc("orders/"+o.id).delete();
-    await db.doc("seats/"+id).delete(); if(!vv) closeSheet(); celebrate();
+    if(take&&OPS()&&all.some(o=>!o.served)){ // سفري تحاسب قبل ما ينزل: يبقى للمطبخ، ويختفي أول ما ينزل كله
+      for(const o of os) await db.doc("orders/"+o.id).update({pd:true}); await db.doc("seats/"+id).update({pre:pay});
+    } else { await db.doc("seats/"+id).delete(); for(const o of all) await db.doc("orders/"+o.id).delete(); }
+    if(!vv) closeSheet(); celebrate();
     toast((take?"تقفل حساب السفري "+(s.tno||""):"تقفل حساب الجلسة "+seatNo(id))+" · "+(ov&&ov.qitta?"قطة على "+ov.qitta.n:{cash:"كاش",card:"شبكة",split:"مقسوم",comp:"ضيافة"}[pay]));
   });
 }
@@ -2668,15 +2683,17 @@ document.addEventListener("click",e=>{
     return run("seat:"+id,async()=>{ await db.doc("seats/"+id).update(t==="hour"?{type:"hour",hours:1}:{type:t}); logIt("غيّر الجلسة "+seatNo(id)+" من "+MODE[s.type]+" إلى "+MODE[t]); toast("الجلسة "+seatNo(id)+" صارت "+MODE[t]+" · نفس وقت البداية") }) }
   if(a==="offhint"){ if(Date.now()-lpJust<800) return; return toast(OPS()?"غير متوفر · اضغط عليه مطوّل ٣ ثواني ترجّعه":"هذا الصنف غير متوفر الحين") }
   if(a==="tcdel"){ if(view&&view.cart){ view.cart.splice(+b.dataset.n,1); renderSheet() } return }
-  if(a==="tconfirm"){ const cart=view&&view.cart||[]; if(!cart.length) return; const sum=r2(cart.reduce((x,c)=>x+c.r.price*c.q,0));
+  if(a==="tconfirm"){ const cart=view&&view.cart||[]; if(!cart.length) return; const sum=r2(cart.reduce((x,c)=>x+c.r.price*c.q,0)), pay=tPayer(cart)&&["cash","card"].includes(b.dataset.pay)?b.dataset.pay:"";
     return run("newtake",async()=>{ const ref=db.doc("counters/take"), tno=await db.runTransaction(async tx=>{const d=await tx.get(ref), k=((d.exists&&Number(d.data().n))||100)+1; tx.set(ref,{n:k}); return k});
       const nid="t"+Date.now().toString(36), now=Date.now();
-      await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:now,...BY()});
-      for(const c of cart){ const r=c.r; await db.collection("orders").add({seat:nid,sid:nid,name:r.name,price:r.price,note:r.note,served:false,qty:c.q,at:Date.now(),st:stationOf(r.name),...BY(),...(r.comp?{comp:true,orig:r.orig}:r.custom?{orig:r.orig}:{})});
+      if(pay) await db.collection("sales").add({...BY(),day:dayKey(now),seat:0,tno,pay,cash:pay==="cash"?sum:0,card:pay==="card"?sum:0,type:"take",ordered:"take",converted:false,hours:0,minutes:0,fee:0,gross:sum,disc:0,
+        items:cart.map(c=>({name:c.r.name,price:Number(c.r.price),qty:c.q,note:c.r.note||"",served:false,by:(me&&me.name)||"",at:now,...(c.r.comp?{comp:true,orig:Number(c.r.orig)||0}:{})})),total:sum,startedAt:now,closedAt:now,pre:true});
+      await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:now,...BY(),...(pay?{pre:pay}:{})});
+      for(const c of cart){ const r=c.r; await db.collection("orders").add({seat:nid,sid:nid,name:r.name,price:r.price,note:r.note,served:false,qty:c.q,at:Date.now(),st:stationOf(r.name),...BY(),...(pay?{pd:true}:{}),...(r.comp?{comp:true,orig:r.orig}:r.custom?{orig:r.orig}:{})});
         if(r.comp) logIt("ضيافة: "+r.name+" × "+c.q+" على سفري "+tno+" (قيمتها "+moneyT(r.orig*c.q)+")"); if(r.custom) logIt("سعر خاص: "+r.name+" × "+c.q+" بـ"+r.price+" بدل "+r.orig+" على سفري "+tno); }
       const by={}; cart.forEach(c=>{const st=stationOf(c.r.name);(by[st]=by[st]||[]).push(c)});
       Object.entries(by).forEach(([st,L])=>pushSend(+st,"🥡 سفري "+tno,L.map(c=>c.r.name+(c.q>1?" × "+c.q:"")+(c.r.note?" ("+c.r.note+")":"")).join("، ")+(me&&me.name?" · سجّله "+me.name:""),"o"+Date.now()));
-      openSheet({kind:"ticket",tno,cart,sum,at:now}); const v=view; setTimeout(()=>{ if(view===v) closeSheet() },DM(3900)); }); }
+      openSheet({kind:"ticket",tno,cart,sum,at:now,pay}); if(pay) celebrate(); const v=view; setTimeout(()=>{ if(view===v) closeSheet() },DM(3900)); }); }
   if(a==="qitta"){ view.q={n:3,mode:"eq",as:{},paid:{},pick:null}; renderSheet(); stagger($("panel").children); return }
   if(a==="qback"){ if(view.q&&Object.keys(view.q.paid).length&&!arm("qback")) return; view.q=null; return renderSheet() }
   if(a==="qn"){ const q=view.q; if(!q||Object.keys(q.paid).length) return; q.n=Math.max(2,Math.min(10,q.n+Number(b.dataset.d))); Object.keys(q.as).forEach(k=>{if(q.as[k]>=q.n) delete q.as[k]}); renderSheet(); pop(document.querySelector("#panel .qcount b"),1.3); return }
@@ -2866,7 +2883,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=9; let migrating=false;
+const MIG=10; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -2888,6 +2905,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<8&&!items.some(i=>RX.kz.test(i.name))) items.push({name:"كنزة",price:KINZA.plain,cat:"cold"});
   if(m<9&&!items.some(i=>/كركدي/.test(i.name))) items.push({name:"كركديه",price:10,cat:"cold"});
   if(m<9&&!items.some(i=>/ليمون\s*(و\s*)?نعناع/.test(i.name)&&!/معسل/.test(i.name))) items.push({name:"ليمون نعناع",price:7,cat:"cold"});
+  if(m<10&&!items.some(i=>/جلس[ةه]\s*زياد[ةه]/.test(i.name))) items.push({name:"جلسة زيادة",price:5,cat:"other"});
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
 }
 function listen(){
