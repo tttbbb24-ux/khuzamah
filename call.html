@@ -227,7 +227,7 @@ const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
 const priceOf=it=>{ if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
-const K=(new URLSearchParams(location.search).get("k")||"").trim(), valid=/^[A-Za-z0-9]{8,16}$/.test(K);
+const K=(new URLSearchParams(location.search).get("k")||"").trim(), valid=/^[A-Za-z0-9]{8,16}$/.test(K), MENU=!valid&&new URLSearchParams(location.search).has("m"); // ?m = منيو للعرض بس (باركود السفري)
 let sid="", n=0, ended=false, unCall=null;
 let db=null, uid="", busy=false, lastAt=0, acked=false, menuData=null, pub=null, pubSeen=false;
 try{ lastAt=Number(sessionStorage.getItem("kz-call-"+K))||0 }catch(e){}
@@ -259,7 +259,7 @@ function paintHero(){
 function applyLang(){
   document.documentElement.lang=lang; document.documentElement.dir=lang==="en"?"ltr":"rtl";
   document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=L(el.dataset.t)}); $("lang").textContent=L("other");
-  if(!valid) show("bad",L("noseat")); else if(ended) show("bad",L("ended"));
+  if(!valid&&!MENU) show("bad",L("noseat")); else if(ended) show("bad",L("ended"));
   const off=!valid||ended||!n; $("order").hidden=off; $("rows").querySelectorAll("[data-k]").forEach(b=>b.hidden=off);
   paintHero(); if(sheetOpen==="menu") paintMenu();
 }
@@ -290,7 +290,7 @@ dim.onclick=closeSheet;
 sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(); if(e.target.closest("[data-go]")) openChoice(); });
 
 /* ---------- المنيو: الأقسام على الجنب ---------- */
-let mcat=-1;
+let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أصناف
 function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
   const cats=CATS.map(c=>[c,items.filter(i=>(i.cat||"other")===c[0])]).filter(c=>c[1].length);
   if(mcat<0||mcat>cats.length) mcat=0;
@@ -299,7 +299,7 @@ function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray
   let body;
   if(mcat===0) body=`<div class="banner" style="background:linear-gradient(135deg,#4a1a7a,#2a0e4a)"><div>🪑 ${L("sessions")}</div></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">⏱</i><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">♾️</i><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div>`;
   else { const [c,list]=cats[mcat-1]; body=`<div class="banner">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:""}<div>${c[1]} ${lang==="en"?c[3]:c[2]}</div></div>`+list.map(i=>{const ph=photo(i.name); return `<div class="it ${i.off?"off":""}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i></i>`}<span>${esc(nameOf(i.name))}${flavOf(i.name)}</span><b>${priceOf(i)}</b></div>`}).join(""); }
-  const html=`<div class="hd"><b>${L("b_menu")}<small>${L("toorder")}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="mbody"><div class="rail">${rail}</div><div class="list" id="mlist">${body}</div></div><div class="sfoot"><button class="go" data-go>${L("b_order")}</button></div>`;
+  const html=`<div class="hd"><b>${L("b_menu")}${MENU?"":`<small>${L("toorder")}</small>`}</b><button class="x" data-x aria-label="close">✕</button></div><div class="mbody"><div class="rail">${rail}</div><div class="list" id="mlist">${body}</div></div>${MENU?"":`<div class="sfoot"><button class="go" data-go>${L("b_order")}</button></div>`}`;
   if(sheetOpen==="menu"){ sheet.innerHTML=html; } else openSheet("menu",html);
   sheet.style.height="88%";
   sheet.querySelectorAll(".rail [data-c]").forEach(b=>b.onclick=()=>{ mcat=+b.dataset.c; paintMenu(); sheet.querySelectorAll("#mlist > *").forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(12px)"},{opacity:1,transform:"none"}],{duration:360,delay:i*45,fill:"backwards"})); });
@@ -417,7 +417,9 @@ function addCart(i,v){ const it=menuData.items[i], r=lineOf(it,v); if(!r.ok) ret
 async function sendReq(){ if(!cart.length||busy) return; busy=true; const b=sheet.querySelector("[data-send]"); if(b) b.disabled=true;
   try{ await db.doc("reqs/"+sid).set({uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp(),sid:String((pub&&pub.sid)||""),total:cartT(),
       items:cart.map(c=>({i:c.i,n:c.n,sel:c.sel,ex:c.ex,size:c.size,q:c.q,note:c.note}))});
-    lastSent=cart.map(c=>({label:c.label,q:c.q,p:r2(c.price*c.q)})); cart=[]; reqSt="wait"; watchReq(); paintSent(); show("wait","<span>"+L("r_wait")+"</span>"); }
+    lastSent=cart.map(c=>({label:c.label,q:c.q,p:r2(c.price*c.q)})); cart=[]; reqSt="wait"; watchReq(); paintSent(); show("wait","<span>"+L("r_wait")+"</span>");
+    try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken(); // إشعار لياسين والشركاء
+      await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,req:sid})}); }catch(e){} }
   catch(err){ show("bad","<span>"+(err&&err.code==="permission-denied"?L("r_busy"):L("retry"))+"</span>"); closeSheet(); }
   busy=false; }
 function watchReq(){ if(unReq){unReq();unReq=null} if(!sid) return;
@@ -457,7 +459,7 @@ async function start(){
   try{
     firebase.initializeApp(CFG); db=firebase.firestore();
     uid=(await firebase.auth().signInAnonymously()).user.uid;
-    lock(false); if(!valid) return;
+    lock(false); if(MENU) setTimeout(()=>$("mbtn").click(),250); if(!valid) return;
     db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub;
       const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
       if(ns!==sid){ sid=ns; n=sid?parseInt(sid.slice(1),10):0; if(unCall){unCall();unCall=null} reqSt=""; cart=[]; if(sid) watchReq();

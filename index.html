@@ -1906,6 +1906,10 @@ const canEdit=o=>!!me&&mine(o.name)&&baseIdx(o)>=0&&(OPS()||(W()?o.by===me.id&&!
 const ownLine=o=>OPS()||!W()||(o.by===me.id&&!o.served); // العامل يعدّل كمية اللي سجله هو قبل ما ينزل
 const newTok=()=>{ const a="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789", r=crypto.getRandomValues(new Uint8Array(10)); return Array.from(r,x=>a[x%a.length]).join("") };
 const callUrl=t=>location.origin+location.pathname.replace(/[^/]*$/,"")+"call.html?k="+t;
+const menuUrl=()=>location.origin+location.pathname.replace(/[^/]*$/,"")+"call.html?m=1"; // منيو للعرض بس
+function menuQrHtml(){ return `<div class="phead"><span class="big">🥡</span><div class="meta"><b>منيو خزامى</b><span>خلّ الزبون يصوره ويختار، وبعدها اضغط تم</span></div>${xBtn}</div>
+  <div class="qrwrap">${qrSvg(menuUrl())}</div><p class="empty">المنيو للعرض بس. الطلب تسجله أنت.</p>
+  <button class="primary wide" data-act="mqok">تم · روح للأصناف</button>`; }
 function qrSvg(text){ let q=null; for(const t of [4,5,6,8,10]){ try{ q=new KZQR.QRCode(t,KZQR.L.M); q.addData(text); q.make(); break }catch(e){ q=null } }
   if(!q) return ""; const N=q.getModuleCount(), Q=3; let d="";
   for(let y=0;y<N;y++) for(let x=0;x<N;x++) if(q.isDark(y,x)) d+=`M${x+Q} ${y+Q}h1v1h-1z`;
@@ -2080,6 +2084,37 @@ const PRESET=[["ريان","partner"],["زهير","partner"],["بكري","partner
 const roleFields=v=>v==="partner"?{role:"partner"}:v==="c"?{role:"cashier"}:v==="w"?{role:"waiter"}:{role:"station",station:v==="s1"?1:0};
 const digits=x=>String(x).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
 const BY=()=>({by:(me&&me.id)||"",byName:(me&&me.name)||""});
+function sessLogHtml(id){ // كل اللي صار في هذي الجلسة من أول ما انفتحت
+  const s=seats[id], take=isTake(id)||s.type==="take", n=take?Number(s.tno)||0:seatNo(id), t0=Number(s.startedAt)||0, E=[];
+  const who=x=>x?" · "+esc(x):"";
+  E.push({at:t0,t:(take?"🥡 انفتح السفري":"🪑 انفتحت الجلسة")+(take?"":" · "+(MODE[s.type]||"")),w:s.byName||""});
+  seatOrders(id).forEach(o=>{ const q=qty(o), nm=esc(o.name)+(q>1?" × "+q:"")+(o.note?" ("+esc(o.note)+")":"");
+    E.push({at:Number(o.at)||t0,t:(o.src==="qr"?"📱 طلب من جوال الزبون: ":"➕ ")+nm+(o.comp?" · ضيافة":""),w:o.byName||""});
+    if(o.served) E.push({at:Number(o.servedAt)||Number(o.at)||t0,t:"✓ نزل "+nm,w:""}); });
+  const re=take?new RegExp("سفري "+n+"(?![0-9])"):new RegExp("(الجلسة|جلسة) "+n+"(?![0-9])");
+  if(P()) logs.filter(l=>l.at>=t0-60000&&re.test(l.what||"")&&!/^فتح الجلسة/.test(l.what||"")).forEach(l=>E.push({at:l.at,t:sarify(esc(l.what)),w:l.byName||"",raw:1}));
+  else (sales||[]).filter(x=>(take?x.type==="take"&&Number(x.tno)===n:x.type!=="take"&&Number(x.seat)===n)&&(x.closedAt||0)>=t0).forEach(x=>E.push({at:x.closedAt,t:"💳 دفعوا "+moneyT(Number(x.total||0))+" "+({cash:"كاش",card:"شبكة",split:"مقسوم",comp:"ضيافة"}[x.pay]||""),w:x.byName||""}));
+  E.sort((a,b)=>a.at-b.at);
+  return `<div class="phead"><span class="big num">${take?"🥡":n}</span><div class="meta"><b>سجل ${take?"سفري "+n:"الجلسة "+n}</b><span>من أول ما ${take?"انفتح":"انفتحت"} · ${tclock(t0)}</span></div>${xBtn}</div>
+  <div class="bill">${E.map(e=>`<div class="r"><span>${e.t}<br><span class="q num">${tclock(e.at)}${who(e.w)}</span></span><span></span></div>`).join("")}</div>
+  ${P()?"":`<p class="empty" style="font-size:13px">الحذف والتعديل يشوفها الشركاء بس.</p>`}
+  <button class="primary wide" data-act="back">رجوع للجلسة</button>`; }
+const canRestore=x=>P()&&Array.isArray(x.items)&&x.items.length>0&&!x.partial&&!x.stay&&!x.item&&!x.pre&&(x.day||TODAY)===TODAY;
+function restoreSale(k){ // يرجّع جلسة انقفلت: الحساب ينشال، والجلسة ترجع بطلباتها ووقتها
+  const x=sales.find(y=>y.id===k); if(!x||!canRestore(x)) return;
+  const take=x.type==="take", n=take?Number(x.tno)||0:Number(x.seat)||0, id=take?"t"+Date.now().toString(36):"s"+String(n).padStart(2,"0");
+  if(!take&&!(n>0)) return toast("ما عرفت رقم الجلسة");
+  if(!take&&seats[id]) return toast("الجلسة "+n+" فيها ناس الحين، فضّها أول أو انقلهم");
+  if(!arm("rs:"+k)) return;
+  const where=take?"سفري "+n:"الجلسة "+n;
+  return run("sale:"+k,async()=>{
+    const t0=Number(x.startedAt)||Date.now(), sid=take?id:Date.now().toString(36)+Math.random().toString(36).slice(2,6), ty=take?"take":(["hour","open","free"].includes(x.ordered)?x.ordered:x.type);
+    await db.doc("seats/"+id).set(take?{sid,type:"take",tno:n,startedAt:t0,...BY()}:{sid,tok:newTok(),type:ty,startedAt:t0,...(ty==="hour"?{hours:Math.max(1,Number(x.hours)||1)}:{})});
+    for(const it of x.items) await db.collection("orders").add({seat:id,sid,name:it.name,price:Number(it.price)||0,note:it.note||"",served:!!it.served,...(it.served?{servedAt:Number(x.closedAt)||Date.now()}:{}),qty:Math.max(1,Number(it.qty)||1),at:Number(it.at)||t0,st:stationOf(it.name),by:BY().by,byName:it.by||"",...(it.comp?{comp:true,orig:Number(it.orig)||0}:{})});
+    await db.doc("sales/"+k).delete();
+    logIt("رجّع "+where+" بعد ما انقفلت، وانشال حسابها "+moneyT(Number(x.total||0)));
+    toast("↩︎ رجعت "+where+" · حسابها انشال من المبيعات"); const v=view; v.openSale=null; if(view===v&&v.kind==="summary") loadDay(v); });
+}
 function logIt(what){ if(!db) return; const now=Date.now(); db.collection("log").add({day:dayKey(now),at:now,what,...BY()}).catch(()=>{}); }
 let myStation=-1; // قسم هذا الجوال في قائمة الطلبات: -1 الكل
 try{const v=parseInt(localStorage.getItem("kz-station"),10); if(v>=0&&v<=2) myStation=v}catch(e){}
@@ -2098,8 +2133,7 @@ function scanReqs(){ if(!me||!db||!ready) return; let fresh=0;
   Object.keys(reqs).forEach(id=>{ const r=reqs[id]; if(OPS()&&(!seats[id]||r.k!==seats[id].tok)&&tsMs(r.at)<Date.now()-5*60000){ db.doc("reqs/"+id).delete().catch(()=>{}); return } // طلب جلسة تقفلت
     if(!liveReq(id)) return; const k=id+":"+tsMs(r.at); if(reqSeen.has(k)) return; reqSeen.add(k); if(!reqsSeeded) return; fresh++;
     note("📱 جلسة "+seatNo(id)+" طلبت من الجوال، يبي موافقة","r:"+id);
-    if(!r.pushed) db.runTransaction(async tx=>{ const ref=db.doc("reqs/"+id), d=await tx.get(ref); if(!d.exists||d.data().pushed||d.data().st) return false; tx.update(ref,{pushed:true}); return true })
-      .then(first=>{ if(first) pushSend(2,"📱 جلسة "+seatNo(id)+" طلبت من الجوال",reqLines(r).map(l=>l.r.name+(l.q>1?" × "+l.q:"")).join("، ")+" · يبي موافقة","rq-"+id) }).catch(()=>{}); });
+  }); // إشعار الجوال يرسله جوال الزبون عن طريق الخادم
   reqsSeeded=true; dropNotes(x=>x.ref.startsWith("r:")&&!liveReq(x.ref.slice(2)));
   if(fresh){ beep([988,1319,988,1319]); flash3(); } }
 function approveReq(id){ const r=reqs[id], s=seats[id]; if(!r||!s||!liveReq(id)) return; const L=reqLines(r); if(!L.length){ toast("ما فيه أصناف متوفرة في الطلب"); return }
@@ -2296,6 +2330,8 @@ function renderSheet(){ if(!view) return renderIdle(); renderSheet0(); const p=$
 function renderSheet0(){
   if(!view) return;
   const p=$("panel");
+  if(view.kind==="menuqr"){ p.innerHTML=menuQrHtml(); return }
+  if(view.kind==="slog"){ if(!seats[view.id]){closeSheet();return} p.innerHTML=sessLogHtml(view.id); return }
   if(view.kind==="qr"){ if(!seats[view.id]&&!view.wait){closeSheet();return} if(seats[view.id]) view.wait=false; p.innerHTML=qrHtml(view.id); return }
   if(view.kind==="seat"||view.kind==="pay"||view.kind==="extras"||view.kind==="move"||view.kind==="mvitem"){
     if(view.newTake){ p.innerHTML=view.kind==="extras"?extrasHtml():addHtml(view.id); return }
@@ -2364,6 +2400,7 @@ function seatHtml(id){
   if(!take&&C()) km.push(`<button data-act="qr">📱 رمز الجلسة للزبون</button>`);
   if(full&&!take) km.push(`<button data-act="move">🔀 نقل الجلسة كلها</button>`);
   if(full&&os.length) km.push(`<button data-act="mvitem">↪️ نقل صنف لجلسة ثانية</button>`);
+  km.push(`<button data-act="slog1">🕘 سجل الجلسة</button>`);
   if(P()) km.push(`<button class="red ${sure==="cancel"?"sure":""}" data-act="cancel">${sure==="cancel"?"اضغط مرة ثانية للإلغاء":"✖ إلغاء بدون حساب"}</button>`);
   const kebab=km.length?`<div class="kebab"><button class="close" data-act="kmenu" aria-label="خيارات">⋮</button>${view.km?`<div class="kmenu">${km.join("")}</div>`:""}</div>`:"";
   const sess=take?"":`<div class="sess"><span class="t"><b>${title}</b><small class="num">${sub}</small></span>${full&&s.type!=="free"?`<div class="seg"><button class="${s.type==="hour"?"on":""}" data-act="stype" data-type="hour">ساعة</button><button class="${s.type==="open"?"on":""}" data-act="stype" data-type="open">مفتوح</button></div>`:""}<span class="pr num">${money(fee(id))}${s.feeOver!=null?` <small style="font-weight:400">خاص</small>`:""}</span>${peBtn(`data-act="pedit" data-k="fee"`)}</div>${s.paidSum?`<div class="notice" style="background:var(--green-bg);color:var(--green)">💳 دفعوا ${money(s.paidSum)} وقاعدين. لمن يقومون اضغط «قام» تحت.</div>`:""}${peHtml(id)}`;
@@ -2603,10 +2640,10 @@ function summaryHtml(){
     ${c?`<p class="empty" style="font-size:13px">آخر حفظ: ${tclock(c.at)} · ${esc(c.byName||"بدون اسم")} · الموجود ${money(Number(c.counted||0))} · ${c.diff===0?"مطابق":c.diff>0?"زيادة "+money(c.diff):"ناقص "+money(-c.diff)}</p>`:""}</div>
   <div class="links2">
     <button data-act="ssales"><span>🧾 الحسابات المقفلة</span><small class="num">${S.length}</small><i>${view.showSales?"⌃":"‹"}</i></button>
-    ${view.showSales?`<div class="inner"><p class="empty" style="font-size:13px">اضغط الحساب عشان تنقله ليوم ثاني أو تحذفه.</p><div class="orders">${S.slice().sort((a,b)=>(b.closedAt||0)-(a.closedAt||0)).map(x=>{
+    ${view.showSales?`<div class="inner"><p class="empty" style="font-size:13px">اضغط الحساب عشان ترجّعه مفتوح، أو تنقله ليوم ثاني، أو تحذفه.</p><div class="orders">${S.slice().sort((a,b)=>(b.closedAt||0)-(a.closedAt||0)).map(x=>{
       const k="ds:"+x.id, open=view.openSale===x.id;
       return `<div class="ord" style="flex-wrap:wrap"><button class="tog" data-act="saleopen" data-sid="${esc(x.id)}" style="border-color:var(--line);background:var(--bg)"><span class="nm">${x.type==="take"?"سفري "+(x.tno||""):"جلسة "+(x.seat||"")}${x.stay?" · حاسبوا وكملوا":x.partial?" · حساب جزئي":""}<small class="num">${x.type!=="take"&&x.startedAt?"دخل "+tclock(x.startedAt)+" · طلع ":""}${tclock(x.closedAt)}${x.converted?" · انفتحت "+(MODE[x.ordered]||"")+" وانحسبت "+(MODE[x.type]||""):x.type==="free"?" · جلسة مجاناً":""} · ${x.qitta?"قطة على "+x.qitta.n:payName(x)}${x.pay==="split"?" ("+Number(x.cash||0)+" كاش + "+Number(x.card||0)+" شبكة)":""}${x.byName?" · "+esc(x.byName):""}</small></span><span class="num">${money(Number(x.total||0))}</span></button>
-      ${open?saleDetail(x):""}${open?`<div class="paybtns" style="flex:1 1 100%;grid-template-columns:1fr 1fr 1fr"><button class="ghost" data-act="salemove" data-sid="${esc(x.id)}" data-n="-1">انقله لليوم السابق</button><button class="ghost" data-act="salemove" data-sid="${esc(x.id)}" data-n="1" ${live?"disabled":""}>انقله لليوم التالي</button><button class="ghost ${sure===k?"sure":""}" style="${sure===k?"background:var(--red);color:#fff":"color:var(--red)"}" data-act="delsale" data-sid="${esc(x.id)}">${sure===k?"تأكيد الحذف":"حذف"}</button></div>`:""}</div>`;}).join("")||`<p class="empty">ما في حسابات مقفلة.</p>`}</div></div>`:""}
+      ${open?saleDetail(x):""}${open?`<div class="paybtns" style="flex:1 1 100%;grid-template-columns:1fr 1fr 1fr">${canRestore(x)&&live?`<button class="ghost ${sure==="rs:"+x.id?"sure":""}" style="grid-column:1/-1;${sure==="rs:"+x.id?"background:var(--accent);color:#fff":"color:var(--accent);border-color:var(--accent)"}" data-act="rsale" data-sid="${esc(x.id)}">${sure==="rs:"+x.id?"تأكيد: رجّعها مفتوحة وشيل حسابها":"↩︎ رجّع "+(x.type==="take"?"السفري":"الجلسة")+" مفتوحة"}</button>`:""}<button class="ghost" data-act="salemove" data-sid="${esc(x.id)}" data-n="-1">انقله لليوم السابق</button><button class="ghost" data-act="salemove" data-sid="${esc(x.id)}" data-n="1" ${live?"disabled":""}>انقله لليوم التالي</button><button class="ghost ${sure===k?"sure":""}" style="${sure===k?"background:var(--red);color:#fff":"color:var(--red)"}" data-act="delsale" data-sid="${esc(x.id)}">${sure===k?"تأكيد الحذف":"حذف"}</button></div>`:""}</div>`;}).join("")||`<p class="empty">ما في حسابات مقفلة.</p>`}</div></div>`:""}
     <button data-act="slog"><span>📜 سجل الحركات</span><small class="num">${L.length||""}</small><i>${view.showLog?"⌃":"‹"}</i></button>
     ${view.showLog?`<div class="inner"><p class="empty" style="font-size:13px">الإلغاء والحذف والتنقيص والضيافة وتعديل الأسعار، ومين سواها.</p><div class="bill">${L.length?L.slice().sort((a,b)=>b.at-a.at).map(l=>`<div class="r"><span>${sarify(esc(l.what))}<br><span class="q num">${tclock(l.at)} · ${esc(l.byName||"بدون اسم")}</span></span><span></span></div>`).join(""):row(`<span class="q">ما في حركات</span>`,"")}</div></div>`:""}
     <button data-act="month"><span>📅 ملخص الشهر</span><i>‹</i></button>
@@ -2792,6 +2829,8 @@ document.addEventListener("click",e=>{
   if(a==="oedit"){ const o=orders.find(x=>x.id===oid); if(!o||!canEdit(o)) return; const i=baseIdx(o), sp=specFor(cfg.items[i].name), docs=orders.filter(x=>sameLine(x,o));
     const pre=prefill(sp,o); return openSheet({kind:"extras",id:o.seat,i,...pre,q:units(docs),comp:false,cprice:"",edit:o.id,from:b.dataset.from||"seat"}) }
   if(a==="qr"){ if(!id||isTake(id)) return; return openSheet({kind:"qr",id}) }
+  if(a==="slog1"){ if(!id||!seats[id]) return; return openSheet({kind:"slog",id}) }
+  if(a==="rsale") return restoreSale(b.dataset.sid);
   if(a==="wl"){ if(!OPS()) return; return openSheet({kind:"wl"}) }
   if(a==="wladd"){ if(!OPS()) return; const nm=$("wl-name").value.trim().slice(0,30), ph=digits($("wl-phone").value).slice(0,15); if(!nm&&!ph){toast("اكتب الاسم أو رقم الجوال");return}
     const nid=Date.now().toString(36); wlNew=nid; return run("wl",async()=>{await db.doc("config/waitlist").set({items:[...waitlist,{id:nid,name:nm,phone:ph,at:Date.now(),byName:(me&&me.name)||""}]}); $("wl-name").value=""; $("wl-phone").value=""; toast("انضاف للانتظار")}) }
@@ -2902,7 +2941,8 @@ document.addEventListener("click",e=>{
     if(a==="serve"&&row){ const a2=anim(row,[{opacity:1,transform:"none"},{opacity:0,transform:"translateX(-40px)"}],{duration:300,fill:"forwards"}); if(a2){ a2.onfinish=commit; return } }
     return commit() }
   if(a==="del"){ if(!arm("del:"+oid)) return; return run("o:"+oid,()=>db.doc("orders/"+oid).delete()) }
-  if(a==="newtake") return openSheet({kind:"seat",id:"tnew",newTake:true,cart:[],tab:"add"});
+  if(a==="newtake") return openSheet({kind:"menuqr"});
+  if(a==="mqok") return openSheet({kind:"seat",id:"tnew",newTake:true,cart:[],tab:"add"});
   if(a==="move") return openSheet({kind:"move",id});
   if(a==="moveto"){ const to=b.dataset.to, s=seats[id]; if(!s) return; if(seats[to]){toast("الجلسة "+seatNo(to)+" انشغلت");return}
     return run("seat:"+id,async()=>{ const os=seatOrders(id);
@@ -2993,7 +3033,7 @@ function listen(){
   else if(me&&me.id) db.doc("users/"+me.id).onSnapshot(d=>{ if(!d.exists||!d.data().active) return location.reload(); users={[me.id]:d.data()}; },quiet); // غير الشركاء ما يشوفون قائمة المستخدمين
   if(P()){
     db.collection("codes").onSnapshot(s=>{codeOwners={};s.docs.forEach(d=>codeOwners[d.id]=d.data().user);if(view&&view.kind==="users")refresh()},quiet);
-    db.collection("log").where("day","==",TODAY).onSnapshot(s=>{logs=s.docs.map(d=>d.data());if(view&&(view.kind==="summary"||view.kind==="log"))refresh()},quiet);
+    db.collection("log").where("day","==",TODAY).onSnapshot(s=>{logs=s.docs.map(d=>d.data());if(view&&(view.kind==="summary"||view.kind==="log"||view.kind==="slog"))refresh()},quiet);
   }
   db.doc("config/menu").onSnapshot(d=>{
     const x=d.exists?d.data():null;
@@ -3035,7 +3075,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v42";
+const VER="v43";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
