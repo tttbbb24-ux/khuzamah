@@ -275,8 +275,9 @@ function welcome(){ if(welcomed) return; welcomed=true; let seen=false; try{ see
   A(l1,[{clipPath:lang==="en"?"inset(0 100% 0 0)":"inset(0 0 0 100%)"},{clipPath:"inset(0 0 0 0)"}],{duration:600,easing:"steps(9)",fill:"backwards"});
   A(l2,[{clipPath:lang==="en"?"inset(0 100% 0 0)":"inset(0 0 0 100%)"},{clipPath:"inset(0 0 0 0)"}],{duration:600,delay:480,easing:"steps(9)",fill:"backwards"});
   A(sb,[{opacity:0,transform:"scale(2.3) rotate(-12deg)"},{opacity:1,transform:"none"}],{duration:560,delay:1150,easing:SPRING,fill:"forwards"});
-  let gone=false; const out=()=>{ if(gone) return; gone=true; const a=A(w,[{opacity:1},{opacity:0,transform:"scale(1.05)"}],{duration:450,fill:"forwards"}); if(a) a.onfinish=()=>w.remove(); else w.remove(); stagger(); };
-  w.onclick=out; setTimeout(out,D(2000)); }
+  let gone=false; const kill=()=>{ try{w.remove()}catch(e){} }; // الترحيب ما يسد الأزرار أبداً: يختفي ويتشال حتى لو الحركة علّقت
+  const out=()=>{ if(gone) return; gone=true; w.style.pointerEvents="none"; const a=A(w,[{opacity:1},{opacity:0,transform:"scale(1.05)"}],{duration:450,fill:"forwards"}); if(a) a.onfinish=kill; setTimeout(kill,700); stagger(); };
+  w.onclick=out; w.addEventListener("touchstart",out,{passive:true}); setTimeout(out,D(2000)); setTimeout(kill,4000); }
 function stagger(){ A($("logo"),[{opacity:0,transform:"scale(.6)"},{opacity:1,transform:"none"}],{duration:700,easing:SPRING});
   [$("hi"),$("pills"),$("order"),...$("rows").children].forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:500,delay:120+i*70,easing:SPRING,fill:"backwards"})); }
 
@@ -336,14 +337,23 @@ async function call(kind){ if(busy||!db||!sid||ended) return;
   const left=WAIT-(Date.now()-lastAt);
   if(left>0&&!acked){ show("ok",L("still")(Math.ceil(left/60000))); return; }
   busy=true; lock(true); show("wait",`<svg width="20" height="20" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 150"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur=".8s" repeatCount="indefinite"/></circle></svg> ${L("sending")}`);
+  const guard=setTimeout(()=>{ if(busy){ busy=false; lock(false); show("bad","<span>"+L("retry")+"</span>"); } },12000); // لو النت علّق، الأزرار ترجع تشتغل
   try{
-    await db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp()});
+    const send=()=>db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp()});
+    try{ await send(); }catch(e1){
+      if(!(e1&&e1.code==="permission-denied")) throw e1;
+      // نداء من نفس الطاولة قبل أقل من دقيقتين وما أحد رد عليه: نطمّنه بدل الخطأ
+      let c=null; try{ const d=await db.doc("calls/"+sid).get({source:"server"}); c=d.exists?d.data():null; }catch(x){}
+      const age=c&&c.at&&c.at.toMillis?Date.now()-c.at.toMillis():1e9;
+      if(c&&!c.ack&&age<WAIT){ lastAt=Date.now()-age; acked=false; clearTimeout(guard); show("ok","<span>"+L("still")(Math.max(1,Math.ceil((WAIT-age)/60000)))+"</span>"); busy=false; lock(false); return; }
+      // يمكن الدخول لسا ما وصل لقاعدة البيانات أول مرة: نجدده ونحاول مرة ثانية
+      try{ await firebase.auth().currentUser.getIdToken(true) }catch(x){} await new Promise(r=>setTimeout(r,1200)); await send(); }
     lastAt=Date.now(); acked=false; try{sessionStorage.setItem("kz-call-"+K,String(lastAt))}catch(e){}
     show("ok","<span>"+L("sent")(L("k_"+kind))+"</span>");
     try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken();
       await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,call:sid})}); }catch(e){}
-  }catch(err){ show("bad","<span>"+(err&&err.code==="permission-denied"?L("denied"):L("retry"))+"</span>"); }
-  busy=false; lock(false); }
+  }catch(err){ show("bad","<span>"+(err&&err.code==="permission-denied"?L("denied"):L("retry"))+`<small dir="ltr" style="opacity:.55;font-size:11px">${esc(String((err&&err.code)||"err"))} · ${esc(sid)}</small></span>`); }
+  clearTimeout(guard); busy=false; lock(false); }
 
 /* ---------- الطلب من الجوال ---------- */
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"], FLAV=["فراولة","حبحب","توت أزرق"];
@@ -458,7 +468,7 @@ async function start(){
   lock(true);
   try{
     firebase.initializeApp(CFG); db=firebase.firestore();
-    uid=(await firebase.auth().signInAnonymously()).user.uid;
+    for(let i=0;;i++){ try{ uid=(await firebase.auth().signInAnonymously()).user.uid; break }catch(e){ if(i>=3) throw e; await new Promise(r=>setTimeout(r,1200)); } }
     lock(false); if(MENU) setTimeout(()=>$("mbtn").click(),250); if(!valid) return;
     db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub;
       const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
