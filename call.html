@@ -207,7 +207,7 @@ const STR={
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/ماتشا/,"Iced matcha latte"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
@@ -215,7 +215,7 @@ const EN=[[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عن�
  [/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 function photo(n){ n=String(n);
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
-  if(/بطاطس/.test(n)) return "fries"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
+  if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
   if(/كنز[ةه]/.test(n)) return "kinza"; if(/مو[يى][ةه]/.test(n)) return "water"; if(/بان\s*كيك/.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
@@ -223,7 +223,7 @@ const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt=
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
 const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["other","🍽️","أخرى","Other"]];
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
-const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع"],["Plain","Basil","Mint"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]]];
+const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع"],["Plain","Basil","Mint"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
 const priceOf=it=>{ if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
@@ -366,6 +366,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   if(RX.cr.test(n)) return {k:"cr",excl:"بدون نكهة",opts:FLAV};
   if(RX.rb.test(n)) return {k:"rb",excl:"بدون نكهة",opts:FLAV};
   if(RX.kz.test(n)) return {k:"kz",excl:"بدون ثلج",opts:["بثلج"]};
+  if(/ماتشا/.test(n)) return {k:"mat",excl:"بدون سيروب",opts:["سيروب فانيلا"],hint:"🥛 الحليب خالي من اللاكتوز"};
   if(RX.pan.test(n)) return {k:"pan",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",excl:"سادة",opts:["حبق","نعناع"]};
@@ -379,6 +380,7 @@ function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i))
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
   if(spec.k==="moj") return {...base,note:and,ok:on.length>0};
   if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
+  if(spec.k==="mat") return v.ex?{...base,note:"بدون سيروب"}:{...base,note:and,ok:on.length>0};
   if(spec.k==="v60") return {...base,note:and,ok:on.length===1};
   if(spec.k==="tea") return v.ex?{...base,note:"سادة"}:{...base,note:and,ok:on.length>0};
   return base; }
@@ -416,7 +418,7 @@ function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lin
   const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`)); }
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
   sheet.innerHTML=`<div class="hd"><button class="x" data-back aria-label="${L("back")}">${lang==="en"?"‹":"›"}</button><b>${esc(nameOf(it.name))}</b></div>
-  <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${sz}
+  <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}
   <div class="qrow"><button data-q="-1" aria-label="-">−</button><b class="num">${optv.q}</b><button data-q="1" aria-label="+">+</button></div>
   <input class="ninp" id="onote" maxlength="60" placeholder="${L("note_ph")}" value="${esc(optv.note||"")}"></div>
   <div class="sfoot"><button class="sendb" data-addo ${r.ok?"":"disabled"}><span class="t">${r.ok?L("add"):L("pick")}</span><span class="num">${r.ok?r2(r.price*optv.q):""}${r.ok?RS:""}</span></button></div>`;

@@ -1615,6 +1615,7 @@ function icon(name){ const n=String(name);
 function photo(name){ const n=String(name); // صورة الصنف من مجلد img
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
   if(RX.corn.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn"; if(RX.fries.test(n)) return "fries";
+  if(/ماتشا/.test(n)) return "matcha";
   if(RX.moj.test(n)||/ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(RX.cr.test(n)) return "codered"; if(RX.rb.test(n)) return "redbull"; if(RX.kz.test(n)) return "kinza";
   if(/مو[يى][ةه]/.test(n)) return "water"; if(RX.pan.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
@@ -1645,6 +1646,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
   if(RX.cr.test(n)) return {k:"cr",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
   if(RX.rb.test(n)) return {k:"rb",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
   if(RX.kz.test(n)) return {k:"kz",title:"بثلج أو بدون ثلج",excl:"بدون ثلج",opts:["بثلج"],pr:[KINZA.plain,KINZA.ice]};
+  if(/ماتشا/.test(n)) return {k:"mat",title:"بسيروب فانيلا أو بدون · الحليب خالي من اللاكتوز",excl:"بدون سيروب",opts:["سيروب فانيلا"],hint:"🥛 الحليب خالي من اللاكتوز"};
   if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",title:"اختر نوع البن",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",title:"سادة، أو حبق أو نعناع أو الاثنين",excl:"سادة",opts:["حبق","نعناع"]};
@@ -1662,6 +1664,7 @@ function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسع
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
   if(spec.k==="moj") return {...base,note:and,ok:on.length>0};
   if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
+  if(spec.k==="mat") return v.ex?{...base,note:"بدون سيروب"}:{...base,note:and,ok:on.length>0};
   if(spec.k==="v60") return {...base,note:and,ok:on.length===1};
   if(spec.k==="tea") return v.ex?{...base,note:"سادة"}:{...base,note:and,ok:on.length>0};
   return base;
@@ -3122,7 +3125,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v46";
+const VER="v47";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
