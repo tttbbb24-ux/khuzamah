@@ -207,7 +207,7 @@ const STR={
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/ماتشا/,"Iced matcha latte"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
@@ -215,13 +215,13 @@ const EN=[[/ماتشا/,"Iced matcha latte"],[/معسل\s*تفاحتين/,"Doubl
  [/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 function photo(n){ n=String(n);
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
-  if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
+  if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
   if(/كنز[ةه]/.test(n)) return "kinza"; if(/مو[يى][ةه]/.test(n)) return "water"; if(/بان\s*كيك/.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
-const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["other","🍽️","أخرى","Other"]];
+const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
 const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع"],["Plain","Basil","Mint"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
@@ -295,7 +295,7 @@ let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أص�
 function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
   const cats=CATS.map(c=>[c,items.filter(i=>(i.cat||"other")===c[0])]).filter(c=>c[1].length);
   if(mcat<0||mcat>cats.length) mcat=0;
-  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"pancake"};
+  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"pancake",games:"baloot"};
   const rail=[`<button class="${mcat===0?"on":""}" data-c="0"><i>🪑</i>${L("sessions")}</button>`].concat(cats.map(([c],i)=>`<button class="${mcat===i+1?"on":""}" data-c="${i+1}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`)).join("");
   let body;
   if(mcat===0) body=`<div class="banner" style="background:linear-gradient(135deg,#4a1a7a,#2a0e4a)"><div>🪑 ${L("sessions")}</div></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">⏱</i><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">♾️</i><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div>`;
@@ -406,7 +406,7 @@ const cartN=()=>cart.reduce((a,c)=>a+c.q,0), cartT=()=>r2(cart.reduce((a,c)=>a+c
 function paintOrder(){ const items=Array.isArray(menuData.items)?menuData.items:[];
   const cats=CATS.map(c=>[c,items.map((it,i)=>[it,i]).filter(([it])=>(it.cat||"other")===c[0])]).filter(c=>c[1].length);
   if(ocat>=cats.length) ocat=0;
-  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"pancake"};
+  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"pancake",games:"baloot"};
   const rail=cats.map(([c],k)=>`<button class="${ocat===k?"on":""}" data-oc="${k}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`).join("");
   const list=(cats[ocat]?cats[ocat][1]:[]).map(([it,i])=>{ const ph=photo(it.name), q=cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0);
     return `<div class="oi ${it.off?"off":""}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i></i>`}<span>${esc(nameOf(it.name))}<small>${priceOf(it)}</small></span>${it.off?"":`<button class="plus ${q?"has":""}" data-oi="${i}" aria-label="${L("add")}">${q?"× "+q:"+"}</button>`}</div>`}).join("");

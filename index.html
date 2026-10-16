@@ -1589,7 +1589,7 @@ const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","�
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
 const RX={fries:/بطاطس/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
-const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["nuts","المكسرات"],["sweet","الحلا"],["other","أخرى"]];
+const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
   const n=String(name);
   if(RX.corn.test(n)||RX.dog.test(n)) return "corn";
@@ -1597,6 +1597,8 @@ function catOf(name){ // تخمين القسم من الاسم، للأصناف 
   if(/معسل/.test(n)) return "hookah";
   if(/كيك|كوكيز|حلا|وافل|كريب/.test(n)) return "sweet";
   if(/^مكسرات/.test(n)) return "nuts";
+  if(/بلوت|جاكارو|كيرم|دومينو|اونو|أونو/.test(n)) return "games";
+  if(/ماتشا/.test(n)) return "cold";
   if(/كركدي/.test(n)) return "cold";
   if(/حار|شاهي|دل[ةه]|كرك/.test(n)) return "hot";
   if(/بارد|ليمون|كركدي|موهيتو|مو[يى][ةه]|سفن|بيبسي|عصير/.test(n)||RX.cr.test(n)||RX.rb.test(n)) return "cold";
@@ -1615,13 +1617,13 @@ function icon(name){ const n=String(name);
 function photo(name){ const n=String(name); // صورة الصنف من مجلد img
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
   if(RX.corn.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn"; if(RX.fries.test(n)) return "fries";
-  if(/ماتشا/.test(n)) return "matcha";
+  if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro";
   if(RX.moj.test(n)||/ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(RX.cr.test(n)) return "codered"; if(RX.rb.test(n)) return "redbull"; if(RX.kz.test(n)) return "kinza";
   if(/مو[يى][ةه]/.test(n)) return "water"; if(RX.pan.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
-const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",other:""};
+const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:""};
 const imgTag=k=>k?`<img class="ph" src="${k}.webp" alt="" decoding="async">`:`<span class="ph none"></span>`;
 function hookahBg(name){ const n=String(name); if(!/معسل/.test(n)) return "";
   if(/تفاح/.test(n)) return `linear-gradient(135deg,${RED} 50%,#2e9e4f 50%)`;
@@ -3039,7 +3041,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=10; let migrating=false;
+const MIG=11; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3062,6 +3064,9 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<9&&!items.some(i=>/كركدي/.test(i.name))) items.push({name:"كركديه",price:10,cat:"cold"});
   if(m<9&&!items.some(i=>/ليمون\s*(و\s*)?نعناع/.test(i.name)&&!/معسل/.test(i.name))) items.push({name:"ليمون نعناع",price:7,cat:"cold"});
   if(m<10&&!items.some(i=>/جلس[ةه]\s*زياد[ةه]/.test(i.name))) items.push({name:"جلسة زيادة",price:5,cat:"other"});
+  if(m<11&&!items.some(i=>/ماتشا/.test(i.name))) items.push({name:"ماتشا",price:20,cat:"cold"});
+  if(m<11&&!items.some(i=>/بلوت/.test(i.name))) items.push({name:"بلوت",price:15,cat:"games"});
+  if(m<11&&!items.some(i=>/جاكارو/.test(i.name))) items.push({name:"جاكارو",price:5,cat:"games"});
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
 }
 function listen(){
@@ -3125,7 +3130,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v47";
+const VER="v48";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
