@@ -482,6 +482,14 @@ button:active{transform:none}
 .rail button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:14px;font-size:11.5px;line-height:1.3;text-align:center;color:var(--muted)}
 .rail button.on{background:var(--s2);color:var(--ink);box-shadow:inset -3px 0 0 var(--accent)}
 .rail img,.rail .ph0{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--s2);display:block}
+.mcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.sortbar{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.sortbar span{font-size:13px;opacity:.75;flex:1}
+.sortbar button{min-height:40px;padding:0 14px;border-radius:12px;font:inherit;font-weight:700}
+.mt.srt{outline:2px dashed var(--accent);outline-offset:-2px}
+.mvb{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px 8px}
+.mvb button{flex:1;min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:inherit;font-size:20px;font-weight:700}
+.mvb button:disabled{opacity:.3}
 .mgrid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;align-content:start}
 .mt{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:start;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .mt img,.mt .ph0{width:100%;height:96px;object-fit:cover;display:block;background:var(--s2);pointer-events:none}
@@ -1635,8 +1643,11 @@ function menuHtml(){ // قائمة جانبية للأقسام، والأصنا�
   if(!live.length) return `<p class="empty">ما في أصناف لقسمك في القائمة.</p>`;
   if(!view.cat||!by(view.cat).length) view.cat=live[0][0];
   const rail=live.length>1?`<div class="rail">${live.map(([k,t])=>`<button class="${view.cat===k?"on":""}" data-act="cat" data-c="${k}">${CAT_IMG[k]?`<img src="${CAT_IMG[k]}.webp" alt="">`:`<span class="ph0" style="display:grid;place-items:center;font-size:26px">${k==="other"?"➕":""}</span>`}${t.replace("المشروبات ","")}</button>`).join("")}</div>`:"";
-  return `<div class="mwrap">${rail}<div class="mgrid">${by(view.cat).map(([it,i])=>{ const off=!!it.off, sp=specFor(it.name), ph=photo(it.name);
-    return `<button class="mt ${off?"off":""}" data-act="${off?"offhint":"add"}" data-i="${i}" ${OPS()?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">غير متوفر</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}</div></div>`;
+  const srt=P()&&!!view.sort, list=by(view.cat);
+  const sbar=P()&&!view.newTake?`<div class="sortbar">${srt?`<span>رتّب بالأسهم، ويتغيّر عند الكل وعند الزباين</span><button class="primary" data-act="sortmode">تم</button>`:`<button class="ghost" data-act="sortmode">↕ ترتيب الأصناف</button>`}</div>`:"";
+  return `<div class="mwrap">${rail}<div class="mcol">${sbar}<div class="mgrid ${srt?"sorting":""}">${list.map(([it,i],k)=>{ const off=!!it.off, sp=specFor(it.name), ph=photo(it.name);
+    if(srt) return `<div class="mt srt">${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}<span class="tx"><b>${esc(it.name)}</b></span><span class="mvb"><button data-act="imove" data-i="${i}" data-d="-1" ${k===0?"disabled":""} aria-label="قدّم">→</button><b class="num">${k+1}</b><button data-act="imove" data-i="${i}" data-d="1" ${k===list.length-1?"disabled":""} aria-label="أخّر">←</button></span></div>`;
+    return `<button class="mt ${off?"off":""}" data-act="${off?"offhint":"add"}" data-i="${i}" ${OPS()?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">غير متوفر</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}</div></div></div>`;
 }
 const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}px) / ${Math.max(1,rows)}))`; // البلاطات تملى الشاشة
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
@@ -1947,7 +1958,7 @@ function qrSvg(text){ let q=null; for(const t of [4,5,6,8,10]){ try{ q=new KZQR.
 function qrHtml(id){ return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>رمز الجلسة ${seatNo(id)}</b><span>خلّ الزبون يصوره بكاميرا جواله</span></div>${xBtn}</div>
   <div class="qrwrap">${seats[id]&&seats[id].tok?qrSvg(callUrl(seats[id].tok)):`<p class="empty" style="color:#555;text-align:center;padding:40px 0">جاري تجهيز الرمز…</p>`}</div><p class="empty">رمز جديد لهذي الجلسة بس. منه ينادي ويشوف المنيو ووقته وحسابه، ويوقف أول ما تقفلون الجلسة.</p>
   <button class="primary wide" data-act="back">تم</button>`; }
-const PAY=()=>OPS()||W(); const wigged={}; // زر الحساب يهتز مرة وحدة بس لكل جلسة // يحاسب: الشركاء والكاشير والويتر
+let sortT=null; const PAY=()=>OPS()||W(); const wigged={}; // زر الحساب يهتز مرة وحدة بس لكل جلسة // يحاسب: الشركاء والكاشير والويتر
 const canPay=id=>PAY()||(!!me&&me.role==="station"&&me.station===0&&!!seats[id]&&isTake(id)&&seatOrders(id).length>0&&seatOrders(id).every(o=>mine(o.name))); // أصحاب البطاطس يحاسبون سفري كله بطاطس
 const mine=name=>OPS()||W()||(!!me&&stationOf(name)===me.station); // هل الصنف من صلاحية هذا المستخدم
 
@@ -3006,6 +3017,11 @@ document.addEventListener("click",e=>{
   if(a==="mute"){muted=!muted; try{localStorage.setItem("kz-mute",muted?"1":"0")}catch(e){} if(!muted) beep([880]); return renderSheet()}
 
   if(a==="station"){myStation=+b.dataset.k; try{localStorage.setItem("kz-station",String(myStation))}catch(e){} return renderMain()}
+  if(a==="sortmode"){ if(!P()) return; view.sort=!view.sort; return renderSheet() }
+  if(a==="imove"){ if(!P()) return; const i=+b.dataset.i, d=+b.dataset.d, it=cfg.items[i]; if(!it) return; const c=itemCat(it);
+    const idx=cfg.items.map((x,j)=>j).filter(j=>itemCat(cfg.items[j])===c), k=idx.indexOf(i), j=idx[k+d]; if(j==null) return;
+    const items=cfg.items.slice(); [items[i],items[j]]=[items[j],items[i]]; cfg={...cfg,items}; renderSheet(); // يتحرك فوراً، والحفظ بعد ما يوقف شوي
+    clearTimeout(sortT); sortT=setTimeout(()=>{ const L=cfg.items; db.doc("config/menu").update({items:L}).then(()=>toast("✓ انحفظ الترتيب")).catch(fail); },700); return }
   if(a==="cat"){ const old=document.querySelector("#panel .rail button.on"), oy=old?old.getBoundingClientRect().top:null; view.cat=b.dataset.c||null; renderSheet(); const g=document.querySelector("#panel .mgrid"); if(g) stagger(g.children);
     const nw=document.querySelector("#panel .rail button.on"); if(nw&&oy!=null){ const dy=oy-nw.getBoundingClientRect().top; anim(nw,[{transform:`translateY(${dy}px)`,boxShadow:"inset -3px 0 0 var(--accent)"},{transform:"none"}],{duration:380,easing:SPRING}); [...nw.children].forEach(ch=>anim(ch,[{transform:`translateY(${-dy}px)`},{transform:"none"}],{duration:380,easing:SPRING})); } return } // المؤشر ينزلق للقسم الجديد
   if(a==="pay") return openSheet({kind:"pay",id});
@@ -3130,7 +3146,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v48";
+const VER="v49";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
