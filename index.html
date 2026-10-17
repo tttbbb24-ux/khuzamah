@@ -1931,6 +1931,7 @@ const billMode=(s,v)=>s.type==="take"?"take":(v&&v.mode)||(s.type==="open"?"open
 const MODE={hour:"ساعة",open:"وقت مفتوح",free:"مجاناً"};
 const W=()=>!!me&&me.role==="waiter"; // العامل: يفتح جلسات ويسجل طلبات ويرد على النداء، بدون حساب
 const C=()=>OPS()||W(); // مين يوصله نداء الزباين
+const RQ=()=>(!!me&&me.role==="partner")||W(); // تأكيد طلبات الجوال: الشركاء وياسين بس
 const baseIdx=o=>{ const n=String(o.name); let i=cfg.items.findIndex(it=>it.name===n); if(i>=0) return i;
   i=cfg.items.findIndex(it=>n.startsWith(it.name)); if(i>=0) return i; return RX.corn.test(n)?cfg.items.findIndex(it=>RX.corn.test(it.name)):-1 };
 function prefill(sp,o){ // يرجّع اختيارات الصنف المسجل عشان التعديل يبدأ منها
@@ -2182,21 +2183,21 @@ function reqRow(id){ const L=reqLines(reqs[id]), tot=r2(L.reduce((a,l)=>a+l.r.pr
   return `<div class="rqrow" data-rq="${esc(id)}"><div class="rqh"><span class="rqi">📱</span><span style="flex:1"><b>جلسة ${seatNo(id)} طلبت من الجوال</b><small class="num">${mins(tsMs(reqs[id].at))?"قبل "+mins(tsMs(reqs[id].at))+" د":"الحين"}</small></span><b class="num">${money(tot)}</b></div>
   <div class="rql">${L.map(l=>`<div><span>${esc(l.r.name)}${l.q>1?` <b class="num">× ${l.q}</b>`:""}${l.r.note?` <small>${esc(l.r.note)}</small>`:""}</span><span class="num">${r2(l.r.price*l.q)}</span></div>`).join("")||"<div>ما فيه أصناف متوفرة</div>"}</div>
   <div class="rqb"><button class="ok" data-act="racc" data-id="${esc(id)}" ${L.length?"":"disabled"}>أكّد</button><button class="no" data-act="rrej" data-id="${esc(id)}">رفض</button></div></div>`; }
-function scanReqs(){ if(!me||!db||!ready) return; let fresh=0;
+function scanReqs(){ if(!me||!db||!ready||!RQ()) return; let fresh=0;
   Object.keys(reqs).forEach(id=>{ const r=reqs[id]; if(OPS()&&(!seats[id]||r.k!==seats[id].tok)&&tsMs(r.at)<Date.now()-5*60000){ db.doc("reqs/"+id).delete().catch(()=>{}); return } // طلب جلسة تقفلت
     if(!liveReq(id)) return; const k=id+":"+tsMs(r.at); if(reqSeen.has(k)) return; reqSeen.add(k); if(!reqsSeeded) return; fresh++;
     note("📱 جلسة "+seatNo(id)+" طلبت من الجوال، يبي موافقة","r:"+id);
   }); // إشعار الجوال يرسله جوال الزبون عن طريق الخادم
   reqsSeeded=true; dropNotes(x=>x.ref.startsWith("r:")&&!liveReq(x.ref.slice(2)));
   if(fresh){ beep([988,1319,988,1319]); flash3(); } }
-function approveReq(id){ const r=reqs[id], s=seats[id]; if(!r||!s||!liveReq(id)) return; const L=reqLines(r); if(!L.length){ toast("ما فيه أصناف متوفرة في الطلب"); return }
+function approveReq(id){ if(!RQ()) return; const r=reqs[id], s=seats[id]; if(!r||!s||!liveReq(id)) return; const L=reqLines(r); if(!L.length){ toast("ما فيه أصناف متوفرة في الطلب"); return }
   run("req:"+id,async()=>{ const ref=db.doc("reqs/"+id), ok=await db.runTransaction(async tx=>{ const d=await tx.get(ref); if(!d.exists||d.data().st) return false; tx.update(ref,{st:"ok",stBy:(me&&me.name)||"",stAt:Date.now()}); return true });
     if(!ok){ toast("أحد ثاني تصرف في الطلب قبلك"); return }
     for(const l of L) await db.collection("orders").add({seat:id,sid:s.sid,name:l.r.name,price:l.r.price,note:l.r.note,served:false,qty:l.q,at:Date.now(),st:stationOf(l.r.name),...BY(),src:"qr"});
     const by={}; L.forEach(l=>{ const st=stationOf(l.r.name); (by[st]=by[st]||[]).push(l) });
     Object.entries(by).forEach(([st,X])=>pushSend(+st,"📱 جلسة "+seatNo(id)+" من الجوال",X.map(l=>l.r.name+(l.q>1?" × "+l.q:"")+(l.r.note?" ("+l.r.note+")":"")).join("، "),"q"+Date.now()));
     logIt("وافق على طلب جلسة "+seatNo(id)+" من الجوال: "+L.map(l=>l.r.name+(l.q>1?" × "+l.q:"")).join("، ")); flash(); toast("✓ انضاف طلب جلسة "+seatNo(id)+" وراح للمطبخ"); }); }
-function rejectReq(id){ if(!reqs[id]) return; run("req:"+id,async()=>{ await db.doc("reqs/"+id).update({st:"no",stBy:(me&&me.name)||"",stAt:Date.now()}); logIt("رفض طلب جلسة "+seatNo(id)+" من الجوال"); toast("انرفض · الزبون يشوف «الموظف جايك»، روح له"); }); }
+function rejectReq(id){ if(!RQ()||!reqs[id]) return; run("req:"+id,async()=>{ await db.doc("reqs/"+id).update({st:"no",stBy:(me&&me.name)||"",stAt:Date.now()}); logIt("رفض طلب جلسة "+seatNo(id)+" من الجوال"); toast("انرفض · الزبون يشوف «الموظف جايك»، روح له"); }); }
 let calls={}, callsOff=false, callsSeeded=false; const callSeen=new Set(), callSwept=new Set();
 const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"]};
 const tsMs=t=>t&&t.toMillis?t.toMillis():Number(t)||0;
@@ -2264,7 +2265,7 @@ function renderMain(){
   if(OPS()&&db&&ready&&!legacy) Object.keys(seats).filter(x=>!isTake(x)&&!seats[x].tok).forEach(id=>{ if(renderMain.tk&&renderMain.tk[id]) return; (renderMain.tk=renderMain.tk||{})[id]=1; db.doc("seats/"+id).update({tok:newTok()}).catch(()=>{}).then(()=>{delete renderMain.tk[id]}) });
   if(OPS()&&db&&ready&&!legacy) Object.keys(seats).filter(takeDone).forEach(id=>{ const R0=renderMain.rp||(renderMain.rp={}); if(R0[id]) return; R0[id]=1; const s=seats[id], os=seatOrders(id);
     db.doc("seats/"+id).delete().then(()=>Promise.all(os.map(o=>db.doc("orders/"+o.id).delete()))).then(()=>{ if(view&&view.id===id) closeSheet(); toast("🥡 سفري "+(s.tno||"")+" تسلّم وانقفل") }).catch(()=>{}).then(()=>{delete R0[id]}) });
-  scanCalls(); scanReqs(); $("callbar").innerHTML=Object.keys(reqs).filter(liveReq).map(reqRow).join("")+(C()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"");
+  scanCalls(); scanReqs(); $("callbar").innerHTML=(RQ()?Object.keys(reqs).filter(liveReq).map(reqRow).join(""):"")+(C()?Object.keys(calls).filter(liveCall).sort((a,b)=>tsMs(calls[a].at)-tsMs(calls[b].at)).map(callRow).join(""):"");
   $("callbar").querySelectorAll(".callrow[data-ck]").forEach(r=>{ if(!renderMain.cs) renderMain.cs=new Set(); if(renderMain.cs.has(r.dataset.ck)) return; renderMain.cs.add(r.dataset.ck); anim(r,[{transform:"translateY(-30px) scale(.96)",opacity:0},{transform:"none",opacity:1}],{duration:520,easing:SPRING}); });
   const cells=allSeatIds(), ids=cells.filter(Boolean), busy=ids.filter(i=>seats[i]);
   const takes=Object.keys(seats).filter(x=>isTake(x)&&!takeDone(x)).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
@@ -2665,7 +2666,10 @@ function summaryHtml(){
       ${row("المجموع",money(p.cash+p.card+p.none),"tot")}${split(p)}</div>`;
   };
   if(W()) return `<div class="phead"><div class="meta"><b>الملخص</b><span>الأرقام عند الشركاء</span></div>${xBtn}</div><p class="empty">ما في ملخص لحسابك.</p>`;
-  if(!P()) return `<div class="phead"><div class="meta"><b>ملخص قسمي اليوم</b><span>الحسابات اللي تقفلت من 8 الصبح</span></div>${xBtn}</div>${block(me?me.station:0)}`;
+  if(!P()){ const st=me?me.station:0, v=view; if(v.mon===undefined){ v.mon=null; loadMon(v); }
+    const M=v.mon, mR=M?summarize(M.S):null, mp=mR?mR.part(st):null;
+    const mon=`<h2>دخل قسمي هذا الشهر</h2><div class="bill">${!M?row(`<span class="q">جاري التحميل…</span>`,""):row("المجموع · "+esc(monthLabel(M.ym)),money(mR.shares[st]),"tot")+split(mp)+row(`أيام فيها بيع`,M.days,"sub")}</div>`;
+    return `<div class="phead"><div class="meta"><b>ملخص قسمي اليوم</b><span>الحسابات اللي تقفلت من 8 الصبح</span></div>${xBtn}</div>${block(st)}${mon}`; }
   const payName=x=>({cash:"كاش",card:"شبكة",split:"مقسوم",comp:"ضيافة"}[x.pay]||"غير محدد");
   const openNow=Object.keys(seats).reduce((a,id)=>a+fee(id)+itemsTotal(id),0), K=closeCalc(R), c=view.closing;
   const nav=`<div class="crumb" style="justify-content:space-between"><button class="ghost" data-act="sday" data-d="${dayShift(day,-1)}">اليوم السابق</button><b>${live?"اليوم":esc(dayLabel(day))}</b><button class="ghost" data-act="sday" data-d="${dayShift(day,1)}" ${live?"disabled":""}>اليوم التالي</button></div>`;
@@ -2747,6 +2751,11 @@ function monthHtml(){
   :`<p class="empty">ما في حسابات في هذا الشهر.</p>`}`;
 }
 function openSummary(day){ openSheet({kind:"summary",day,week:view&&view.kind==="summary"?view.week:null}); loadDay(view); }
+async function loadMon(v){ // دخل الشهر لقسم صاحب المحطة
+  try{ const ym=TODAY.slice(0,7), a=await db.collection("sales").where("day",">=",ym+"-01").get();
+    const S=a.docs.map(d=>d.data()).filter(x=>String(x.day||"").slice(0,7)===ym); v.mon={ym,S,days:new Set(S.map(x=>x.day)).size}; }
+  catch(e){ v.mon={ym:TODAY.slice(0,7),S:[],days:0}; }
+  if(view===v) renderSheet(); }
 async function loadDay(v){ // يجيب بيانات اليوم المعروض
   if(!db||!P()) return;
   try{
@@ -3146,7 +3155,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v49";
+const VER="v50";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
