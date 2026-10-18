@@ -133,7 +133,11 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .ot em{position:absolute;top:6px;left:6px;min-width:24px;height:24px;border-radius:12px;background:var(--accent);color:var(--acc-ink);font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0 6px}
 .cartl .cq button.ced{width:auto;padding:0 10px;border-radius:14px;font-size:12.5px;color:var(--accent);font-weight:700}
 .promo{position:relative;flex:1;min-height:0;margin:0 14px;border-radius:24px;overflow:hidden;background:#3b1270}
-.promo img{width:100%;height:100%;object-fit:cover;object-position:center 60%;display:block}
+.promo video{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;background:#3b1270}
+.promo .pb{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.promo .pb small{background:#ffffffd9;color:#3b1270;font-size:13.5px;font-weight:700;padding:5px 12px;border-radius:14px}
+.promo .pgo{width:100%;padding:16px;border-radius:18px;background:#3b1270;color:#fff;font-size:20px;font-weight:700;box-shadow:0 8px 24px #3b127066;display:flex;align-items:center;justify-content:center;gap:6px}
+.promo .pgo .sar{fill:#fff}
 .promo .pt{position:absolute;top:0;left:0;right:0;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#fff;text-align:center}
 .promo .pn{background:var(--gold);color:#2a1a00;font-size:13px;font-weight:700;padding:3px 12px;border-radius:12px}
 .promo .pt b{font-size:46px;line-height:1.2}.promo .pp{color:var(--gold);font-size:28px;font-weight:800}.promo .pt small{font-size:14px;opacity:.9}
@@ -201,7 +205,7 @@ const STR={
   noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" جاي لك الحين":"جايين لك الحين"),still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
-  retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"بحليب خالي من اللاكتوز",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
+  retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"حليب خالي من اللاكتوز أو حليب جوز الهند",milk:"الحليب",m_lf:"خالي من اللاكتوز",m_coco:"جوز الهند",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
   sessions:"الجلسات",hour:"ساعة",open:"وقت مفتوح",toorder:"للطلب اضغط «أبغى أطلب» ونجيك.",or:" أو ",flav:"، وبنكهة ",ice:"، وبثلج ",
   left:"باقي",over:"زاد",sat:"جلست",billp:"فاتورتك",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف",off:"غير متوفر",flavs:"الخيارات: ",
   printing:"🖨️ تنطبع فاتورتك…",printed:"✓ هذي فاتورتك لين الحين",billt:"فاتورتك لين الحين",total:"المجموع",ry:"ريال",
@@ -215,7 +219,7 @@ const STR={
   noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" is coming":"We are coming"),still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
-  retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Made with lactose-free milk",menufail:"Could not load the menu. Try again or ask the staff.",
+  retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Lactose-free or coconut milk",milk:"Milk",m_lf:"Lactose-free",m_coco:"Coconut",menufail:"Could not load the menu. Try again or ask the staff.",
   sessions:"Seating",hour:"One hour",open:"Open time",toorder:"To order, tap “I want to order”.",or:" or ",flav:", flavored ",ice:", with ice ",
   left:"Left",over:"Over",sat:"Seated",billp:"Your bill",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff",off:"Not available",flavs:"Options: ",
   printing:"🖨️ Printing your bill…",printed:"✓ Your bill so far",billt:"Your bill so far",total:"Total",ry:"SAR",
@@ -386,7 +390,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   if(RX.cr.test(n)) return {k:"cr",excl:"بدون نكهة",opts:FLAV};
   if(RX.rb.test(n)) return {k:"rb",excl:"بدون نكهة",opts:FLAV};
   if(RX.kz.test(n)) return {k:"kz",excl:"بدون ثلج",opts:["بثلج"]};
-  if(/ماتشا/.test(n)) return {k:"mat",excl:"بدون سيروب",opts:["سيروب فانيلا"],hint:"🥛 الحليب خالي من اللاكتوز"};
+  if(/ماتشا/.test(n)) return {k:"mat",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
   if(RX.pan.test(n)) return {k:"pan",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",excl:"سادة",opts:["حبق","نعناع"]};
@@ -400,7 +404,7 @@ function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i))
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
   if(spec.k==="moj") return {...base,note:and,ok:on.length>0};
   if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
-  if(spec.k==="mat") return v.ex?{...base,note:"بدون سيروب"}:{...base,note:and,ok:on.length>0};
+  if(spec.k==="mat"){ const milk=v.size==="coco"?"حليب جوز الهند":"حليب خالي من اللاكتوز"; return v.ex?{...base,note:"بدون سيروب، "+milk}:{...base,note:(and?and+"، ":"")+milk,ok:on.length>0}; }
   if(spec.k==="v60") return {...base,note:and,ok:on.length===1};
   if(spec.k==="tea") return v.ex?{...base,note:"سادة"}:{...base,note:and,ok:on.length>0};
   return base; }
@@ -441,15 +445,18 @@ const promoIdx=()=>{ const it=menuData&&menuData.promo&&menuData.promo.on?(menuD
 let promoSeen=false; try{ promoSeen=sessionStorage.getItem("kzpromo"+K)==="1"; }catch(e){}
 function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ sessionStorage.setItem("kzpromo"+K,"1"); }catch(e){}
   sheet.innerHTML=`<div class="hd"><b></b><button class="x" data-x aria-label="close">✕</button></div>
-  <div class="promo"><img src="matcha-ad.webp" alt=""><div class="pt"><span class="pn">${L("p_new")}</span><b>${esc(nameOf(it.name))}</b><span class="pp num">${priceOf(it)}</span><small>🥛 ${L("p_lf")}</small></div></div>
-  <div class="sfoot"><button class="sendb" data-pgo="${i}" style="justify-content:center"><span class="t">${L("p_go")}</span></button><button class="lnk" data-pskip>${L("p_skip")}</button></div>`;
+  <div class="promo"><video src="matcha-ad.mp4" poster="matcha-ad-end.webp" autoplay muted playsinline preload="auto"></video>
+  <div class="pb"><small>🥛 ${L("p_lf")}</small><button class="pgo" data-pgo="${i}">${L("p_go")} · <span class="num">${priceOf(it)}</span></button></div></div>
+  <div class="sfoot"><button class="lnk" data-pskip>${L("p_skip")}</button></div>`;
   sheetOpen="promo"; sheet.style.height="92%";
-  A(sheet.querySelector(".promo img"),[{transform:"scale(1.08)",opacity:.4},{transform:"none",opacity:1}],{duration:700,easing:SPRING}); }
+  const vd=sheet.querySelector(".promo video"); if(vd){ const pl=vd.play(); if(pl&&pl.catch) pl.catch(()=>{}); }
+  A(sheet.querySelector(".promo .pgo"),[{transform:"translateY(30px)",opacity:0},{transform:"none",opacity:1}],{duration:600,delay:900,easing:SPRING,fill:"backwards"}); }
 function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lineOf(it,optv), ph=photo(it.name);
   const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`)); }
+  const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:"";
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
   sheet.innerHTML=`<div class="hd"><button class="x" data-back aria-label="${L("back")}">${lang==="en"?"‹":"›"}</button><b>${esc(nameOf(it.name))}</b></div>
-  <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}
+  <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}${mk}
   <div class="qrow"><button data-q="-1" aria-label="-">−</button><b class="num">${optv.q}</b><button data-q="1" aria-label="+">+</button></div>
   <input class="ninp" id="onote" maxlength="60" placeholder="${L("note_ph")}" value="${esc(optv.note||"")}"></div>
   <div class="sfoot"><button class="sendb" data-addo ${r.ok?"":"disabled"}><span class="t">${r.ok?L(optv.edit!=null?"save":"add"):L("pick")}</span><span class="num">${r.ok?r2(r.price*optv.q):""}${r.ok?RS:""}</span></button></div>`;
@@ -494,6 +501,7 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   if(t.closest("[data-back]")){ optv=null; return paintOrder(); }
   if(t.closest("[data-ex]")){ optv.ex=!optv.ex; if(optv.ex) optv.sel=[]; return paintOpt(); }
   const op=t.closest("[data-op]"); if(op&&sp){ const j=+op.dataset.op; optv.ex=false; if(sp.one) optv.sel=[j]; else optv.sel=optv.sel.includes(j)?optv.sel.filter(x=>x!==j):optv.sel.concat(j); return paintOpt(); }
+  const mkb=t.closest("[data-mk]"); if(mkb){ optv.size=mkb.dataset.mk; return paintOpt(); }
   const sz=t.closest("[data-sz]"); if(sz){ optv.size=sz.dataset.sz; return paintOpt(); }
   const qb=t.closest("[data-q]"); if(qb){ optv.q=Math.max(1,Math.min(20,optv.q+Number(qb.dataset.q))); return paintOpt(); }
   if(t.closest("[data-addo]")){ const ni=$("onote"); optv.note=ni?ni.value:""; if(optv.edit!=null&&lineOf(menuData.items[optv.i],optv).ok) cart.splice(optv.edit,1); addCart(optv.i,optv); optv=null; return paintOrder(); } });
