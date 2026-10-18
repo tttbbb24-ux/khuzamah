@@ -1623,6 +1623,7 @@ function icon(name){ const n=String(name);
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
 function photo(name){ const n=String(name); // صورة الصنف من مجلد img
+  if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
   if(RX.corn.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn"; if(RX.fries.test(n)) return "fries";
   if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro";
@@ -2778,6 +2779,7 @@ function settingsHtml(){
     <div class="row"><label for="c-open">سعر الوقت المفتوح</label><input class="pr num" id="c-open" data-f="open" inputmode="decimal" value="${esc(d.open)}"></div>
     <div class="row"><label for="c-count">عدد الجلسات</label><input class="pr num" id="c-count" data-f="count" inputmode="numeric" value="${esc(d.count)}"></div>
   </div>
+  ${P()?`<div class="set"><div class="row"><label>إعلان الماتشا عند طلب الزبون</label><button class="${cfg.promo&&cfg.promo.on?"primary":"ghost"}" data-act="promo">${cfg.promo&&cfg.promo.on?"شغّال":"طافي"}</button></div></div>`:""}
   <h2>الأصناف</h2>
   <div class="set">${d.items.map((it,i)=>`<div class="row item">
     <input class="nm" id="i-n-${i}" data-i="${i}" data-k="name" placeholder="اسم الصنف" aria-label="اسم الصنف" value="${esc(it.name)}">
@@ -3050,11 +3052,12 @@ document.addEventListener("click",e=>{
     const w=b.offsetWidth; b.innerHTML='<svg width="24" height="24" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 150"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur=".8s" repeatCount="indefinite"/></circle></svg>';
     anim(b,[{borderRadius:"12px"},{borderRadius:"28px"}],{duration:300,fill:"forwards"}); setTimeout(()=>closeBill(id,pay),DM(650)); return }
   if(a==="comp"){ if(!arm("comp")) return; return closeBill(id,"comp") }
+  if(a==="promo"){ if(!P()) return; const on=!(cfg.promo&&cfg.promo.on); return run("cfg",async()=>{await db.doc("config/menu").update({promo:{on}}); cfg.promo={on}; renderSheet(); toast(on?"الإعلان صار يطلع للزباين":"وقفنا الإعلان")}) }
   if(a==="additem"){draft.items.push({name:"",price:"",cat:"other"});return renderSheet()}
   if(a==="rmitem"){draft.items.splice(+b.dataset.i,1);return renderSheet()}
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
-    const out={mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
+    const out={...(cfg.promo?{promo:cfg.promo}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
       items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.off?{off:true}:{})})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ");logIt("عدّل الأصناف أو الأسعار")});
@@ -3092,7 +3095,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<11&&!items.some(i=>/ماتشا/.test(i.name))) items.push({name:"ماتشا",price:20,cat:"cold"});
   if(m<11&&!items.some(i=>/بلوت/.test(i.name))) items.push({name:"بلوت",price:15,cat:"games"});
   if(m<11&&!items.some(i=>/جاكارو/.test(i.name))) items.push({name:"جاكارو",price:5,cat:"games"});
-  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG}).catch(()=>{migrating=false});
+  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
   db=fdb; $("gate").hidden=true; if(!OPS()&&!W()){ myStation=me.station; mainTab="orders"; }
@@ -3117,7 +3120,7 @@ function listen(){
   }
   db.doc("config/menu").onSnapshot(d=>{
     const x=d.exists?d.data():null;
-    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0}:DEFAULTS;
+    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0,promo:x.promo||null}:DEFAULTS;
     if(!(d.metadata&&d.metadata.fromCache)) migrate();
     refresh();
   },dead);
@@ -3155,7 +3158,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v50";
+const VER="v51";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
