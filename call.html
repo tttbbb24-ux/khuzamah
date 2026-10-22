@@ -129,7 +129,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .ot{position:relative;border-radius:16px;overflow:hidden;background:#17121f;text-align:start;display:flex;flex-direction:column;color:var(--ink);padding:0;align-items:stretch}
 .ot img,.ot>i{width:100%;aspect-ratio:1/.92;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:30px;font-style:normal;background:#efe7da}
 .ot span{padding:6px 8px 8px;font-size:13px;font-weight:700;line-height:1.35}.ot span small{display:block;color:var(--gold);font-weight:700;font-size:13px}
-.ot.has{outline:2.5px solid var(--accent);outline-offset:-2.5px}.ot.off{opacity:.45}
+.osub,.msub{grid-column:1/-1;margin:8px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.osub:first-child,.msub:first-child{margin-top:0}.ot.has{outline:2.5px solid var(--accent);outline-offset:-2.5px}.ot.off{opacity:.45}
 .ot em{position:absolute;top:6px;left:6px;min-width:24px;height:24px;border-radius:12px;background:var(--accent);color:var(--acc-ink);font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0 6px}
 .cartl .cq button.ced{width:auto;padding:0 10px;border-radius:14px;font-size:12.5px;color:var(--accent);font-weight:700}
 .promo{position:relative;flex:1;min-height:0;margin:0 14px;border-radius:24px;overflow:hidden;background:#3b1270}
@@ -207,7 +207,7 @@ const STR={
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
   retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"حليب خالي من اللاكتوز أو حليب جوز الهند",milk:"الحليب",m_lf:"خالي من اللاكتوز",m_coco:"جوز الهند",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
   sessions:"الجلسات",hour:"ساعة",open:"وقت مفتوح",toorder:"للطلب اضغط «أبغى أطلب» ونجيك.",or:" أو ",flav:"، وبنكهة ",ice:"، وبثلج ",
-  left:"باقي",over:"زاد",sat:"جلست",billp:"فاتورتك",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف",off:"غير متوفر",flavs:"الخيارات: ",
+  left:"باقي",over:"زاد",sat:"جلست",billp:"فاتورتك",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف",off:"غير متوفر",soon:"يفتح قريب",flavs:"الخيارات: ",
   printing:"🖨️ تنطبع فاتورتك…",printed:"✓ هذي فاتورتك لين الحين",billt:"فاتورتك لين الحين",total:"المجموع",ry:"ريال",
   hint2:"من المنيو، أو نجيك لين عندك",c_title:"كيف تبغى تطلب؟",c_sub:"اختار اللي يريحك",c_menu:"أنا بختار من المنيو",c_menu_s:"شوف الصور والأسعار، واطلب بنفسك",c_call:"نادِ لي أحد",c_call_s:"نجيك لين عندك وناخذ طلبك",back:"رجوع",
   o_title:"اطلب من المنيو",send:"أرسل الطلب",needok:"الطلب يوصل المطبخ بعد ما يوافق عليه الموظف",add:"أضف",pick:"اختر أول",size_s:"صغير",size_b:"كبير",note_ph:"ملاحظة (اختياري)",
@@ -221,7 +221,7 @@ const STR={
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
   retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Lactose-free or coconut milk",milk:"Milk",m_lf:"Lactose-free",m_coco:"Coconut",menufail:"Could not load the menu. Try again or ask the staff.",
   sessions:"Seating",hour:"One hour",open:"Open time",toorder:"To order, tap “I want to order”.",or:" or ",flav:", flavored ",ice:", with ice ",
-  left:"Left",over:"Over",sat:"Seated",billp:"Your bill",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff",off:"Not available",flavs:"Options: ",
+  left:"Left",over:"Over",sat:"Seated",billp:"Your bill",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff",off:"Not available",soon:"Opening soon",flavs:"Options: ",
   printing:"🖨️ Printing your bill…",printed:"✓ Your bill so far",billt:"Your bill so far",total:"Total",ry:"SAR",
   hint2:"From the menu, or we come to you",c_title:"How do you want to order?",c_sub:"Pick what suits you",c_menu:"I will pick from the menu",c_menu_s:"See photos and prices, and order yourself",c_call:"Call someone over",c_call_s:"We come to your table and take your order",back:"Back",
   o_title:"Order from the menu",send:"Send order",needok:"Your order goes to the kitchen once the staff approve it",add:"Add",pick:"Pick first",size_s:"Small",size_b:"Large",note_ph:"Note (optional)",
@@ -246,10 +246,14 @@ function photo(n){ n=String(n);
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
 const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
+const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
+const CATN=Object.fromEntries(CATS.map(c=>[c[0],c]));
+const grpItems=(g,items)=>g[4].flatMap(k=>items.map((it,i)=>[it,i]).filter(([it])=>(CATS.some(c=>c[0]===it.cat)?it.cat:"other")===k)); // أصناف القسم مرتبة حسب الأقسام الداخلية
+const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out=[]; let last=null; list.forEach(x=>{ const k=CATS.some(c=>c[0]===x[0].cat)?x[0].cat:"other"; if(k!==last&&new Set(list.map(y=>y[0].cat)).size>1) out.push(`<h4 class="${cls}">${lang==="en"?CATN[k][3]:CATN[k][2]}</h4>`); last=k; out.push(x[1]); }); return out; };
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
 const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع"],["Plain","Basil","Mint"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
-const priceOf=it=>{ if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
+const priceOf=it=>{ if(it._soon) return `<span class="offt">${L("soon")}</span>`; if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
 const K=(new URLSearchParams(location.search).get("k")||"").trim(), valid=/^[A-Za-z0-9]{8,16}$/.test(K), MENU=!valid&&new URLSearchParams(location.search).has("m"); // ?m = منيو للعرض بس (باركود السفري)
 let sid="", n=0, ended=false, unCall=null;
@@ -317,13 +321,13 @@ sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(
 /* ---------- المنيو: الأقسام على الجنب ---------- */
 let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أصناف
 function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
-  const cats=CATS.map(c=>[c,items.filter(i=>(i.cat||"other")===c[0])]).filter(c=>c[1].length);
+  const cats=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length);
   if(mcat<0||mcat>cats.length) mcat=0;
-  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"pancake",games:"baloot"};
+  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",food:"fries",sn:"pancake",games:"baloot"};
   const rail=[`<button class="${mcat===0?"on":""}" data-c="0"><i>🪑</i>${L("sessions")}</button>`].concat(cats.map(([c],i)=>`<button class="${mcat===i+1?"on":""}" data-c="${i+1}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`)).join("");
   let body;
   if(mcat===0) body=`<div class="banner" style="background:linear-gradient(135deg,#4a1a7a,#2a0e4a)"><div>🪑 ${L("sessions")}</div></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">⏱</i><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">♾️</i><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div>`;
-  else { const [c,list]=cats[mcat-1]; body=`<div class="banner">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:""}<div>${c[1]} ${lang==="en"?c[3]:c[2]}</div></div>`+list.map(i=>{const ph=photo(i.name); return `<div class="it ${i.off?"off":""}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i></i>`}<span>${esc(nameOf(i.name))}${flavOf(i.name)}</span><b>${priceOf(i)}</b></div>`}).join(""); }
+  else { const [c,list]=cats[mcat-1]; body=`<div class="banner">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:""}<div>${c[1]} ${lang==="en"?c[3]:c[2]}</div></div>`+subH(c,list.map(([i])=>{const ph=photo(i.name); return [i,`<div class="it ${i.off?"off":""}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i></i>`}<span>${esc(nameOf(i.name))}${flavOf(i.name)}</span><b>${priceOf(i)}</b></div>`]}),"msub").join(""); }
   const html=`<div class="hd"><b>${L("b_menu")}${MENU?"":`<small>${L("toorder")}</small>`}</b><button class="x" data-x aria-label="close">✕</button></div><div class="mbody"><div class="rail">${rail}</div><div class="list" id="mlist">${body}</div></div>${MENU?"":`<div class="sfoot"><button class="go" data-go>${L("b_order")}</button></div>`}`;
   if(sheetOpen==="menu"){ sheet.innerHTML=html; } else openSheet("menu",html);
   sheet.style.height="88%";
@@ -429,12 +433,12 @@ async function openOrder(){
   paintOrder(); }
 const cartN=()=>cart.reduce((a,c)=>a+c.q,0), cartT=()=>r2(cart.reduce((a,c)=>a+c.price*c.q,0));
 function paintOrder(){ const items=Array.isArray(menuData.items)?menuData.items:[];
-  const cats=CATS.map(c=>[c,items.map((it,i)=>[it,i]).filter(([it])=>(it.cat||"other")===c[0])]).filter(c=>c[1].length);
+  const cats=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length);
   if(ocat>=cats.length) ocat=0;
-  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"pancake",games:"baloot",other:"sofa"};
+  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",food:"fries",sn:"pancake",games:"baloot",other:"sofa"};
   const chips=cats.map(([c],k)=>`<button class="${ocat===k?"on":""}" data-oc="${k}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`).join("");
-  const list=(cats[ocat]?cats[ocat][1]:[]).map(([it,i])=>{ const ph=photo(it.name), q=cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0);
-    return `<button class="ot ${it.off?"off":""} ${q?"has":""}" ${it.off?"disabled":`data-oi="${i}"`} aria-label="${esc(nameOf(it.name))}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i>${(cats[ocat][0])[1]}</i>`}${q?`<em class="num">${q}</em>`:""}<span>${esc(nameOf(it.name))}<small>${priceOf(it)}</small></span></button>`}).join("");
+  const list=cats[ocat]?subH(cats[ocat][0],cats[ocat][1].map(([it,i])=>{ const ph=photo(it.name), q=cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0);
+    return [it,`<button class="ot ${it.off?"off":""} ${q?"has":""}" ${it.off?"disabled":`data-oi="${i}"`} aria-label="${esc(nameOf(it.name))}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i>${(cats[ocat][0])[1]}</i>`}${q?`<em class="num">${q}</em>`:""}<span>${esc(nameOf(it.name))}<small>${priceOf(it)}</small></span></button>`]}),"osub").join(""):"";
   const n2=cartN(), cl=cart.map((c,k)=>`<div><span>${esc(c.label)}</span><span class="cq"><button class="ced" data-ce="${k}">${L("edit")}</button><button data-ci="${k}" aria-label="+">+</button><b class="num">${c.q}</b><button data-cd="${k}" aria-label="-">${c.q>1?"−":"✕"}</button></span><b class="num">${r2(c.price*c.q)}</b></div>`).join("");
   const keep=sheet.querySelector(".ochips"), sx=keep?keep.scrollLeft:null;
   const html=`<div class="hd"><b>${L("o_title")}<small>${L("seat")} ${n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="obody"><div class="ochips">${chips}</div><div class="otiles" id="olist">${list}</div></div>
@@ -532,7 +536,14 @@ async function start(){
 }
 // المنيو: للعرض فقط
 const plain=v=>v==null?null:"stringValue" in v?v.stringValue:"integerValue" in v?Number(v.integerValue):"doubleValue" in v?v.doubleValue:"booleanValue" in v?v.booleanValue:"arrayValue" in v?(v.arrayValue.values||[]).map(plain):"mapValue" in v?Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,y])=>[k,plain(y)])):null;
-async function loadMenu(){ // يجرب القراءة العادية مرتين، وبعدها طريق ثاني مباشر
+const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر الساعة ٨ الصبح بتوقيت السعودية
+const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: القسم مفتوح لو ما أحد قرر
+const stOf=nm=>RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
+function prepMenu(x){ if(!x||!Array.isArray(x.items)) return x; const lk=x.locks||{};
+  const open=st=>{ const r=lk[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
+  x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st<2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
+async function loadMenu(){ return prepMenu(await loadMenu0()); }
+async function loadMenu0(){ // يجرب القراءة العادية مرتين، وبعدها طريق ثاني مباشر
   let last=null;
   for(let i=0;i<2;i++){ try{ if(!db) throw new Error("not-ready"); const d=await db.doc("config/menu").get(); if(d.exists) return d.data(); last=new Error("no-menu"); }catch(e){ last=e; } await new Promise(r=>setTimeout(r,900)); }
   try{ const u=firebase.auth().currentUser, h=u?{Authorization:"Bearer "+await u.getIdToken()}:{};

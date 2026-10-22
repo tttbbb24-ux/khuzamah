@@ -490,6 +490,8 @@ button:active{transform:none}
 .mvb{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px 8px}
 .mvb button{flex:1;min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:inherit;font-size:20px;font-weight:700}
 .mvb button:disabled{opacity:.3}
+.msub{grid-column:1/-1;margin:6px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.msub:first-child{margin-top:0}
+.lockchip{border:1.5px solid var(--red);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:700;min-height:38px;flex:none}
 .mgrid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;align-content:start}
 .mt{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:start;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .mt img,.mt .ph0{width:100%;height:96px;object-fit:cover;display:block;background:var(--s2);pointer-events:none}
@@ -1632,7 +1634,14 @@ function photo(name){ const n=String(name); // صورة الصنف من مجلد
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
-const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:""};
+const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:"",food:"fries",sn:"cookies"};
+const GROUPS=[["hot","الحارة",["hot"]],["cold","الباردة",["cold"]],["games","الألعاب",["games"]],["hookah","المعسلات",["hookah"]],["food","المأكولات",["fries","corn"]],["sn","الحلا والمكسرات",["sweet","nuts"]],["other","أخرى",["other"]]]; // ترتيب العرض بس، الأقسام الداخلية ما تغيّرت
+const grpOf=k=>(GROUPS.find(g=>g[0]===k||g[2].includes(k))||GROUPS[GROUPS.length-1])[0];
+const SECS=[[0,"🍟","البطاطس"],[1,"🌭","الكورن دوق والذرة"]]; // الأقسام اللي تنقفل وتنفتح
+const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر ٨ الصبح بتوقيت السعودية
+const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: مفتوح لو ما أحد قرر
+const secOpen=st=>{ const r=cfg.locks&&cfg.locks[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
+const itemLocked=it=>{ const st=stationOf(it.name); return st<2&&!secOpen(st); };
 const imgTag=k=>k?`<img class="ph" src="${k}.webp" alt="" decoding="async">`:`<span class="ph none"></span>`;
 function hookahBg(name){ const n=String(name); if(!/معسل/.test(n)) return "";
   if(/تفاح/.test(n)) return `linear-gradient(135deg,${RED} 50%,#2e9e4f 50%)`;
@@ -1640,15 +1649,17 @@ function hookahBg(name){ const n=String(name); if(!/معسل/.test(n)) return ""
   return RED; }
 function menuHtml(){ // قائمة جانبية للأقسام، والأصناف جنبها
   const by=k=>cfg.items.map((it,i)=>[it,i]).filter(([it])=>itemCat(it)===k&&mine(it.name));
-  const live=CATS.filter(c=>by(c[0]).length);
+  const gby=g=>g[2].flatMap(by), live=GROUPS.filter(g=>gby(g).length);
   if(!live.length) return `<p class="empty">ما في أصناف لقسمك في القائمة.</p>`;
-  if(!view.cat||!by(view.cat).length) view.cat=live[0][0];
-  const rail=live.length>1?`<div class="rail">${live.map(([k,t])=>`<button class="${view.cat===k?"on":""}" data-act="cat" data-c="${k}">${CAT_IMG[k]?`<img src="${CAT_IMG[k]}.webp" alt="">`:`<span class="ph0" style="display:grid;place-items:center;font-size:26px">${k==="other"?"➕":""}</span>`}${t.replace("المشروبات ","")}</button>`).join("")}</div>`:"";
-  const srt=P()&&!!view.sort, list=by(view.cat);
+  if(view.cat) view.cat=grpOf(view.cat);
+  if(!view.cat||!live.some(g=>g[0]===view.cat)) view.cat=live[0][0];
+  const rail=live.length>1?`<div class="rail">${live.map(([k,t])=>`<button class="${view.cat===k?"on":""}" data-act="cat" data-c="${k}" ${P()&&(k==="food")?`data-lps="1"`:""}>${CAT_IMG[k]?`<img src="${CAT_IMG[k]}.webp" alt="">`:`<span class="ph0" style="display:grid;place-items:center;font-size:26px">${k==="other"?"➕":""}</span>`}${t}</button>`).join("")}</div>`:"";
+  const G=GROUPS.find(g=>g[0]===view.cat), subs=G[2].filter(k=>by(k).length), srt=P()&&!!view.sort;
+  const subT=k=>(CATS.find(c=>c[0]===k)||[,""])[1];
   const sbar=P()&&!view.newTake?`<div class="sortbar">${srt?`<span>رتّب بالأسهم، ويتغيّر عند الكل وعند الزباين</span><button class="primary" data-act="sortmode">تم</button>`:`<button class="ghost" data-act="sortmode">↕ ترتيب الأصناف</button>`}</div>`:"";
-  return `<div class="mwrap">${rail}<div class="mcol">${sbar}<div class="mgrid ${srt?"sorting":""}">${list.map(([it,i],k)=>{ const off=!!it.off, sp=specFor(it.name), ph=photo(it.name);
+  return `<div class="mwrap">${rail}<div class="mcol">${sbar}<div class="mgrid ${srt?"sorting":""}">${subs.map(sk=>{ const list=by(sk); return (subs.length>1?`<h4 class="msub">${subT(sk)}</h4>`:"")+list.map(([it,i],k)=>{ const lk=itemLocked(it), off=!!it.off||lk, sp=specFor(it.name), ph=photo(it.name);
     if(srt) return `<div class="mt srt">${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}<span class="tx"><b>${esc(it.name)}</b></span><span class="mvb"><button data-act="imove" data-i="${i}" data-d="-1" ${k===0?"disabled":""} aria-label="قدّم">→</button><b class="num">${k+1}</b><button data-act="imove" data-i="${i}" data-d="1" ${k===list.length-1?"disabled":""} aria-label="أخّر">←</button></span></div>`;
-    return `<button class="mt ${off?"off":""}" data-act="${off?"offhint":"add"}" data-i="${i}" ${OPS()?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">غير متوفر</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}</div></div></div>`;
+    return `<button class="mt ${off?"off":""}" data-act="${lk?"lockhint":off?"offhint":"add"}" data-i="${i}" ${OPS()&&!lk?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">${lk?"القسم مقفل":"غير متوفر"}</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${lk?"القسم مقفل":off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}).join("")}</div></div></div>`;
 }
 const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}px) / ${Math.max(1,rows)}))`; // البلاطات تملى الشاشة
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
@@ -1787,6 +1798,9 @@ function bindPanel(p){ if(!view) return;
   const cb=p.querySelector('#cdrawer:not(.open) .cartbar[data-act="stab"]'); if(cb) vSwipe(cb,-1,()=>cb.click()); // سحب لفوق على شريط الطلبات: يفتحها
   p.querySelectorAll(".oc[data-sw],.oc[data-pay]").forEach(swipeDel);
   p.querySelectorAll(".mt[data-lp]").forEach(holdOff);
+  p.querySelectorAll(".rail [data-lps]").forEach(t=>{ let tm=null; const end=()=>{ if(tm){clearTimeout(tm);tm=null} }; // ضغط مطوّل على المأكولات: قفل وفتح الأقسام
+    t.addEventListener("pointerdown",e=>{ if(e.button>0||!P()) return; end(); tm=setTimeout(()=>{ tm=null; lpJust=Date.now(); try{navigator.vibrate&&navigator.vibrate(18)}catch(x){} openSheet({kind:"secs"}); },600); });
+    ["pointerup","pointerleave","pointercancel"].forEach(x=>t.addEventListener(x,end)); t.addEventListener("contextmenu",e=>e.preventDefault()); });
   if(stampI>=0){ const t=p.querySelector(`.mt[data-i="${stampI}"] .offtag`); if(t){ stampI=-1; anim(t,[{transform:"scale(2.6) rotate(-14deg)",opacity:0},{transform:"scale(.9) rotate(-4deg)",opacity:1,offset:.7},{transform:"none"}],{duration:520,easing:"cubic-bezier(.5,0,.75,0)"}); anim(t.closest(".mt"),[{transform:"none"},{transform:"translate(-3px,2px)"},{transform:"translate(3px,-2px)"},{transform:"none"}],{duration:260,delay:380}); } } // ختم «غير متوفر»
   if(view._oldFee!=null&&view.id&&seats[view.id]){ const pr=p.querySelector(".sess .pr"), from=view._oldFee, to=fee(view.id); if(pr&&from!==to&&!RM){ const t0=performance.now(); view._oldFee=null; (function st(t){ const k=Math.min(1,(t-t0)/600), v=Math.round(from+(to-from)*(1-Math.pow(1-k,3))); if(pr.isConnected) pr.innerHTML=money(v); if(k<1) requestAnimationFrame(st); })(t0); } else if(from!==to) view._oldFee=null; }
   if(view.kind==="wl"&&wlNew){ const r=p.querySelector(".wlnew"); if(r){ wlNew=""; anim(r,[{transform:"translateY(-40px) scale(.9)",opacity:0},{transform:"translateY(4px)",opacity:1,offset:.7},{transform:"none"}],{duration:480,easing:SPRING}); } } // الاسم يطيح في القائمة
@@ -1900,9 +1914,21 @@ const ICO={menu:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.
   shift:'<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 const li=(k,col,t,s,act,sw)=>`<button class="li" data-act="${act}"><span class="ic" style="background:${col}">${svgI(k)}</span><span>${t}${s&&sw==null?`<br><small>${s}</small>`:""}</span>${sw==null?`<i style="color:var(--muted);font-style:normal">‹</i>`:`<small>${s}</small><i class="sw ${sw?"on":""}"></i>`}</button>`;
+function lockChip(){ if(!ready||legacy) return ""; const cl=SECS.filter(([st])=>!secOpen(st)); if(!cl.length) return "";
+  if(me&&me.role==="station"&&me.station<2&&!secOpen(me.station)) return `<button class="lockchip" data-act="secs">🔒 قسمك مقفل، كلم الشركاء</button>`;
+  return `<button class="lockchip" data-act="secs">🔒 ${cl.length>1?"البطاطس والكورن مقفلين":cl[0][1]+" "+cl[0][2]+" مقفل"}</button>`; }
+function secsHtml(){ const pendN=st=>orders.filter(o=>!isHung(o.seat)&&seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served&&stationOf(o.name)===st).reduce((a,o)=>a+(Number(o.qty)||1),0);
+  const tm=t=>{ const d=new Date(t), h=d.getHours(); return (h%12||12)+":"+String(d.getMinutes()).padStart(2,"0")+(h<12?" ص":" م"); };
+  return `<div class="phead"><div class="meta"><b>الأقسام</b><span>${P()?"افتح القسم لما يوصل أصحابه":"الشركاء بس يفتحون ويقفلون"}</span></div>${xBtn}</div>
+  <div class="grp">${SECS.map(([st,ic,t])=>{ const on=secOpen(st), r=cfg.locks&&cfg.locks[st], pn=pendN(st);
+    const sub=on?(r&&r.at?"مفتوح من "+tm(r.at):"مفتوح"):"مقفل · الزباين يشوفونه «يفتح قريب»";
+    const lab=sure==="lk:"+st?`فيه ${pn} ما نزل، اضغط مرة ثانية`:on?"قفّل":"افتح";
+    return `<div class="li" style="cursor:default"><span class="ic" style="background:${on?"var(--green)":"var(--red)"};font-size:20px">${ic}</span><span>${t}<br><small>${sub}</small></span>${P()?`<button class="${on?"ghost":"primary"}" data-act="lock" data-st="${st}" style="min-height:40px;padding:6px 16px">${lab}</button>`:`<small>${on?"مفتوح":"مقفل"}</small>`}</div>`; }).join("")}</div>
+  <p class="empty" style="text-align:center">الأقسام تنقفل لحالها كل يوم الساعة ٨ الصبح.${P()?" الطلبات اللي قبل القفل تكمل عادي.":""}</p>`; }
 function moreHtml(){ const hasW=Object.values(users).some(u=>u.role==="waiter");
   return `<div class="phead"><div class="meta"><b>المزيد</b><span>${esc((me&&me.name)||"")}${me&&me.name?" · "+ROLE(me):""}</span></div>${xBtn}</div>
   <div class="gt">${P()?"الإدارة":"حسابي"}</div><div class="grp">${P()?li("menu","#f59e0b","الأصناف والأسعار","تعديل المنيو","settings")+li("log","#3b82f6","السجل","مين سوّى إيش ومتى","log")+li("users","#8b5cf6","المستخدمين والصلاحيات",legacy?"لسه ما تفعّلوا":"الشباب ورموزهم","who")+(hasW&&!legacy?li("shift","#14b8a6","دوام العمال","الحضور والانصراف","shift"):""):li("me","#8b5cf6","حسابي","رمز الدخول والخروج","who")}</div>
+  <div class="gt">الأقسام</div><div class="grp">${li("menu","#ef4444","البطاطس والكورن",SECS.map(([st,,t])=>t.replace("الكورن دوق والذرة","الكورن")+(secOpen(st)?" مفتوح":" مقفل")).join(" · "),"secs")}</div>
   ${OPS()?`<div class="gt">الجلسات</div><div class="grp">${li("night","#7c3aed","تقفيل الليلة",openAll().length?openAll().length+" مفتوحة الحين":"كلها مقفلة","night")}${li("hung","#d97706","جلسات معلقة",hungIds.length?hungIds.length+" ما تقفلت":"ما في شي","hung")}</div>`:""}
   <div class="gt">التنبيهات</div><div class="grp">${pushOn?li("push","#ef4444","إشعارات والجوال مقفل","مفعّلة","pushon",true):li("push","#ef4444","إشعارات والجوال مقفل",pushLabel(),"pushon")}${P()&&!legacy?li("calls","#10b981","نداء الزباين من الجلسات",callsOff?"موقّف":"شغال","calltoggle",!callsOff):""}${li(muted?"mute":"sound","#ec4899","صوت التنبيه",muted?"مكتوم":"شغال","mute",!muted)}</div>
   <div class="gt">الشكل</div><div class="grp">${li(theme==="dark"?"moon":"sun","#6366f1","المظهر",theme==="dark"?"ليلي":"نهاري","theme",theme==="dark")}</div>
@@ -2273,7 +2299,7 @@ function renderMain(){
   const takes=Object.keys(seats).filter(x=>isTake(x)&&!takeDone(x)).sort((a,b)=>seats[a].startedAt-seats[b].startedAt);
   const pend=groupOrders(orders.filter(o=>!isHung(o.seat)&&seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at));
   const cnt=l=>l.reduce((a,g)=>a+g.q,0);
-  $("strip").innerHTML=`<span class="stats num">${busy.length} مشغولة · ${ids.length-busy.length} فاضية${cnt(pend)?` · <b>${cnt(pend)} ما نزل</b>`:""}</span>`+(OPS()&&!legacy?`<button class="waitchip" data-act="wl">⏳ انتظار <b class="num">${waitlist.length}</b></button>`:"");
+  $("strip").innerHTML=`<span class="stats num">${busy.length} مشغولة · ${ids.length-busy.length} فاضية${cnt(pend)?` · <b>${cnt(pend)} ما نزل</b>`:""}</span>`+(OPS()&&!legacy?`<button class="waitchip" data-act="wl">⏳ انتظار <b class="num">${waitlist.length}</b></button>`:"")+lockChip();
   $("board").innerHTML=!ready?Array.from({length:15},()=>`<span class="seat sk"></span>`).join(""):cells.map(id=>id?tile(id):`<span></span>`).join(""); // وقت التحميل: أشكال رمادية تلمع
   if(ready&&!renderMain.ent){ renderMain.ent=1; stagger($("board").children); $("board").querySelectorAll(".fill").forEach(f=>anim(f,[{height:"0%"},{height:f.style.height}],{duration:900,delay:200})); }
   if(renderMain.js){ const el=$("board").querySelector(`[data-id="${renderMain.js}"]`); if(el&&seats[renderMain.js]){ renderMain.js=null; pop(el,1.08); const f=el.querySelector(".fill"); if(f) anim(f,[{height:"0%"},{height:f.style.height}],{duration:900});
@@ -2402,6 +2428,7 @@ function renderSheet0(){
   else if(view.kind==="users") p.innerHTML=usersHtml();
   else if(view.kind==="log") p.innerHTML=logHtml();
   else if(view.kind==="wl") p.innerHTML=wlHtml();
+  else if(view.kind==="secs") p.innerHTML=secsHtml();
   else if(view.kind==="shiftdo") p.innerHTML=shiftDoHtml();
   else if(view.kind==="shift") p.innerHTML=shiftHtml();
   else if(view.kind==="month") p.innerHTML=monthHtml();
@@ -2855,6 +2882,12 @@ document.addEventListener("click",e=>{
   if(a==="stype"){ const s=seats[id], t=b.dataset.type; if(!s||s.type===t||isTake(id)) return;
     const on=b.parentElement.querySelector(".on"); if(on&&!RM){ const dx=b.getBoundingClientRect().left-on.getBoundingClientRect().left; on.classList.remove("on"); b.classList.add("on"); anim(b,[{transform:`translateX(${-dx}px)`},{transform:"none"}],{duration:380,easing:SPRING}); } view._oldFee=fee(id); // المؤشر ينزلق والسعر يعدّ
     return run("seat:"+id,async()=>{ await db.doc("seats/"+id).update(t==="hour"?{type:"hour",hours:1}:{type:t}); logIt("غيّر الجلسة "+seatNo(id)+" من "+MODE[s.type]+" إلى "+MODE[t]); toast("الجلسة "+seatNo(id)+" صارت "+MODE[t]+" · نفس وقت البداية") }) }
+  if(a==="secs") return openSheet({kind:"secs"});
+  if(a==="lockhint"){ if(Date.now()-lpJust<800) return; const it=cfg.items[+b.dataset.i]; const t=it?(SECS.find(x=>x[0]===stationOf(it.name))||[])[2]:""; if(P()) return openSheet({kind:"secs"}); return toast("قسم "+(t||"")+" مقفل الحين. الشركاء يفتحونه"); }
+  if(a==="lock"){ if(!P()) return; const st=+b.dataset.st, on=secOpen(st), sec=SECS.find(x=>x[0]===st); if(!sec) return;
+    if(on){ const pn=orders.filter(o=>!isHung(o.seat)&&seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served&&stationOf(o.name)===st).length; if(pn&&!arm("lk:"+st)) return; }
+    const locks={...(cfg.locks||{}),[st]:{open:!on,at:Date.now(),by:(me&&me.name)||""}};
+    return run("cfg",async()=>{ await db.doc("config/menu").update({locks}); cfg={...cfg,locks}; logIt((on?"قفّل قسم ":"فتح قسم ")+sec[2]); renderSheet(); renderMain(); toast(on?"🔒 "+sec[2]+" انقفل":"✅ "+sec[2]+" انفتح"); }) }
   if(a==="offhint"){ if(Date.now()-lpJust<800) return; return toast(OPS()?"غير متوفر · اضغط عليه مطوّل ٣ ثواني ترجّعه":"هذا الصنف غير متوفر الحين") }
   if(a==="lpay") return payLine(oid,b.dataset.pay);
   if(a==="racc") return approveReq(b.dataset.id);
@@ -2994,7 +3027,7 @@ document.addEventListener("click",e=>{
       okFlash("تعدّل",now); if(back==="main") closeSheet(); else openSheet({kind:"seat",id:o.seat,tab:"orders"}); }) }
   if(a==="xadd"){ const it=cfg.items[view.i]; if(!it||(!seats[id]&&!view.newTake)||it.off) return; const r=pickLine(); if(!r.ok||!mine(r.name)) return;
     if(doAdd(it,r,view.q)) return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tab:"add"}); return }
-  if(a==="add"){ if(Date.now()-lpJust<800) return; const i=+b.dataset.i, it=cfg.items[i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)||it.off) return;
+  if(a==="add"){ if(Date.now()-lpJust<800) return; const i=+b.dataset.i, it=cfg.items[i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)||it.off||itemLocked(it)) return;
     const sp=specFor(it.name);
     if(!sp){ flyFrom(b); if(doAdd(it,{name:it.name,price:Number(it.price),note:"",ok:true},1)&&view.newTake) renderSheet(); return }
     return openSheet({kind:"extras",id,i,sel:[],ex:sp.k==="tea",size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake,cart:view.cart}) }
@@ -3035,7 +3068,7 @@ document.addEventListener("click",e=>{
     const idx=cfg.items.map((x,j)=>j).filter(j=>itemCat(cfg.items[j])===c), k=idx.indexOf(i), j=idx[k+d]; if(j==null) return;
     const items=cfg.items.slice(); [items[i],items[j]]=[items[j],items[i]]; cfg={...cfg,items}; renderSheet(); // يتحرك فوراً، والحفظ بعد ما يوقف شوي
     clearTimeout(sortT); sortT=setTimeout(()=>{ const L=cfg.items; db.doc("config/menu").update({items:L}).then(()=>toast("✓ انحفظ الترتيب")).catch(fail); },700); return }
-  if(a==="cat"){ const old=document.querySelector("#panel .rail button.on"), oy=old?old.getBoundingClientRect().top:null; view.cat=b.dataset.c||null; renderSheet(); const g=document.querySelector("#panel .mgrid"); if(g) stagger(g.children);
+  if(a==="cat"){ if(Date.now()-lpJust<800) return; const old=document.querySelector("#panel .rail button.on"), oy=old?old.getBoundingClientRect().top:null; view.cat=b.dataset.c||null; renderSheet(); const g=document.querySelector("#panel .mgrid"); if(g) stagger(g.children);
     const nw=document.querySelector("#panel .rail button.on"); if(nw&&oy!=null){ const dy=oy-nw.getBoundingClientRect().top; anim(nw,[{transform:`translateY(${dy}px)`,boxShadow:"inset -3px 0 0 var(--accent)"},{transform:"none"}],{duration:380,easing:SPRING}); [...nw.children].forEach(ch=>anim(ch,[{transform:`translateY(${-dy}px)`},{transform:"none"}],{duration:380,easing:SPRING})); } return } // المؤشر ينزلق للقسم الجديد
   if(a==="pay") return openSheet({kind:"pay",id});
   if(a==="back"){ if(view.kind==="extras"&&view.edit&&view.from==="main") return closeSheet(); return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tab:view.kind==="extras"&&!view.edit?"add":view.kind==="extras"?"orders":view.tab}) }
@@ -3059,7 +3092,7 @@ document.addEventListener("click",e=>{
   if(a==="rmitem"){draft.items.splice(+b.dataset.i,1);return renderSheet()}
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
-    const out={...(cfg.promo?{promo:cfg.promo}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
+    const out={...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
       items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.off?{off:true}:{})})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ");logIt("عدّل الأصناف أو الأسعار")});
@@ -3097,7 +3130,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<11&&!items.some(i=>/ماتشا/.test(i.name))) items.push({name:"ماتشا",price:20,cat:"cold"});
   if(m<11&&!items.some(i=>/بلوت/.test(i.name))) items.push({name:"بلوت",price:15,cat:"games"});
   if(m<11&&!items.some(i=>/جاكارو/.test(i.name))) items.push({name:"جاكارو",price:5,cat:"games"});
-  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{})}).catch(()=>{migrating=false});
+  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
   db=fdb; $("gate").hidden=true; if(!OPS()&&!W()){ myStation=me.station; mainTab="orders"; }
@@ -3122,7 +3155,7 @@ function listen(){
   }
   db.doc("config/menu").onSnapshot(d=>{
     const x=d.exists?d.data():null;
-    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0,promo:x.promo||null}:DEFAULTS;
+    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0,promo:x.promo||null,locks:x.locks||null}:DEFAULTS;
     if(!(d.metadata&&d.metadata.fromCache)) migrate();
     refresh();
   },dead);
@@ -3160,7 +3193,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v52";
+const VER="v53";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
