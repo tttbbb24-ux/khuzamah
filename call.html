@@ -205,7 +205,7 @@ const STR={
   noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" جاي لك الحين":"جايين لك الحين"),still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
-  retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"حليب خالي من اللاكتوز أو حليب جوز الهند",milk:"الحليب",m_lf:"خالي من اللاكتوز",m_coco:"جوز الهند",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
+  retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"حليب خالي من اللاكتوز أو حليب جوز الهند",milk:"الحليب",sug:"السكر",s_reg:"عادي",s_stv:"دايت (ستيفيا)",m_lf:"خالي من اللاكتوز",m_coco:"جوز الهند",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
   sessions:"الجلسات",hour:"ساعة",open:"وقت مفتوح",toorder:"للطلب اضغط «أبغى أطلب» ونجيك.",or:" أو ",flav:"، وبنكهة ",ice:"، وبثلج ",
   left:"باقي",over:"زاد",sat:"جلست",billp:"فاتورتك",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف",off:"غير متوفر",soon:"يفتح قريب",flavs:"الخيارات: ",
   printing:"🖨️ تنطبع فاتورتك…",printed:"✓ هذي فاتورتك لين الحين",billt:"فاتورتك لين الحين",total:"المجموع",ry:"ريال",
@@ -219,7 +219,7 @@ const STR={
   noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" is coming":"We are coming"),still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
-  retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Lactose-free or coconut milk",milk:"Milk",m_lf:"Lactose-free",m_coco:"Coconut",menufail:"Could not load the menu. Try again or ask the staff.",
+  retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Lactose-free or coconut milk",milk:"Milk",sug:"Sugar",s_reg:"Regular",s_stv:"Diet (stevia)",m_lf:"Lactose-free",m_coco:"Coconut",menufail:"Could not load the menu. Try again or ask the staff.",
   sessions:"Seating",hour:"One hour",open:"Open time",toorder:"To order, tap “I want to order”.",or:" or ",flav:", flavored ",ice:", with ice ",
   left:"Left",over:"Over",sat:"Seated",billp:"Your bill",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff",off:"Not available",soon:"Opening soon",flavs:"Options: ",
   printing:"🖨️ Printing your bill…",printed:"✓ Your bill so far",billt:"Your bill so far",total:"Total",ry:"SAR",
@@ -235,13 +235,13 @@ const EN=[[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جا�
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
- [/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
+ [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 function photo(n){ n=String(n);
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
   if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
   if(/كنز[ةه]/.test(n)) return "kinza"; if(/مو[يى][ةه]/.test(n)) return "water"; if(/بان\s*كيك/.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
-  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea";
+  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
@@ -251,7 +251,7 @@ const CATN=Object.fromEntries(CATS.map(c=>[c[0],c]));
 const grpItems=(g,items)=>g[4].flatMap(k=>items.map((it,i)=>[it,i]).filter(([it])=>(CATS.some(c=>c[0]===it.cat)?it.cat:"other")===k)); // أصناف القسم مرتبة حسب الأقسام الداخلية
 const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out=[]; let last=null; list.forEach(x=>{ const k=CATS.some(c=>c[0]===x[0].cat)?x[0].cat:"other"; if(k!==last&&new Set(list.map(y=>y[0].cat)).size>1) out.push(`<h4 class="${cls}">${lang==="en"?CATN[k][3]:CATN[k][2]}</h4>`); last=k; out.push(x[1]); }); return out; };
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
-const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع"],["Plain","Basil","Mint"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
+const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع","سكر دايت"],["Plain","Basil","Mint","Diet sugar"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
 const priceOf=it=>{ if(it._soon) return `<span class="offt">${L("soon")}</span>`; if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
@@ -410,7 +410,7 @@ function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i))
   if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
   if(spec.k==="mat"){ const milk=v.size==="coco"?"حليب جوز الهند":"حليب خالي من اللاكتوز"; return v.ex?{...base,note:"بدون سيروب، "+milk}:{...base,note:(and?and+"، ":"")+milk,ok:on.length>0}; }
   if(spec.k==="v60") return {...base,note:and,ok:on.length===1};
-  if(spec.k==="tea") return v.ex?{...base,note:"سادة"}:{...base,note:and,ok:on.length>0};
+  if(spec.k==="tea"){ const sw=v.size==="stv"?"، سكر دايت (ستيفيا)":""; return v.ex?{...base,note:"سادة"+sw}:{...base,note:and+sw,ok:on.length>0}; }
   return base; }
 const lineOf=(it,v)=>{ const sp=specFor(it.name); return sp?resolve(sp,it,v):{name:it.name,price:Number(it.price),note:"",ok:true} };
 const r2=x=>Math.round(x*100)/100;
@@ -457,7 +457,7 @@ function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ session
   A(sheet.querySelector(".promo .pgo"),[{transform:"translateY(30px)",opacity:0},{transform:"none",opacity:1}],{duration:600,delay:900,easing:SPRING,fill:"backwards"}); }
 function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lineOf(it,optv), ph=photo(it.name);
   const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`)); }
-  const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:"";
+  const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")}</b><div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:"";
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
   sheet.innerHTML=`<div class="hd"><button class="x" data-back aria-label="${L("back")}">${lang==="en"?"‹":"›"}</button><b>${esc(nameOf(it.name))}</b></div>
   <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}${mk}
