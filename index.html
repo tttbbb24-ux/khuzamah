@@ -76,6 +76,7 @@ button:disabled{opacity:.5;cursor:default}
 .seat.alarm .dot{background:#fff;color:var(--alarm)}
 .seat.add{align-items:center;justify-content:center;border-style:solid;text-align:center}
 .seat.add .n{color:var(--accent)}
+.askgo{display:flex;flex-direction:column;gap:12px;margin-top:8px}.ask{display:flex;align-items:center;gap:14px;text-align:start;border-radius:20px;padding:22px 18px;min-height:96px}.ask i{font-style:normal;font-size:36px}.ask b{display:block;font-size:20px}.ask small{font-size:13.5px;opacity:.85}.ask.a{background:var(--green);color:#06210f}.ask.b{background:var(--gold);color:#2e2208}
 .paybtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .seat .dot{position:absolute;inset-block-start:8px;inset-inline-end:8px;background:#d43a35;color:#fff;border-radius:999px;
   min-width:26px;height:26px;padding-inline:7px;display:grid;place-items:center;font-weight:700;font-size:14px}
@@ -2623,8 +2624,15 @@ function moveHtml(){
   ${free.length?`<div class="tiles">${free.map(x=>`<button class="tile" style="min-height:72px" data-act="moveto" data-to="${x}"><span class="n num" style="font-family:var(--display);font-size:30px;line-height:1">${seatNo(x)}</span></button>`).join("")}</div>`:`<p class="empty">ما في جلسة فاضية.</p>`}
   <button class="link" data-act="back">رجوع بدون نقل</button>`;
 }
+function askHtml(id){ // بعد الحساب كامل: قاموا ولا بس دفعوا؟
+  const v=view, c=payCalc(id,v), pl=v.ask==="cash"?"💵 كاش":v.ask==="card"?"💳 شبكة":"مقسوم كاش وشبكة";
+  return `<div class="phead"><span class="big num">${esc(lab(id))}</span><div class="meta"><b>${pl} · <span class="num">${money(c.total)}</span></b><span>الزباين قاموا؟</span></div>${xBtn}</div>
+  <div class="askgo"><button class="ask a" data-act="paidgo" data-stay="0"><i>🚶</i><span><b>قاموا من الجلسة</b><small>يتقفل الحساب والجلسة تفضى</small></span></button>
+  <button class="ask b" data-act="paidgo" data-stay="1"><i>🪑</i><span><b>دفعوا وما قاموا</b><small>ينحسب الدفع والجلسة تبقى مفتوحة</small></span></button>
+  <button class="ghost wide" data-act="paskno">رجوع</button></div>`; }
 function payHtml(id){
   if(view.q) return qittaHtml(id);
+  if(view.ask) return askHtml(id);
   const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), pend=units(os.filter(o=>!o.served)), take=s.type==="take";
   const mode=billMode(s,view), auto=!view.mode&&s.type==="hour"&&mode==="open";
   if(mode==="hour"&&!view.hours) view.hours=autoHours(s);
@@ -2650,9 +2658,7 @@ function payHtml(id){
   <div class="duebar"><span>المطلوب من الزبون</span><b class="num" id="pay-total">${money(c.total)}</b></div>
   ${dayKey(s.startedAt)!==dayKey(Date.now())?`<div class="notice">هذي من ${esc(dayLabel(dayKey(s.startedAt)))} وما تقفلت وقتها.
     <div class="step" style="margin-block-start:8px"><button class="chip ${view.today?"":"on"}" data-act="payday">${view.today?"تنحسب على اليوم":"تنحسب على يوم الدخول"}</button><span style="font-size:13px">اضغط للتبديل</span></div></div>`:""}
-  ${!part&&PAY()&&c.total>0?`<button class="qbtn" data-act="qitta">🐱 قطة</button>`:""}
-  <div class="paybtns"><button class="primary cash" data-act="paid" data-pay="cash" ${dis}>💵 كاش${view.stay&&!part?" · يكمل":""}</button><button class="primary card" data-act="paid" data-pay="card" ${dis}>💳 شبكة${view.stay&&!part?" · يكمل":""}</button></div>
-  ${!take&&!part?`<div class="modes" style="grid-template-columns:1fr 1fr"><button class="${view.stay?"":"on"}" data-act="pstay" data-v="0">🚶 بيقوم<b style="font-size:12.5px;font-family:var(--body);font-weight:400">يتقفل الحساب</b></button><button class="${view.stay?"on":""}" data-act="pstay" data-v="1">🪑 يكمل جلوس<b style="font-size:12.5px;font-family:var(--body);font-weight:400">الجلسة تبقى لين يقوم</b></button></div>`:""}
+  <div class="paybtns"><button class="primary cash" data-act="paid" data-pay="cash" ${dis}>💵 كاش</button><button class="primary card" data-act="paid" data-pay="card" ${dis}>💳 شبكة</button></div>
   <div class="set"><div class="row"><label for="pay-cash">مقسوم: كم دفع كاش؟</label><input class="pr num" id="pay-cash" inputmode="decimal" autocomplete="off" placeholder="0" value="${view.cash?esc(view.cash):""}"></div>
     <div class="splitbar" id="pay-sbar" ${num(view.cash)>0?"":"hidden"}><i style="width:${c.total?Math.min(100,c.cash/c.total*100):0}%"><b class="num">${c.cash}</b></i><i><b class="num">${c.card}</b></i></div>
     <button class="ghost" id="pay-split" data-act="paid" data-pay="split" ${c.splitOk?"":"disabled"}>${splitLabel(c)}</button></div>
@@ -3085,6 +3091,9 @@ document.addEventListener("click",e=>{
   if(a==="pfee"){ if(!view.part) return; view.pfee=view.pfee!=null?null:String(fee(id,view)); return renderSheet() }
   if(a==="psel"||a==="pinc"||a==="pdec"){ if(!view.part) return; const x=payGroups(id)[b.dataset.k]; if(!x) return; const n=partQty(view,x);
     view.part[x.k]=a==="psel"?(n?0:x.q):a==="pinc"?Math.min(x.q,n+1):Math.max(0,n-1); return renderSheet() }
+  if(a==="paid"&&b.dataset.pay!=="comp"&&!view.part&&seats[id]&&!isTake(id)&&!view.asked){ const pay=b.dataset.pay; if(pay==="split"&&!payCalc(id,view).splitOk) return; view.ask=pay; return renderSheet(); } // يسأل قبل: قاموا ولا ما قاموا
+  if(a==="paskno"){ view.ask=null; return renderSheet() }
+  if(a==="paidgo"){ const pay=view.ask; if(!pay) return; view.stay=b.dataset.stay==="1"; view.ask=null; if(b.dataset.busy) return; b.dataset.busy=1; return closeBill(id,pay); }
   if(a==="paid"){ if(b.dataset.busy) return; const pay=b.dataset.pay; if(RM||pay==="split") return closeBill(id,pay); b.dataset.busy=1; // الحساب: دائرة تحميل وبعدها ✓
     const w=b.offsetWidth; b.innerHTML='<svg width="24" height="24" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 150"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur=".8s" repeatCount="indefinite"/></circle></svg>';
     anim(b,[{borderRadius:"12px"},{borderRadius:"28px"}],{duration:300,fill:"forwards"}); setTimeout(()=>closeBill(id,pay),DM(650)); return }
@@ -3197,7 +3206,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v54";
+const VER="v55";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
