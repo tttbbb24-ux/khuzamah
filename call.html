@@ -167,6 +167,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .bigic{width:88px;height:88px;border-radius:50%;margin:6px auto 8px;display:flex;align-items:center;justify-content:center;font-size:40px}
 @media (max-height:640px){.primary{padding:12px 16px}.primary .ic{width:42px;height:42px}.row{padding:9px 12px;gap:5px}.row .ic{width:34px;height:34px}}
 @media (prefers-reduced-motion:reduce){.petal,.shine{animation:none!important}.ripple{display:none}}
+.fq .chip{flex:1;font-weight:700;justify-content:center;text-align:center}.fsum{margin:0;text-align:center;font-size:15px;color:var(--muted)}.fsum.ok{color:inherit}.fsum b{color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
@@ -212,7 +213,7 @@ const STR={
   hint2:"من المنيو، أو نجيك لين عندك",c_title:"كيف تبغى تطلب؟",c_sub:"اختار اللي يريحك",c_menu:"أنا بختار من المنيو",c_menu_s:"شوف الصور والأسعار، واطلب بنفسك",c_call:"نادِ لي أحد",c_call_s:"نجيك لين عندك وناخذ طلبك",back:"رجوع",
   o_title:"اطلب من المنيو",send:"أرسل الطلب",needok:"الطلب يوصل المطبخ بعد ما يوافق عليه الموظف",add:"أضف",pick:"اختر أول",size_s:"صغير",size_b:"كبير",note_ph:"ملاحظة (اختياري)",
   r_wait:"⏳ وصل طلبك<small>ننتظر موافقة الموظف، وبعدها يروح للمطبخ.</small>",r_ok:"✓ انقبل طلبك<small>يتجهز الحين.</small>",r_no:"🏃 الموظف جايك<small>بيتفاهم معك على طلبك.</small>",r_busy:"عندك طلب ينتظر الموافقة<small>انتظر لين يوافقون عليه، وبعدها تقدر تطلب ثاني.</small>",
-  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",more:"أضيف شي ثاني",home:"الرئيسية"},
+  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
  en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"I want to order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
   k_order:"want to order",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
@@ -226,7 +227,7 @@ const STR={
   hint2:"From the menu, or we come to you",c_title:"How do you want to order?",c_sub:"Pick what suits you",c_menu:"I will pick from the menu",c_menu_s:"See photos and prices, and order yourself",c_call:"Call someone over",c_call_s:"We come to your table and take your order",back:"Back",
   o_title:"Order from the menu",send:"Send order",needok:"Your order goes to the kitchen once the staff approve it",add:"Add",pick:"Pick first",size_s:"Small",size_b:"Large",note_ph:"Note (optional)",
   r_wait:"⏳ Order received<small>Waiting for the staff to approve it.</small>",r_ok:"✓ Order accepted<small>It is being prepared.</small>",r_no:"🏃 Staff are coming<small>They will check your order with you.</small>",r_busy:"You have an order waiting<small>Once it is approved you can order again.</small>",
-  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",more:"Add something else",home:"Home"}};
+  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",f_all:"✨ Everything",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
@@ -402,7 +403,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
 function extrasNote(sel){ const on=EXTRAS.filter((_,i)=>sel.includes(i)), off=EXTRAS.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات"; if(!off.length) return "كل شي"; if(off.length<=2&&on.length>off.length) return "كل شي ما عدا "+off.join(" و"); return on.join("، "); }
 function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
-  if(spec.k==="fries") return {...base,note:extrasNote(v.sel)};
+  if(spec.k==="fries") return {...base,note:extrasNote(v.sel),ok:v.sel.length>0||!!v.none};
   if(spec.k==="corn"){ if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size}; return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0}; }
   if(spec.k==="cr"||spec.k==="rb"){ const P=spec.k==="cr"?CODERED:REDBULL; return v.ex?{...base,price:P.plain,note:"بدون نكهة"}:{...base,name:it.name+" بنكهة",price:P.flav,note:and,ok:on.length>0}; }
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
@@ -459,8 +460,10 @@ function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lin
   const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`)); }
   const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")}</b><div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:"";
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
+  const fq=sp&&sp.all?`<div class="chips fq"><button class="chip ${optv.sel.length===sp.opts.length?"on":""}" data-fall>${L("f_all")}</button><button class="chip ${optv.none?"on":""}" data-fnone>${L("f_none")}</button></div>`:"";
+  const fs=sp&&sp.all?`<p class="fsum ${r.ok?"ok":""}">${r.ok?`<b>${L("yourorder")}:</b> ${esc(r.note)}`:L("f_pick")}</p>`:"";
   sheet.innerHTML=`<div class="hd"><button class="x" data-back aria-label="${L("back")}">${lang==="en"?"‹":"›"}</button><b>${esc(nameOf(it.name))}</b></div>
-  <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}${mk}
+  <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${fq}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${fs}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}${mk}
   <div class="qrow"><button data-q="-1" aria-label="-">−</button><b class="num">${optv.q}</b><button data-q="1" aria-label="+">+</button></div>
   <input class="ninp" id="onote" maxlength="60" placeholder="${L("note_ph")}" value="${esc(optv.note||"")}"></div>
   <div class="sfoot"><button class="sendb" data-addo ${r.ok?"":"disabled"}><span class="t">${r.ok?L(optv.edit!=null?"save":"add"):L("pick")}</span><span class="num">${r.ok?r2(r.price*optv.q):""}${r.ok?RS:""}</span></button></div>`;
@@ -495,7 +498,7 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   const pg=t.closest("[data-pgo]"); if(pg) return tapItem(+pg.dataset.pgo);
   if(t.closest("[data-pskip]")) return paintOrder();
   const oi=t.closest("[data-oi]"); if(oi) return tapItem(+oi.dataset.oi);
-  const ce=t.closest("[data-ce]"); if(ce){ const k=+ce.dataset.ce, c=cart[k]; if(!c) return; optv={i:c.i,sel:c.sel.slice(),ex:c.ex,size:c.size,q:c.q,note:c.note,edit:k}; return paintOpt(); }
+  const ce=t.closest("[data-ce]"); if(ce){ const k=+ce.dataset.ce, c=cart[k]; if(!c) return; optv={i:c.i,sel:c.sel.slice(),none:!c.sel.length,ex:c.ex,size:c.size,q:c.q,note:c.note,edit:k}; return paintOpt(); }
   const rm=t.closest("[data-rm]"); if(rm){ cart.splice(+rm.dataset.rm,1); return paintOrder(); }
   const dc=t.closest("[data-dec]"); if(dc){ const i=+dc.dataset.dec; for(let k=cart.length-1;k>=0;k--) if(cart[k].i===i){ if(--cart[k].q<=0) cart.splice(k,1); break; } return paintOrder(); }
   const ci=t.closest("[data-ci]"); if(ci){ const c=cart[+ci.dataset.ci]; if(c) c.q=Math.min(20,c.q+1); return paintOrder(); }
@@ -504,14 +507,16 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   if(!optv) return; const sp=specFor((menuData.items[optv.i]||{}).name||"");
   if(t.closest("[data-back]")){ optv=null; return paintOrder(); }
   if(t.closest("[data-ex]")){ optv.ex=!optv.ex; if(optv.ex) optv.sel=[]; return paintOpt(); }
-  const op=t.closest("[data-op]"); if(op&&sp){ const j=+op.dataset.op; optv.ex=false; if(sp.one) optv.sel=[j]; else optv.sel=optv.sel.includes(j)?optv.sel.filter(x=>x!==j):optv.sel.concat(j); return paintOpt(); }
+  if(t.closest("[data-fall]")&&sp){ const all=optv.sel.length===sp.opts.length; optv.sel=all?[]:sp.opts.map((_,j)=>j); optv.none=false; return paintOpt(); }
+  if(t.closest("[data-fnone]")){ optv.none=!optv.none; optv.sel=[]; return paintOpt(); }
+  const op=t.closest("[data-op]"); if(op&&sp){ const j=+op.dataset.op; optv.ex=false; optv.none=false; if(sp.one) optv.sel=[j]; else optv.sel=optv.sel.includes(j)?optv.sel.filter(x=>x!==j):optv.sel.concat(j); return paintOpt(); }
   const mkb=t.closest("[data-mk]"); if(mkb){ optv.size=mkb.dataset.mk; return paintOpt(); }
   const sz=t.closest("[data-sz]"); if(sz){ optv.size=sz.dataset.sz; return paintOpt(); }
   const qb=t.closest("[data-q]"); if(qb){ optv.q=Math.max(1,Math.min(20,optv.q+Number(qb.dataset.q))); return paintOpt(); }
   if(t.closest("[data-addo]")){ const ni=$("onote"); optv.note=ni?ni.value:""; if(optv.edit!=null&&lineOf(menuData.items[optv.i],optv).ok) cart.splice(optv.edit,1); addCart(optv.i,optv); optv=null; return paintOrder(); } });
 function tapItem(i){ const it=menuData.items[i]; if(!it||it.off) return; const sp=specFor(it.name);
   if(!sp){ addCart(i,{sel:[],ex:false,size:"",q:1,note:""}); paintOrder(); const nb=sheet.querySelector(`[data-oi="${i}"] em`); A(nb,[{transform:"scale(1.6)"},{transform:"none"}],{duration:420,easing:SPRING}); return; }
-  optv={i,sel:sp.all?sp.opts.map((_,j)=>j):[],ex:false,size:"",q:1,note:""}; return paintOpt(); }
+  optv={i,sel:[],none:false,ex:false,size:"",q:1,note:""}; return paintOpt(); }
 sheet.addEventListener("input",e=>{ if(e.target.id==="onote"&&optv) optv.note=e.target.value; });
 
 applyLang();
