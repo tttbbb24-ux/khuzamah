@@ -81,6 +81,7 @@ button:disabled{opacity:.5;cursor:default}
 .fsn{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:20px;border-radius:7px;background:var(--accent);color:#1a0d2e;font-size:12px;font-weight:700;margin-inline-end:6px;padding:0 4px;vertical-align:1px}.seat.linked{opacity:.8;border-style:dashed}
 .wrow.kb{align-items:center}.wrow.kb .who{font-size:22px}.kbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.kbseat{border:1.5px solid var(--line);background:var(--s2);color:inherit;border-radius:10px;padding:4px 10px;font:inherit;font-weight:700;font-size:15px;min-height:34px;cursor:pointer}.kbseat small{font-weight:400;opacity:.7}.wrow.kb .done{white-space:nowrap}
 #voxbar{position:fixed;z-index:60;inset-inline:12px;top:calc(env(safe-area-inset-top,0px) + 10px);border:0;border-radius:16px;padding:12px 16px;background:#e08a1e;color:#fff;font:inherit;text-align:start;box-shadow:0 8px 24px #0006;cursor:pointer;display:flex;flex-direction:column;gap:2px}#voxbar[hidden]{display:none}#voxbar b{font-size:17px}#voxbar small{opacity:.9;font-size:13px}
+.feeed{align-self:flex-start;background:none;border:1px dashed var(--line);color:var(--muted);border-radius:10px;padding:4px 10px;font:inherit;font-size:13px;margin:4px 0 6px;cursor:pointer}.cartbar.back{background:var(--s2);color:var(--text,#f3ebe4);border:1.5px solid var(--accent)}.cartbar.back b{color:var(--accent);font-size:18px}.cartbar.back small{color:var(--muted)}
 .hub{display:flex;flex-direction:column;gap:12px;margin-top:6px}.ask.p{background:var(--accent);color:var(--acc-ink,#1a0d2e)}.hubdue,.hubpaid{border-radius:18px;padding:14px;text-align:center;background:var(--s2)}.hubdue b{display:block;font-size:34px;color:var(--gold)}.hubdue small,.hubpaid small{display:block;color:var(--muted);font-size:13px}.hubpaid{display:flex;justify-content:space-between;align-items:center;background:var(--green-bg);color:var(--green);font-size:17px;font-weight:700}.hubord{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-top:4px}.hubt{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.hubt b{font-size:16px}.hubt .ghost{min-height:34px;padding:4px 12px;font-size:13px}.hubrow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:7px 0;border-top:1px dashed var(--line);font-size:14.5px;color:var(--muted)}.hubrow span:first-child{color:var(--ink)}.hubrow small{display:block;font-size:12px;color:var(--muted)}.hubrow i{font-style:normal;font-size:12px;min-width:52px;text-align:end}
 .askgo{display:flex;flex-direction:column;gap:12px;margin-top:8px}.ask{display:flex;align-items:center;gap:14px;text-align:start;border-radius:20px;padding:22px 18px;min-height:96px}.ask i{font-style:normal;font-size:36px}.ask b{display:block;font-size:20px}.ask small{font-size:13.5px;opacity:.85}.ask.a{background:var(--green);color:#06210f}.ask.b{background:var(--gold);color:#2e2208}
 .paybtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -1934,7 +1935,7 @@ function secsHtml(){ const pendN=st=>orders.filter(o=>!isHung(o.seat)&&seats[o.s
   <p class="empty" style="text-align:center">الأقسام تنقفل لحالها كل يوم الساعة ٨ الصبح.${P()?" الطلبات اللي قبل القفل تكمل عادي.":""}</p>`; }
 function moreHtml(){ const hasW=Object.values(users).some(u=>u.role==="waiter");
   return `<div class="phead"><div class="meta"><b>المزيد</b><span>${esc((me&&me.name)||"")}${me&&me.name?" · "+ROLE(me):""}</span></div>${xBtn}</div>
-  <div class="gt">${P()?"الإدارة":"حسابي"}</div><div class="grp">${P()?li("menu","#f59e0b","الأصناف والأسعار","تعديل المنيو","settings")+li("log","#3b82f6","السجل","مين سوّى إيش ومتى","log")+li("users","#8b5cf6","المستخدمين والصلاحيات",legacy?"لسه ما تفعّلوا":"الشباب ورموزهم","who")+(hasW&&!legacy?li("shift","#14b8a6","دوام العمال","الحضور والانصراف","shift"):""):li("me","#8b5cf6","حسابي","رمز الدخول والخروج","who")}</div>
+  <div class="gt">${P()?"الإدارة":"حسابي"}</div><div class="grp">${STL()?li("log","#3b82f6","سجل قسمي","كل حركة في "+["البطاطس","الكورن دوق"][me.station],"log"):""}${P()?li("menu","#f59e0b","الأصناف والأسعار","تعديل المنيو","settings")+li("log","#3b82f6","السجل","مين سوّى إيش ومتى","log")+li("users","#8b5cf6","المستخدمين والصلاحيات",legacy?"لسه ما تفعّلوا":"الشباب ورموزهم","who")+(hasW&&!legacy?li("shift","#14b8a6","دوام العمال","الحضور والانصراف","shift"):""):li("me","#8b5cf6","حسابي","رمز الدخول والخروج","who")}</div>
   <div class="gt">الأقسام</div><div class="grp">${li("menu","#ef4444","البطاطس والكورن",SECS.map(([st,,t])=>t.replace("الكورن دوق والذرة","الكورن")+(secOpen(st)?" مفتوح":" مقفل")).join(" · "),"secs")}</div>
   ${OPS()?`<div class="gt">الجلسات</div><div class="grp">${li("night","#7c3aed","تقفيل الليلة",openAll().length?openAll().length+" مفتوحة الحين":"كلها مقفلة","night")}${li("hung","#d97706","جلسات معلقة",hungIds.length?hungIds.length+" ما تقفلت":"ما في شي","hung")}</div>`:""}
   <div class="gt">التنبيهات</div><div class="grp">${li("sound","#0ea5e9","🔊 اقرأ التنبيهات بالصوت",vox.on?"شغّال":"موقّف","voxtoggle",vox.on)}${vox.on?li("sound","#0ea5e9","جرّب الصوت","يقول «الجلسة خمسة، يبغون يطلبون»","voxtest"):""}${pushOn?li("push","#ef4444","إشعارات والجوال مقفل","مفعّلة","pushon",true):li("push","#ef4444","إشعارات والجوال مقفل",pushLabel(),"pushon")}${P()&&!legacy?li("calls","#10b981","نداء الزباين من الجلسات",callsOff?"موقّف":"شغال","calltoggle",!callsOff):""}${li(muted?"mute":"sound","#ec4899","صوت التنبيه",muted?"مكتوم":"شغال","mute",!muted)}</div>
@@ -2186,6 +2187,7 @@ let me=null, legacy=false, users={}, codeOwners={}, logs=[];
 const P=()=>!!me&&me.role==="partner";
 const CA=()=>!!me&&me.role==="cashier"; // الكاشير: يشتغل مثل الشريك بس بدون الملخص والمستخدمين والسجل والأسعار
 const OPS=()=>P()||CA();
+const STL=()=>!!me&&!P()&&me.role==="station"&&me.station>=0&&me.station<=1; // صاحب القسم يشوف سجل قسمه
 const ROLE=u=>u.role==="partner"?"شريك":u.role==="cashier"?"كاشير":u.role==="waiter"?"عامل":u.station===0?"قسم البطاطس":"قسم الكورن دوق والذرة";
 const PRESET=[["ريان","partner"],["زهير","partner"],["بكري","partner"],["عز الدين","partner"],["سعيد","s0"],["سمعة","s0"],["فادي","s1"]];
 const roleFields=v=>v==="partner"?{role:"partner"}:v==="c"?{role:"cashier"}:v==="w"?{role:"waiter"}:{role:"station",station:v==="s1"?1:0};
@@ -2234,7 +2236,7 @@ function restoreSale(k){ // يرجّع جلسة انقفلت: الحساب ين�
     logIt("رجّع "+where+" بعد ما انقفلت، وانشال حسابها "+moneyT(Number(x.total||0)));
     toast("↩︎ رجعت "+where+" · حسابها انشال من المبيعات"); const v=view; v.openSale=null; if(view===v&&v.kind==="summary") loadDay(v); });
 }
-function logIt(what,x){ if(!db) return; const now=Date.now(); db.collection("log").add({day:dayKey(now),at:now,what,...(x||{}),...BY()}).catch(()=>{}); }
+function logIt(what,x){ if(!db) return; const now=Date.now(); db.collection("log").add({day:dayKey(now),at:now,what,st:stationOf(what),...(x||{}),...BY()}).catch(()=>{}); }
 let myStation=-1; // قسم هذا الجوال في قائمة الطلبات: -1 الكل
 try{const v=parseInt(localStorage.getItem("kz-station"),10); if(v>=0&&v<=2) myStation=v}catch(e){}
 // نداء الزباين من ملصق الجلسة
@@ -2552,7 +2554,7 @@ function seatHtml(id){
   const s=seats[id], os=seatOrders(id), m=mins(s.startedAt), take=s.type==="take", l=s.type==="hour"?left(s):0, conv=s.type==="hour"&&billMode(s)==="open", full=OPS();
   const title=take?"سفري":s.type==="free"?"جلسة مجاناً":s.type==="open"?"وقت مفتوح":conv?"طلب ساعة · تحولت مفتوح":"جلسة ساعة"+(bookedH(s)>1?" × "+bookedH(s):"");
   const sub=(take?"من "+clock(m):s.type!=="hour"||conv?"الوقت "+clock(m):l>=0?"باقي "+clock(l):"زاد "+clock(-l))+" · "+(take?"انفتح ":"دخل ")+tclock(s.startedAt);
-  const tab=view.tab||(os.length?"orders":"add"), n=units(os), open=tab==="orders", tot=fee(id)+itemsTotal(id);
+  const tab=view.tab||"hub", n=units(os), open=tab==="orders", tot=fee(id)+itemsTotal(id);
   const km=[];
   if(!take&&C()) km.push(`<button data-act="qr">📱 رمز الجلسة للزبون</button>`);
   if(full&&!take) km.push(`<button data-act="move">🔀 نقل الجلسة كلها</button>`);
@@ -2576,18 +2578,20 @@ function seatHtml(id){
   ${callRow(id)}`;
   if(tab==="hub"){ // أول ما تفتح الجلسة: الحساب وإضافة طلب، وتحتها طلباتهم
     const paidStay=!!s.paidSum&&tot<=0.004, canP=full||canPay(id), pre=take&&s.pre&&tot<=0.004;
-    const top=paidStay?`<div class="hubpaid"><span>💳 دافعين</span><b class="num">${money(s.paidSum)}</b></div>${PAY()?`<button class="ask a" data-act="leave" data-now="1"><i>🚶</i><span><b>قاموا</b><small>تتقفل الجلسة وتفضى</small></span></button>`:""}`
+    const top=paidStay?`<div class="hubpaid"><span>💳 دافعين</span><b class="num">${money(s.paidSum)}</b></div>`
       :pre?`<div class="hubpaid"><span>💳 مدفوع ${s.pre==="card"?"شبكة":"كاش"}</span><small>يختفي أول ما ينزل</small></div>`
-      :`<div class="hubdue"><small>المطلوب الحين</small><b class="num">${money(tot)}</b><small>${take?"":"رسوم الجلسة "+money(fee(id))+" · "}${n?n+" صنف":"ما طلبوا شي"}</small></div>${canP?`<button class="ask a" data-act="pay"><i>💳</i><span><b>الحساب</b><small>${money(tot)}</small></span></button>`:""}`;
+      :`<div class="hubdue"><small>المطلوب الحين</small><b class="num">${money(tot)}</b><small>${take?"":"رسوم الجلسة "+money(fee(id))+" · "}${n?n+" صنف":"ما طلبوا شي"}</small></div>`;
+    const act=paidStay?(PAY()?`<button class="ask a" data-act="leave" data-now="1"><i>🚶</i><span><b>قاموا</b><small>تتقفل الجلسة وتفضى</small></span></button>`:"")
+      :pre?"":canP?`<button class="ask a" data-act="pay"><i>💳</i><span><b>الحساب</b><small>${money(tot)}</small></span></button>`:"";
     const rows=os.length?groupOrders(os).map(({o,q})=>`<div class="hubrow" data-act="stab" data-t="orders"><span>${!take&&linkedOf(id).length?`<i class="fsn num">${o.fs||seatNo(id)}</i>`:""}${esc(o.name)}${q>1?` <span class="num">× ${q}</span>`:""}${o.note?`<small>${esc(o.note)}</small>`:""}</span><span class="num">${money(Number(o.price)*q)}</span><i>${o.pd?"💳 مدفوع":o.served?"نزل ✓":"ما نزل"}</i></div>`).join(""):`<p class="empty" style="text-align:center;margin:6px 0">ما طلبوا شي لين الحين</p>`;
-    return `${head}<div class="hub">${top}<button class="ask p" data-act="stab" data-t="add"><i>➕</i><span><b>أضف طلب</b><small>يفتح المنيو</small></span></button>
-    <div class="hubord"><div class="hubt"><b>🧾 طلباتهم</b>${os.length?`<button class="ghost" data-act="stab" data-t="orders">تعديل ‹</button>`:""}</div>${take?"":`<div class="hubrow" data-act="stab" data-t="orders"><span>${title}${linkedOf(id).length?` <small>+ رسوم ${linkedOf(id).map(x=>"جلسة "+seatNo(x)).join(" و")}</small>`:""}</span><span class="num">${money(fee(id))}</span><i></i></div>`}${rows}</div></div>`; }
+    return `${head}<div class="hub">${top}<button class="ask p" data-act="stab" data-t="add"><i>➕</i><span><b>أضف طلب</b><small>يفتح المنيو</small></span></button>${act}
+    <div class="hubord"><div class="hubt"><b>🧾 طلباتهم</b>${os.length?`<button class="ghost" data-act="stab" data-t="orders">تعديل ‹</button>`:""}</div>${take?"":`<div class="hubrow" data-act="stab" data-t="orders"><span>${title}${linkedOf(id).length?` <small>+ رسوم ${linkedOf(id).map(x=>"جلسة "+seatNo(x)).join(" و")}</small>`:""}</span><span class="num">${money(fee(id))}</span><i></i></div>${P()&&s.type!=="free"?`<button class="feeed" data-act="pedit" data-k="fee">✎ تعديل سعر الجلسة${s.feeOver!=null?" · سعر خاص":""}</button>`:""}${peHtml(id)}`}${rows}</div></div>`; }
   return `${head}
   <div class="menuhost ${open?"dim":""}">${menuHtml()}</div>
   <div class="cdrawer ${open?"open":""}" id="cdrawer">${open?`<div class="cdhead" id="cdhead"><i class="grab2"></i><div style="display:flex;align-items:center;gap:10px"><b style="flex:1;font-size:20px">الطلبات ${n?`<span class="num cdn">${n}</span>`:""}</b>${take&&s.pre&&tot<=0.004?`<b class="pdt" style="font-size:16px">💳 مدفوع</b>`:(full||canPay(id))&&tot>0.004?`<button class="cdtot num" data-act="pay" aria-label="افتح الحساب">${money(tot)} <small style="font-size:13px;font-weight:400">‹ الحساب</small></button>`:`<b class="num" style="color:var(--accent);font-size:20px">${money(tot)}</b>`}</div></div>
     <div class="cdbody">${sess}<div class="orders">${list}</div>${!(full||canPay(id))?`<p class="empty" style="font-size:13px">${W()?"الحساب عند الشركاء. اضغط على الصنف لما توصّله.":"الحساب عند الشركاء. اللي تسجله ينضاف على الفاتورة."}</p>`:n?`<p class="empty" style="font-size:12px;text-align:center">اسحب يسار تحذف · يمين تحاسب عليه</p>`:""}</div>
-    <div class="cdfoot">${foot}<button class="primary ${done&&foot.includes("paybig")?"soft":""}" data-act="stab" data-t="add" style="flex:1">＋ أضف طلب</button></div>`
-  :`<button class="cartbar" data-act="stab" data-t="orders"><span><span class="cbn num">${n}</span> الطلبات</span><b class="num">${money(tot)}</b><i style="font-style:normal">⌃</i></button>`}</div>`;
+    <div class="cdfoot"><button class="primary soft" data-act="stab" data-t="hub" style="flex:1">‹ رجوع</button></div>`
+  :`<button class="cartbar back" data-act="stab" data-t="hub"><span><b>‹ رجوع</b>${n?` <small class="num">· ${n} صنف</small>`:""}</span><b class="num">${money(tot)}</b></button>`}</div>`;
 }
 function priced(r){ // ضيافة للصنف أو سعر خاص، للشركاء بس
   if(!r.ok||!P()) return r; const j=(a,b)=>a?a+" · "+b:b;
@@ -2673,9 +2677,9 @@ function closePart(id,pay,c,vv,ov){
       type:take?"take":"part", ordered:s.type, converted:false, hours:0, minutes:mins(s.startedAt), fee:c.f, gross:c.gross, disc:c.disc, items, total:c.total, startedAt:s.startedAt, closedAt:now});
     for(const f of ops) await f();
     if(c.f>0||v.stayPay) await db.doc("seats/"+id).update({feePaid:r2((Number(s.feePaid)||0)+c.f),...(v.stayPay?{paidSum:r2((Number(s.paidSum)||0)+c.total),paidAt:now}:{})});
-    if(v.stayPay){ flash(); toast("تحاسب "+where+" · "+money(c.total).replace(/<[^>]+>/g,"")+" ريال · والجلسة باقية لين يقومون"); return openSheet({kind:"seat",id,tab:"orders"}); }
+    if(v.stayPay){ flash(); toast("تحاسب "+where+" · "+money(c.total).replace(/<[^>]+>/g,"")+" ريال · والجلسة باقية لين يقومون"); return openSheet({kind:"seat",id,tab:"hub"}); }
     flash(); toast("تحاسب على "+[n?n+" حبة":"",c.f>0?"رسوم الجلسة":""].filter(Boolean).join(" و")+" من "+where+" · "+({cash:"كاش",card:"شبكة",split:"مقسوم"}[pay])+" · والجلسة لسا مفتوحة");
-    openSheet({kind:"seat",id,tab:"orders"});
+    openSheet({kind:"seat",id,tab:"hub"});
   });
 }
 function usersHtml(){
@@ -2849,14 +2853,14 @@ function logHtml(){ // كل اللي صار في اليوم، بفلاتر: ال
   if(live) orders.forEach(o=>ev.push({at:o.at,who:o.byName,k:"add",st:stationOf(o.name),t:reg(o,isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat))}));
   S.forEach(x=>{ ev.push({at:x.closedAt,who:x.byName,k:"pay",st:2,t:(x.partial?"حاسب جزئي من ":"قفل حساب ")+esc(lb(x))+" بـ "+money(Number(x.total||0))+(PM[x.pay]?" · "+PM[x.pay]:"")});
     (x.items||[]).forEach(i=>{ if(i.at) ev.push({at:i.at,who:i.by,k:"add",st:stationOf(i.name),t:reg(i,lb(x))}) }); });
-  const names=[...new Set(ev.map(e=>e.who||"بدون اسم"))], who=names.includes(view.who)?view.who:"", kind=view.lk||"", sec=view.lsec==null||view.lsec===""?"":Number(view.lsec);
+  const names=[...new Set(ev.map(e=>e.who||"بدون اسم"))], who=names.includes(view.who)?view.who:"", kind=view.lk||"", sec=STL()?me.station:view.lsec==null||view.lsec===""?"":Number(view.lsec);
   const list=ev.filter(e=>(!who||(e.who||"بدون اسم")===who)&&(!kind||e.k===kind)&&(sec===""||e.st===sec)).sort((a,b)=>(b.at||0)-(a.at||0));
   const cnt=k=>ev.filter(e=>(!who||(e.who||"بدون اسم")===who)&&(sec===""||e.st===sec)&&e.k===k).length;
   const chip=(on,act,attr,t)=>`<button class="chip ${on?"on":""}" data-act="${act}" ${attr}>${t}</button>`;
   const nav=`<div class="crumb" style="justify-content:space-between"><button class="ghost" data-act="lday" data-d="${dayShift(day,-1)}">اليوم السابق</button><b>${live?"اليوم":esc(dayLabel(day))}</b><button class="ghost" data-act="lday" data-d="${dayShift(day,1)}" ${live?"disabled":""}>اليوم التالي</button></div>`;
   return `<div class="phead"><div class="meta"><b>السجل</b><span>كل حركة: مين سواها ومتى</span></div>${xBtn}</div>${nav}
   ${!live&&!view.sales?`<p class="empty">جاري التحميل…</p>`:`
-  <div class="lgf"><small>القسم</small><div class="chips">${chip(sec==="","lsec",'data-s=""',"الكل")}${LSEC.map(([st,t])=>chip(sec===st,"lsec",`data-s="${st}"`,t)).join("")}</div></div>
+  ${STL()?"":`<div class="lgf"><small>القسم</small><div class="chips">${chip(sec==="","lsec",'data-s=""',"الكل")}${LSEC.map(([st,t])=>chip(sec===st,"lsec",`data-s="${st}"`,t)).join("")}</div></div>`}
   <div class="lgf"><small>الحركة</small><div class="chips">${chip(!kind,"lkind",'data-k=""',"الكل")}${LK.map(([k,t])=>chip(kind===k,"lkind",`data-k="${k}"`,t+` <span class="num lgn">${cnt(k)}</span>`)).join("")}</div></div>
   ${names.length>1?`<div class="lgf"><small>مين</small><div class="chips">${chip(!who,"lwho",'data-w=""',"الكل")}${names.map(n=>chip(who===n,"lwho",`data-w="${esc(n)}"`,esc(n))).join("")}</div></div>`:""}
   <p class="empty" style="margin:4px 0;font-size:13px"><span class="num">${list.length}</span> حركة</p>
@@ -2891,9 +2895,9 @@ async function loadMon(v){ // دخل الشهر لقسم صاحب المحطة
   catch(e){ v.mon={ym:TODAY.slice(0,7),S:[],days:0}; }
   if(view===v) renderSheet(); }
 async function loadDay(v){ // يجيب بيانات اليوم المعروض
-  if(!db||!P()) return;
+  if(!db||!(P()||STL())) return;
   try{
-    if(v.day!==TODAY){ const [a,l]=await Promise.all([db.collection("sales").where("day","==",v.day).get(), db.collection("log").where("day","==",v.day).get()]);
+    if(v.day!==TODAY){ const lq=STL()?db.collection("log").where("day","==",v.day).where("st","==",me.station):db.collection("log").where("day","==",v.day), [a,l]=await Promise.all([db.collection("sales").where("day","==",v.day).get(), lq.get()]);
       v.sales=a.docs.map(d=>Object.assign({id:d.id},d.data())); v.logs=l.docs.map(d=>d.data()); }
     const c=await db.doc("closings/"+v.day).get(); v.closing=c.exists?c.data():null;
     if(!v.week){ const w=await db.collection("sales").where("day",">=",dayShift(TODAY,-6)).get(), m={};
@@ -3063,7 +3067,7 @@ document.addEventListener("click",e=>{
   if(a==="callack"){ const cid=b.dataset.id; if(!C()||!calls[cid]) return; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); toast("تمام، الزبون شاف إنك جاي")}) }
   if(a==="calltoggle"){ if(!P()) return; return run("calloff",async()=>{ if(callsOff) await db.doc("config/callsOff").delete(); else await db.doc("config/callsOff").set({at:Date.now(),...BY()}); toast(callsOff?"رجع نداء الزباين":"توقف نداء الزباين") }) }
   if(a==="stickers") return void window.open("stickers.html","_blank");
-  if(a==="log"){ if(!P()) return; return openLog(TODAY) }
+  if(a==="log"){ if(!P()&&!STL()) return; return openLog(TODAY) }
   if(a==="shdo"){ if(!W()) return; openSheet({kind:"shiftdo",k:b.dataset.k,pics:[],pos:null}); return shLocate() }
   if(a==="shloc") return shLocate();
   if(a==="shrm"){ view.pics.splice(Number(b.dataset.n),1); return renderSheet() }
@@ -3292,7 +3296,7 @@ function listen(){
   if(P()){
     db.collection("codes").onSnapshot(s=>{codeOwners={};s.docs.forEach(d=>codeOwners[d.id]=d.data().user);if(view&&view.kind==="users")refresh()},quiet);
     db.collection("log").where("day","==",TODAY).onSnapshot(s=>{logs=s.docs.map(d=>d.data());if(view&&(view.kind==="summary"||view.kind==="log"||view.kind==="slog"))refresh()},quiet);
-  }
+  } else if(STL()) db.collection("log").where("day","==",TODAY).where("st","==",me.station).onSnapshot(s=>{logs=s.docs.map(d=>d.data());if(view&&view.kind==="log")refresh()},quiet);
   db.doc("config/menu").onSnapshot(d=>{
     const x=d.exists?d.data():null;
     cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0,promo:x.promo||null,locks:x.locks||null}:DEFAULTS;
@@ -3333,7 +3337,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v56";
+const VER="v57";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
