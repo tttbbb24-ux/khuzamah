@@ -2254,7 +2254,7 @@ const reqKey=id=>id+":"+tsMs(reqs[id]&&reqs[id].at);
 function reqL(id){ const e=reqEd[id]; if(e&&e.k===reqKey(id)) return e.L.filter(Boolean); return reqLines(reqs[id]) }
 function reqEdit(id){ const e=reqEd[id]; if(!e||e.k!==reqKey(id)) reqEd[id]={k:reqKey(id),L:reqLines(reqs[id]).map(l=>({...l})),ch:{}}; return reqEd[id] }
 function reqRow(id){ const L=reqL(id), tot=r2(L.reduce((a,l)=>a+l.r.price*l.q,0)), E=reqEd[id]&&reqEd[id].k===reqKey(id)?reqEd[id]:null;
-  return `<div class="rqrow" data-rq="${esc(id)}"><div class="rqh"><span class="rqi">📱</span><span style="flex:1"><b>جلسة ${seatNo(id)} طلبت من الجوال</b><small class="num">${mins(tsMs(reqs[id].at))?"قبل "+mins(tsMs(reqs[id].at))+" د":"الحين"}</small></span><b class="num">${money(tot)}</b></div>
+  return `<div class="rqrow" data-rq="${esc(id)}"><div class="rqh"><span class="rqi">📱</span><span style="flex:1"><b>جلسة ${seatNo(id)} طلبت من الجوال${reqs[id].ed?` <span style="color:#e9c77b;font-size:12px">· عدّله</span>`:""}</b><small class="num">${mins(tsMs(reqs[id].at))?"قبل "+mins(tsMs(reqs[id].at))+" د":"الحين"}</small></span><b class="num">${money(tot)}</b></div>
   <div class="rql">${(E?E.L:L).map((l,n)=>l?`<div><span>${esc(l.r.name)}${l.q>1?` <b class="num">× ${l.q}</b>`:""}${l.r.note?` <small>${esc(l.r.note)}</small>`:""}${E&&E.ch[n]?` <i class="rqed">معدّل</i>`:""}</span><span class="num">${r2(l.r.price*l.q)}</span><button class="rqe" data-act="redit" data-id="${esc(id)}" data-n="${n}" aria-label="تعديل">✏️</button></div>`:"").join("")||"<div>ما فيه أصناف متوفرة</div>"}</div>
   <div class="rqb"><button class="ok" data-act="racc" data-id="${esc(id)}" ${L.length?"":"disabled"}>أكّد</button><button class="no" data-act="rrej" data-id="${esc(id)}">رفض</button></div></div>`; }
 function scanReqs(){ if(!me||!db||!ready||!RQ()) return; let fresh=0;
@@ -2274,7 +2274,7 @@ function approveReq(id){ if(!RQ()) return; const r=reqs[id], s=seats[id]; if(!r|
     logIt("وافق على طلب جلسة "+seatNo(id)+" من الجوال"+(ed?" (بعد ما عدّله)":"")+": "+L.map(l=>l.r.name+(l.q>1?" × "+l.q:"")+(l.r.note?" ("+l.r.note+")":"")).join("، ")); delete reqEd[id]; flash(); toast("✓ انضاف طلب جلسة "+seatNo(id)+" وراح للمطبخ"); }); }
 function rejectReq(id){ if(!RQ()||!reqs[id]) return; run("req:"+id,async()=>{ await db.doc("reqs/"+id).update({st:"no",stBy:(me&&me.name)||"",stAt:Date.now()}); logIt("رفض طلب جلسة "+seatNo(id)+" من الجوال"); toast("انرفض · الزبون يشوف «الموظف جايك»، روح له"); }); }
 let calls={}, callsOff=false, callsSeeded=false; const callSeen=new Set(), callSwept=new Set();
-const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"],more:["⏳","يبغى يمدد ساعة"]};
+const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"],edit:["✏️","يبغى يعدّل طلبه"]};
 const tsMs=t=>t&&t.toMillis?t.toMillis():Number(t)||0;
 const callInfo=c=>CALLK[c.kind]||CALLK.order;
 const liveCall=id=>{const c=calls[id]; return c&&!c.ack&&seats[id]&&c.at&&Date.now()-tsMs(c.at)<20*60000?c:null};
@@ -3341,7 +3341,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v59";
+const VER="v60";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
