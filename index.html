@@ -2274,7 +2274,7 @@ function approveReq(id){ if(!RQ()) return; const r=reqs[id], s=seats[id]; if(!r|
     logIt("وافق على طلب جلسة "+seatNo(id)+" من الجوال"+(ed?" (بعد ما عدّله)":"")+": "+L.map(l=>l.r.name+(l.q>1?" × "+l.q:"")+(l.r.note?" ("+l.r.note+")":"")).join("، ")); delete reqEd[id]; flash(); toast("✓ انضاف طلب جلسة "+seatNo(id)+" وراح للمطبخ"); }); }
 function rejectReq(id){ if(!RQ()||!reqs[id]) return; run("req:"+id,async()=>{ await db.doc("reqs/"+id).update({st:"no",stBy:(me&&me.name)||"",stAt:Date.now()}); logIt("رفض طلب جلسة "+seatNo(id)+" من الجوال"); toast("انرفض · الزبون يشوف «الموظف جايك»، روح له"); }); }
 let calls={}, callsOff=false, callsSeeded=false; const callSeen=new Set(), callSwept=new Set();
-const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"]};
+const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"],more:["⏳","يبغى يمدد ساعة"]};
 const tsMs=t=>t&&t.toMillis?t.toMillis():Number(t)||0;
 const callInfo=c=>CALLK[c.kind]||CALLK.order;
 const liveCall=id=>{const c=calls[id]; return c&&!c.ack&&seats[id]&&c.at&&Date.now()-tsMs(c.at)<20*60000?c:null};
@@ -3341,7 +3341,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v58";
+const VER="v59";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
