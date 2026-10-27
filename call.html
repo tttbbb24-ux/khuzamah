@@ -169,24 +169,75 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 @media (prefers-reduced-motion:reduce){.petal,.shine{animation:none!important}.ripple{display:none}}
 .fq .chip{flex:1;font-weight:700;justify-content:center;text-align:center}.fsum{margin:0;text-align:center;font-size:15px;color:var(--muted)}.fsum.ok{color:inherit}.fsum b{color:var(--muted);font-weight:600}
 .qrb{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));inset-inline-start:14px;z-index:3;font:inherit;font-size:13px;color:#fff;background:#0008;border:1px solid #ffffff2a;border-radius:999px;padding:5px 12px;display:flex;align-items:center;gap:6px}.qrb[hidden]{display:none}
+/* v58: تصميم ١٠ — صورة المكان فوق، ولوح تحت فيه كل شي */
+.photo{position:absolute;inset:0;background:url(place.webp) center 62%/cover no-repeat,url(https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261022_132139_1c6fa04a-13fa-4f9b-aa42-0574021f8f8e_min.webp) center 62%/cover no-repeat,#120720}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0c091299 0%,#0c091200 30%,#0c091200 55%,#0c0912 100%);pointer-events:none}
+.hero .glow{display:none}.hero .petals,.hero .mid,.lang,.qrb{z-index:2}
+.mid{inset:auto 18px 30px;align-items:flex-start;justify-content:flex-end;text-align:start;gap:4px;padding:0}
+.logo{width:150px;max-height:none;margin-inline-start:-6px}
+.pills{justify-content:flex-start;margin-top:4px}
+.pane{position:relative;z-index:3;margin-top:-18px;background:var(--bg);border-radius:24px 24px 0 0;padding:16px 16px 0;display:flex;flex-direction:column;gap:10px;flex:none}
+.pane .primary{margin:0}.pane .status{margin:0}
+.pane .rows{padding:0;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.pane .row{align-items:center;text-align:center;padding:12px 6px;gap:6px}.pane .row b{font-size:14px}
+.billrow{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 2px;width:100%;text-align:start}
+.billrow b{font-size:16px}.billrow span{color:var(--gold);font-weight:700;font-size:21px}
+.tt{display:block;text-align:center;color:var(--muted);font-size:13px;text-decoration:none;padding:4px 0 2px}
+/* الشرح أول مرة */
+.tut{position:fixed;inset:0;z-index:80}.tut .dm{position:absolute;inset:0;background:#000b}
+.tut .hl{position:absolute;border-radius:16px;box-shadow:0 0 0 3px var(--accent),0 0 26px var(--accent);transition:all .35s cubic-bezier(.22,1,.36,1)}
+.tut .bd{position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}.tut .bd.up{bottom:auto;top:calc(60px + env(safe-area-inset-top,0px))}.tut .bd{background:#fff;color:#1a0d2e;border-radius:20px;padding:16px;box-shadow:0 14px 40px #000c}
+.tut .bd b{display:block;font-size:19px;margin-bottom:4px}.tut .bd p{font-size:15px;line-height:1.55;margin-bottom:12px}
+.tut .rw{display:flex;align-items:center;justify-content:space-between}.tut .nx{background:#1a0d2e;color:#fff;border-radius:12px;padding:10px 18px;font-weight:800}
+.tut .dt{display:flex;gap:5px}.tut .dt i{width:7px;height:7px;border-radius:7px;background:#1a0d2e33}.tut .dt i.on{width:18px;background:#1a0d2e}
+.tut .sk{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:#000a;color:#fff;border:1px solid #fff4;border-radius:999px;padding:6px 14px;font-size:13px}
+.tut svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+/* حركات */
+.fx{text-align:center;padding:4px 16px 18px}.fx b{font-size:23px;display:block;margin-top:8px}.fx span{color:var(--muted);font-size:15px}
+.stage{width:150px;height:130px;margin:0 auto;position:relative;display:grid;place-items:center}
+.rg{position:absolute;width:70px;height:70px;border-radius:50%;border:3px solid var(--gold);animation:rgx 1.8s ease-out infinite}.rg:nth-child(2){animation-delay:.6s}.rg:nth-child(3){animation-delay:1.2s}
+@keyframes rgx{from{transform:scale(.6);opacity:1}to{transform:scale(2.1);opacity:0}}
+.hnd{font-size:52px;animation:hnd 1.2s ease-in-out infinite;transform-origin:70% 80%;position:relative}@keyframes hnd{0%,100%{transform:rotate(0)}25%{transform:rotate(-18deg)}75%{transform:rotate(14deg)}}
+.pth{position:absolute;bottom:34px;left:6px;right:6px;height:4px;background:repeating-linear-gradient(90deg,#3a2f4c 0 10px,transparent 10px 18px)}
+.rnr{position:absolute;bottom:40px;font-size:40px;animation:rnr 2.6s linear infinite}@keyframes rnr{from{right:-10px}to{right:calc(100% - 40px)}}
+.rnr i{display:inline-block;font-style:normal;animation:bob .32s ease-in-out infinite alternate}@keyframes bob{to{transform:translateY(-6px)}}
+.chr{position:absolute;left:0;bottom:34px;font-size:32px}
+.pln{font-size:52px;animation:pln 2.4s cubic-bezier(.5,0,.4,1) infinite}@keyframes pln{0%{transform:translate(60px,50px) rotate(10deg) scale(.6);opacity:0}15%{opacity:1}60%{transform:none}100%{transform:translate(-90px,-80px) rotate(-20deg) scale(.5);opacity:0}}
+.hgl{position:absolute;bottom:0;font-size:28px;animation:hgl 2.4s ease-in-out infinite}@keyframes hgl{0%,40%{transform:rotate(0)}60%,100%{transform:rotate(180deg)}}
+.okc{width:110px;height:110px}.okc circle{fill:none;stroke:var(--green);stroke-width:7;stroke-dasharray:340;stroke-dashoffset:340;animation:okd .6s ease-out forwards}
+.okc path{fill:none;stroke:var(--green);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:90;stroke-dashoffset:90;animation:okd .4s .5s ease-out forwards}@keyframes okd{to{stroke-dashoffset:0}}
+.okc.done circle,.okc.done path{animation:none;stroke-dashoffset:0}
+.cf{position:absolute;width:8px;height:12px;border-radius:2px;top:50%;left:50%}
+.stm{position:absolute;top:2px;width:9px;height:40px;border-radius:9px;background:linear-gradient(transparent,#ffffffaa);filter:blur(3px);opacity:0;animation:stm 2s ease-in infinite}
+.stm:nth-of-type(1){left:-14px}.stm:nth-of-type(2){left:2px;animation-delay:.6s}.stm:nth-of-type(3){left:18px;animation-delay:1.2s}
+@keyframes stm{0%{transform:translateY(16px);opacity:0}30%{opacity:.9}100%{transform:translateY(-30px) scaleX(2.2);opacity:0}}
+.cupw{position:relative;display:inline-block;font-size:30px;width:20px;margin-inline-start:8px;vertical-align:middle}
+.tmr{width:120px;height:120px;animation:tpl 1s ease-in-out infinite}@keyframes tpl{50%{transform:scale(1.06)}}
+.tmr .b0{fill:none;stroke:#3a2f4c;stroke-width:10}.tmr .b1{fill:none;stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:345}
+.tmr text{fill:var(--ink);font:800 24px system-ui;text-anchor:middle}
+.fxb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.fxb button{border-radius:14px;padding:13px 8px;font-weight:800;text-align:center;background:#241b30}.fxb button.p{background:var(--accent);color:var(--acc-ink)}
+.flyim{position:fixed;z-index:90;pointer-events:none;object-fit:cover;border-radius:16px;box-shadow:0 10px 30px #000a;background:#efe7da}
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <div class="hero">
-    <div class="glow"></div><div class="petals" id="petals"></div>
+    <div class="photo"></div><div class="glow"></div><div class="petals" id="petals"></div>
     <button class="lang" id="lang" aria-label="Language"></button>
     <button class="qrb" id="qrb" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg><span data-t="myqr"></span></button>
     <div class="mid"><span class="logo" id="logo" role="img" aria-label="خزامى"><span class="shine"></span></span><div class="hi" id="hi"></div><div class="pills" id="pills"></div></div>
   </div>
+<div class="pane">
+  <button class="billrow" id="billrow" hidden><b data-t="billnow"></b><span class="num" id="billv"></span></button>
   <button class="primary" id="order" data-k="order"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#140a22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V6a2 2 0 1 1 4 0v5M11 10V4.5a2 2 0 1 1 4 0V10M15 10V6.5a2 2 0 1 1 4 0V14a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.4L3 14.5a1.8 1.8 0 0 1 3-2L7 14"/></svg></span><span class="t"><b data-t="b_order"></b><span data-t="hint2"></span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#140a22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
   <div class="status" id="status" role="status" aria-live="polite" hidden></div>
   <div class="rows" id="rows">
     <button class="row" data-k="bill"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><b data-t="b_bill"></b></button>
     <button class="row" data-k="coal"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg></span><b data-t="b_coal"></b></button>
     <button class="row" id="mbtn"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2zM20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2z"/></svg></span><b data-t="b_menu"></b></button>
-    <a class="row" href="https://www.tiktok.com/@khuzama_6" target="_blank" rel="noopener"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.5 2.5 2.5 4.5 5 4.5"/></svg></span><b data-t="tiktok"></b></a>
   </div>
+  <a class="tt" href="https://www.tiktok.com/@khuzama_6" target="_blank" rel="noopener">🎵 <span data-t="tiktok"></span> @khuzama_6</a>
+</div>
 </div>
 <div class="dim" id="dim"></div>
 <div class="sheet" id="sheet"></div>
@@ -215,7 +266,7 @@ const STR={
   hint2:"من المنيو، أو نجيك لين عندك",c_title:"كيف تبغى تطلب؟",c_sub:"اختار اللي يريحك",c_menu:"أنا بختار من المنيو",c_menu_s:"شوف الصور والأسعار، واطلب بنفسك",c_call:"نادِ لي أحد",c_call_s:"نجيك لين عندك وناخذ طلبك",back:"رجوع",
   o_title:"اطلب من المنيو",send:"أرسل الطلب",needok:"الطلب يوصل المطبخ بعد ما يوافق عليه الموظف",add:"أضف",pick:"اختر أول",size_s:"صغير",size_b:"كبير",note_ph:"ملاحظة (اختياري)",
   r_wait:"⏳ وصل طلبك<small>ننتظر موافقة الموظف، وبعدها يروح للمطبخ.</small>",r_ok:"✓ انقبل طلبك<small>يتجهز الحين.</small>",r_no:"🏃 الموظف جايك<small>بيتفاهم معك على طلبك.</small>",r_busy:"عندك طلب ينتظر الموافقة<small>انتظر لين يوافقون عليه، وبعدها تقدر تطلب ثاني.</small>",
-  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
+  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا المنيو والأسعار",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
  en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"I want to order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
   k_order:"want to order",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
@@ -229,7 +280,7 @@ const STR={
   hint2:"From the menu, or we come to you",c_title:"How do you want to order?",c_sub:"Pick what suits you",c_menu:"I will pick from the menu",c_menu_s:"See photos and prices, and order yourself",c_call:"Call someone over",c_call_s:"We come to your table and take your order",back:"Back",
   o_title:"Order from the menu",send:"Send order",needok:"Your order goes to the kitchen once the staff approve it",add:"Add",pick:"Pick first",size_s:"Small",size_b:"Large",note_ph:"Note (optional)",
   r_wait:"⏳ Order received<small>Waiting for the staff to approve it.</small>",r_ok:"✓ Order accepted<small>It is being prepared.</small>",r_no:"🏃 Staff are coming<small>They will check your order with you.</small>",r_busy:"You have an order waiting<small>Once it is approved you can order again.</small>",
-  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
+  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table, and what you owe so far. Tap the bill to see details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see the menu and prices",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
@@ -281,12 +332,22 @@ function lock(on){ document.querySelectorAll("[data-k]").forEach(b=>b.disabled=o
 function paintHero(){
   if(valid&&n&&!ended){ $("hi").innerHTML=`${L("hello")} <b>${L("seat")} ${n}</b>`; }
   else { $("hi").innerHTML=""; }
-  if(!pub){ $("pills").innerHTML=""; return }
+  if(!pub){ $("pills").innerHTML=""; $("billrow").hidden=true; return }
   const mins=Math.max(0,Math.floor((Date.now()-Number(pub.s||0))/60000)), hourly=pub.m==="hour", left=Number(pub.h||1)*60-mins;
   const tl=hourly?(left>=0?[L("left"),clock(left),left<=5]:[L("over"),clock(-left),true]):[L("sat"),clock(mins),false];
-  $("pills").innerHTML=`<span class="pill ${tl[2]?"red":""}">⏱ ${tl[0]} <b class="num">${tl[1]}</b></span><button class="pill" id="billp">${L("billp")} <b class="num">${Number(pub.total)||0}</b> ${L("ry")} <span style="opacity:.7">${lang==="en"?"›":"‹"}</span></button>`;
-  $("billp").onclick=billTicket;
+  $("pills").innerHTML=`<span class="pill ${tl[2]?"red":""}" id="tpill">⏱ ${tl[0]} <b class="num">${tl[1]}</b></span>`;
+  const br=$("billrow"); br.hidden=!valid||ended||!n; $("billv").textContent=(Number(pub.total)||0)+" "+L("ry")+" "+(lang==="en"?"›":"‹"); br.onclick=billTicket;
+  if(hourly&&valid&&!ended&&n) timeAlert(left);
 }
+function timeAlert(left){ const k=K+":"+pub.s+":"+(pub.h||1), w=left<=0?"0":left<=5?"5":""; if(!w) return; let seen=""; try{ seen=sessionStorage.getItem("kz-ta-"+k)||"" }catch(e){}
+  if(seen.includes(w)) return; try{ sessionStorage.setItem("kz-ta-"+k,seen+w) }catch(e){} if(w==="5"&&left<=0) return;
+  if(sheetOpen&&sheetOpen!=="fx") return; try{ navigator.vibrate&&navigator.vibrate([200,100,200]) }catch(e){} ding(w==="0"?3:2);
+  const red=w==="0", pct=red?1:Math.max(0,1-left/5);
+  openSheet("fx",`<div class="hd"><b></b><button class="x" data-x aria-label="close">✕</button></div><div class="fx"><div class="stage"><svg class="tmr" viewBox="0 0 120 120"><circle class="b0" cx="60" cy="60" r="55"/><circle class="b1" cx="60" cy="60" r="55" style="stroke:${red?"#ff7a70":"#e9c77b"};stroke-dashoffset:${Math.round(345*pct)}"/><text x="60" y="68">${red?"0:00":clock(Math.max(0,left))}</text></svg></div>
+    <b>${L(red?"w0t":"w5t")}</b><span>${L(red?"w0d":"w5d")}</span><div class="fxb"><button class="p" data-wb>${L("wbill")}</button><button data-x>${L("wok")}</button></div></div>`); sheet.style.height=""; }
+function ding(n){ try{ const C=window.AudioContext||window.webkitAudioContext; if(!C) return; const a=ding.c||(ding.c=new C()); if(a.state!=="running") a.resume(); let t=a.currentTime; for(let i=0;i<n;i++){ const o=a.createOscillator(),g=a.createGain(); o.frequency.value=i%2?1319:988; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.3,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.25); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+.26); t+=.3 } }catch(e){} }
+document.addEventListener("click",()=>{ try{ const C=window.AudioContext||window.webkitAudioContext; if(C&&!ding.c) ding.c=new C(); else if(ding.c&&ding.c.state!=="running") ding.c.resume() }catch(e){} },{capture:true,once:true});
+function fxSheet(html,ms){ openSheet("fx",`<div class="hd"><b></b><button class="x" data-x aria-label="close">✕</button></div><div class="fx">${html}</div>`); sheet.style.height=""; clearTimeout(fxSheet.t); fxSheet.t=setTimeout(()=>{ if(sheetOpen==="fx") closeSheet() },D(ms)); }
 function applyLang(){
   document.documentElement.lang=lang; document.documentElement.dir=lang==="en"?"ltr":"rtl";
   document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=L(el.dataset.t)}); $("lang").textContent=L("other");
@@ -310,7 +371,24 @@ function welcome(){ if(welcomed) return; welcomed=true; let seen=false; try{ see
   const out=()=>{ if(gone) return; gone=true; w.style.pointerEvents="none"; const a=A(w,[{opacity:1},{opacity:0,transform:"scale(1.05)"}],{duration:450,fill:"forwards"}); if(a) a.onfinish=kill; setTimeout(kill,700); stagger(); };
   w.onclick=out; w.addEventListener("touchstart",out,{passive:true}); setTimeout(out,D(2000)); setTimeout(kill,4000); }
 function stagger(){ A($("logo"),[{opacity:0,transform:"scale(.6)"},{opacity:1,transform:"none"}],{duration:700,easing:SPRING});
-  [$("hi"),$("pills"),$("order"),...$("rows").children].forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:500,delay:120+i*70,easing:SPRING,fill:"backwards"})); }
+  [$("hi"),$("pills"),$("billrow"),$("order"),...$("rows").children].forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:500,delay:120+i*70,easing:SPRING,fill:"backwards"}));
+  setTimeout(tutorial,D(1300)); }
+/* ---------- الشرح أول مرة: لوح تحت وخط للزر، ٤ خطوات ---------- */
+function tutorial(){ if(!valid||ended||!n||MENU||R) return; try{ if(localStorage.getItem("kz-tut")==="1") return }catch(e){ return }
+  if(sheetOpen) return setTimeout(tutorial,3000);
+  const ST=[[()=>[$("qrb")],"tt1","td1"],[()=>[$("tpill"),$("billrow")],"tt2","td2"],[()=>[$("order")],"tt3","td3"],[()=>[...$("rows").querySelectorAll("[data-k],#mbtn")],"tt4","td4"]];
+  const w=document.createElement("div"); w.className="tut"; document.body.appendChild(w); let i=0;
+  const end=()=>{ try{ localStorage.setItem("kz-tut","1") }catch(e){} const a=A(w,[{opacity:1},{opacity:0}],{duration:260,fill:"forwards"}); if(a) a.onfinish=()=>w.remove(); else w.remove(); };
+  const paint=()=>{ const els=ST[i][0]().filter(e=>e&&!e.hidden&&e.offsetParent!==null); if(!els.length){ if(++i>=ST.length) return end(); return paint(); }
+    const rs=els.map(e=>e.getBoundingClientRect()), P=6;
+    w.innerHTML=`<div class="dm"></div>${rs.map(r=>`<div class="hl" style="left:${r.left-P}px;top:${r.top-P}px;width:${r.width+2*P}px;height:${r.height+2*P}px"></div>`).join("")}<button class="sk">${L("tskip")}</button>
+      <div class="bd"><b>${L(ST[i][1])}</b><p>${L(ST[i][2])}</p><div class="rw"><span class="dt">${ST.map((_,j)=>`<i class="${j===i?"on":""}"></i>`).join("")}</span><button class="nx">${i===ST.length-1?L("tgo"):L("tnext")+(lang==="en"?" ›":" ‹")}</button></div></div>`;
+    const cy=(Math.min(...rs.map(r=>r.top))+Math.max(...rs.map(r=>r.bottom)))/2; if(cy>innerHeight*.5) w.querySelector(".bd").classList.add("up");
+    const bd=w.querySelector(".bd").getBoundingClientRect(), up=cy>innerHeight*.5, t=rs[0], sx=bd.left+bd.width/2, sy=up?bd.bottom+2:bd.top-2, ex=t.left+t.width/2, ey=up?t.top-P-4:t.bottom+P+4, mx=(sx+ex)/2+(ex<innerWidth/2?60:-60);
+    w.insertAdjacentHTML("beforeend",`<svg><path d="M${sx} ${sy} Q${mx} ${(sy+ey)/2} ${ex} ${ey}" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" style="stroke-dasharray:900;stroke-dashoffset:900;animation:tdl .6s ease-out forwards"/><circle cx="${ex}" cy="${ey}" r="4.5" fill="#fff"/></svg><style>@keyframes tdl{to{stroke-dashoffset:0}}</style>`);
+    A(w.querySelector(".bd"),[{transform:"translateY(14px)",opacity:.4},{transform:"none",opacity:1}],{duration:300});
+    w.querySelector(".nx").onclick=()=>{ if(++i>=ST.length) end(); else paint(); }; w.querySelector(".sk").onclick=end; };
+  A(w,[{opacity:0},{opacity:1}],{duration:300}); paint(); }
 
 /* ---------- الأوراق ---------- */
 let sheetOpen=null; const sheet=$("sheet"), dim=$("dim");
@@ -1212,7 +1290,7 @@ function openSheet(kind,html){ sheet.innerHTML=html; const fresh=!sheetOpen; she
 function closeSheet(){ if(!sheetOpen) return; sheetOpen=null; dim.style.pointerEvents="none"; A(dim,[{opacity:.5},{opacity:0}],{duration:260,fill:"forwards"});
   A(sheet,[{transform:"none"},{transform:"translateY(105%)"}],{duration:320,easing:"cubic-bezier(.4,0,.8,.2)",fill:"forwards"}); }
 dim.onclick=closeSheet;
-sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(); if(e.target.closest("[data-go]")) openChoice(); });
+sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(); if(e.target.closest("[data-go]")) openChoice(); if(e.target.closest("[data-wb]")){ closeSheet(); setTimeout(()=>call("bill"),D(350)); } });
 
 /* ---------- المنيو: الأقسام على الجنب ---------- */
 let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أصناف
@@ -1274,6 +1352,7 @@ async function call(kind){ if(busy||!db||!sid||ended) return;
       try{ await firebase.auth().currentUser.getIdToken(true) }catch(x){} await new Promise(r=>setTimeout(r,1200)); await send(); }
     lastAt=Date.now(); acked=false; try{sessionStorage.setItem("kz-call-"+K,String(lastAt))}catch(e){}
     show("ok","<span>"+L("sent")(L("k_"+kind))+"</span>");
+    if(!sheetOpen) fxSheet(`<div class="stage"><span class="rg"></span><span class="rg"></span><span class="rg"></span><span class="hnd">${kind==="coal"?"🔥":kind==="bill"?"🧾":"🙋"}</span></div><b>${L("sent")(L("k_"+kind)).replace(/<small>.*$/,"")}</b><span>${(L("sent")(L("k_"+kind)).match(/<small>(.*)<\/small>/)||["",""])[1]}</span>`,3200);
     try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken();
       await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,call:sid})}); }catch(e){}
   }catch(err){ show("bad","<span>"+(err&&err.code==="permission-denied"?L("denied"):L("retry"))+`<small dir="ltr" style="opacity:.55;font-size:11px">${esc(String((err&&err.code)||"err"))} · ${esc(sid)}</small></span>`); }
@@ -1336,10 +1415,11 @@ function paintOrder(){ const items=Array.isArray(menuData.items)?menuData.items:
   const list=cats[ocat]?subH(cats[ocat][0],cats[ocat][1].map(([it,i])=>{ const ph=photo(it.name), q=cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0);
     return [it,`<button class="ot ${it.off?"off":""} ${q?"has":""}" ${it.off?"disabled":`data-oi="${i}"`} aria-label="${esc(nameOf(it.name))}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i>${(cats[ocat][0])[1]}</i>`}${q?`<em class="num">${q}</em>`:""}<span>${esc(nameOf(it.name))}<small>${priceOf(it)}</small></span></button>`]}),"osub").join(""):"";
   const n2=cartN(), cl=cart.map((c,k)=>`<div><span>${esc(c.label)}</span><span class="cq"><button class="ced" data-ce="${k}">${L("edit")}</button><button data-ci="${k}" aria-label="+">+</button><b class="num">${c.q}</b><button data-cd="${k}" aria-label="-">${c.q>1?"−":"✕"}</button></span><b class="num">${r2(c.price*c.q)}</b></div>`).join("");
-  const keep=sheet.querySelector(".ochips"), sx=keep?keep.scrollLeft:null;
+  const keep=sheet.querySelector(".ochips"), sx=keep?keep.scrollLeft:null, ob=sheet.querySelector(".obody"), oy=ob?ob.scrollTop:0, ol=sheet.querySelector("#olist"), oly=ol?ol.scrollTop:0;
   const html=`<div class="hd"><b>${L("o_title")}<small>${L("seat")} ${n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="obody"><div class="ochips">${chips}</div><div class="otiles" id="olist">${list}</div></div>
   <div class="sfoot">${cl?`<div class="cartl">${cl}</div>`:""}<button class="sendb" data-send ${n2?"":"disabled"}><span class="n num">${n2}</span><span class="t">${L("send")}</span><span class="num">${cartT()}${RS}</span></button><span class="hint2">${L("needok")}</span></div>`;
   sheet.innerHTML=html; sheetOpen="order"; sheet.style.height="92%";
+  if(keep){ const ob2=sheet.querySelector(".obody"), ol2=sheet.querySelector("#olist"); if(ob2) ob2.scrollTop=oy; if(ol2) ol2.scrollTop=oly; }
   const ch=sheet.querySelector(".ochips"); if(ch){ if(sx!==null) ch.scrollLeft=sx; else { const on=ch.querySelector(".on"); if(on) on.scrollIntoView({inline:"center",block:"nearest"}); } } }
 const promoIdx=()=>{ const it=menuData&&menuData.promo&&menuData.promo.on?(menuData.items||[]).findIndex(x=>/ماتشا/.test(x.name)&&!x.off):-1; return it; };
 let promoSeen=false; try{ promoSeen=sessionStorage.getItem("kzpromo"+K)==="1"; }catch(e){}
@@ -1379,13 +1459,16 @@ function watchReq(){ if(unReq){unReq();unReq=null} if(!sid) return;
     show(st==="ok"?"ok":st==="no"?"go":"wait","<span>"+L(st==="ok"?"r_ok":st==="no"?"r_no":"r_wait")+"</span>"); if(sheetOpen==="sent") paintSent(); },()=>{}); }
 function paintSent(){ const st=reqSt||"wait", ic=st==="ok"?["✓","#62d49833","#62d498"]:st==="no"?["🏃","#e9c77b33","#e9c77b"]:["⏳","#e9c77b22","#e9c77b"];
   const step=(cls,t,mark)=>`<div class="stp ${cls}"><i>${mark}</i><span>${t}</span></div>`;
-  const steps=st==="no"?step("d",L("s1"),"✓")+step("n",L("t_no"),"!"):step("d",L("s1"),"✓")+(st==="ok"?step("d",L("s2ok"),"✓")+step("n",L("s3"),"•"):step("n",L("s2"),"•")+step("z",L("s3"),""));
+  const steps=st==="no"?step("d",L("s1"),"✓")+step("n",L("t_no"),"!"):step("d",L("s1"),"✓")+(st==="ok"?step("d",L("s2ok"),"✓")+step("n",L("s3")+`<span class="cupw"><i class="stm"></i><i class="stm"></i><i class="stm"></i>☕</span>`,"•"):step("n",L("s2"),"•")+step("z",L("s3"),""));
   const html=`<div class="hd"><b></b><button class="x" data-x aria-label="close">✕</button></div>
-  <div style="text-align:center;padding:0 16px 12px"><div class="bigic" style="background:${ic[1]};border:2px solid ${ic[2]};color:${ic[2]}">${ic[0]}</div><b style="font-size:24px;display:block">${L("t_"+st)}</b><span style="color:var(--muted);font-size:15px">${L("d_"+st)}</span></div>
+  <div style="text-align:center;padding:0 16px 12px">${st==="wait"?`<div class="stage"><span class="pln">📨</span><span class="hgl">⏳</span></div>`:st==="ok"?`<div class="stage" id="okst"><svg class="okc ${paintSent.okd?"done":""}" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54"/><path d="M36 62l17 17 32-36"/></svg></div>`:`<div class="bigic" style="background:${ic[1]};border:2px solid ${ic[2]};color:${ic[2]}">${ic[0]}</div>`}<b style="font-size:24px;display:block">${L("t_"+st)}</b><span style="color:var(--muted);font-size:15px">${L("d_"+st)}</span></div>
   <div class="steps">${steps}</div>
   ${lastSent.length?`<div class="sitems"><b style="color:var(--muted);font-size:13px">${L("yourorder")}</b>${lastSent.map(x=>`<div><span>${esc(x.label)}${x.q>1?" × "+x.q:""}</span><b class="num">${x.p}</b></div>`).join("")}</div>`:""}
   <div class="sfoot">${st!=="wait"?`<button class="go" data-cm>${L("more")}</button>`:""}<button class="lnk" data-x>${L("home")}</button></div>`;
-  if(sheetOpen) sheet.innerHTML=html; else openSheet("sent",html); sheetOpen="sent"; sheet.style.height=""; }
+  if(sheetOpen) sheet.innerHTML=html; else openSheet("sent",html); sheetOpen="sent"; sheet.style.height="";
+  if(st==="ok"&&!paintSent.okd){ paintSent.okd=true; const box=sheet.querySelector("#okst"); if(box&&!R){ const C=["#b98cf0","#62d498","#e9c77b","#ff7a70","#7cc7ff"]; for(let i=0;i<26;i++){ const d=document.createElement("i"); d.className="cf"; d.style.background=C[i%5]; box.appendChild(d); const a=Math.random()*Math.PI*2, r=60+Math.random()*70;
+    A(d,[{transform:"translate(-50%,-50%) scale(0)",opacity:1},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) rotate(${Math.random()*540}deg)`,opacity:1,offset:.7},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r+40}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1200,delay:700,easing:"cubic-bezier(.2,.8,.4,1)",fill:"forwards"}) } } }
+  if(st!=="ok") paintSent.okd=false; }
 sheet.addEventListener("click",e=>{ const t=e.target;
   if(t.closest("[data-cm]")){ e.stopPropagation(); return openOrder(); }
   if(t.closest("[data-cc]")){ closeSheet(); return setTimeout(()=>call("order"),D(300)); }
@@ -1408,9 +1491,14 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   const mkb=t.closest("[data-mk]"); if(mkb){ optv.size=mkb.dataset.mk; return paintOpt(); }
   const sz=t.closest("[data-sz]"); if(sz){ optv.size=sz.dataset.sz; return paintOpt(); }
   const qb=t.closest("[data-q]"); if(qb){ optv.q=Math.max(1,Math.min(20,optv.q+Number(qb.dataset.q))); return paintOpt(); }
-  if(t.closest("[data-addo]")){ const ni=$("onote"); optv.note=ni?ni.value:""; if(optv.edit!=null&&lineOf(menuData.items[optv.i],optv).ok) cart.splice(optv.edit,1); addCart(optv.i,optv); optv=null; return paintOrder(); } });
+  if(t.closest("[data-addo]")){ const ni=$("onote"); optv.note=ni?ni.value:""; const ed=optv.edit!=null; if(ed&&lineOf(menuData.items[optv.i],optv).ok) cart.splice(optv.edit,1); addCart(optv.i,optv); optv=null;
+    const im0=sheet.querySelector(".opth img"), rr=im0&&im0.getBoundingClientRect(), sr=im0&&(im0.currentSrc||im0.src); paintOrder(); if(rr&&!ed) flyCart({getBoundingClientRect:()=>rr,src:sr}); return; } });
+function flyCart(from){ if(!from||R) return; const r=from.getBoundingClientRect(), to=sheet.querySelector(".sendb .n"); if(!to||!r.width) return; const t=to.getBoundingClientRect();
+  const f=document.createElement("img"); f.className="flyim"; f.src=from.currentSrc||from.src; Object.assign(f.style,{left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px"}); document.body.appendChild(f);
+  const dx=t.left+t.width/2-(r.left+r.width/2), dy=t.top+t.height/2-(r.top+r.height/2), k=[]; for(let j=0;j<=20;j++){ const p=j/20; k.push({transform:`translate(${dx*p}px,${dy*p-Math.sin(p*Math.PI)*140}px) scale(${1-.88*p})`,borderRadius:(16+40*p)+"px",offset:p}); }
+  const a=f.animate(k,{duration:720,easing:"cubic-bezier(.45,0,.55,1)"}); a.onfinish=()=>{ f.remove(); const n2=sheet.querySelector(".sendb .n"), b=sheet.querySelector(".sendb"); A(n2,[{transform:"scale(1)"},{transform:"scale(1.8)"},{transform:"scale(.9)"},{transform:"none"}],{duration:500,easing:SPRING}); A(b,[{transform:"scale(1)"},{transform:"scale(1.05)"},{transform:"none"}],{duration:380}); }; }
 function tapItem(i){ const it=menuData.items[i]; if(!it||it.off) return; const sp=specFor(it.name);
-  if(!sp){ addCart(i,{sel:[],ex:false,size:"",q:1,note:""}); paintOrder(); const nb=sheet.querySelector(`[data-oi="${i}"] em`); A(nb,[{transform:"scale(1.6)"},{transform:"none"}],{duration:420,easing:SPRING}); return; }
+  if(!sp){ const im0=sheet.querySelector(`[data-oi="${i}"] img`), src0=im0&&{getBoundingClientRect:()=>im0.getBoundingClientRect(),src:im0.currentSrc||im0.src}; const rr=im0&&im0.getBoundingClientRect(); addCart(i,{sel:[],ex:false,size:"",q:1,note:""}); paintOrder(); if(rr) flyCart({getBoundingClientRect:()=>rr,src:src0.src}); const nb=sheet.querySelector(`[data-oi="${i}"] em`); A(nb,[{transform:"scale(1.6)"},{transform:"none"}],{duration:420,easing:SPRING}); return; }
   optv={i,sel:[],none:false,ex:false,size:"",q:1,note:""}; return paintOpt(); }
 sheet.addEventListener("input",e=>{ if(e.target.id==="onote"&&optv) optv.note=e.target.value; });
 
@@ -1429,7 +1517,7 @@ async function start(){
       if(ns!==sid){ sid=ns; n=sid?parseInt(sid.slice(1),10):0; if(unCall){unCall();unCall=null} reqSt=""; cart=[]; if(sid) watchReq();
         // لما الموظف يضغط «رايح لها» يطلع للزبون مين جاي
         if(sid) unCall=db.doc("calls/"+sid).onSnapshot(c=>{ const x=c.exists?c.data():null;
-          if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go","<span>"+L("coming")(x.ackName)+"</span>"); } },()=>{}); }
+          if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go","<span>"+L("coming")(x.ackName)+"</span>"); if(!sheetOpen||sheetOpen==="fx") fxSheet(`<div class="stage" style="width:260px"><span class="chr">🪑</span><div class="pth"></div><span class="rnr"><i>🏃</i></span></div><b>${L("coming")(x.ackName).replace(/^🏃\s*/,"")}</b>`,3800); } },()=>{}); }
       if(n) document.title="خزامى · "+n;
       if(ended) $("status").hidden=true; applyLang();
       if(!pubSeen){ pubSeen=true; if(n&&!ended) welcome(); } },()=>{});
