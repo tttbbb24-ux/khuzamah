@@ -1607,7 +1607,7 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
   {name:"كودرد",price:7},{name:"قهوة اليوم حار",price:7},{name:"قهوة اليوم بارد",price:7},{name:"موية",price:1}
 ]};
 const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
-const AHIMG={habash:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_70657bac-e7b4-47e8-8096-951ad21456ed_min",spuds:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221535_626907ad-0577-4e9e-a96d-1fec1ad06926_min",waraq:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_6fcfc48c-6ae1-4f3a-bf74-e019a793d1b0_min"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
+const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
@@ -3352,7 +3352,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v61";
+const VER="v62";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);

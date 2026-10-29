@@ -292,7 +292,7 @@ const EN=[[/بطاطس\s*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled cor
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
-const AHIMG={habash:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_70657bac-e7b4-47e8-8096-951ad21456ed_min",spuds:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221535_626907ad-0577-4e9e-a96d-1fec1ad06926_min",waraq:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_6fcfc48c-6ae1-4f3a-bf74-e019a793d1b0_min"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
+const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
 function photo(n){ n=String(n);
   if(/بطاطس\s*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
