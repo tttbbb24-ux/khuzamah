@@ -129,7 +129,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .ot{position:relative;border-radius:16px;overflow:hidden;background:#17121f;text-align:start;display:flex;flex-direction:column;color:var(--ink);padding:0;align-items:stretch}
 .ot img,.ot>i{width:100%;aspect-ratio:1/.92;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:30px;font-style:normal;background:#efe7da}
 .ot span{padding:6px 8px 8px;font-size:13px;font-weight:700;line-height:1.35}.ot span small{display:block;color:var(--gold);font-weight:700;font-size:13px}
-.osub,.msub{grid-column:1/-1;margin:8px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.osub:first-child,.msub:first-child{margin-top:0}.ot.has{outline:2.5px solid var(--accent);outline-offset:-2.5px}.ot.off{opacity:.45}
+.osub.sep,.msub.sep{display:block;height:1px;margin:6px 2px;background:rgba(255,255,255,.14)}.osub,.msub{grid-column:1/-1;margin:8px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.osub:first-child,.msub:first-child{margin-top:0}.ot.has{outline:2.5px solid var(--accent);outline-offset:-2.5px}.ot.off{opacity:.45}
 .ot em{position:absolute;top:6px;left:6px;min-width:24px;height:24px;border-radius:12px;background:var(--accent);color:var(--acc-ink);font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0 6px}
 .cartl .cq button.ced{width:auto;padding:0 10px;border-radius:14px;font-size:12.5px;color:var(--accent);font-weight:700}
 .promo{position:relative;flex:1;min-height:0;margin:0 14px;border-radius:24px;overflow:hidden;background:#3b1270}
@@ -152,7 +152,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .hint2{display:block;text-align:center;font-size:12.5px;color:var(--muted);margin-top:6px}
 .opth{padding:0 16px;overflow-y:auto;flex:1}
 .opth img{width:100%;height:150px;object-fit:cover;border-radius:18px;background:#fff;margin-bottom:10px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.ogh{flex-basis:100%;font-size:13px;color:var(--muted);margin-top:4px}
 .chip{border:1.5px solid #3a2e4c;border-radius:999px;padding:8px 14px;font-size:15px;min-height:42px}
 .chip.on{background:var(--accent);color:var(--acc-ink);border-color:var(--accent);font-weight:700}
 .qrow{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
@@ -257,7 +257,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const STR={
  ar:{seat:"جلسة",hello:"أهلاً فيكم في",hint:"اضغط ونجيك لين عندك",b_order:"أبغى أطلب",b_bill:"أبغى أحاسب",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تيك توك",other:"English",
   w1:"يا مرحبا",w2:"وتوّ ما نوّر المكان",skip:"اضغط للتخطي",
-  k_order:"تبغى تطلب",k_edit:"تبغى تعدّل طلبك",e_mine:"✏️ عدّل طلبي",e_ask:"✏️ أبغى أعدّل طلبي",e_back:"✏️ سحبنا طلبك. عدّله وأرسله من جديد",e_late:"الموظف وافق على طلبك قبل شوي. اضغط «أبغى أعدّل طلبي» ونجيك",k_bill:"تبغى تحاسب",k_coal:"تبغى تغيير الفحم",sending:"يرسل…",
+  k_order:"تبغى تطلب",sauces:"الصوصات",adds:"الإضافات",k_edit:"تبغى تعدّل طلبك",e_mine:"✏️ عدّل طلبي",e_ask:"✏️ أبغى أعدّل طلبي",e_back:"✏️ سحبنا طلبك. عدّله وأرسله من جديد",e_late:"الموظف وافق على طلبك قبل شوي. اضغط «أبغى أعدّل طلبي» ونجيك",k_bill:"تبغى تحاسب",k_coal:"تبغى تغيير الفحم",sending:"يرسل…",
   noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" جاي لك الحين":"جايين لك الحين"),still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
@@ -271,7 +271,7 @@ const STR={
   t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا المنيو والأسعار",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
  en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"I want to order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
-  k_order:"want to order",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
+  k_order:"want to order",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
   noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" is coming":"We are coming"),still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
@@ -286,13 +286,15 @@ const STR={
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/بطاطس\s*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
+const AHIMG={habash:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_70657bac-e7b4-47e8-8096-951ad21456ed_min",spuds:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221535_626907ad-0577-4e9e-a96d-1fec1ad06926_min",waraq:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_6fcfc48c-6ae1-4f3a-bf74-e019a793d1b0_min"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
 function photo(n){ n=String(n);
+  if(/بطاطس\s*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
   if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
@@ -301,11 +303,11 @@ function photo(n){ n=String(n);
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
-const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
-const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
+const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["ah","🥔","الحبش والمشوية","Grilled corn & baked potato"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
+const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn","ah"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
 const CATN=Object.fromEntries(CATS.map(c=>[c[0],c]));
 const grpItems=(g,items)=>g[4].flatMap(k=>items.map((it,i)=>[it,i]).filter(([it])=>(CATS.some(c=>c[0]===it.cat)?it.cat:"other")===k)); // أصناف القسم مرتبة حسب الأقسام الداخلية
-const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out=[]; let last=null; list.forEach(x=>{ const k=CATS.some(c=>c[0]===x[0].cat)?x[0].cat:"other"; if(k!==last&&new Set(list.map(y=>y[0].cat)).size>1) out.push(`<h4 class="${cls}">${lang==="en"?CATN[k][3]:CATN[k][2]}</h4>`); last=k; out.push(x[1]); }); return out; };
+const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out=[]; let last=null; list.forEach(x=>{ const k=CATS.some(c=>c[0]===x[0].cat)?x[0].cat:"other"; if(k!==last&&new Set(list.map(y=>y[0].cat)).size>1){ if(g[0]==="food"){ if(last!==null) out.push(`<i class="${cls} sep"></i>`); } else out.push(`<h4 class="${cls}">${lang==="en"?CATN[k][3]:CATN[k][2]}</h4>`); } last=k; out.push(x[1]); }); return out; };
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
 const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع","سكر دايت"],["Plain","Basil","Mint","Diet sugar"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
@@ -1361,10 +1363,12 @@ async function call(kind){ if(busy||!db||!sid||ended) return;
   clearTimeout(guard); busy=false; lock(false); }
 
 /* ---------- الطلب من الجوال ---------- */
+const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={fries:/بطاطس/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
+const RX={fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
+  if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",opts:EXTRAS,all:true};
   if(RX.corn.test(n)) return {k:"corn",excl:"سادة",opts:["كريمة","شيتوس"]};
   if(RX.moj.test(n)) return {k:"moj",opts:FLAV};
@@ -1376,10 +1380,11 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",excl:"سادة",opts:["حبق","نعناع"]};
   return null; }
-function extrasNote(sel){ const on=EXTRAS.filter((_,i)=>sel.includes(i)), off=EXTRAS.filter((_,i)=>!sel.includes(i));
+function extrasNote(sel,LIST){ const X=LIST||EXTRAS, on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات"; if(!off.length) return "كل شي"; if(off.length<=2&&on.length>off.length) return "كل شي ما عدا "+off.join(" و"); return on.join("، "); }
 function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
   if(spec.k==="fries") return {...base,note:extrasNote(v.sel),ok:v.sel.length>0||!!v.none};
+  if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK),ok:v.sel.length>0||!!v.none};
   if(spec.k==="corn"){ if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size}; return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0}; }
   if(spec.k==="cr"||spec.k==="rb"){ const P=spec.k==="cr"?CODERED:REDBULL; return v.ex?{...base,price:P.plain,note:"بدون نكهة"}:{...base,name:it.name+" بنكهة",price:P.flav,note:and,ok:on.length>0}; }
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
@@ -1434,7 +1439,7 @@ function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ session
   const vd=sheet.querySelector(".promo video"); if(vd){ const pl=vd.play(); if(pl&&pl.catch) pl.catch(()=>{}); }
   A(sheet.querySelector(".promo .pgo"),[{transform:"translateY(30px)",opacity:0},{transform:"none",opacity:1}],{duration:600,delay:900,easing:SPRING,fill:"backwards"}); }
 function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lineOf(it,optv), ph=photo(it.name);
-  const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`)); }
+  const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>(sp.split&&(j===0||j===sp.split)?ch.push(`<b class="ogh">${L(j?"adds":"sauces")}</b>`):0,ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`))); }
   const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")}</b><div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:"";
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
   const fq=sp&&sp.all?`<div class="chips fq"><button class="chip ${optv.sel.length===sp.opts.length?"on":""}" data-fall>${L("f_all")}</button><button class="chip ${optv.none?"on":""}" data-fnone>${L("f_none")}</button></div>`:"";
@@ -1536,10 +1541,10 @@ async function start(){
 const plain=v=>v==null?null:"stringValue" in v?v.stringValue:"integerValue" in v?Number(v.integerValue):"doubleValue" in v?v.doubleValue:"booleanValue" in v?v.booleanValue:"arrayValue" in v?(v.arrayValue.values||[]).map(plain):"mapValue" in v?Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,y])=>[k,plain(y)])):null;
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر الساعة ٨ الصبح بتوقيت السعودية
 const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: القسم مفتوح لو ما أحد قرر
-const stOf=nm=>RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
+const stOf=nm=>RX.ah.test(nm)?3:RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
 function prepMenu(x){ if(!x||!Array.isArray(x.items)) return x; const lk=x.locks||{};
   const open=st=>{ const r=lk[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
-  x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st<2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
+  x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st!==2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
 async function loadMenu(){ return prepMenu(await loadMenu0()); }
 async function loadMenu0(){ // يجرب القراءة العادية مرتين، وبعدها طريق ثاني مباشر
   let last=null;

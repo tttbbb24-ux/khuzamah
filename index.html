@@ -501,7 +501,7 @@ button:active{transform:none}
 .mvb{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px 8px}
 .mvb button{flex:1;min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:inherit;font-size:20px;font-weight:700}
 .mvb button:disabled{opacity:.3}
-.msub{grid-column:1/-1;margin:6px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.msub:first-child{margin-top:0}
+.msub{grid-column:1/-1;margin:6px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.msub.msep{display:block;height:1px;margin:6px 2px;background:var(--line)}.msub:first-child{margin-top:0}
 .lockchip{border:1.5px solid var(--red);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:700;min-height:38px;flex:none}
 .mgrid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;align-content:start}
 .mt{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:start;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
@@ -1606,13 +1606,16 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
   {name:"ميني بانكيك",price:10},{name:"موهيتو سفن",price:10},{name:"موهيتو كودرد",price:12},
   {name:"كودرد",price:7},{name:"قهوة اليوم حار",price:7},{name:"قهوة اليوم بارد",price:7},{name:"موية",price:1}
 ]};
+const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
+const AHIMG={habash:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_70657bac-e7b4-47e8-8096-951ad21456ed_min",spuds:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221535_626907ad-0577-4e9e-a96d-1fec1ad06926_min",waraq:"https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261028_221409_6fcfc48c-6ae1-4f3a-bf74-e019a793d1b0_min"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={fries:/بطاطس/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
-const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
+const RX={fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
+const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["ah","الحبش والبطاطس المشوية وورق العنب"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
   const n=String(name);
+  if(RX.ah.test(n)) return "ah";
   if(RX.corn.test(n)||RX.dog.test(n)) return "corn";
   if(RX.fries.test(n)) return "fries";
   if(/معسل/.test(n)) return "hookah";
@@ -1629,6 +1632,7 @@ const CAT_ICON={corn:"🌽",fries:"🍟",cold:"🧊",hot:"☕",hookah:"💨",swe
 const RED="#c81e2f";
 const OPT_LOOK={"حبق":["🌿","#3d7a3a"],"نعناع":["🌱","#1f9e74"],"إثيوبي":["☕","#5b3420"],"كولومبي":["☕","#8a5a2b"],"بثلج":["🧊","#1f78c1"],"فراولة":["🍓","#d62839"],"حبحب":["🍉","linear-gradient(135deg,#2e9e4f 50%,#e23d50 50%)"],"توت أزرق":["🫐","#3f51b5"],"شوكولاتة":["🍫","#5a3420"],"لوتس":["🍪","#b96f24"]};
 function icon(name){ const n=String(name);
+  if(RX.ah.test(n)) return /حبش/.test(n)?"🌽":/عنب/.test(n)?"🍃":"🥔";
   if(RX.dog.test(n)) return "🌭"; if(RX.corn.test(n)) return "🌽"; if(RX.fries.test(n)) return "🍟";
   if(/معسل/.test(n)) return /تفاح/.test(n)?"🍎":/نعناع/.test(n)?"🌿":"🍇";
   if(RX.moj.test(n)) return "🍹"; if(RX.cr.test(n)||RX.kz.test(n)) return "🥤"; if(RX.rb.test(n)) return "⚡"; if(/مو[يى][ةه]/.test(n)) return "💧";
@@ -1636,6 +1640,7 @@ function icon(name){ const n=String(name);
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
 function photo(name){ const n=String(name); // صورة الصنف من مجلد img
+  if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
   if(RX.corn.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn"; if(RX.fries.test(n)) return "fries";
@@ -1646,13 +1651,13 @@ function photo(name){ const n=String(name); // صورة الصنف من مجلد
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
 const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:"",food:"fries",sn:"cookies"};
-const GROUPS=[["hot","الحارة",["hot"]],["cold","الباردة",["cold"]],["games","الألعاب",["games"]],["hookah","المعسلات",["hookah"]],["food","المأكولات",["fries","corn"]],["sn","الحلا والمكسرات",["sweet","nuts"]],["other","أخرى",["other"]]]; // ترتيب العرض بس، الأقسام الداخلية ما تغيّرت
+const GROUPS=[["hot","الحارة",["hot"]],["cold","الباردة",["cold"]],["games","الألعاب",["games"]],["hookah","المعسلات",["hookah"]],["food","المأكولات",["fries","corn","ah"]],["sn","الحلا والمكسرات",["sweet","nuts"]],["other","أخرى",["other"]]]; // ترتيب العرض بس، الأقسام الداخلية ما تغيّرت
 const grpOf=k=>(GROUPS.find(g=>g[0]===k||g[2].includes(k))||GROUPS[GROUPS.length-1])[0];
-const SECS=[[0,"🍟","البطاطس"],[1,"🌭","الكورن دوق والذرة"]]; // الأقسام اللي تنقفل وتنفتح
+const SECS=[[0,"🍟","البطاطس"],[1,"🌭","الكورن دوق والذرة"],[3,"🥔","قسم أحمد"]]; // الأقسام اللي تنقفل وتنفتح
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر ٨ الصبح بتوقيت السعودية
 const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: مفتوح لو ما أحد قرر
 const secOpen=st=>{ const r=cfg.locks&&cfg.locks[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
-const itemLocked=it=>{ const st=stationOf(it.name); return st<2&&!secOpen(st); };
+const itemLocked=it=>{ const st=stationOf(it.name); return st>=0&&st!==2&&!secOpen(st); };
 const imgTag=k=>k?`<img class="ph" src="${k}.webp" alt="" decoding="async">`:`<span class="ph none"></span>`;
 function hookahBg(name){ const n=String(name); if(!/معسل/.test(n)) return "";
   if(/تفاح/.test(n)) return `linear-gradient(135deg,${RED} 50%,#2e9e4f 50%)`;
@@ -1668,7 +1673,7 @@ function menuHtml(){ // قائمة جانبية للأقسام، والأصنا�
   const G=GROUPS.find(g=>g[0]===view.cat), subs=G[2].filter(k=>by(k).length), srt=P()&&!!view.sort;
   const subT=k=>(CATS.find(c=>c[0]===k)||[,""])[1];
   const sbar=P()&&!view.newTake?`<div class="sortbar">${srt?`<span>رتّب بالأسهم، ويتغيّر عند الكل وعند الزباين</span><button class="primary" data-act="sortmode">تم</button>`:`<button class="ghost" data-act="sortmode">↕ ترتيب الأصناف</button>`}</div>`:"";
-  return `<div class="mwrap">${rail}<div class="mcol">${sbar}<div class="mgrid ${srt?"sorting":""}">${subs.map(sk=>{ const list=by(sk); return (subs.length>1?`<h4 class="msub">${subT(sk)}</h4>`:"")+list.map(([it,i],k)=>{ const lk=itemLocked(it), off=!!it.off||lk, sp=specFor(it.name), ph=photo(it.name);
+  return `<div class="mwrap">${rail}<div class="mcol">${sbar}<div class="mgrid ${srt?"sorting":""}">${subs.map(sk=>{ const list=by(sk); return (subs.length>1?(G[0]==="food"?(sk===subs[0]?"":`<i class="msub msep"></i>`):`<h4 class="msub">${subT(sk)}</h4>`):"")+list.map(([it,i],k)=>{ const lk=itemLocked(it), off=!!it.off||lk, sp=specFor(it.name), ph=photo(it.name);
     if(srt) return `<div class="mt srt">${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}<span class="tx"><b>${esc(it.name)}</b></span><span class="mvb"><button data-act="imove" data-i="${i}" data-d="-1" ${k===0?"disabled":""} aria-label="قدّم">→</button><b class="num">${k+1}</b><button data-act="imove" data-i="${i}" data-d="1" ${k===list.length-1?"disabled":""} aria-label="أخّر">←</button></span></div>`;
     return `<button class="mt ${off?"off":""}" data-act="${lk?"lockhint":off?"offhint":"add"}" data-i="${i}" ${OPS()&&!lk?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">${lk?"القسم مقفل":"غير متوفر"}</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${lk?"القسم مقفل":off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}).join("")}</div></div></div>`;
 }
@@ -1676,6 +1681,7 @@ const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}p
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
 function specFor(name){ // الأصناف اللي لها اختيارات، حسب الاسم
   const n=String(name);
+  if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",title:"اختر الصوصات والإضافات",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات",opts:EXTRAS,all:true};
   if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
   if(RX.moj.test(n)) return {k:"moj",title:"اختر النكهة",opts:FLAV};
@@ -1691,6 +1697,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
 function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسعر وملاحظة
   const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
   if(spec.k==="fries") return {...base,note:extrasNote(v.sel)};
+  if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK)};
   if(spec.k==="corn"){
     if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size};
     return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0};
@@ -1713,8 +1720,8 @@ function menuPrice(it){
   if(sp&&sp.k==="kz") return KINZA.plain+" أو "+KINZA.ice+RS;
   return Number(it.price)+RS;
 }
-function extrasNote(sel){
-  const on=EXTRAS.filter((_,i)=>sel.includes(i)), off=EXTRAS.filter((_,i)=>!sel.includes(i));
+function extrasNote(sel,LIST){ const X=LIST||EXTRAS;
+  const on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات";
   if(!off.length) return "كل شي";
   if(off.length<=2&&on.length>off.length) return "كل شي ما عدا "+off.join(" و");
@@ -1905,7 +1912,7 @@ function qCalc(id){ const q=view.q, U=qUnits(id), n=q.n, own=Array(n).fill(0), d
   exact.map((e,i)=>[e-fl[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([_,i])=>{ if(rem>0){ fl[i]++; rem--; } }); // الأرقام مقرّبة ومجموعها نفس المطلوب
   return {amt:fl,det,ins:new Set(ins),share:shared/ins.length,U}; }
 function qittaHtml(id){ const q=view.q, C=qCalc(id), paidN=Object.keys(q.paid).length, lock=paidN>0;
-  return `<div class="phead"><button class="close" data-act="qback" aria-label="رجوع">→</button><div class="meta"><b>🐱 قطة · ${isTake(id)?"سفري "+esc(lab(id)):"جلسة "+seatNo(id)}</b><span>المطلوب ${money(payCalc(id,view).total)}${paidN?` · دفع ${paidN} من ${q.n}`:""}</span></div></div>
+  return `<div class="phead"><button class="close" data-act="qback" aria-label="رجوع">→</button><div class="meta"><b>قطة · ${isTake(id)?"سفري "+esc(lab(id)):"جلسة "+seatNo(id)}</b><span>المطلوب ${money(payCalc(id,view).total)}${paidN?` · دفع ${paidN} من ${q.n}`:""}</span></div></div>
   ${sure==="qback"?`<div class="notice">اضغط → مرة ثانية: تنلغي القطة وينسى اللي دفعوا</div>`:""}
   <div class="qcount"><span>كم شخص؟</span><button class="stb" data-act="qn" data-d="-1" ${q.n<=2||lock?"disabled":""} aria-label="نقص">−</button><b class="num">${q.n}</b><button class="stb" data-act="qn" data-d="1" ${q.n>=10||lock?"disabled":""} aria-label="زود">+</button></div>
   <div class="qmodes">${QM.map(([k,t])=>`<button class="${q.mode===k?"on":""}" data-act="qm" data-m="${k}" ${lock?"disabled":""}>${t}</button>`).join("")}</div>
@@ -1913,7 +1920,7 @@ function qittaHtml(id){ const q=view.q, C=qCalc(id), paidN=Object.keys(q.paid).l
   ${q.mode==="eq"?"":`<div class="qlist">${C.U.map(u=>{ const a=q.as[u.k]; return `<div><button class="qu" data-act="qu" data-k="${esc(u.k)}" ${lock?"disabled":""}><span>${esc(u.n)}</span><b class="num">${money(u.p)}</b>${a!=null&&a<q.n?`<span class="pp" style="background:${PCOL[a]};color:#140a22">${PN(a)}</span>`:`<span class="pp" style="background:var(--s2);color:var(--muted)">${q.mode==="own"?"الكل":"في القطة"}</span>`}</button>
     ${q.pick===u.k?`<div class="who2">${a!=null?`<button data-act="qa" data-k="${esc(u.k)}" data-v="-1" style="background:var(--s2)">${q.mode==="own"?"الكل":"رجّعه للقطة"}</button>`:""}${Array.from({length:q.n},(_,i)=>`<button data-act="qa" data-k="${esc(u.k)}" data-v="${i}" style="background:${PCOL[i]}${a===i?"":"55"};color:${a===i?"#140a22":"var(--ink)"}">${i+1}</button>`).join("")}</div>`:""}</div>`; }).join("")}</div>`}
   ${C.amt.map((v,i)=>{ const pd=q.paid[i]; return `<div class="pcard ${pd?"paid":""}" style="--c:${PCOL[i]}"><div style="display:flex;align-items:center;gap:10px"><span class="av">${i+1}</span><span style="flex:1"><b>${PN(i)}</b><small>${[C.det[i].length?C.det[i].map(esc).join("، "):"",C.ins.has(i)&&C.share>0?"حصته من القطة":""].filter(Boolean).join(" + ")||"—"}</small></span><b class="num" style="font-size:24px">${money(v)}</b></div>
-    ${pd?`<div class="pdone">✓ دفع ${pd==="cash"?"كاش":"شبكة"}</div>`:`<div class="paybtns" style="margin-top:8px"><button class="primary cash" data-act="qp" data-i="${i}" data-pay="cash" style="min-height:44px;padding:8px" ${v?"":"disabled"}>💵 كاش</button><button class="primary card" data-act="qp" data-i="${i}" data-pay="card" style="min-height:44px;padding:8px" ${v?"":"disabled"}>💳 شبكة</button></div>`}</div>`; }).join("")}
+    ${pd?`<div class="pdone">دفع ${pd==="cash"?"كاش":"شبكة"}</div>`:`<div class="paybtns" style="margin-top:8px"><button class="primary cash" data-act="qp" data-i="${i}" data-pay="cash" style="min-height:44px;padding:8px" ${v?"":"disabled"}>كاش</button><button class="primary card" data-act="qp" data-i="${i}" data-pay="card" style="min-height:44px;padding:8px" ${v?"":"disabled"}>شبكة</button></div>`}</div>`; }).join("")}
   <p class="empty" style="text-align:center;font-size:13px">الأرقام مقرّبة لأقرب ريال، ومجموعها نفس المطلوب. لمن يدفع الكل يتقفل الحساب.</p>`; }
 
 /* ---------- v41: المزيد ---------- */
@@ -1926,7 +1933,7 @@ const ICO={menu:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.
 const svgI=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 const li=(k,col,t,s,act,sw)=>`<button class="li" data-act="${act}"><span class="ic" style="background:${col}">${svgI(k)}</span><span>${t}${s&&sw==null?`<br><small>${s}</small>`:""}</span>${sw==null?`<i style="color:var(--muted);font-style:normal">‹</i>`:`<small>${s}</small><i class="sw ${sw?"on":""}"></i>`}</button>`;
 function lockChip(){ if(!ready||legacy) return ""; const cl=SECS.filter(([st])=>!secOpen(st)); if(!cl.length) return "";
-  if(me&&me.role==="station"&&me.station<2&&!secOpen(me.station)) return `<button class="lockchip" data-act="secs">🔒 قسمك مقفل، كلم الشركاء</button>`;
+  if(me&&me.role==="station"&&me.station!==2&&!secOpen(me.station)) return `<button class="lockchip" data-act="secs">🔒 قسمك مقفل، كلم الشركاء</button>`;
   return `<button class="lockchip" data-act="secs">🔒 ${cl.length>1?"البطاطس والكورن مقفلين":cl[0][1]+" "+cl[0][2]+" مقفل"}</button>`; }
 function secsHtml(){ const pendN=st=>orders.filter(o=>!isHung(o.seat)&&seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served&&stationOf(o.name)===st).reduce((a,o)=>a+(Number(o.qty)||1),0);
   const tm=t=>{ const d=new Date(t), h=d.getHours(); return (h%12||12)+":"+String(d.getMinutes()).padStart(2,"0")+(h<12?" ص":" م"); };
@@ -1938,7 +1945,7 @@ function secsHtml(){ const pendN=st=>orders.filter(o=>!isHung(o.seat)&&seats[o.s
   <p class="empty" style="text-align:center">الأقسام تنقفل لحالها كل يوم الساعة ٨ الصبح.${P()?" الطلبات اللي قبل القفل تكمل عادي.":""}</p>`; }
 function moreHtml(){ const hasW=Object.values(users).some(u=>u.role==="waiter");
   return `<div class="phead"><div class="meta"><b>المزيد</b><span>${esc((me&&me.name)||"")}${me&&me.name?" · "+ROLE(me):""}</span></div>${xBtn}</div>
-  <div class="gt">${P()?"الإدارة":"حسابي"}</div><div class="grp">${STL()?li("log","#3b82f6","سجل قسمي","كل حركة في "+["البطاطس","الكورن دوق"][me.station],"log"):""}${P()?li("menu","#f59e0b","الأصناف والأسعار","تعديل المنيو","settings")+li("log","#3b82f6","السجل","مين سوّى إيش ومتى","log")+li("users","#8b5cf6","المستخدمين والصلاحيات",legacy?"لسه ما تفعّلوا":"الشباب ورموزهم","who")+(hasW&&!legacy?li("shift","#14b8a6","دوام العمال","الحضور والانصراف","shift"):""):li("me","#8b5cf6","حسابي","رمز الدخول والخروج","who")}</div>
+  <div class="gt">${P()?"الإدارة":"حسابي"}</div><div class="grp">${STL()?li("log","#3b82f6","سجل قسمي","كل حركة في "+({0:"البطاطس",1:"الكورن دوق",3:"قسمك"}[me.station]||"قسمك"),"log"):""}${P()?li("menu","#f59e0b","الأصناف والأسعار","تعديل المنيو","settings")+li("log","#3b82f6","السجل","مين سوّى إيش ومتى","log")+li("users","#8b5cf6","المستخدمين والصلاحيات",legacy?"لسه ما تفعّلوا":"الشباب ورموزهم","who")+(hasW&&!legacy?li("shift","#14b8a6","دوام العمال","الحضور والانصراف","shift"):""):li("me","#8b5cf6","حسابي","رمز الدخول والخروج","who")}</div>
   <div class="gt">الأقسام</div><div class="grp">${li("menu","#ef4444","البطاطس والكورن",SECS.map(([st,,t])=>t.replace("الكورن دوق والذرة","الكورن")+(secOpen(st)?" مفتوح":" مقفل")).join(" · "),"secs")}</div>
   ${OPS()?`<div class="gt">الجلسات</div><div class="grp">${li("night","#7c3aed","تقفيل الليلة",openAll().length?openAll().length+" مفتوحة الحين":"كلها مقفلة","night")}${li("hung","#d97706","جلسات معلقة",hungIds.length?hungIds.length+" ما تقفلت":"ما في شي","hung")}</div>`:""}
   <div class="gt">التنبيهات</div><div class="grp">${pushOn?li("push","#ef4444","إشعارات والجوال مقفل","مفعّلة","pushon",true):li("push","#ef4444","إشعارات والجوال مقفل",pushLabel(),"pushon")}${P()&&!legacy?li("calls","#10b981","نداء الزباين من الجلسات",callsOff?"موقّف":"شغال","calltoggle",!callsOff):""}${li(muted?"mute":"sound","#ec4899","صوت التنبيه",muted?"مكتوم":"شغال","mute",!muted)}</div>
@@ -2088,8 +2095,8 @@ function allSeatIds(){ // null = خانة فاضية تحفظ مكانها في 
   Object.keys(seats).forEach(k=>{if(seatNo(k)>15)extra.add(k)});
   return ids.concat([...extra].sort());
 }
-const STATIONS=[["طلبات البطاطس",n=>RX.fries.test(n)],["طلبات الكورن دوق والذرة",n=>RX.dog.test(n)||RX.corn.test(n)],["طلبات الترك",()=>true]];
-const stationOf=name=>STATIONS.findIndex(x=>x[1](String(name||"")));
+const STATIONS=[["طلبات البطاطس",n=>RX.fries.test(n)],["طلبات الكورن دوق والذرة",n=>RX.dog.test(n)||RX.corn.test(n)],["طلبات الترك",()=>true],["طلبات أحمد",n=>RX.ah.test(n)]];
+const stationOf=name=>{ const n=String(name||""); return RX.ah.test(n)?3:STATIONS.findIndex(x=>x[1](n)); }; // قسم أحمد رقمه ٣ عشان طلبات الترك القديمة تبقى ٢
 let actx=null, muted=false, prevPend=null, timesSeeded=false; const alerted=new Set();
 try{muted=localStorage.getItem("kz-mute")==="1"}catch(e){}
 document.addEventListener("click",()=>{ // المتصفح ما يسمح بالصوت إلا بعد أول ضغطة
@@ -2190,10 +2197,10 @@ let me=null, legacy=false, users={}, codeOwners={}, logs=[];
 const P=()=>!!me&&me.role==="partner";
 const CA=()=>!!me&&me.role==="cashier"; // الكاشير: يشتغل مثل الشريك بس بدون الملخص والمستخدمين والسجل والأسعار
 const OPS=()=>P()||CA();
-const STL=()=>!!me&&!P()&&me.role==="station"&&me.station>=0&&me.station<=1; // صاحب القسم يشوف سجل قسمه
-const ROLE=u=>u.role==="partner"?"شريك":u.role==="cashier"?"كاشير":u.role==="waiter"?"عامل":u.station===0?"قسم البطاطس":"قسم الكورن دوق والذرة";
+const STL=()=>!!me&&!P()&&me.role==="station"&&[0,1,3].includes(me.station); // صاحب القسم يشوف سجل قسمه
+const ROLE=u=>u.role==="partner"?"شريك":u.role==="cashier"?"كاشير":u.role==="waiter"?"عامل":u.station===0?"قسم البطاطس":u.station===3?"قسم أحمد":"قسم الكورن دوق والذرة";
 const PRESET=[["ريان","partner"],["زهير","partner"],["بكري","partner"],["عز الدين","partner"],["سعيد","s0"],["سمعة","s0"],["فادي","s1"]];
-const roleFields=v=>v==="partner"?{role:"partner"}:v==="c"?{role:"cashier"}:v==="w"?{role:"waiter"}:{role:"station",station:v==="s1"?1:0};
+const roleFields=v=>v==="partner"?{role:"partner"}:v==="c"?{role:"cashier"}:v==="w"?{role:"waiter"}:{role:"station",station:v==="s1"?1:v==="s3"?3:0};
 const digits=x=>String(x).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
 const BY=()=>({by:(me&&me.id)||"",byName:(me&&me.name)||""});
 function sactHtml(id){ // قائمة الضغط المطوّل على الجلسة: الحساب أول، وبعده أضف طلب، والباقي
@@ -2378,7 +2385,7 @@ function renderMain(){
   $("fab").hidden=!me||mainTab!=="seats";
   const stations=STATIONS;
   const buckets=stations.map(()=>[]); pend.forEach(g=>buckets[stationOf(g.o.name)].push(g));
-  $("stpick").innerHTML=[["الكل",-1],["البطاطس",0],["الكورن دوق",1],["الترك",2]].map(([t,k])=>`<button class="chip ${myStation===k?"on":""}" data-act="station" data-k="${k}">${t}${k>=0&&buckets[k].length?` <span class="num">${cnt(buckets[k])}</span>`:""}</button>`).join("");
+  $("stpick").innerHTML=[["الكل",-1],["البطاطس",0],["الكورن دوق",1],["أحمد",3],["الترك",2]].map(([t,k])=>`<button class="chip ${myStation===k?"on":""}" data-act="station" data-k="${k}">${t}${k>=0&&buckets[k].length?` <span class="num">${cnt(buckets[k])}</span>`:""}</button>`).join("");
   $("wait").innerHTML=stations.map(([t],k)=>myStation>=0&&myStation!==k?"":`<h3 class="cat st ${buckets[k].length?"hot":""}">${t} <span class="num">${cnt(buckets[k])}</span></h3>`+
     (buckets[k].length?kbatch(buckets[k]).map(g=>g.bk?batchRow(g):(({o,q})=>
     `<div class="wsw" ${mine(o.name)&&ownLine(o)?`data-sw="${esc(o.id)}"`:""}><div class="swipebg">🗑 حذف</div><div class="fg"><div class="wrow ${isLate(o)?"late":""} ${waitSeeded&&!seenWait.has(o.id)?"pop":""}"><span class="who num">${esc(lab(o.seat))}</span>
@@ -2616,7 +2623,7 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   ${view.edit&&view.eq>1?`<div class="seg xone"><button class="${view.one?"":"on"}" data-act="xone" data-v="0">عدّل الكل (<span class="num">${view.eq}</span>)</button><button class="${view.one?"on":""}" data-act="xone" data-v="1">عدّل حبة وحدة بس</button></div>`:""}
   ${off&&!view.edit?`<div class="notice" style="background:var(--red-bg);color:var(--red);font-weight:700">غير متوفر الحين</div>`:""}
   ${sp&&sp.all?`<button class="chip ${view.sel.length===sp.opts.length?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
-  ${sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return `<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
+  ${sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
   ${sp&&sp.k==="mat"?`<h2>الحليب</h2><div class="menu xchips"><button class="xopt ${view.size!=="coco"?"on":""}" data-act="xsize" data-s="lf"><b>خالي من اللاكتوز</b></button><button class="xopt ${view.size==="coco"?"on":""}" data-act="xsize" data-s="coco"><b>جوز الهند</b></button></div>`:""}
   ${sp&&sp.k==="tea"?`<h2>السكر</h2><div class="menu xchips"><button class="xopt ${view.size!=="stv"?"on":""}" data-act="xsize" data-s="reg"><b>عادي</b></button><button class="xopt ${view.size==="stv"?"on":""}" data-act="xsize" data-s="stv"><b>دايت (ستيفيا)</b></button></div>`:""}
   ${sp&&sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu xchips">
@@ -2704,7 +2711,7 @@ function usersHtml(){
   <h2>مستخدم جديد</h2>
   <div class="set"><div class="row item">
     <input class="nm" id="nu-name" placeholder="الاسم" aria-label="الاسم" autocomplete="off">
-    <select id="nu-role" aria-label="الدور"><option value="partner">شريك</option><option value="c">كاشير (حساب بدون ملخص ولا إدارة)</option><option value="s0">قسم البطاطس</option><option value="s1">قسم الكورن دوق والذرة</option><option value="w">عامل (يفتح جلسات ويسجل طلبات)</option></select>
+    <select id="nu-role" aria-label="الدور"><option value="partner">شريك</option><option value="c">كاشير (حساب بدون ملخص ولا إدارة)</option><option value="s0">قسم البطاطس</option><option value="s1">قسم الكورن دوق والذرة</option><option value="s3">قسم أحمد (الحبش والمشوية وورق العنب)</option><option value="w">عامل (يفتح جلسات ويسجل طلبات)</option></select>
     <input class="nm num" id="nu-code" inputmode="numeric" autocomplete="off" placeholder="الرمز (4 إلى 8 أرقام)" aria-label="الرمز">
     <button class="ghost" data-act="uadd">أضف</button></div></div>
   ${legacy?`<div class="notice">بعد التفعيل ينلغي الرمز المشترك، وكل جوال (حتى هذا) يطلب الرمز الشخصي. تأكد إنك حافظ رمزك قبل ما تضغط.</div>
@@ -2750,13 +2757,14 @@ function payHtml(id){
   <div class="duebar"><span>المطلوب من الزبون</span><b class="num" id="pay-total">${money(c.total)}</b></div>
   ${dayKey(s.startedAt)!==dayKey(Date.now())?`<div class="notice">هذي من ${esc(dayLabel(dayKey(s.startedAt)))} وما تقفلت وقتها.
     <div class="step" style="margin-block-start:8px"><button class="chip ${view.today?"":"on"}" data-act="payday">${view.today?"تنحسب على اليوم":"تنحسب على يوم الدخول"}</button><span style="font-size:13px">اضغط للتبديل</span></div></div>`:""}
+  ${!part&&PAY()&&c.total>0?`<button class="qbtn" data-act="qitta">قطة</button>`:""}
   <div class="paybtns"><button class="primary cash" data-act="paid" data-pay="cash" ${dis}>💵 كاش</button><button class="primary card" data-act="paid" data-pay="card" ${dis}>💳 شبكة</button></div>
   <div class="set"><div class="row"><label for="pay-cash">مقسوم: كم دفع كاش؟</label><input class="pr num" id="pay-cash" inputmode="decimal" autocomplete="off" placeholder="0" value="${view.cash?esc(view.cash):""}"></div>
     <div class="splitbar" id="pay-sbar" ${num(view.cash)>0?"":"hidden"}><i style="width:${c.total?Math.min(100,c.cash/c.total*100):0}%"><b class="num">${c.cash}</b></i><i><b class="num">${c.card}</b></i></div>
     <button class="ghost" id="pay-split" data-act="paid" data-pay="split" ${c.splitOk?"":"disabled"}>${splitLabel(c)}</button></div>
   ${part||!P()?"":`<button class="link ${sure==="comp"?"sure":""}" data-act="comp">${sure==="comp"?"اضغط مرة ثانية: ضيافة، يتقفل بدون حساب":"🎁 ضيافة (بدون حساب)"}</button>`}`;
 }
-const SGROUPS=[{t:"البطاطس",f:n=>RX.fries.test(n)},{t:"الكورن دوق والذرة",f:n=>RX.dog.test(n)||RX.corn.test(n)},{t:"باقي الأصناف",f:()=>true}];
+const SGROUPS=[{t:"البطاطس",f:n=>RX.fries.test(n)},{t:"الكورن دوق والذرة",f:n=>RX.dog.test(n)||RX.corn.test(n)},{t:"باقي الأصناف",f:n=>!RX.ah.test(n)},{t:"قسم أحمد",f:n=>RX.ah.test(n)}];
 function saleDetail(x){ const r=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</span><span class="num">${b}</span></div>`, its=x.items||[];
   return `<div class="bill" style="flex:1 1 100%;margin-top:6px">
   ${r("حاسب",esc(x.byName||"بدون اسم")+" · "+tclock(x.closedAt))}${x.startedAt?r(x.type==="take"?"انفتح":"دخل",tclock(x.startedAt)+(x.minutes?" · جلس "+clock(Number(x.minutes)||0):"")):""}
@@ -2778,7 +2786,7 @@ function summarize(S){ // يحسب أرقام يوم من قائمة حسابا�
     its.forEach(o=>{const n=String(o.name||""),gi=SGROUPS.findIndex(x=>x.f(n)),x=g[gi][n]=g[gi][n]||{q:0,sum:0},q=qty(o),amt=Number(o.price||0)*q*k;x.q+=q;x.sum+=amt;add(gp[gi],amt); if(o.comp){compU+=q;compV+=(Number(o.orig)||0)*q}});
   });
   const part=i=>{const p={...gp[i]}; if(i===2){p.cash+=fp.cash;p.card+=fp.card;p.none+=fp.none} return p};
-  return {g,pay,fp,tot,discSum,compN,compV,compU,freeN,fees:fp.cash+fp.card+fp.none,part,shares:[0,1,2].map(i=>{const p=part(i);return p.cash+p.card+p.none})};
+  return {g,pay,fp,tot,discSum,compN,compV,compU,freeN,fees:fp.cash+fp.card+fp.none,part,shares:[0,1,2,3].map(i=>{const p=part(i);return p.cash+p.card+p.none})};
 }
 function closeCalc(R){ const c=view.closing||{}, fl=num(view.float!=null?view.float:c.float), cnt=view.count!=null?view.count:(c.counted!=null?c.counted:""), has=String(cnt)!=="", exp=r2(fl+R.pay.cash);
   return {fl,cnt,has,exp,diff:has?r2(num(cnt)-exp):0}; }
@@ -2806,7 +2814,7 @@ function summaryHtml(){
   const week=view.week?`<h2>آخر 7 أيام</h2><div class="bill">${[0,-1,-2,-3,-4,-5,-6].map(n=>{const d=dayShift(TODAY,n);return `<button class="r" style="width:100%" data-act="sday" data-d="${d}"><span>${n===0?"اليوم":esc(dayLabel(d))}</span><span class="num">${money(view.week[d]||0)}</span></button>`}).join("")}
     ${row("مجموع الأسبوع",money(Object.values(view.week).reduce((a,b)=>a+b,0)),"tot")}</div>`:"";
   if(!live&&!view.sales) return `<div class="phead"><div class="meta"><b>ملخص ${esc(dayLabel(day))}</b><span>جاري التحميل…</span></div>${xBtn}</div><div class="stiles"><div class="stile big sk" style="height:120px"></div><div class="stile sk" style="height:80px"></div><div class="stile sk" style="height:80px"></div><div class="stile sk" style="height:80px;grid-column:span 2"></div></div>`;
-  const secs=[["🍟 البطاطس","#f59e0b"],["🌽 الكورن دوق والذرة","#ef8a3c"],["🧉 الترك (الجلسات والمشروبات)","var(--accent)"]];
+  const secs=[["🍟 البطاطس","#f59e0b"],["🌽 الكورن دوق والذرة","#ef8a3c"],["🧉 الترك (الجلسات والمشروبات)","var(--accent)"],["🥔 قسم أحمد","#b45309"]];
   const secDet=i=>{ const rows=Object.entries(R.g[i]).sort((a,b)=>b[1].q-a[1].q), p=R.part(i);
     return (i===2&&R.fees>0.004?`<span class="r2"><span>الجلسات</span><span class="num">${money(R.fees)}</span></span>`:"")+rows.map(([n,x])=>`<span class="r2"><span>${esc(n)} <small style="display:inline">× ${x.q}</small></span><span class="num">${money(x.sum)}</span></span>`).join("")+`<span class="r2"><span>كاش · شبكة</span><span class="num">${r2(p.cash)} · ${r2(p.card)}</span></span>`; };
   const pill=diffPill(K);
@@ -2817,7 +2825,7 @@ function summaryHtml(){
     <div class="stile"><small>💵 كاش</small><b class="num" style="color:var(--green)">${money(R.pay.cash)}</b></div>
     <div class="stile"><small>💳 شبكة</small><b class="num" style="color:var(--blue)">${money(R.pay.card)}</b></div>
     ${R.pay.none>0.004?`<div class="stile" style="grid-column:span 2"><small>غير محدد</small><b class="num">${money(R.pay.none)}</b></div>`:""}
-    ${[0,1,2].map(i=>`<button class="stile sec" style="--c:${secs[i][1]};${i===2?"grid-column:span 2;":""}" data-act="ssec" data-i="${i}"><small>${secs[i][0]}</small><b class="num">${money(R.shares[i])}</b>${view.sec===i?secDet(i):`<small style="font-size:11.5px">اضغط للتفاصيل</small>`}</button>`).join("")}
+    ${[0,1,3,2].map(i=>`<button class="stile sec" style="--c:${secs[i][1]};${i===2?"grid-column:span 2;":""}" data-act="ssec" data-i="${i}"><small>${secs[i][0]}</small><b class="num">${money(R.shares[i])}</b>${view.sec===i?secDet(i):`<small style="font-size:11.5px">اضغط للتفاصيل</small>`}</button>`).join("")}
   </div>
   ${R.discSum>0.004||R.freeN||R.compN||R.compU?`<div class="bill">${R.discSum>0.004?row("خصومات انعطت (مخصومة من الأرقام)",money(R.discSum),"sub"):""}${R.freeN?row(`جلسات مجانية: ${R.freeN}`,"","sub"):""}${R.compN||R.compU?row(`ضيافة: ${[R.compN?R.compN+" حساب كامل":"",R.compU?R.compU+" حبة":""].filter(Boolean).join(" و")}، قيمتها`,money(R.compV),"sub"):""}</div>`:""}
   <div class="drawer"><div class="row"><b style="flex:1;font-size:16px">💵 الدرج</b><span id="cl-diff">${pill}</span></div>
@@ -2840,7 +2848,7 @@ function summaryHtml(){
   ${week}`;
 }
 const LK=[["add","➕ إضافة"],["del","🗑 حذف"],["srv","✓ نزل"],["unsrv","↩︎ ما نزل"],["pay","💳 حساب"],["undo","⟲ تراجع"],["edit","✎ تعديل"]], LKN=Object.fromEntries(LK);
-const LSEC=[[2,"🪑 الجلسات"],[0,"🍟 البطاطس"],[1,"🌭 الكورن دوق"]];
+const LSEC=[[2,"🪑 الجلسات"],[0,"🍟 البطاطس"],[1,"🌭 الكورن دوق"],[3,"🥔 أحمد"]];
 function logKind(t){ t=String(t||""); // الحركات القديمة ما فيها نوع: نعرفه من الكلام
   if(/^تراجع|بعد ما انقفلت|^رجّع .*(متوفر|للأصلي)/.test(t)) return /متوفر|للأصلي/.test(t)?"edit":"undo";
   if(/^رجّع ما نزل/.test(t)) return "unsrv"; if(/^نزّل/.test(t)) return "srv";
@@ -3250,7 +3258,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=12; let migrating=false;
+const MIG=13; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3278,6 +3286,9 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<11&&!items.some(i=>/جاكارو/.test(i.name))) items.push({name:"جاكارو",price:5,cat:"games"});
   if(m<12&&!items.some(i=>/تشيز\s*كيك.*مان(جو|قا|غا)/.test(i.name))) items.push({name:"تشيز كيك مانجو",price:10,cat:"sweet"});
   if(m<12&&!items.some(i=>/تشيز\s*كيك.*فراول/.test(i.name))) items.push({name:"تشيز كيك فراولة",price:10,cat:"sweet"});
+  if(m<13&&!items.some(i=>/حبش/.test(i.name))) items.push({name:"حبش",price:5,cat:"ah"});
+  if(m<13&&!items.some(i=>/بطاطس\s*مشوي/.test(i.name))) items.push({name:"بطاطس مشوية",price:17,cat:"ah"});
+  if(m<13&&!items.some(i=>/ورق\s*عنب/.test(i.name))) items.push({name:"ورق عنب ٧ حبات",price:11,cat:"ah"});
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
@@ -3341,7 +3352,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v60";
+const VER="v61";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
