@@ -2038,8 +2038,12 @@ function toast(t,undo){const el=$("toast"); el.textContent=t; el.style.transform
 function fail(e){
   const c=e&&e.code;
   toast(c==="permission-denied"?"ما عندك صلاحية تعديل على هذي الصفحة":
-        c==="quota_exceeded"?"المساحة امتلأت، احذفوا بيانات قديمة":"ما تسجل، حاول مرة ثانية");
+        c==="quota_exceeded"?"المساحة امتلأت، احذفوا بيانات قديمة":c==="resource-exhausted"?"خلص الحد اليومي لقاعدة البيانات، كلم بكري":"ما تسجل، حاول مرة ثانية");
 }
+async function safeTx(fn){ // لو السيرفر رفض المعاملة (حد الاستهلاك أو النت)، نكمل بقراءة من السيرفر وكتابة عادية
+  try{ return await db.runTransaction(fn) }catch(e){ if(!e||!["resource-exhausted","unavailable","deadline-exceeded"].includes(e.code)) throw e;
+    const ops=[], tx={get:r=>r.get({source:"server"}),set:(r,d,o)=>{ops.push(()=>o?r.set(d,o):r.set(d));return tx},update:(r,d)=>{ops.push(()=>r.update(d));return tx},delete:r=>{ops.push(()=>r.delete());return tx}};
+    const res=await fn(tx); for(const op of ops) await op(); return res; } }
 async function run(key,fn){
   if(!db){toast("الصفحة مو متصلة");return}
   if(flying.has(key)) return; flying.add(key);
@@ -2152,7 +2156,7 @@ async function pushSend(target,title,body,tag){ // يطلب من الخادم ي
     await fetch(pushUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,target,title,body,tag})}); }catch(e){} }
 async function timePush(key,title,body,tag){ // تنبيه الوقت ينرسل مرة وحدة حتى لو أكثر من جوال شريك مفتوح
   if(!P()||!pushUrl||!db) return;
-  try{ const ref=db.doc("alerts/"+key), first=await db.runTransaction(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
+  try{ const ref=db.doc("alerts/"+key), first=await safeTx(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
     if(first) pushSend(2,title,body,tag); }catch(e){} }
 const pIcon=it=>{const e=CAT_ICON[itemCat(it)]; return e&&!/</.test(e)?e+" ":""};
 const pBody=(r,n)=>r.name+(n>1?" × "+n:"")+(r.note?" ("+r.note+")":"")+(me&&me.name?" · سجّله "+me.name:"");
@@ -2272,7 +2276,7 @@ function scanReqs(){ if(!me||!db||!ready||!RQ()) return; let fresh=0;
   reqsSeeded=true; dropNotes(x=>x.ref.startsWith("r:")&&!liveReq(x.ref.slice(2)));
   if(fresh){ const v=scanReqs.v||[]; scanReqs.v=[]; if(!sayAll(v)) beep([988,1319,988,1319]); flash3(); } }
 function approveReq(id){ if(!RQ()) return; const r=reqs[id], s=seats[id]; if(!r||!s||!liveReq(id)) return; const L=reqL(id), ed=!!(reqEd[id]&&reqEd[id].k===reqKey(id)&&Object.keys(reqEd[id].ch).length); if(!L.length){ toast("ما فيه أصناف متوفرة في الطلب"); return }
-  run("req:"+id,async()=>{ const ref=db.doc("reqs/"+id), ok=await db.runTransaction(async tx=>{ const d=await tx.get(ref); if(!d.exists||d.data().st) return false; tx.update(ref,{st:"ok",stBy:(me&&me.name)||"",stAt:Date.now()}); return true });
+  run("req:"+id,async()=>{ const ref=db.doc("reqs/"+id), ok=await safeTx(async tx=>{ const d=await tx.get(ref); if(!d.exists||d.data().st) return false; tx.update(ref,{st:"ok",stBy:(me&&me.name)||"",stAt:Date.now()}); return true });
     if(!ok){ toast("أحد ثاني تصرف في الطلب قبلك"); return }
     const tg=linkTo(id)||id, ts=seats[tg]||s;
     for(const l of L) await db.collection("orders").add({seat:tg,sid:ts.sid,...(tg!==id?{fs:seatNo(id)}:{}),name:l.r.name,price:l.r.price,note:l.r.note,served:false,qty:l.q,at:Date.now(),st:stationOf(l.r.name),...BY(),src:"qr"});
@@ -2300,7 +2304,7 @@ const isLate=o=>!o.served&&mins(o.at)>=LATE;
 const lateSeen=new Set();
 async function latePush(o,title,body){ // إشعار التأخير ينرسل مرة وحدة: للقسم صاحب الطلب وللشركاء
   if(!P()||!pushUrl||!db) return;
-  try{ const ref=db.doc("alerts/late_"+o.id), first=await db.runTransaction(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
+  try{ const ref=db.doc("alerts/late_"+o.id), first=await safeTx(async tx=>{const d=await tx.get(ref); if(d.exists) return false; tx.set(ref,{at:Date.now()}); return true});
     if(first){ const st=stationOf(o.name); pushSend(2,title,body,"late-"+o.id); if(st!==2) pushSend(st,title,body,"late-"+o.id); } }catch(e){} }
 async function stillLate(o){ try{ const d=await db.doc("orders/"+o.id).get({source:"server"}); return d.exists&&!d.data().served&&d.data().sid===o.sid }catch(e){ return null } } // نتأكد من السيرفر مو من النسخة اللي عندنا
 function scanLate(){ if(!me||!db||!ready||document.hidden||navigator.onLine===false) return;
@@ -3018,7 +3022,7 @@ document.addEventListener("click",e=>{
   if(a==="rrej") return rejectReq(b.dataset.id);
   if(a==="tcdel"){ if(view&&view.cart){ view.cart.splice(+b.dataset.n,1); renderSheet() } return }
   if(a==="tconfirm"){ const cart=view&&view.cart||[]; if(!cart.length) return; const sum=r2(cart.reduce((x,c)=>x+c.r.price*c.q,0)), pay=tPayer(cart)&&["cash","card"].includes(b.dataset.pay)?b.dataset.pay:"";
-    return run("newtake",async()=>{ const ref=db.doc("counters/take"), tno=await db.runTransaction(async tx=>{const d=await tx.get(ref), k=((d.exists&&Number(d.data().n))||100)+1; tx.set(ref,{n:k}); return k});
+    return run("newtake",async()=>{ const ref=db.doc("counters/take"), tno=await safeTx(async tx=>{const d=await tx.get(ref), k=((d.exists&&Number(d.data().n))||100)+1; tx.set(ref,{n:k}); return k});
       const nid="t"+Date.now().toString(36), now=Date.now();
       if(pay) await db.collection("sales").add({...BY(),day:dayKey(now),seat:0,tno,pay,cash:pay==="cash"?sum:0,card:pay==="card"?sum:0,type:"take",ordered:"take",converted:false,hours:0,minutes:0,fee:0,gross:sum,disc:0,
         items:cart.map(c=>({name:c.r.name,price:Number(c.r.price),qty:c.q,note:c.r.note||"",served:false,by:(me&&me.name)||"",at:now,...(c.r.comp?{comp:true,orig:Number(c.r.orig)||0}:{})})),total:sum,startedAt:now,closedAt:now,pre:true});
@@ -3352,7 +3356,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v62";
+const VER="v63";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
