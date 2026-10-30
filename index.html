@@ -2783,14 +2783,29 @@ function summarize(S){ // يحسب أرقام يوم من قائمة حسابا�
   S.forEach(s=>{
     const its=s.items||[], fee0=Number(s.fee||0), itemsSum=its.reduce((a,o)=>a+Number(o.price||0)*qty(o),0), gross=s.gross!=null?Number(s.gross):fee0+itemsSum;
     if(s.pay==="comp"){compN++;compV+=gross;return}
-    const total=Number(s.total||0), k=gross>0?total/gross:0; // k يوزع الخصم على الأصناف بالتناسب
+    const total=Number(s.total||0), base=fee0+itemsSum;
     const sh=s.pay==="cash"?{cash:1,card:0,none:0}:s.pay==="card"?{cash:0,card:1,none:0}:s.pay==="split"&&total>0?{cash:Number(s.cash||0)/total,card:Number(s.card||0)/total,none:0}:{cash:0,card:0,none:1};
     const add=(o,amt)=>{o.cash+=amt*sh.cash;o.card+=amt*sh.card;o.none+=amt*sh.none};
-    tot+=total; discSum+=Math.max(0,gross-total); add(pay,total); add(fp,fee0*k);
-    its.forEach(o=>{const n=String(o.name||""),gi=SGROUPS.findIndex(x=>x.f(n)),x=g[gi][n]=g[gi][n]||{q:0,sum:0},q=qty(o),amt=Number(o.price||0)*q*k;x.q+=q;x.sum+=amt;add(gp[gi],amt); if(o.comp){compU+=q;compV+=(Number(o.orig)||0)*q}});
+    tot+=total; discSum+=Math.max(0,gross-total); add(pay,total);
+    // الخصم ينزل أول من الجلسة، بعدها من أصناف الترك، وإذا باقي شي يتوزع على باقي الأقسام
+    const L=its.map(o=>{const n=String(o.name||""); return {o,n,gi:SGROUPS.findIndex(x=>x.f(n)),q:qty(o),v:Number(o.price||0)*qty(o)}});
+    let feeV=fee0, d=base-total;
+    if(d>=0){ const cut=(sum,f)=>{ if(d<=0||sum<=0) return; const c=Math.min(d,sum), r=(sum-c)/sum; f(r); d-=c; };
+      cut(feeV,r=>{feeV*=r});
+      cut(L.filter(x=>x.gi===2).reduce((a,x)=>a+x.v,0),r=>L.forEach(x=>{if(x.gi===2)x.v*=r}));
+      cut(L.filter(x=>x.gi!==2).reduce((a,x)=>a+x.v,0),r=>L.forEach(x=>{if(x.gi!==2)x.v*=r})); }
+    else { const k=base>0?total/base:0; feeV*=k; L.forEach(x=>x.v*=k); } // دفع أكثر من الفاتورة: نوزع بالنسبة
+    add(fp,feeV);
+    L.forEach(({o,n,gi,q,v})=>{const x=g[gi][n]=g[gi][n]||{q:0,sum:0};x.q+=q;x.sum+=v;add(gp[gi],v); if(o.comp){compU+=q;compV+=(Number(o.orig)||0)*q}});
   });
-  const part=i=>{const p={...gp[i]}; if(i===2){p.cash+=fp.cash;p.card+=fp.card;p.none+=fp.none} return p};
-  return {g,pay,fp,tot,discSum,compN,compV,compU,freeN,fees:fp.cash+fp.card+fp.none,part,shares:[0,1,2,3].map(i=>{const p=part(i);return p.cash+p.card+p.none})};
+  const raw=i=>{const p={...gp[i]}; if(i===2){p.cash+=fp.cash;p.card+=fp.card;p.none+=fp.none} return p};
+  // نقرّب نصيب كل قسم لأقرب ريال، والمجموع يبقى نفسه
+  const rnd=(vals,target)=>{ const fl=vals.map(Math.floor); let left=Math.round(target)-fl.reduce((a,b)=>a+b,0); vals.map((v,i)=>[v-fl[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{ if(left>0){fl[i]++;left--} }); return fl; };
+  const P=[0,1,2,3].map(raw), sum=p=>p.cash+p.card+p.none, shares=rnd(P.map(sum),P.reduce((a,p)=>a+sum(p),0));
+  const parts=P.map((p,i)=>{ const c=Math.round(p.cash), n=Math.round(p.none); return {cash:c,none:n,card:shares[i]-c-n}; });
+  Object.values(g).forEach(G=>Object.values(G).forEach(x=>x.sum=Math.round(x.sum)));
+  const feesR=Math.round(fp.cash+fp.card+fp.none);
+  return {g,pay,fp,tot,discSum,compN,compV,compU,freeN,fees:feesR,part:i=>parts[i],shares};
 }
 function closeCalc(R){ const c=view.closing||{}, fl=num(view.float!=null?view.float:c.float), cnt=view.count!=null?view.count:(c.counted!=null?c.counted:""), has=String(cnt)!=="", exp=r2(fl+R.pay.cash);
   return {fl,cnt,has,exp,diff:has?r2(num(cnt)-exp):0}; }
@@ -2899,7 +2914,7 @@ function monthHtml(){
   <div class="strip"><div><b class="num">${money(R.tot)}</b><span>دخل الشهر</span></div><div><b class="num">${dl.length}</b><span>يوم شغل</span></div><div><b class="num">${dl.length?money(R.tot/dl.length):"—"}</b><span>متوسط اليوم</span></div></div>
   ${S.length?`<h2>كل الدخل</h2><div class="bill">${row("المجموع",money(R.tot),"tot")}${row("كاش",money(R.pay.cash),"sub")}${row("شبكة",money(R.pay.card),"sub")}
     ${R.discSum>0.004?row("خصومات انعطت",money(R.discSum),"sub"):""}${R.compV>0.004?row("ضيافة قيمتها",money(R.compV),"sub"):""}${best?row("أعلى يوم: "+esc(dayLabel(best)),money(days[best]),"sub"):""}</div>
-  <h2>نصيب كل قسم</h2><div class="bill">${row("البطاطس",money(R.shares[0]))}${row("الكورن دوق والذرة",money(R.shares[1]))}${row("الترك (منها الجلسات "+r2(R.fees)+")",money(R.shares[2]))}</div>
+  <h2>نصيب كل قسم</h2><div class="bill">${row("البطاطس",money(R.shares[0]))}${row("الكورن دوق والذرة",money(R.shares[1]))}${row("الترك (منها الجلسات "+r2(R.fees)+")",money(R.shares[2]))}${row("قسم أحمد",money(R.shares[3]))}</div>
   <h2>أكثر 10 أصناف دخلاً</h2><div class="bill">${top.map(([n,x])=>row(`${esc(n)} <span class="q num">× ${x.q}</span>`,money(x.sum))).join("")}</div>
   <h2>الأيام</h2><p class="empty">اضغط اليوم عشان تفتح ملخصه.</p><div class="bill">${dl.map(d=>`<button class="r" style="width:100%" data-act="sday" data-d="${d}"><span>${esc(dayLabel(d))}</span><span class="num">${money(days[d])}</span></button>`).join("")}</div>`
   :`<p class="empty">ما في حسابات في هذا الشهر.</p>`}`;
@@ -3356,7 +3371,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v63";
+const VER="v64";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
