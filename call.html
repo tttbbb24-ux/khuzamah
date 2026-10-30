@@ -152,7 +152,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .hint2{display:block;text-align:center;font-size:12.5px;color:var(--muted);margin-top:6px}
 .opth{padding:0 16px;overflow-y:auto;flex:1}
 .opth img{width:100%;height:150px;object-fit:cover;border-radius:18px;background:#fff;margin-bottom:10px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.ogh{flex-basis:100%;font-size:13px;color:var(--muted);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.qdrow{flex-basis:100%;display:flex;justify-content:space-between;align-items:center;border:1.5px solid rgba(255,255,255,.14);border-radius:14px;padding:8px 12px;font-weight:700}.qdrow.on{border-color:#62d498}.qdst{display:flex;align-items:center;gap:12px}.qdst button{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);color:inherit;font-size:20px;border:0}.qdst button:disabled{opacity:.35}.qdst b{min-width:18px;text-align:center;font-size:18px}.qdwarn{background:#e9c77b;color:#1a0d2e;border-radius:16px;padding:14px;text-align:center;font-size:19px;font-weight:800;margin:6px 0 12px}.qdwarn small{display:block;font-size:13px;font-weight:600}.qdok{text-align:center;color:#62d498;font-weight:700;margin:6px 0 12px}.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.1);font-size:15px}.mst{font-size:13px;padding:4px 10px;border-radius:99px;white-space:nowrap;font-weight:700}.mst.w{background:#b88cf233;color:#c9a8ff}.mst.p{background:#e9c77b33;color:#e9c77b}.mst.d{background:#62d49833;color:#62d498}.mine{padding:4px 16px 20px;overflow-y:auto}.mempty{text-align:center;opacity:.7;padding:30px 0}.ogh{flex-basis:100%;font-size:13px;color:var(--muted);margin-top:4px}
 .chip{border:1.5px solid #3a2e4c;border-radius:999px;padding:8px 14px;font-size:15px;min-height:42px}
 .chip.on{background:var(--accent);color:var(--acc-ink);border-color:var(--accent);font-weight:700}
 .qrow{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
@@ -236,7 +236,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
   <div class="rows" id="rows">
     <button class="row" data-k="bill"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><b data-t="b_bill"></b></button>
     <button class="row" data-k="coal"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg></span><b data-t="b_coal"></b></button>
-    <button class="row" id="mbtn"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2zM20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2z"/></svg></span><b data-t="b_menu"></b></button>
+    <button class="row" id="mbtn"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span><b data-t="b_mine"></b></button>
   </div>
   <a class="tt" href="https://www.tiktok.com/@khuzama_6" target="_blank" rel="noopener">🎵 <span data-t="tiktok"></span> @khuzama_6</a>
 </div>
@@ -255,9 +255,9 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 const STR={
- ar:{seat:"جلسة",hello:"أهلاً فيكم في",hint:"اضغط ونجيك لين عندك",b_order:"أبغى أطلب",b_bill:"أبغى أحاسب",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تيك توك",other:"English",
+ ar:{seat:"جلسة",hello:"أهلاً فيكم في",hint:"اضغط ونجيك لين عندك",b_order:"المنيو واطلب",b_bill:"أبغى أحاسب",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تيك توك",other:"English",
   w1:"يا مرحبا",w2:"وتوّ ما نوّر المكان",skip:"اضغط للتخطي",
-  k_order:"تبغى تطلب",sauces:"الصوصات",adds:"الإضافات",k_edit:"تبغى تعدّل طلبك",e_mine:"✏️ عدّل طلبي",e_ask:"✏️ أبغى أعدّل طلبي",e_back:"✏️ سحبنا طلبك. عدّله وأرسله من جديد",e_late:"الموظف وافق على طلبك قبل شوي. اضغط «أبغى أعدّل طلبي» ونجيك",k_bill:"تبغى تحاسب",k_coal:"تبغى تغيير الفحم",sending:"يرسل…",
+  k_order:"تبغى تطلب",qd_p:"حبتين بريال",qd_c:"قطع",qd_s:"أعواد",qd_add1:"ضيف حبة وحدة كمان",qd_pairs:"قمر الدين ينباع حبتين حبتين",qd_n:"حبات",b_mine:"طلبي",mine_t:"طلبي",mine_e:"ما طلبتوا شي للحين",st_w:"ينتظر موافقة",st_p:"يتجهز",st_d:"نزل",sauces:"الصوصات",adds:"الإضافات",k_edit:"تبغى تعدّل طلبك",e_mine:"✏️ عدّل طلبي",e_ask:"✏️ أبغى أعدّل طلبي",e_back:"✏️ سحبنا طلبك. عدّله وأرسله من جديد",e_late:"الموظف وافق على طلبك قبل شوي. اضغط «أبغى أعدّل طلبي» ونجيك",k_bill:"تبغى تحاسب",k_coal:"تبغى تغيير الفحم",sending:"يرسل…",
   noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" جاي لك الحين":"جايين لك الحين"),still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
@@ -268,10 +268,10 @@ const STR={
   hint2:"من المنيو، أو نجيك لين عندك",c_title:"كيف تبغى تطلب؟",c_sub:"اختار اللي يريحك",c_menu:"أنا بختار من المنيو",c_menu_s:"شوف الصور والأسعار، واطلب بنفسك",c_call:"نادِ لي أحد",c_call_s:"نجيك لين عندك وناخذ طلبك",back:"رجوع",
   o_title:"اطلب من المنيو",send:"أرسل الطلب",needok:"الطلب يوصل المطبخ بعد ما يوافق عليه الموظف",add:"أضف",pick:"اختر أول",size_s:"صغير",size_b:"كبير",note_ph:"ملاحظة (اختياري)",
   r_wait:"⏳ وصل طلبك<small>ننتظر موافقة الموظف، وبعدها يروح للمطبخ.</small>",r_ok:"✓ انقبل طلبك<small>يتجهز الحين.</small>",r_no:"🏃 الموظف جايك<small>بيتفاهم معك على طلبك.</small>",r_busy:"عندك طلب ينتظر الموافقة<small>انتظر لين يوافقون عليه، وبعدها تقدر تطلب ثاني.</small>",
-  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا المنيو والأسعار",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
- en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"I want to order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
+  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا طلبكم وين وصل",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
+ en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"Menu & order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
-  k_order:"want to order",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
+  k_order:"want to order",qd_p:"2 pieces for 1 SAR",qd_c:"Pieces",qd_s:"Sticks",qd_add1:"Add one more piece",qd_pairs:"Qamar al-din is sold in pairs",qd_n:"pieces",b_mine:"My order",mine_t:"My order",mine_e:"Nothing ordered yet",st_w:"Waiting for approval",st_p:"Being prepared",st_d:"Served",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
   noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" is coming":"We are coming"),still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
@@ -282,11 +282,11 @@ const STR={
   hint2:"From the menu, or we come to you",c_title:"How do you want to order?",c_sub:"Pick what suits you",c_menu:"I will pick from the menu",c_menu_s:"See photos and prices, and order yourself",c_call:"Call someone over",c_call_s:"We come to your table and take your order",back:"Back",
   o_title:"Order from the menu",send:"Send order",needok:"Your order goes to the kitchen once the staff approve it",add:"Add",pick:"Pick first",size_s:"Small",size_b:"Large",note_ph:"Note (optional)",
   r_wait:"⏳ Order received<small>Waiting for the staff to approve it.</small>",r_ok:"✓ Order accepted<small>It is being prepared.</small>",r_no:"🏃 Staff are coming<small>They will check your order with you.</small>",r_busy:"You have an order waiting<small>Once it is approved you can order again.</small>",
-  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table, and what you owe so far. Tap the bill to see details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see the menu and prices",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
+  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table, and what you owe so far. Tap the bill to see details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see where your order is",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/بطاطس\s*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس\s*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
@@ -294,6 +294,7 @@ const EN=[[/بطاطس\s*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled cor
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
 function photo(n){ n=String(n);
+  if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(/بطاطس\s*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
@@ -311,7 +312,7 @@ const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
 const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع","سكر دايت"],["Plain","Basil","Mint","Diet sugar"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس"],["Chocolate","Lotus"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
-const priceOf=it=>{ if(it._soon) return `<span class="offt">${L("soon")}</span>`; if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
+const priceOf=it=>{ if(it._soon) return `<span class="offt">${L("soon")}</span>`; if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; if(/قمر\s*الدين/.test(nm)) return L("qd_p"); return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كنز[ةه]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
 const K=(new URLSearchParams(location.search).get("k")||"").trim(), valid=/^[A-Za-z0-9]{8,16}$/.test(K), MENU=!valid&&new URLSearchParams(location.search).has("m"); // ?m = منيو للعرض بس (باركود السفري)
 let sid="", n=0, ended=false, unCall=null;
@@ -1300,9 +1301,9 @@ sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(
 let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أصناف
 function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
   const cats=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length);
-  if(mcat<0||mcat>cats.length) mcat=0;
+  if(mcat<1||mcat>cats.length) mcat=1;
   const CI={hot:"coffee",cold:"mojito",hookah:"hookah",food:"fries",sn:"pancake",games:"baloot"};
-  const rail=[`<button class="${mcat===0?"on":""}" data-c="0"><i>🪑</i>${L("sessions")}</button>`].concat(cats.map(([c],i)=>`<button class="${mcat===i+1?"on":""}" data-c="${i+1}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`)).join("");
+  const rail=[].concat(cats.map(([c],i)=>`<button class="${mcat===i+1?"on":""}" data-c="${i+1}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`)).join("");
   let body;
   if(mcat===0) body=`<div class="banner" style="background:linear-gradient(135deg,#4a1a7a,#2a0e4a)"><div>🪑 ${L("sessions")}</div></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">⏱</i><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">♾️</i><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div>`;
   else { const [c,list]=cats[mcat-1]; body=`<div class="banner">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:""}<div>${c[1]} ${lang==="en"?c[3]:c[2]}</div></div>`+subH(c,list.map(([i])=>{const ph=photo(i.name); return [i,`<div class="it ${i.off?"off":""}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i></i>`}<span>${esc(nameOf(i.name))}${flavOf(i.name)}</span><b>${priceOf(i)}</b></div>`]}),"msub").join(""); }
@@ -1311,12 +1312,20 @@ function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray
   sheet.style.height="88%";
   sheet.querySelectorAll(".rail [data-c]").forEach(b=>b.onclick=()=>{ mcat=+b.dataset.c; paintMenu(); sheet.querySelectorAll("#mlist > *").forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(12px)"},{opacity:1,transform:"none"}],{duration:360,delay:i*45,fill:"backwards"})); });
 }
-$("mbtn").addEventListener("click",async()=>{
+async function openMenuOnly(){ // منيو السفري (بدون جلسة)
   if(menuData){ paintMenu(); return }
   openSheet("menu",`<div class="hd"><b>${L("b_menu")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("loading")}</p>`); sheet.style.height="";
   try{ menuData=await loadMenu(); if(sheetOpen==="menu") paintMenu(); }
   catch(e){ if(sheetOpen==="menu") sheet.innerHTML=`<div class="hd"><b>${L("b_menu")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("menufail")}<br><span dir="ltr" style="opacity:.6;font-size:11px">${esc(String((e&&(e.code||e.message))||e).slice(0,60))}</span></p>`; }
-});
+}
+function openMine(){ // طلبي: كل صنف وحالته
+  const its=(pub&&Array.isArray(pub.items))?pub.items:[], wait=reqSt==="wait"?lastSent:[];
+  const row=(t,s,x)=>`<div class="mrow"><span>${esc(t)}</span><span class="mst ${s}">${L(s==="w"?"st_w":s==="d"?"st_d":"st_p")}${x?" · "+x:""}</span></div>`;
+  const rows=wait.map(x=>row(x.label+(x.q>1?" × "+x.q:""),"w")).concat(its.map(i=>{ const q=Number(i.q)||0, s=Math.min(Number(i.s)||0,q); return row(nameOf(i.n)+(q>1?" × "+q:""), s>=q?"d":"p", s>0&&s<q?s+"/"+q:"") }));
+  const html=`<div class="hd"><b>${L("mine_t")}</b><button class="x" data-x aria-label="close">✕</button></div><div class="mine">${rows.length?rows.join(""):`<p class="mempty">${L("mine_e")}</p>`}</div>`;
+  if(sheetOpen==="mine") sheet.innerHTML=html; else openSheet("mine",html); }
+$("mbtn").addEventListener("click",()=>MENU?openMenuOnly():openMine());
+if(MENU){ const mb=$("mbtn").querySelector("b"); mb.dataset.t="b_menu"; mb.textContent=L("b_menu"); }
 
 /* ---------- الفاتورة: تذكرة تطلع من الطابعة ---------- */
 function billTicket(){ if(!pub) return; document.querySelector(".bp")?.remove();
@@ -1364,10 +1373,12 @@ async function call(kind){ if(busy||!db||!sid||ended) return;
 
 /* ---------- الطلب من الجوال ---------- */
 const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
+const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
 const RX={fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
+  if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
   if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",opts:EXTRAS,all:true};
   if(RX.corn.test(n)) return {k:"corn",excl:"سادة",opts:["كريمة","شيتوس"]};
@@ -1385,6 +1396,7 @@ function extrasNote(sel,LIST){ const X=LIST||EXTRAS, on=X.filter((_,i)=>sel.incl
 function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
   if(spec.k==="fries") return {...base,note:extrasNote(v.sel),ok:v.sel.length>0||!!v.none};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK),ok:v.sel.length>0||!!v.none};
+  if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
   if(spec.k==="corn"){ if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size}; return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0}; }
   if(spec.k==="cr"||spec.k==="rb"){ const P=spec.k==="cr"?CODERED:REDBULL; return v.ex?{...base,price:P.plain,note:"بدون نكهة"}:{...base,name:it.name+" بنكهة",price:P.flav,note:and,ok:on.length>0}; }
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
@@ -1439,14 +1451,15 @@ function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ session
   const vd=sheet.querySelector(".promo video"); if(vd){ const pl=vd.play(); if(pl&&pl.catch) pl.catch(()=>{}); }
   A(sheet.querySelector(".promo .pgo"),[{transform:"translateY(30px)",opacity:0},{transform:"none",opacity:1}],{duration:600,delay:900,easing:SPRING,fill:"backwards"}); }
 function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lineOf(it,optv), ph=photo(it.name);
-  const ch=[]; if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>(sp.split&&(j===0||j===sp.split)?ch.push(`<b class="ogh">${L(j?"adds":"sauces")}</b>`):0,ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`))); }
+  const ch=[]; if(sp&&sp.cnt){ sp.opts.forEach((o,j)=>{ const c=optv.sel.filter(x=>x===j).length; if(j===0||j===sp.split) ch.push(`<b class="ogh">${L(j?"qd_s":"qd_c")}</b>`); ch.push(`<div class="qdrow ${c?"on":""}"><span>${esc(o.replace(/^(قطعة|عود) /,""))}</span><span class="qdst"><button data-qc="${j}" data-d="-1" aria-label="-" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-qc="${j}" data-d="1" aria-label="+">+</button></span></div>`) }); }
+  else if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>(sp.split&&(j===0||j===sp.split)?ch.push(`<b class="ogh">${L(j?"adds":"sauces")}</b>`):0,ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""}" data-op="${j}">${esc(o)}</button>`))); }
   const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")}</b><div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:"";
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
   const fq=sp&&sp.all?`<div class="chips fq"><button class="chip ${optv.sel.length===sp.opts.length?"on":""}" data-fall>${L("f_all")}</button><button class="chip ${optv.none?"on":""}" data-fnone>${L("f_none")}</button></div>`:"";
   const fs=sp&&sp.all?`<p class="fsum ${r.ok?"ok":""}">${r.ok?`<b>${L("yourorder")}:</b> ${esc(r.note)}`:L("f_pick")}</p>`:"";
   sheet.innerHTML=`<div class="hd"><button class="x" data-back aria-label="${L("back")}">${lang==="en"?"‹":"›"}</button><b>${esc(nameOf(it.name))}</b></div>
   <div class="opth">${ph?`<img src="${ph}.webp" alt="">`:""}${fq}${ch.length?`<div class="chips">${ch.join("")}</div>`:""}${fs}${sp&&sp.hint?`<p style="margin:0;text-align:center;opacity:.8;font-size:14px">${lang==="en"?"🥛 Lactose-free milk":sp.hint}</p>`:""}${sz}${mk}
-  <div class="qrow"><button data-q="-1" aria-label="-">−</button><b class="num">${optv.q}</b><button data-q="1" aria-label="+">+</button></div>
+  ${sp&&sp.cnt?(optv.sel.length%2?`<div class="qdwarn">${L("qd_add1")}<small>${L("qd_pairs")}</small></div>`:optv.sel.length?`<p class="qdok">${optv.sel.length} ${L("qd_n")}</p>`:""):`<div class="qrow"><button data-q="-1" aria-label="-">−</button><b class="num">${optv.q}</b><button data-q="1" aria-label="+">+</button></div>`}
   <input class="ninp" id="onote" maxlength="60" placeholder="${L("note_ph")}" value="${esc(optv.note||"")}"></div>
   <div class="sfoot"><button class="sendb" data-addo ${r.ok?"":"disabled"}><span class="t">${r.ok?L(optv.edit!=null?"save":"add"):L("pick")}</span><span class="num">${r.ok?r2(r.price*optv.q):""}${r.ok?RS:""}</span></button></div>`;
   sheetOpen="opt"; }
@@ -1467,7 +1480,7 @@ async function sendReq(){ if(!cart.length||busy) return; busy=true; const b=shee
   busy=false; }
 function watchReq(){ if(unReq){unReq();unReq=null} if(!sid) return;
   unReq=db.doc("reqs/"+sid).onSnapshot(d=>{ const x=d.exists?d.data():null; if(!x||x.uid!==uid||x.k!==K) return; const st=x.st||"wait"; if(st==="cx"){ reqSt=""; return } if(st===reqSt&&sheetOpen!=="sent") return; reqSt=st;
-    show(st==="ok"?"ok":st==="no"?"go":"wait","<span>"+L(st==="ok"?"r_ok":st==="no"?"r_no":"r_wait")+"</span>"); if(sheetOpen==="sent") paintSent(); },()=>{}); }
+    show(st==="ok"?"ok":st==="no"?"go":"wait","<span>"+L(st==="ok"?"r_ok":st==="no"?"r_no":"r_wait")+"</span>"); if(sheetOpen==="sent") paintSent(); if(sheetOpen==="mine") openMine(); },()=>{}); }
 function paintSent(){ const st=reqSt||"wait", ic=st==="ok"?["✓","#62d49833","#62d498"]:st==="no"?["🏃","#e9c77b33","#e9c77b"]:["⏳","#e9c77b22","#e9c77b"];
   const step=(cls,t,mark)=>`<div class="stp ${cls}"><i>${mark}</i><span>${t}</span></div>`;
   const steps=st==="no"?step("d",L("s1"),"✓")+step("n",L("t_no"),"!"):step("d",L("s1"),"✓")+(st==="ok"?step("d",L("s2ok"),"✓")+step("n",L("s3")+`<span class="cupw"><i class="stm"></i><i class="stm"></i><i class="stm"></i>☕</span>`,"•"):step("n",L("s2"),"•")+step("z",L("s3"),""));
@@ -1500,6 +1513,7 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   if(t.closest("[data-ex]")){ optv.ex=!optv.ex; if(optv.ex) optv.sel=[]; return paintOpt(); }
   if(t.closest("[data-fall]")&&sp){ const all=optv.sel.length===sp.opts.length; optv.sel=all?[]:sp.opts.map((_,j)=>j); optv.none=false; return paintOpt(); }
   if(t.closest("[data-fnone]")){ optv.none=!optv.none; optv.sel=[]; return paintOpt(); }
+  const qc=t.closest("[data-qc]"); if(qc&&sp){ const j=+qc.dataset.qc, d=+qc.dataset.d; if(d>0){ if(optv.sel.length<40) optv.sel=optv.sel.concat(j).sort((a,b)=>a-b) } else { const k=optv.sel.lastIndexOf(j); if(k>=0){ optv.sel=optv.sel.slice(); optv.sel.splice(k,1) } } optv.q=1; return paintOpt(); }
   const op=t.closest("[data-op]"); if(op&&sp){ const j=+op.dataset.op; optv.ex=false; optv.none=false; if(sp.one) optv.sel=[j]; else optv.sel=optv.sel.includes(j)?optv.sel.filter(x=>x!==j):optv.sel.concat(j); return paintOpt(); }
   const mkb=t.closest("[data-mk]"); if(mkb){ optv.size=mkb.dataset.mk; return paintOpt(); }
   const sz=t.closest("[data-sz]"); if(sz){ optv.size=sz.dataset.sz; return paintOpt(); }
@@ -1525,7 +1539,7 @@ async function start(){
     firebase.initializeApp(CFG); db=firebase.firestore();
     for(let i=0;;i++){ try{ uid=(await firebase.auth().signInAnonymously()).user.uid; break }catch(e){ if(i>=3) throw e; await new Promise(r=>setTimeout(r,1200)); } }
     lock(false); if(MENU) setTimeout(()=>$("mbtn").click(),250); if(!valid) return;
-    db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub;
+    db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub; if(sheetOpen==="mine") setTimeout(openMine,0);
       const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
       if(ns!==sid){ sid=ns; n=sid?parseInt(sid.slice(1),10):0; if(unCall){unCall();unCall=null} reqSt=""; cart=[]; if(sid) watchReq();
         // لما الموظف يضغط «رايح لها» يطلع للزبون مين جاي

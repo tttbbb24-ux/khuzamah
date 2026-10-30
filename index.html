@@ -501,7 +501,7 @@ button:active{transform:none}
 .mvb{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px 8px}
 .mvb button{flex:1;min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:inherit;font-size:20px;font-weight:700}
 .mvb button:disabled{opacity:.3}
-.msub{grid-column:1/-1;margin:6px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.msub.msep{display:block;height:1px;margin:6px 2px;background:var(--line)}.msub:first-child{margin-top:0}
+.msub{grid-column:1/-1;margin:6px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.qdrow{display:flex;justify-content:space-between;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;margin-bottom:6px;font-weight:700}.qdrow.on{border-color:var(--green)}.qdst{display:flex;align-items:center;gap:12px}.qdst button{width:38px;height:38px;border-radius:50%;background:var(--s2);font-size:20px}.qdst button:disabled{opacity:.35}.qdst b{min-width:18px;text-align:center;font-size:18px}.qdwarn{background:var(--gold);color:#1a0d2e;border-radius:16px;padding:14px;text-align:center;font-size:19px;font-weight:800;margin:10px 0}.qdwarn small{display:block;font-size:13px;font-weight:600}.qdok{text-align:center;color:var(--green);font-weight:700;margin:8px 0}.msub.msep{display:block;height:1px;margin:6px 2px;background:var(--line)}.msub:first-child{margin-top:0}
 .lockchip{border:1.5px solid var(--red);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:700;min-height:38px;flex:none}
 .mgrid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;align-content:start}
 .mt{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:start;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
@@ -1608,6 +1608,7 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
 ]};
 const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
+const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
@@ -1616,6 +1617,7 @@ const CATS=[["hot","المشروبات الحارة"],["cold","المشروبا�
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
   const n=String(name);
   if(RX.ah.test(n)) return "ah";
+  if(/قمر\s*الدين|^علب[ةه]\s*حامض/.test(n)) return "nuts";
   if(RX.corn.test(n)||RX.dog.test(n)) return "corn";
   if(RX.fries.test(n)) return "fries";
   if(/معسل/.test(n)) return "hookah";
@@ -1640,6 +1642,7 @@ function icon(name){ const n=String(name);
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
 function photo(name){ const n=String(name); // صورة الصنف من مجلد img
+  if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
@@ -1681,6 +1684,7 @@ const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}p
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
 function specFor(name){ // الأصناف اللي لها اختيارات، حسب الاسم
   const n=String(name);
+  if(/قمر\s*الدين/.test(n)) return {k:"qd",title:"اختر الحبات · كل حبتين بريال",opts:QD,cnt:true,split:3};
   if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",title:"اختر الصوصات والإضافات",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات",opts:EXTRAS,all:true};
   if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
@@ -1698,6 +1702,7 @@ function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسع
   const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
   if(spec.k==="fries") return {...base,note:extrasNote(v.sel)};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK)};
+  if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
   if(spec.k==="corn"){
     if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size};
     return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0};
@@ -1714,6 +1719,7 @@ function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسع
 }
 function menuPrice(it){
   const sp=specFor(it.name);
+  if(sp&&sp.k==="qd") return "حبتين بـ1"+RS;
   if(sp&&sp.k==="corn") return CORN.small+" أو "+CORN.big+RS;
   if(sp&&sp.k==="cr") return CODERED.plain+" أو "+CODERED.flav+RS;
   if(sp&&sp.k==="rb") return REDBULL.plain+" أو "+REDBULL.flav+RS;
@@ -1985,6 +1991,7 @@ function prefill(sp,o){ // يرجّع اختيارات الصنف المسجل �
   if(sp.k==="corn"){ if(/سادة/.test(n)){ v.ex=true; v.size=/صغير/.test(n)?"small":"big" } else sp.opts.forEach((x,i)=>{ if(n.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="mat"){ v.size=/جوز الهند/.test(sn)?"coco":"lf"; if(sn.startsWith(sp.excl)) v.ex=true; else sp.opts.forEach((x,i)=>{ if(sn.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="tea"){ v.size=/ستيفيا/.test(sn)?"stv":null; const b=sn.replace(/،\s*سكر دايت \(ستيفيا\)$/,""); if(b===sp.excl) v.ex=true; else sp.opts.forEach((x,i)=>{ if(b.includes(x)) v.sel.push(i) }); return v }
+  if(sp.k==="qd"){ sp.opts.forEach((x,i)=>{ const m=sn.match(new RegExp("(\\d+) "+x)); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); return v }
   if(sp.excl&&sn===sp.excl){ v.ex=true; return v }
   if(sp.k==="fries"&&sn.startsWith("كل شي")){ const ex=sn.includes("ما عدا")?sn.split("ما عدا")[1]:""; sp.opts.forEach((x,i)=>{ if(!ex.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="fries"&&sn==="بدون إضافات") return v;
@@ -2290,7 +2297,7 @@ const tsMs=t=>t&&t.toMillis?t.toMillis():Number(t)||0;
 const callInfo=c=>CALLK[c.kind]||CALLK.order;
 const liveCall=id=>{const c=calls[id]; return c&&!c.ack&&seats[id]&&c.at&&Date.now()-tsMs(c.at)<20*60000?c:null};
 let pubs={}, pubReady=false, pubTimer=null;
-function pubWant(id){ const s=seats[id], g={}, lk=linkTo(id); if(lk) return {...pubWant(lk),seat:id,sid:s.sid}; seatOrders(id).filter(o=>!o.pd).forEach(o=>{const k=o.name+"|"+o.price;(g[k]=g[k]||{n:o.name,p:Number(o.price),q:0}).q+=qty(o)});
+function pubWant(id){ const s=seats[id], g={}, lk=linkTo(id); if(lk) return {...pubWant(lk),seat:id,sid:s.sid}; seatOrders(id).filter(o=>!o.pd).forEach(o=>{const k=o.name+"|"+o.price, e=(g[k]=g[k]||{n:o.name,p:Number(o.price),q:0,s:0}); e.q+=qty(o); if(o.served) e.s+=qty(o)});
   return {seat:id,sid:s.sid,t:s.type,s:s.startedAt,h:bookedH(s),m:billMode(s),fee:fee(id),total:r2(fee(id)+itemsTotal(id)),items:Object.values(g)}; }
 function syncPub(){ // يحدّث اللي يشوفه الزبون من ملصق جلسته
   if(!db||!ready||!me||!pubReady||pubTimer) return;
@@ -2619,6 +2626,9 @@ const pickLine=()=>{const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it
 const xSum=r=>r.ok?esc(r.name)+(view.q>1?" × "+view.q:"")+" · "+money(r.price*view.q):"اختر أول";
 function noteSugs(it){ const c=itemCat(it); // اقتراحات صغيرة للملاحظة حسب القسم
   return c==="cold"?["بدون ثلج","ثلج خفيف","ثلج زيادة"]:c==="hot"?["بدون سكر","سكر خفيف","سكر زيادة"]:c==="fries"||c==="corn"?["مقرمش","صوص على جنب","حار زيادة"]:c==="hookah"?["خفيف","ثقيل","فحم زيادة"]:["على جنب","مستعجل"]; }
+function qdHtml(sp){ const N=view.sel.length; // قمر الدين: عداد لكل نوع، والمجموع لازم زوجي
+  return sp.opts.map((o,i)=>{ const c=view.sel.filter(x=>x===i).length; return (i===0||i===sp.split?`<h2 style="margin:8px 0 4px">${i?"أعواد":"قطع"}</h2>`:"")+`<div class="qdrow ${c?"on":""}"><span>${esc(o.replace(/^(قطعة|عود) /,""))}</span><span class="qdst"><button data-act="xcnt" data-x="${i}" data-d="-1" aria-label="نقص" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-act="xcnt" data-x="${i}" data-d="1" aria-label="زود">+</button></span></div>` }).join("")
+    +(N%2?`<div class="qdwarn">ضيف حبة وحدة كمان<small>قمر الدين ينباع حبتين حبتين</small></div>`:N?`<p class="qdok">${N} حبات</p>`:""); }
 function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، والكمية وزر الإضافة ثابتين تحت
   const it=cfg.items[view.i]||{name:"",price:0}, sp=specFor(it.name), r=pickLine(), list=sp?resolve(sp,it,view):{price:Number(it.price)};
   const off=!!it.off, ph=photo(it.name), where=view.newTake||isTake(view.id||"t")?"":" · جلسة "+seatNo(view.id);
@@ -2627,7 +2637,7 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   ${view.edit&&view.eq>1?`<div class="seg xone"><button class="${view.one?"":"on"}" data-act="xone" data-v="0">عدّل الكل (<span class="num">${view.eq}</span>)</button><button class="${view.one?"on":""}" data-act="xone" data-v="1">عدّل حبة وحدة بس</button></div>`:""}
   ${off&&!view.edit?`<div class="notice" style="background:var(--red-bg);color:var(--red);font-weight:700">غير متوفر الحين</div>`:""}
   ${sp&&sp.all?`<button class="chip ${view.sel.length===sp.opts.length?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
-  ${sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
+  ${sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
   ${sp&&sp.k==="mat"?`<h2>الحليب</h2><div class="menu xchips"><button class="xopt ${view.size!=="coco"?"on":""}" data-act="xsize" data-s="lf"><b>خالي من اللاكتوز</b></button><button class="xopt ${view.size==="coco"?"on":""}" data-act="xsize" data-s="coco"><b>جوز الهند</b></button></div>`:""}
   ${sp&&sp.k==="tea"?`<h2>السكر</h2><div class="menu xchips"><button class="xopt ${view.size!=="stv"?"on":""}" data-act="xsize" data-s="reg"><b>عادي</b></button><button class="xopt ${view.size==="stv"?"on":""}" data-act="xsize" data-s="stv"><b>دايت (ستيفيا)</b></button></div>`:""}
   ${sp&&sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu xchips">
@@ -2638,7 +2648,7 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   ${P()?`<div class="set pbox"><div class="row"><button class="chip ${view.comp?"on":""}" data-act="xcomp">ضيافة</button>
     <label for="x-price" style="text-align:end">أو سعر خاص للحبة</label><input class="pr num" id="x-price" inputmode="decimal" autocomplete="off" placeholder="${list.price||0}" value="${view.cprice?esc(view.cprice):""}" ${view.comp?"disabled":""}></div></div>`:""}
   <p class="empty" style="font-size:13px;margin:0">${esc(r.ok?r.note:"")}</p>
-  <div class="xfoot"><div class="qst"><button data-act="qplus" aria-label="زود">+</button><b class="num">${view.q}</b><button data-act="qminus" aria-label="نقص">−</button></div>
+  <div class="xfoot">${sp&&sp.cnt?"":`<div class="qst"><button data-act="qplus" aria-label="زود">+</button><b class="num">${view.q}</b><button data-act="qminus" aria-label="نقص">−</button></div>`}
     ${view.req?`<button class="ghost" data-act="xreqdel" style="min-height:52px">🗑 شيل</button>`:""}<button class="primary" data-act="xadd" ${r.ok&&(!off||view.edit||view.req)?"":"disabled"}><span>${view.edit||view.req?"حفظ التعديل":"أضف"}</span><span class="num" id="x-sum">${r.ok?(r.comp?`<s class="cs">${money(r.orig*view.q)}</s> <b class="c0">0</b> <i class="ctag">ضيافة</i>`:money(r.price*view.q)):"اختر أول"}</span></button></div>`;
 }
 const num=x=>{const v=parseFloat(String(x).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(",","."));return isFinite(v)&&v>0?v:0};
@@ -3169,6 +3179,7 @@ document.addEventListener("click",e=>{
   if(a==="settings"){draft=JSON.parse(JSON.stringify(cfg));return openSheet({kind:"settings"})}
   if(a==="start") return run("seat:"+id,async()=>{ if(reserves[id]){ const m={...reserves}; delete m[id]; db.doc("config/reserve").set(m).catch(()=>{}) }await db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),tok:newTok(),type:b.dataset.type,startedAt:Date.now()}); renderMain.js=id; if(b.dataset.type==="free") logIt("فتح الجلسة "+seatNo(id)+" مجاناً"); if(W()){ const ty=b.dataset.type==="hour"?"ساعة":b.dataset.type==="free"?"مجاناً":"وقت مفتوح"; if(b.dataset.type!=="free") logIt("فتح الجلسة "+seatNo(id)+" · "+ty); pushSend(2,"🪑 جلسة "+seatNo(id)+" انفتحت",ty+" · فتحها "+me.name,"open-"+id); } if(C()) openSheet({kind:"qr",id,wait:true}); });
   if(a==="xtoggle"){const x=+b.dataset.x,k=view.sel.indexOf(x), sp=specFor(cfg.items[view.i].name); view.ex=false; if(!(sp&&(sp.k==="mat"||sp.k==="tea"))) view.size=null; if(sp&&sp.one) view.sel=[x]; else if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
+  if(a==="xcnt"){ const x=+b.dataset.x, d=+b.dataset.d; if(d>0){ if(view.sel.length<40) view.sel.push(x) } else { const k=view.sel.lastIndexOf(x); if(k>=0) view.sel.splice(k,1) } view.sel.sort((p,q)=>p-q); view.q=1; return renderSheet() }
   if(a==="xex"){view.ex=!view.ex; view.sel=[]; const spx=specFor((cfg.items[view.i]||{}).name||""); if(!(spx&&(spx.k==="mat"||spx.k==="tea"))) view.size=null; return renderSheet()}
   if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
   if(a==="xall"){const n=specFor(cfg.items[view.i].name).opts.length; view.sel=view.sel.length===n?[]:Array.from({length:n},(_,i)=>i); return renderSheet()}
@@ -3277,7 +3288,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=13; let migrating=false;
+const MIG=14; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3308,6 +3319,8 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<13&&!items.some(i=>/حبش/.test(i.name))) items.push({name:"حبش",price:5,cat:"ah"});
   if(m<13&&!items.some(i=>/بطاطس\s*مشوي/.test(i.name))) items.push({name:"بطاطس مشوية",price:17,cat:"ah"});
   if(m<13&&!items.some(i=>/ورق\s*عنب/.test(i.name))) items.push({name:"ورق عنب ٧ حبات",price:11,cat:"ah"});
+  if(m<14&&!items.some(i=>/قمر\s*الدين/.test(i.name))) items.push({name:"قمر الدين",price:1,cat:"nuts"});
+  if(m<14&&!items.some(i=>/^علب[ةه]\s*حامض/.test(i.name))) items.push({name:"علبة حامض حلو",price:0,cat:"nuts"});
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
@@ -3371,7 +3384,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v64";
+const VER="v65";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
