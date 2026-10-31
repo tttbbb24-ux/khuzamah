@@ -1686,7 +1686,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
   const n=String(name);
   if(/قمر\s*الدين/.test(n)) return {k:"qd",title:"اختر الحبات · كل حبتين بريال",opts:QD,cnt:true,split:3};
   if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",title:"اختر الصوصات والإضافات",opts:BK,all:true,split:4};
-  if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات",opts:EXTRAS,all:true};
+  if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات · الجبنة بريال",opts:EXTRAS,all:true,paid:{[EXTRAS.length-1]:CHEESE}};
   if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
   if(RX.moj.test(n)) return {k:"moj",title:"اختر النكهة",opts:FLAV};
   if(RX.cr.test(n)) return {k:"cr",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
@@ -1700,7 +1700,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
 }
 function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسعر وملاحظة
   const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
-  if(spec.k==="fries") return {...base,note:extrasNote(v.sel)};
+  if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel)};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK)};
   if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
   if(spec.k==="corn"){
@@ -1726,6 +1726,9 @@ function menuPrice(it){
   if(sp&&sp.k==="kz") return KINZA.plain+" أو "+KINZA.ice+RS;
   return Number(it.price)+RS;
 }
+const CHEESE=1; // الجبنة على البطاطس المقلية بريال
+function friesNote(sel){ const f=EXTRAS.slice(0,-1), c=sel.includes(EXTRAS.length-1), n=extrasNote(sel.filter(i=>i<f.length),f); return c?(n==="بدون إضافات"?"جبنة بس":n+" + جبنة"):n; }
+const freeAll=sp=>sp.opts.map((_,i)=>i).filter(i=>!(sp.paid&&sp.paid[i])); // «كل شي» = الصوصات المجانية بس
 function extrasNote(sel,LIST){ const X=LIST||EXTRAS;
   const on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات";
@@ -1993,8 +1996,10 @@ function prefill(sp,o){ // يرجّع اختيارات الصنف المسجل �
   if(sp.k==="tea"){ v.size=/ستيفيا/.test(sn)?"stv":null; const b=sn.replace(/،\s*سكر دايت \(ستيفيا\)$/,""); if(b===sp.excl) v.ex=true; else sp.opts.forEach((x,i)=>{ if(b.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="qd"){ sp.opts.forEach((x,i)=>{ const m=sn.match(new RegExp("(\\d+) "+x)); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); return v }
   if(sp.excl&&sn===sp.excl){ v.ex=true; return v }
-  if(sp.k==="fries"&&sn.startsWith("كل شي")){ const ex=sn.includes("ما عدا")?sn.split("ما عدا")[1]:""; sp.opts.forEach((x,i)=>{ if(!ex.includes(x)) v.sel.push(i) }); return v }
-  if(sp.k==="fries"&&sn==="بدون إضافات") return v;
+  if(sp.k==="fries"){ const ci=EXTRAS.length-1, c=/(^|\+ )جبنة( بس)?$/.test(sn), b=sn.replace(/\s*\+ جبنة$/,"").replace(/^جبنة بس$/,"بدون إضافات"), f=EXTRAS.slice(0,ci);
+    if(b.startsWith("كل شي")){ const ex=b.includes("ما عدا")?b.split("ما عدا")[1]:""; f.forEach((x,i)=>{ if(!ex.includes(x)) v.sel.push(i) }) }
+    else if(b!=="بدون إضافات") f.forEach((x,i)=>{ if(b.includes(x)) v.sel.push(i) });
+    if(c) v.sel.push(ci); return v }
   sp.opts.forEach((x,i)=>{ if(sn.includes(x)) v.sel.push(i) });
   if(!v.sel.length&&!sp.excl) v.unote=String(o.note||"");
   return v; }
@@ -2636,8 +2641,8 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   <div class="xtitle"><b>${view.req?"تعديل طلب الجوال: ":view.edit?"تعديل: ":""}${esc(it.name)}</b><span>${sp?sp.title:"كم حبة؟"}${where}</span></div>
   ${view.edit&&view.eq>1?`<div class="seg xone"><button class="${view.one?"":"on"}" data-act="xone" data-v="0">عدّل الكل (<span class="num">${view.eq}</span>)</button><button class="${view.one?"on":""}" data-act="xone" data-v="1">عدّل حبة وحدة بس</button></div>`:""}
   ${off&&!view.edit?`<div class="notice" style="background:var(--red-bg);color:var(--red);font-weight:700">غير متوفر الحين</div>`:""}
-  ${sp&&sp.all?`<button class="chip ${view.sel.length===sp.opts.length?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
-  ${sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
+  ${sp&&sp.all?`<button class="chip ${freeAll(sp).every(i=>view.sel.includes(i))?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
+  ${sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:sp.paid&&sp.paid[i]?`<span class="num">+${sp.paid[i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
   ${sp&&sp.k==="mat"?`<h2>الحليب</h2><div class="menu xchips"><button class="xopt ${view.size!=="coco"?"on":""}" data-act="xsize" data-s="lf"><b>خالي من اللاكتوز</b></button><button class="xopt ${view.size==="coco"?"on":""}" data-act="xsize" data-s="coco"><b>جوز الهند</b></button></div>`:""}
   ${sp&&sp.k==="tea"?`<h2>السكر</h2><div class="menu xchips"><button class="xopt ${view.size!=="stv"?"on":""}" data-act="xsize" data-s="reg"><b>عادي</b></button><button class="xopt ${view.size==="stv"?"on":""}" data-act="xsize" data-s="stv"><b>دايت (ستيفيا)</b></button></div>`:""}
   ${sp&&sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu xchips">
@@ -3182,7 +3187,7 @@ document.addEventListener("click",e=>{
   if(a==="xcnt"){ const x=+b.dataset.x, d=+b.dataset.d; if(d>0){ if(view.sel.length<40) view.sel.push(x) } else { const k=view.sel.lastIndexOf(x); if(k>=0) view.sel.splice(k,1) } view.sel.sort((p,q)=>p-q); view.q=1; return renderSheet() }
   if(a==="xex"){view.ex=!view.ex; view.sel=[]; const spx=specFor((cfg.items[view.i]||{}).name||""); if(!(spx&&(spx.k==="mat"||spx.k==="tea"))) view.size=null; return renderSheet()}
   if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
-  if(a==="xall"){const n=specFor(cfg.items[view.i].name).opts.length; view.sel=view.sel.length===n?[]:Array.from({length:n},(_,i)=>i); return renderSheet()}
+  if(a==="xall"){const sp=specFor(cfg.items[view.i].name), F=freeAll(sp), P=view.sel.filter(i=>!F.includes(i)); view.sel=F.every(i=>view.sel.includes(i))?P:F.concat(P); return renderSheet()}
   if(a==="xcomp"){view.comp=!view.comp; if(view.comp) view.cprice=""; renderSheet(); const sm=$("x-sum"); if(view.comp&&sm&&!RM){ const s2=sm.querySelector(".cs"), z=sm.querySelector(".c0"), t=sm.querySelector(".ctag"); // ضيافة: السعر ينشطب ويلف لصفر
       if(s2) anim(s2,[{textDecorationColor:"transparent",backgroundSize:"0% 2px"},{backgroundSize:"100% 2px"}],{duration:400,fill:"backwards"}); if(z) anim(z,[{transform:"rotateX(90deg)",opacity:0},{transform:"none",opacity:1}],{duration:420,delay:300,fill:"backwards",easing:SPRING}); if(t) anim(t,[{transform:"translateX(20px)",opacity:0},{transform:"none",opacity:1}],{duration:380,delay:550,fill:"backwards",easing:SPRING}); } return}
   if(a==="xone"){ view.one=b.dataset.v==="1"; view.q=view.one?1:view.eq; return renderSheet() }
@@ -3384,7 +3389,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v67";
+const VER="v68";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
