@@ -152,7 +152,7 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .hint2{display:block;text-align:center;font-size:12.5px;color:var(--muted);margin-top:6px}
 .opth{padding:0 16px;overflow-y:auto;flex:1}
 .opth img{width:100%;height:150px;object-fit:cover;border-radius:18px;background:#fff;margin-bottom:10px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.qdrow{flex-basis:100%;display:flex;justify-content:space-between;align-items:center;border:1.5px solid rgba(255,255,255,.14);border-radius:14px;padding:8px 12px;font-weight:700}.qdrow.on{border-color:#62d498}.qdst{display:flex;align-items:center;gap:12px}.qdst button{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);color:inherit;font-size:20px;border:0}.qdst button:disabled{opacity:.35}.qdst b{min-width:18px;text-align:center;font-size:18px}.qdwarn{background:#e9c77b;color:#1a0d2e;border-radius:16px;padding:14px;text-align:center;font-size:19px;font-weight:800;margin:6px 0 12px}.qdwarn small{display:block;font-size:13px;font-weight:600}.qdok{text-align:center;color:#62d498;font-weight:700;margin:6px 0 12px}.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.1);font-size:15px}.mst{font-size:13px;padding:4px 10px;border-radius:99px;white-space:nowrap;font-weight:700}.mst.w{background:#b88cf233;color:#c9a8ff}.mst.p{background:#e9c77b33;color:#e9c77b}.mst.d{background:#62d49833;color:#62d498}.mine{padding:4px 16px 20px;overflow-y:auto}.mempty{text-align:center;opacity:.7;padding:30px 0}.ogh{flex-basis:100%;font-size:13px;color:var(--muted);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.cmta{width:100%;box-sizing:border-box;height:96px;resize:none;border-radius:14px;border:1.5px solid rgba(255,255,255,.16);background:rgba(0,0,0,.25);color:inherit;font:inherit;font-size:16px;padding:12px;margin:4px 0 12px}.cmgo{display:block;width:100%;border:0;border-radius:16px;padding:15px;background:#e9c77b;color:#1a0d2e;font:inherit;font-size:17px;font-weight:800;margin-bottom:6px}.qdrow{flex-basis:100%;display:flex;justify-content:space-between;align-items:center;border:1.5px solid rgba(255,255,255,.14);border-radius:14px;padding:8px 12px;font-weight:700}.qdrow.on{border-color:#62d498}.qdst{display:flex;align-items:center;gap:12px}.qdst button{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);color:inherit;font-size:20px;border:0}.qdst button:disabled{opacity:.35}.qdst b{min-width:18px;text-align:center;font-size:18px}.qdwarn{background:#e9c77b;color:#1a0d2e;border-radius:16px;padding:14px;text-align:center;font-size:19px;font-weight:800;margin:6px 0 12px}.qdwarn small{display:block;font-size:13px;font-weight:600}.qdok{text-align:center;color:#62d498;font-weight:700;margin:6px 0 12px}.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.1);font-size:15px}.mst{font-size:13px;padding:4px 10px;border-radius:99px;white-space:nowrap;font-weight:700}.mst.w{background:#b88cf233;color:#c9a8ff}.mst.p{background:#e9c77b33;color:#e9c77b}.mst.d{background:#62d49833;color:#62d498}.mine{padding:4px 16px 20px;overflow-y:auto}.mempty{text-align:center;opacity:.7;padding:30px 0}.ogh{flex-basis:100%;font-size:13px;color:var(--muted);margin-top:4px}
 .chip{border:1.5px solid #3a2e4c;border-radius:999px;padding:8px 14px;font-size:15px;min-height:42px}
 .chip.on{background:var(--accent);color:var(--acc-ink);border-color:var(--accent);font-weight:700}
 .qrow{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
@@ -257,7 +257,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const STR={
  ar:{seat:"جلسة",hello:"أهلاً فيكم في",hint:"اضغط ونجيك لين عندك",b_order:"المنيو واطلب",b_bill:"أبغى أحاسب",b_coal:"تغيير الفحم",b_menu:"المنيو والأسعار",tiktok:"تيك توك",other:"English",
   w1:"يا مرحبا",w2:"وتوّ ما نوّر المكان",skip:"اضغط للتخطي",
-  k_order:"تبغى تطلب",qd_p:"حبتين بريال",qd_c:"قطع",qd_s:"أعواد",qd_add1:"ضيف حبة وحدة كمان",qd_pairs:"قمر الدين ينباع حبتين حبتين",qd_n:"حبات",b_mine:"طلبي",mine_t:"طلبي",mine_e:"ما طلبتوا شي للحين",st_w:"ينتظر موافقة",st_p:"يتجهز",st_d:"نزل",sauces:"الصوصات",adds:"الإضافات",k_edit:"تبغى تعدّل طلبك",e_mine:"✏️ عدّل طلبي",e_ask:"✏️ أبغى أعدّل طلبي",e_back:"✏️ سحبنا طلبك. عدّله وأرسله من جديد",e_late:"الموظف وافق على طلبك قبل شوي. اضغط «أبغى أعدّل طلبي» ونجيك",k_bill:"تبغى تحاسب",k_coal:"تبغى تغيير الفحم",sending:"يرسل…",
+  k_order:"تبغى تطلب",sent_m:m=>"✓ وصل نداؤك: «"+esc(m)+"»<br>لحظات ونجيك.",cm_t:"نادِ لي أحد",cm_s:"تبغى تقول لنا وش تبغى؟ (اختياري)",cm_ph:"اكتب هنا، أو اضغط نادِ على طول",cm_go:"نادِ الموظف",qd_p:"حبتين بريال",qd_c:"قطع",qd_s:"أعواد",qd_add1:"ضيف حبة وحدة كمان",qd_pairs:"قمر الدين ينباع حبتين حبتين",qd_n:"حبات",b_mine:"طلبي",mine_t:"طلبي",mine_e:"ما طلبتوا شي للحين",st_w:"ينتظر موافقة",st_p:"يتجهز",st_d:"نزل",sauces:"الصوصات",adds:"الإضافات",k_edit:"تبغى تعدّل طلبك",e_mine:"✏️ عدّل طلبي",e_ask:"✏️ أبغى أعدّل طلبي",e_back:"✏️ سحبنا طلبك. عدّله وأرسله من جديد",e_late:"الموظف وافق على طلبك قبل شوي. اضغط «أبغى أعدّل طلبي» ونجيك",k_bill:"تبغى تحاسب",k_coal:"تبغى تغيير الفحم",sending:"يرسل…",
   noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" جاي لك الحين":"جايين لك الحين"),still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
@@ -271,7 +271,7 @@ const STR={
   t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا طلبكم وين وصل",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
  en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"Menu & order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
-  k_order:"want to order",qd_p:"2 pieces for 1 SAR",qd_c:"Pieces",qd_s:"Sticks",qd_add1:"Add one more piece",qd_pairs:"Qamar al-din is sold in pairs",qd_n:"pieces",b_mine:"My order",mine_t:"My order",mine_e:"Nothing ordered yet",st_w:"Waiting for approval",st_p:"Being prepared",st_d:"Served",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
+  k_order:"want to order",sent_m:m=>"✓ Call sent: «"+esc(m)+"»<br>We are on our way.",cm_t:"Call someone over",cm_s:"Want to tell us what you need? (optional)",cm_ph:"Type here, or just tap call",cm_go:"Call staff",qd_p:"2 pieces for 1 SAR",qd_c:"Pieces",qd_s:"Sticks",qd_add1:"Add one more piece",qd_pairs:"Qamar al-din is sold in pairs",qd_n:"pieces",b_mine:"My order",mine_t:"My order",mine_e:"Nothing ordered yet",st_w:"Waiting for approval",st_p:"Being prepared",st_d:"Served",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
   noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" is coming":"We are coming"),still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
@@ -1348,23 +1348,23 @@ function billTicket(){ if(!pub) return; document.querySelector(".bp")?.remove();
 
 /* ---------- النداء ---------- */
 document.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(!b) return; if(b.dataset.k==="order") return openChoice(); call(b.dataset.k); });
-async function call(kind){ if(busy||!db||!sid||ended) return;
+async function call(kind,msg){ msg=String(msg||"").trim().slice(0,60); let withM=!!msg; if(busy||!db||!sid||ended) return;
   const left=WAIT-(Date.now()-lastAt);
   if(left>0&&!acked){ show("ok",L("still")(Math.ceil(left/60000))); return; }
   busy=true; lock(true); show("wait",`<svg width="20" height="20" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 150"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur=".8s" repeatCount="indefinite"/></circle></svg> ${L("sending")}`);
   const guard=setTimeout(()=>{ if(busy){ busy=false; lock(false); show("bad","<span>"+L("retry")+"</span>"); } },12000); // لو النت علّق، الأزرار ترجع تشتغل
   try{
-    const send=()=>db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp()});
-    try{ await send(); }catch(e1){
+    const send=()=>db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp(),...(withM?{m:msg}:{})});
+    try{ await send(); }catch(e0){ let e1=e0; if(withM&&e1&&e1.code==="permission-denied"){ withM=false; try{ await send(); e1=null }catch(e3){ e1=e3 } } if(e1){ // لو القواعد ما تقبل الرسالة، ننادي بدونها
       if(!(e1&&e1.code==="permission-denied")) throw e1;
       // نداء من نفس الطاولة قبل أقل من دقيقتين وما أحد رد عليه: نطمّنه بدل الخطأ
       let c=null; try{ const d=await db.doc("calls/"+sid).get({source:"server"}); c=d.exists?d.data():null; }catch(x){}
       const age=c&&c.at&&c.at.toMillis?Date.now()-c.at.toMillis():1e9;
       if(c&&!c.ack&&age<WAIT){ lastAt=Date.now()-age; acked=false; clearTimeout(guard); show("ok","<span>"+L("still")(Math.max(1,Math.ceil((WAIT-age)/60000)))+"</span>"); busy=false; lock(false); return; }
       // يمكن الدخول لسا ما وصل لقاعدة البيانات أول مرة: نجدده ونحاول مرة ثانية
-      try{ await firebase.auth().currentUser.getIdToken(true) }catch(x){} await new Promise(r=>setTimeout(r,1200)); await send(); }
+      try{ await firebase.auth().currentUser.getIdToken(true) }catch(x){} await new Promise(r=>setTimeout(r,1200)); await send(); } }
     lastAt=Date.now(); acked=false; try{sessionStorage.setItem("kz-call-"+K,String(lastAt))}catch(e){}
-    show("ok","<span>"+L("sent")(L("k_"+kind))+"</span>");
+    show("ok","<span>"+(msg&&withM?L("sent_m")(msg):L("sent")(L("k_"+kind)))+"</span>");
     if(!sheetOpen) fxSheet(`<div class="stage"><span class="rg"></span><span class="rg"></span><span class="rg"></span><span class="hnd">${kind==="coal"?"🔥":kind==="bill"?"🧾":kind==="edit"?"✏️":"🙋"}</span></div><b>${L("sent")(L("k_"+kind)).replace(/<small>.*$/,"")}</b><span>${(L("sent")(L("k_"+kind)).match(/<small>(.*)<\/small>/)||["",""])[1]}</span>`,3200);
     try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken();
       await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,call:sid})}); }catch(e){}
@@ -1374,7 +1374,7 @@ async function call(kind){ if(busy||!db||!sid||ended) return;
 /* ---------- الطلب من الجوال ---------- */
 const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
-const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"], FLAV=["فراولة","حبحب","توت أزرق"];
+const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
 const RX={fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
@@ -1411,6 +1411,11 @@ const r2=x=>Math.round(x*100)/100;
 let cart=[], ocat=0, optv=null, reqSt="", unReq=null, lastSent=[], lastCart=[], edited=false;
 const ICO_MENU='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>';
 const ICO_HAND='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V6a2 2 0 1 1 4 0v5M11 10V4.5a2 2 0 1 1 4 0V10M15 10V6.5a2 2 0 1 1 4 0V14a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.4L3 14.5a1.8 1.8 0 0 1 3-2L7 14"/></svg>';
+function openCallMsg(){ // نادِ لي أحد: رسالة اختيارية للموظف
+  sheet.innerHTML=`<div class="hd"><b>${L("cm_t")}<small>${L("cm_s")}</small></b><button class="x" data-x aria-label="close">✕</button></div>
+  <div style="padding:0 16px 18px"><textarea id="cmsg" class="cmta" maxlength="60" placeholder="${L("cm_ph")}"></textarea>
+  <button class="cmgo" data-cmsend>${L("cm_go")}</button><button class="lnk" data-cmback>${L("back")}</button></div>`;
+  sheetOpen="callmsg"; sheet.style.height=""; }
 function openChoice(){ if(!db||!sid||ended) return;
   const html=`<div class="hd"><b>${L("c_title")}<small>${L("c_sub")}</small></b><button class="x" data-x aria-label="close">✕</button></div>
   <div class="ch2"><button class="cbig m" data-cm><span class="ic">${ICO_MENU}</span><span><b>${L("c_menu")}</b><span class="s">${L("c_menu_s")}</span></span></button>
@@ -1497,7 +1502,9 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   if(t.closest("[data-cm]")){ e.stopPropagation(); return openOrder(); }
   if(t.closest("[data-edask]")){ e.stopPropagation(); closeSheet(); return setTimeout(()=>call("edit"),D(350)); }
   if(t.closest("[data-edme]")){ e.stopPropagation(); return editMine(); }
-  if(t.closest("[data-cc]")){ closeSheet(); return setTimeout(()=>call("order"),D(300)); }
+  if(t.closest("[data-cc]")){ e.stopPropagation(); return openCallMsg(); }
+  if(t.closest("[data-cmback]")){ e.stopPropagation(); return openChoice(); }
+  if(t.closest("[data-cmsend]")){ e.stopPropagation(); const m=($("cmsg")||{}).value||""; closeSheet(); return setTimeout(()=>call("order",m),D(300)); }
   const oc=t.closest("[data-oc]"); if(oc){ ocat=+oc.dataset.oc; return paintOrder(); }
   const pg=t.closest("[data-pgo]"); if(pg) return tapItem(+pg.dataset.pgo);
   if(t.closest("[data-pskip]")) return paintOrder();

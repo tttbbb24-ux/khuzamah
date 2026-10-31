@@ -326,7 +326,7 @@ button:active{transform:scale(.97)}
 .rqb{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rqb button{border-radius:12px;padding:10px;font-weight:700;font-size:17px;min-height:46px}.rqb .ok{background:var(--green);color:#06210f}.rqb .no{border:1.5px solid var(--red);color:var(--red)}
 .callrow{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(233,199,123,.22),rgba(233,199,123,.1));border:1.5px solid #e9c77b;border-radius:14px;padding:10px 12px}
 .callrow .e{font-size:28px;line-height:1;flex:none}
-.callrow .t{flex:1;min-width:0;font-size:15px;line-height:1.5}
+.callrow .t{flex:1;min-width:0;font-size:15px;line-height:1.5}.callrow .cmsg{display:block;font-style:normal;font-weight:800;color:#e9c77b;font-size:16px;word-break:break-word}
 .callrow .t small{display:block;color:var(--muted);font-size:12px}
 .callrow .primary{flex:none;min-height:44px;padding:8px 14px}
 .seat.calling{outline:3px solid #e9c77b;outline-offset:2px}
@@ -1609,7 +1609,7 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
 const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
-const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود"];
+const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
 const RX={fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
@@ -2324,12 +2324,12 @@ function scanLate(){ if(!me||!db||!ready||document.hidden||navigator.onLine===fa
       latePush(o,"⏰ طلب متأخر · "+where,what+" · من "+mins(o.at)+" دقيقة"); }); }); }
 function scanCalls(){ if(!C()||!db||!ready) return;
   Object.keys(calls).forEach(id=>{ const c=calls[id], k=id+":"+tsMs(c.at);
-    if(liveCall(id)){ if(!callSeen.has(k)){ callSeen.add(k); if(callsSeeded){ note(callInfo(c)[0]+" جلسة "+seatNo(id)+" "+callInfo(c)[1],"c:"+id); if(!say(vnum(seatNo(id))+"-"+({order:"req",bill:"bill",coal:"coal"}[c.kind]||"req"))) beep([988,1319,988,1319]); flash3(); } } }
+    if(liveCall(id)){ if(!callSeen.has(k)){ callSeen.add(k); if(callsSeeded){ note(callInfo(c)[0]+" جلسة "+seatNo(id)+" "+callInfo(c)[1]+(c.m?": «"+String(c.m).slice(0,60)+"»":""),"c:"+id); if(!say(vnum(seatNo(id))+"-"+({order:"req",bill:"bill",coal:"coal"}[c.kind]||"req"))) beep([988,1319,988,1319]); flash3(); } } }
     else if(c.at&&!callSwept.has(k)&&(!seats[id]||Date.now()-tsMs(c.at)>20*60000)){ callSwept.add(k); db.doc("calls/"+id).delete().catch(()=>{}); } }); // نداء قديم أو جلسة تقفلت
   dropNotes(x=>x.ref.startsWith("c:")&&!liveCall(x.ref.slice(2)));
   callsSeeded=true; }
 const callRow=id=>{const c=liveCall(id); if(!c||!C()) return ""; const m=Math.floor((Date.now()-tsMs(c.at))/60000);
-  return `<div class="callrow" data-ck="${esc(id+":"+tsMs(c.at))}"><span class="e">${callInfo(c)[0]}</span><span class="t"><b>جلسة ${seatNo(id)}</b> ${callInfo(c)[1]}<small class="num">${m<1?"الحين":"قبل "+m+" د"}</small></span><button class="primary" data-act="callack" data-id="${esc(id)}">رايح لها</button></div>`};
+  return `<div class="callrow" data-ck="${esc(id+":"+tsMs(c.at))}"><span class="e">${callInfo(c)[0]}</span><span class="t"><b>جلسة ${seatNo(id)}</b> ${callInfo(c)[1]}${c.m?`<em class="cmsg">«${esc(String(c.m).slice(0,60))}»</em>`:""}<small class="num">${m<1?"الحين":"قبل "+m+" د"}</small></span><button class="primary" data-act="callack" data-id="${esc(id)}">رايح لها</button></div>`};
 function tile(id){ const h=tile0(id), c=C()&&liveCall(id); return c?h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`):h; }
 let reserves={}, waitlist=[];
 const rsv=id=>(!seats[id]&&reserves[id])||null;
@@ -3105,7 +3105,7 @@ document.addEventListener("click",e=>{
     return run("mv:"+o.id,async()=>{ for(const d of docs) await db.doc("orders/"+d.id).update({seat:to,sid:t.sid});
       logIt("نقل "+o.name+(n>1?" × "+n:"")+" من "+(isTake(from)?"سفري ":"الجلسة ")+lab(from)+" إلى "+(isTake(to)?"سفري ":"الجلسة ")+lab(to)); toast("انتقل "+o.name+" إلى "+(isTake(to)?"سفري ":"جلسة ")+lab(to)); openSheet({kind:"seat",id:from,tab:"orders"}) }) }
   if(a==="month"){ if(!P()) return; return openMonth(b.dataset.m||TODAY.slice(0,7)) }
-  if(a==="callack"){ const cid=b.dataset.id; if(!C()||!calls[cid]) return; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); toast("تمام، الزبون شاف إنك جاي")}) }
+  if(a==="callack"){ const cid=b.dataset.id; if(!C()||!calls[cid]) return; const cm=calls[cid].m?String(calls[cid].m).slice(0,60):""; return run("call:"+cid,async()=>{await db.doc("calls/"+cid).update({ack:true,ackName:(me&&me.name)||""}); if(cm) logIt("رايح لنداء جلسة "+seatNo(cid)+": «"+cm+"»"); toast("تمام، الزبون شاف إنك جاي")}) }
   if(a==="calltoggle"){ if(!P()) return; return run("calloff",async()=>{ if(callsOff) await db.doc("config/callsOff").delete(); else await db.doc("config/callsOff").set({at:Date.now(),...BY()}); toast(callsOff?"رجع نداء الزباين":"توقف نداء الزباين") }) }
   if(a==="stickers") return void window.open("stickers.html","_blank");
   if(a==="log"){ if(!P()&&!STL()) return; return openLog(TODAY) }
@@ -3384,7 +3384,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v66";
+const VER="v67";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
