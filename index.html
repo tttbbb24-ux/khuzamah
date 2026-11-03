@@ -78,7 +78,7 @@ button:disabled{opacity:.5;cursor:default}
 .seat.add .n{color:var(--accent)}
 .vhead{display:flex;align-items:center;gap:10px;margin:2px 0 8px}.vhead b{flex:1;text-align:start;font-size:17px}.vrow .tog{border-style:dashed}.xone{margin:4px 0 2px}.xone button{flex:1}.rqe{background:none;border:0;font-size:16px;padding:2px 6px;cursor:pointer}.rqed{font-style:normal;font-size:11px;background:var(--accent);color:#1a0d2e;border-radius:6px;padding:1px 6px}.hubrow{cursor:pointer}
 .lgf{margin:6px 0}.lgf>small{display:block;color:var(--muted);font-size:12px;margin:0 2px 4px}.lgf .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.lgf .chip{white-space:nowrap;flex:none}.lgn{opacity:.6;font-size:11px}.lgk{font-style:normal;font-size:11.5px;border-radius:6px;padding:1px 6px;background:var(--s2);margin-inline-end:4px;white-space:nowrap}.lg-del .lgk{background:var(--red-bg);color:var(--red)}.lg-srv .lgk,.lg-pay .lgk{background:var(--green-bg);color:var(--green)}.lg-undo .lgk,.lg-unsrv .lgk{background:#f59e0b33;color:#d97706}
-.fsn{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:20px;border-radius:7px;background:var(--accent);color:#1a0d2e;font-size:12px;font-weight:700;margin-inline-end:6px;padding:0 4px;vertical-align:1px}.seat.linked{opacity:.8;border-style:dashed}
+.fsn{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:20px;border-radius:7px;background:var(--accent);color:#1a0d2e;font-size:12px;font-weight:700;margin-inline-end:6px;padding:0 4px;vertical-align:1px}.seat.linked{opacity:.8;border-style:dashed}.seat.grp .n{font-size:30px;direction:ltr;unicode-bidi:isolate}
 .wrow.kb{align-items:center}.wrow.kb .who{font-size:22px}.kbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.kbseat{border:1.5px solid var(--line);background:var(--s2);color:inherit;border-radius:10px;padding:4px 10px;font:inherit;font-weight:700;font-size:15px;min-height:34px;cursor:pointer}.kbseat small{font-weight:400;opacity:.7}.wrow.kb .done{white-space:nowrap}
 #voxbar{position:fixed;z-index:60;inset-inline:12px;top:calc(env(safe-area-inset-top,0px) + 10px);border:0;border-radius:16px;padding:12px 16px;background:#e08a1e;color:#fff;font:inherit;text-align:start;box-shadow:0 8px 24px #0006;cursor:pointer;display:flex;flex-direction:column;gap:2px}#voxbar[hidden]{display:none}#voxbar b{font-size:17px}#voxbar small{opacity:.9;font-size:13px}
 .feeed{align-self:flex-start;background:none;border:1px dashed var(--line);color:var(--muted);border-radius:10px;padding:4px 10px;font:inherit;font-size:13px;margin:4px 0 6px;cursor:pointer}.cartbar.back{background:var(--s2);color:var(--text,#f3ebe4);border:1.5px solid var(--accent)}.cartbar.back b{color:var(--accent);font-size:18px}.cartbar.back small{color:var(--muted)}
@@ -2015,7 +2015,7 @@ function qrSvg(text){ let q=null; for(const t of [4,5,6,8,10]){ try{ q=new KZQR.
   if(!q) return ""; const N=q.getModuleCount(), Q=3; let d="";
   for(let y=0;y<N;y++) for(let x=0;x<N;x++) if(q.isDark(y,x)) d+=`M${x+Q} ${y+Q}h1v1h-1z`;
   return `<svg class="qrbig" viewBox="0 0 ${N+2*Q} ${N+2*Q}" shape-rendering="crispEdges" role="img" aria-label="رمز الجلسة"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`; }
-function qrHtml(id){ return `<div class="phead"><span class="big num">${seatNo(id)}</span><div class="meta"><b>رمز الجلسة ${seatNo(id)}</b><span>خلّ الزبون يصوره بكاميرا جواله</span></div>${xBtn}</div>
+function qrHtml(id){ return `<div class="phead"><span class="big num" dir="ltr">${esc(glab(id))}</span><div class="meta"><b>${linkedOf(id).length?`رمز واحد للجلسات <bdi dir="ltr">${esc(glab(id))}</bdi>`:"رمز الجلسة "+seatNo(id)}</b><span>خلّ الزبون يصوره بكاميرا جواله</span></div>${xBtn}</div>
   <div class="qrwrap">${seats[id]&&seats[id].tok?qrSvg(callUrl(seats[id].tok)):`<p class="empty" style="color:#555;text-align:center;padding:40px 0">جاري تجهيز الرمز…</p>`}</div><p class="empty">رمز جديد لهذي الجلسة بس. منه ينادي ويشوف المنيو ووقته وحسابه، ويوقف أول ما تقفلون الجلسة.</p>
   <button class="primary wide" data-act="back">تم</button>`; }
 let sortT=null; const PAY=()=>OPS()||W(); const wigged={}; // زر الحساب يهتز مرة وحدة بس لكل جلسة // يحاسب: الشركاء والكاشير والويتر
@@ -2336,6 +2336,21 @@ function scanCalls(){ if(!C()||!db||!ready) return;
 const callRow=id=>{const c=liveCall(id); if(!c||!C()) return ""; const m=Math.floor((Date.now()-tsMs(c.at))/60000);
   return `<div class="callrow" data-ck="${esc(id+":"+tsMs(c.at))}"><span class="e">${callInfo(c)[0]}</span><span class="t"><b>جلسة ${seatNo(id)}</b> ${callInfo(c)[1]}${c.m?`<em class="cmsg">«${esc(String(c.m).slice(0,60))}»</em>`:""}<small class="num">${m<1?"الحين":"قبل "+m+" د"}</small></span><button class="primary" data-act="callack" data-id="${esc(id)}">رايح لها</button></div>`};
 function tile(id){ const h=tile0(id), c=C()&&liveCall(id); return c?h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`):h; }
+/* v69: الجلسات المشبوكة جنب بعض تصير مستطيل واحد في الرئيسية */
+function boardHtml(cells){ const pos={}; cells.forEach((id,i)=>{ if(id) pos[id]=[Math.floor(i/3)+1,i%3+1] });
+  const merged={}, skip=new Set();
+  Object.keys(seats).forEach(p=>{ if(isTake(p)||linkTo(p)) return; const L=linkedOf(p); if(!L.length) return; const g=[p,...L];
+    if(!g.every(x=>pos[x])) return; const R=g.map(x=>pos[x][0]), C=g.map(x=>pos[x][1]);
+    const r0=Math.min(...R), r1=Math.max(...R), c0=Math.min(...C), c1=Math.max(...C);
+    if((r1-r0+1)*(c1-c0+1)!==g.length) return; // مو جنب بعض: تبقى مربعات منفصلة مثل قبل
+    merged[p]={r0,r1,c0,c1,g}; L.forEach(x=>skip.add(x)); });
+  return cells.map((id,i)=>{ const at=`grid-row:${Math.floor(i/3)+1};grid-column:${i%3+1}`;
+    if(!id) return `<span style="${at}"></span>`; if(skip.has(id)) return "";
+    const m=merged[id]; if(!m) return place(tile(id),at);
+    let h=tile0(id); const c=C()&&m.g.map(liveCall).find(Boolean);
+    if(c) h=h.replace('class="seat on','class="seat on calling').replace(/<\/button>$/,`<span class="callb">${callInfo(c)[0]}</span></button>`);
+    return place(h.replace('class="seat on','class="seat on grp'),`grid-row:${m.r0}/${m.r1+1};grid-column:${m.c0}/${m.c1+1}`); }).join(""); }
+const place=(h,at)=>{ const tag=h.slice(0,h.indexOf(">")); return /style="/.test(tag)?h.replace('style="',`style="${at};`):h.replace(/^<(button|span)/,`<$1 style="${at}"`); };
 let reserves={}, waitlist=[];
 const rsv=id=>(!seats[id]&&reserves[id])||null;
 function tile0(id){ // الجلسة تمتلي بلونها مع الوقت
@@ -2380,7 +2395,7 @@ function renderMain(){
   const pend=groupOrders(orders.filter(o=>!isHung(o.seat)&&seats[o.seat]&&seats[o.seat].sid===o.sid&&!o.served).sort((a,b)=>a.at-b.at));
   const cnt=l=>l.reduce((a,g)=>a+g.q,0);
   $("strip").innerHTML=`<span class="stats num">${busy.length} مشغولة · ${ids.length-busy.length} فاضية${cnt(pend)?` · <b>${cnt(pend)} ما نزل</b>`:""}</span>`+(OPS()&&!legacy?`<button class="waitchip" data-act="wl">⏳ انتظار <b class="num">${waitlist.length}</b></button>`:"")+lockChip();
-  $("board").innerHTML=!ready?Array.from({length:15},()=>`<span class="seat sk"></span>`).join(""):cells.map(id=>id?tile(id):`<span></span>`).join(""); // وقت التحميل: أشكال رمادية تلمع
+  $("board").innerHTML=!ready?Array.from({length:15},()=>`<span class="seat sk"></span>`).join(""):boardHtml(cells); // وقت التحميل: أشكال رمادية تلمع
   if(ready&&!renderMain.ent){ renderMain.ent=1; stagger($("board").children); $("board").querySelectorAll(".fill").forEach(f=>anim(f,[{height:"0%"},{height:f.style.height}],{duration:900,delay:200})); }
   if(renderMain.js){ const el=$("board").querySelector(`[data-id="${renderMain.js}"]`); if(el&&seats[renderMain.js]){ renderMain.js=null; pop(el,1.08); const f=el.querySelector(".fill"); if(f) anim(f,[{height:"0%"},{height:f.style.height}],{duration:900});
       if(!RM){ const r=el.getBoundingClientRect(), d=Math.hypot(r.width,r.height)*2, c=document.createElement("span"); c.style.cssText=`position:absolute;left:50%;top:50%;width:${d}px;height:${d}px;border-radius:50%;background:var(--c);opacity:.5;transform:translate(-50%,-50%) scale(0);z-index:-1;pointer-events:none`; el.appendChild(c); const a2=anim(c,[{transform:"translate(-50%,-50%) scale(0)",opacity:.6},{transform:"translate(-50%,-50%) scale(1)",opacity:0}],{duration:900}); if(a2) a2.onfinish=()=>c.remove(); } } } // بداية جلسة: دائرة تكبر وتلوّن الجلسة
@@ -2569,11 +2584,11 @@ function vgroup(G){ const V=view&&view.vars; // نفس الصنف بخيارات
   const done=new Set(), out=[]; G.forEach(g=>{ const k=vkey(g.o); if(g.o.pd||cnt[k]<2||!mine(g.o.name)) return out.push(g); if(done.has(k)) return; done.add(k); out.push({vk:k,L:G.filter(x=>!x.o.pd&&vkey(x.o)===k)}) }); return out }
 function varRow(g){ const o=g.L[0].o, Q=g.L.reduce((a,x)=>a+x.q,0), sum=g.L.reduce((a,x)=>a+Number(x.o.price)*x.q,0);
   return `<div class="oc vrow ${o.served?"s":""}"><div class="fg"><button class="tog" data-act="vars" data-v="${esc(g.vk)}"><span class="nm">${esc(vname(o))} <span class="xq num">× ${Q}</span><small>${g.L.map(x=>esc((x.o.name!==vname(o)?x.o.name.replace(vname(o),"").trim()+" ":"")+(x.o.note||"")||"عادي")+(x.q>1?" ×"+x.q:"")).join(" · ")}</small><small class="by">${g.L.length} أنواع · اضغط تعدّل كل واحد ‹</small></span><span class="num">${money(sum)}</span><span class="tag">${o.served?"نزل ✓":"ما نزل"}</span></button></div></div>` }
-function linkHtml(id){ const L=linkedOf(id), cand=Object.keys(seats).filter(x=>x!==id&&!isTake(x)&&!isHung(x)&&!linkTo(x)&&!linkedOf(x).length).sort();
+function linkHtml(id){ const L=linkedOf(id), cand=Object.keys(seats).filter(x=>x!==id&&!isTake(x)&&!isHung(x)&&!linkTo(x)).sort(); // v69: تقدر تختار جلسة مشبوكة من قبل، فتنضم لها
   return `<div class="phead"><span class="big num">${esc(glab(id))}</span><div class="meta"><b>شبك الجلسات</b><span>صفحة وحدة وحساب واحد، وكل جلسة رسومها محسوبة</span></div>${xBtn}</div>
   ${L.length?`<div class="gt">مشبوكة معها</div><div class="orders">${L.map(x=>`<div class="ord"><div class="tog" style="border-color:var(--line)"><span class="nm">جلسة <b class="num">${seatNo(x)}</b><small class="num">${MODE[seats[x].type]||""} · ${money(ownFee(x))}</small></span></div><button class="ghost" data-act="unlink" data-to="${esc(x)}">✂️ فك</button></div>`).join("")}</div>`:""}
   <div class="gt">اختر الجلسة اللي تنشبك مع ${seatNo(id)}</div>
-  ${cand.length?`<div class="tiles">${cand.map(x=>`<button class="tile" style="min-height:72px" data-act="linkto" data-to="${esc(x)}"><span class="n num" style="font-family:var(--display);font-size:28px;line-height:1">${seatNo(x)}</span><span class="num">${units(seatOrders(x))?units(seatOrders(x))+" صنف":"ما طلبوا"}</span></button>`).join("")}</div>`:`<p class="empty">ما في جلسة مفتوحة ثانية تنشبك.</p>`}
+  ${cand.length?`<div class="tiles">${cand.map(x=>`<button class="tile" style="min-height:72px" data-act="linkto" data-to="${esc(x)}"><span class="n num" style="font-family:var(--display);font-size:28px;line-height:1">${esc(glab(x))}</span><span class="num">${units(seatOrders(x))?units(seatOrders(x))+" صنف":"ما طلبوا"}</span></button>`).join("")}</div>`:`<p class="empty">ما في جلسة مفتوحة ثانية تنشبك.</p>`}
   <p class="empty" style="font-size:13px">طلبات الجلسة الثانية تنتقل هنا وعليها رقمها، وأي طلب جديد يجي من باركودها ينضاف هنا.</p>
   <button class="link" data-act="back">رجوع</button>`; }
 let HUB_NEW=true, HUB_COMPACT=true; // صفحة الجلسة: الأجدد فوق
@@ -3138,9 +3153,11 @@ document.addEventListener("click",e=>{
     if(!document.startViewTransition||RM) return sw(); const r=b.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2, R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y)); // الثيم: دائرة تكبر من الزر
     const t=document.startViewTransition(sw); t.ready.then(()=>document.documentElement.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:600,easing:"cubic-bezier(.4,0,.2,1)",pseudoElement:"::view-transition-new(root)"})).catch(()=>{}); return }
   if(a==="linkopen"){ if(!OPS()||!seats[id]) return; return openSheet({kind:"link",id}) }
-  if(a==="linkto"){ if(!OPS()) return; const to=b.dataset.to, t=seats[to], s=seats[id]; if(!t||!s||linkTo(to)||linkedOf(to).length) return;
-    return run("seat:"+id,async()=>{ await db.doc("seats/"+to).update({link:id}); for(const o of seatOrders(to).filter(o=>!o.pd)) await db.doc("orders/"+o.id).update({seat:id,sid:s.sid,fs:seatNo(to)});
-      logIt("شبك الجلسة "+seatNo(to)+" مع الجلسة "+seatNo(id),{k:"edit",st:2}); flash(); toast("🔗 انشبكت "+seatNo(id)+"&"+seatNo(to)); openSheet({kind:"seat",id,tab:"hub"}) }) }
+  if(a==="linkto"){ if(!OPS()) return; const to0=b.dataset.to; if(!seats[to0]||!seats[id]||linkTo(to0)||linkTo(id)) return;
+    // v69: لو اخترت جلسة مشبوكة من قبل وهذي لحالها، هذي تنضم لها. ولو الثنتين مشبوكات، المجموعتين يصيرون وحدة
+    const into=linkedOf(to0).length&&!linkedOf(id).length?to0:id, add=into===id?[to0,...linkedOf(to0)]:[id], P0=seats[into];
+    return run("seat:"+into,async()=>{ for(const x of add){ await db.doc("seats/"+x).update({link:into}); for(const o of seatOrders(x).filter(o=>!o.pd)) await db.doc("orders/"+o.id).update({seat:into,sid:P0.sid,fs:o.fs||seatNo(x)}); }
+      logIt("شبك الجلسة "+add.map(seatNo).join(" و")+" مع الجلسة "+seatNo(into),{k:"edit",st:2}); flash(); toast("🔗 انشبكت "+[...new Set([into,...linkedOf(into),...add])].map(seatNo).sort((a,b)=>a-b).join("&")); openSheet({kind:"seat",id:into,tab:"hub"}) }) }
   if(a==="unlink"){ if(!OPS()) return; const to=b.dataset.to, t=seats[to], s=seats[id]; if(!t||!s||linkTo(to)!==id) return;
     return run("seat:"+id,async()=>{ for(const o of seatOrders(id).filter(o=>!o.pd&&Number(o.fs)===seatNo(to))) await db.doc("orders/"+o.id).update({seat:to,sid:t.sid,fs:null}); await db.doc("seats/"+to).update({link:null});
       logIt("فك الشبك بين الجلسة "+seatNo(id)+" والجلسة "+seatNo(to),{k:"edit",st:2}); toast("✂️ انفك الشبك، وطلبات "+seatNo(to)+" رجعت لها"); }) }
@@ -3389,7 +3406,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v68";
+const VER="v69";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
