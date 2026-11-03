@@ -346,7 +346,7 @@ const EN=[[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*ح
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-function photo(n){ n=String(n); if(/[آا]يس\s*تي/.test(n)) return "peachtea";
+function photo(n){ n=String(n); if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(/بطاطس\s*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -357,8 +357,8 @@ function photo(n){ n=String(n); if(/[آا]يس\s*تي/.test(n)) return "peachtea
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
-const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["ah","🥔","الحبش والمشوية","Grilled corn & baked potato"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
-const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn","ah"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
+const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["ah","🥔","الحبش والمشوية","Grilled corn & baked potato"],["dw","🥟","الأشك","Ashak (Afghan dumplings)"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
+const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn","ah","dw"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
 const CATN=Object.fromEntries(CATS.map(c=>[c[0],c]));
 const grpItems=(g,items)=>g[4].flatMap(k=>items.map((it,i)=>[it,i]).filter(([it])=>(CATS.some(c=>c[0]===it.cat)?it.cat:"other")===k)); // أصناف القسم مرتبة حسب الأقسام الداخلية
 const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out=[]; let last=null; list.forEach(x=>{ const k=CATS.some(c=>c[0]===x[0].cat)?x[0].cat:"other"; if(k!==last&&new Set(list.map(y=>y[0].cat)).size>1){ if(g[0]==="food"){ if(last!==null) out.push(`<i class="${cls} sep"></i>`); } else out.push(`<h4 class="${cls}">${lang==="en"?CATN[k][3]:CATN[k][2]}</h4>`); } last=k; out.push(x[1]); }); return out; };
@@ -1430,7 +1430,7 @@ const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل ب
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)/,fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
   if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
   if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
@@ -1442,6 +1442,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   if(RX.kz.test(n)) return {k:"kz",excl:"بدون ثلج",opts:["بثلج"]};
   if(/ماتشا/.test(n)) return {k:"mat",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
   if(RX.pan.test(n)) return {k:"pan",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
+  if(RX.dw.test(n)) return {k:"ak",excl:"بدون إضافات",opts:["نعناع","فلفل"]};
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",excl:"سادة",opts:["حبق","نعناع"]};
   return null; }
@@ -1459,6 +1460,7 @@ function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i))
   if(spec.k==="kz") return v.ex?{...base,price:KINZA.plain,note:"بدون ثلج"}:{...base,price:KINZA.ice,note:"بثلج",ok:on.length>0};
   if(spec.k==="moj") return {...base,note:and,ok:on.length>0};
   if(spec.k==="pan") return v.ex?{...base,note:"بدون إضافة"}:{...base,note:and,ok:on.length>0};
+  if(spec.k==="ak") return v.ex?{...base,note:"بدون إضافات"}:{...base,note:and,ok:on.length>0};
   if(spec.k==="mat"){ const milk=v.size==="coco"?"حليب جوز الهند":"حليب خالي من اللاكتوز"; return v.ex?{...base,note:"بدون سيروب، "+milk}:{...base,note:(and?and+"، ":"")+milk,ok:on.length>0}; }
   if(spec.k==="v60") return {...base,note:and,ok:on.length===1};
   if(spec.k==="tea"){ const sw=v.size==="stv"?"، سكر دايت (ستيفيا)":""; return v.ex?{...base,note:"سادة"+sw}:{...base,note:and+sw,ok:on.length>0}; }
@@ -1622,7 +1624,7 @@ async function start(){
 const plain=v=>v==null?null:"stringValue" in v?v.stringValue:"integerValue" in v?Number(v.integerValue):"doubleValue" in v?v.doubleValue:"booleanValue" in v?v.booleanValue:"arrayValue" in v?(v.arrayValue.values||[]).map(plain):"mapValue" in v?Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,y])=>[k,plain(y)])):null;
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر الساعة ٨ الصبح بتوقيت السعودية
 const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: القسم مفتوح لو ما أحد قرر
-const stOf=nm=>RX.ah.test(nm)?3:RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
+const stOf=nm=>RX.dw.test(nm)?4:RX.ah.test(nm)?3:RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
 function prepMenu(x){ if(!x||!Array.isArray(x.items)) return x; const lk=x.locks||{};
   const open=st=>{ const r=lk[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
   x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st!==2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
