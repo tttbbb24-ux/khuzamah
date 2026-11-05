@@ -286,9 +286,19 @@ html.gmon,html.gmon body{overflow:hidden}
 .irow{display:flex;align-items:center;gap:8px}
 .iav{position:relative;display:inline-block;width:var(--z);height:var(--z);border-radius:calc(var(--z)*.26);border:2px solid var(--gold);overflow:hidden;flex:none;background:#2a1a3a;vertical-align:middle}
 .iav img{width:100%;height:100%;object-fit:cover;display:block}.iav i{position:absolute;bottom:-3px;left:-3px;font-size:calc(var(--z)*.38);font-style:normal}
-.ipiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}
-.ipile{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
-.iempty{display:flex;align-items:center;justify-content:center;width:62px;height:87px;border:1px dashed var(--line);border-radius:10px;font-size:12px}
+.icar{display:flex;align-items:center;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -18px;padding:6px calc(50% - 57px);min-height:230px;-webkit-overflow-scrolling:touch}
+.icar::-webkit-scrollbar{display:none}
+.icc{flex:0 0 150px;margin:0 -14px;display:flex;justify-content:center;scroll-snap-align:center;border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;line-height:0;opacity:.35;transform:scale(.82);transition:opacity .25s,transform .25s;position:relative}
+.icc.cur{opacity:1;transform:scale(1);z-index:2}
+.kc.thr{outline:.3em solid #ff6b6b;outline-offset:.15em;filter:saturate(.7) brightness(.8)}
+.kc.thr::after{content:"🔄";position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);font-size:4.2em;line-height:1;filter:drop-shadow(0 .1em .2em #000)}
+.isk{position:relative;width:min(50%,190px);margin:0 auto}
+.isk>img{width:100%;display:block;filter:drop-shadow(0 12px 14px rgba(0,0,0,.6))}
+.isk .iin{position:absolute;left:-8%;right:-8%;top:38%;display:flex;gap:3px;justify-content:center}
+.isk .iin .kc{box-shadow:0 3px 6px #000a;animation:idrop .35s}
+@keyframes idrop{from{transform:translateY(-30px);opacity:0}}
+.isk .icnt{position:absolute;top:8%;right:-4%;background:var(--gold);color:#2a1a10;border-radius:18px;min-width:34px;padding:0 8px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;box-shadow:0 3px 8px #000}
+.idis{opacity:.45;filter:grayscale(.6)}
 .isack{width:110px;margin:0 auto;display:block;filter:drop-shadow(0 8px 10px rgba(0,0,0,.6))}
 .istep{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
 .step{display:flex;align-items:center;gap:10px}.step button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--gold);font:inherit;font-size:20px;font-weight:800}.step b{min-width:32px;text-align:center;font-size:20px;color:var(--gold)}
@@ -1778,7 +1788,8 @@ async function boot(id){ joinOnly=true; gid=id; mount(); ui={v:"wait"}; show(); 
 function listen(){ if(un) un(); un=ref().onSnapshot(d=>{ g=d.exists?d.data():null; ui.err=""; if(!g) ui.v="gone"; else if(ui.v==="gone"||ui.v==="wait") ui.v=""; host(); narrate(); paint(); },()=>{ g=null; ui.v="gone"; paint(); });
   clearInterval(tick); tick=setInterval(()=>{ if(!g||el.hidden) return; const now=Date.now();
     el.querySelectorAll("[data-end]").forEach(t=>{ const ms=+t.dataset.end-now; t.textContent=t.dataset.fmt==="s"?(ms>0?an(Math.ceil(ms/1000)):"خلص!"):mmss(ms); if(t.dataset.fmt==="s") t.classList.toggle("gz",ms<=0); });
-    if(isHost()&&g.st==="play") host(); },250); }
+    if(isHost()&&g.st==="play") host();
+    if(GT()==="insp"&&g.st==="play"&&g.d&&g.d.ph==="neg"&&now>g.d.t0+g.d.tl+800&&now-(ui.itk||0)>4000){ ui.itk=now; iTx(()=>{},true); } },250); }
 
 async function create(){ if(busy) return; const k=ui.gt||"brra", on=CATS.filter((_,i)=>!off.has(i)); if(k==="brra"&&on.length<3) return msg("خلّ ٣ فئات على الأقل");
   const n=String((el.querySelector("#gmn")||{}).value||"").trim().slice(0,16); if(!n) return msg("اكتب اسمك");
@@ -1883,8 +1894,7 @@ function rmIdx(s,ids){ const set=new Set(ids); let out="", got=""; [...(s||"")].
 function insDeal(){ const P=shuf(pls().map(p=>p.id)), N=P.length; let dk=[];
   Object.entries(IC).forEach(([c,x])=>{ if(c==="f"&&N<=3) return; for(let i=0;i<x.q;i++) dk.push(c) }); dk=shuf(dk);
   const h={}, m={}, sl={}, sx={}, n={}; P.forEach(p=>{ h[p]=dk.splice(0,6).join(""); m[p]=50; sl[p]=""; sx[p]=""; n[p]=0 });
-  const L=dk.splice(0,5).join(""), R=dk.splice(0,5).join("");
-  return {st:"play",r:1,a:{},d:{dk:dk.join(""),L,R,h,m,sl,sx,n,ord:P,ri:0,ins:P[0],ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},pr:[],bk:{},ev:[],ack:{},er:{},t0:0,tl:((g.cfg||{}).t||90)*1000,dry:0}}; }
+  return {st:"play",r:1,a:{},d:{dk:dk.join(""),L:"",R:"",h,m,sl,sx,n,ord:P,ri:0,ins:P[0],ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},pr:[],bk:{},ev:[],ack:{},er:{},t0:0,tl:((g.cfg||{}).t||90)*1000,dry:0}}; }
 
 function insEv(d,t){ d.ev=(d.ev||[]).concat([{t,at:Date.now()}]).slice(-5) }
 function payFrom(d,a,b,amt){ const x=Math.max(0,Math.min(amt,d.m[a]||0)); d.m[a]=(d.m[a]||0)-x; d.m[b]=(d.m[b]||0)+x; return x }
@@ -1910,18 +1920,15 @@ function blindPick(d,to,i){ const B=d.bl[to]; if(!B||i<0||i>=B.c.length) return;
   const j=(d.b[to]||"").indexOf(c); if(j>=0) d.b[to]=d.b[to].slice(0,j)+d.b[to].slice(j+1); toStand(d,d.ins,c); B.got=(B.got||"")+c; B.n--;
   if(B.n<=0||!(d.b[to]||"").length){ const dl={...B.dl,got:B.got}; const o={...d.bl}; delete o[to]; d.bl=o; finishPass(d,to,"deal",dl); } }
 
-function insApply(d,p,x){ const I=d.ins, ph=d.ph, mer=p!==I, er=t=>{ d.er={...(d.er||{}),[p]:{s:x.s,t}} };
+function refill(d,p){ d.h[p]=d.h[p]||""; while(d.h[p].length<6&&(d.dk||"").length){ d.h[p]+=d.dk.slice(-1); d.dk=d.dk.slice(0,-1); }
+  if(!(d.dk||"").length&&!d.dry){ d.dry=1; insEv(d,"خلصت الكومة — هذي آخر جولة"); } }
+function insApply(d,p,x){ const I=d.ins, ph=d.ph, mer=p!==I, er=t=>{ throw new Error(t) };
   d.h[p]=d.h[p]||"";
-  if(x.t==="ds"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))]; if(!ids.length) return;
-    if((d.ds[p]||0)+ids.length>5) return er("ترمي ٥ كروت بالكثير كل جولة"); const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; const pile=x.p==="R"?"R":"L"; d[pile]=(d[pile]||"")+got; d.ds={...d.ds,[p]:(d.ds[p]||0)+ids.length}; return; }
-  if(x.t==="tk"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); if(d.h[p].length>=6) return er("يدك فيها ٦ كروت");
-    if(x.p==="D"){ if(!d.dk.length){ if(!d.dry){ d.dry=1; insEv(d,"خلصت الكومة — هذي آخر جولة"); } return er("خلصت الكومة المقلوبة"); }
-      d.h[p]+=d.dk.slice(-1); d.dk=d.dk.slice(0,-1); d.tD={...d.tD,[p]:1}; if(!d.dk.length&&!d.dry){ d.dry=1; insEv(d,"خلصت الكومة — هذي آخر جولة"); } return; }
-    if((d.tD||{})[p]) return er("سحبت من المقلوبة، ما تقدر ترجع للمكشوفة"); const pile=x.p==="R"?"R":"L"; if(!d[pile]) return er("الكومة فاضية");
-    d.h[p]+=d[pile].slice(-1); d[pile]=d[pile].slice(0,-1); return; }
+  if(x.t==="sw"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))]; if(!ids.length) return er("اختار الكروت اللي تبغى تبدّلها");
+    if((d.ds[p]||0)+ids.length>5) return er("تبدّل ٥ كروت بالكثير كل جولة"); if(!(d.dk||"").length) return er("خلصت الكومة، ما فيه تبديل");
+    const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; d.L=(d.L||"")+got; d.ds={...d.ds,[p]:(d.ds[p]||0)+ids.length}; refill(d,p); return; }
   if(x.t==="bg"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))];
     if(ids.length<1||ids.length>5) return er("حط من ١ لين ٥ كروت"); if(!LEG.includes(x.c)) return er("صرّح بصنف مسموح");
-    if(d.h[p].length<6&&((d.dk||"").length||(!(d.tD||{})[p]&&(d.L||d.R)))) return er("كمّل يدك لين ٦ أول");
     const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; d.b[p]=got; d.dc={...d.dc,[p]:x.c}; d.dn={...d.dn,[p]:1}; return; }
   if(x.t==="ub"){ if(ph!=="prep"||!d.dn[p]) return; d.h[p]+=d.b[p]||""; d.b[p]=""; const dc={...d.dc}; delete dc[p]; d.dc=dc; d.dn={...d.dn,[p]:0}; return; }
   if(ph!=="neg") return er("مو وقتها");
@@ -1938,18 +1945,21 @@ function insApply(d,p,x){ const I=d.ins, ph=d.ph, mer=p!==I, er=t=>{ d.er={...(d
   if(x.t==="ps") return finishPass(d,to,"free");
   if(x.t==="in") return doInspect(d,to); }
 
-async function insHost(){ if(!g.d||!g.d.ord) return; const d=JSON.parse(JSON.stringify(g.d)), a=g.a||{}; let ch=false; d.ack=d.ack||{};
-  Object.keys(a).sort((p,q)=>((a[p]||{}).at||0)-((a[q]||{}).at||0)).forEach(p=>{ const x=a[p]; if(!x||!x.s||x.s<=(d.ack[p]||0)) return; d.ack[p]=x.s; ch=true; try{ insApply(d,p,x) }catch(e){} });
-  const now=Date.now(), M=iMerD(d);
-  if(d.ph==="prep"&&M.length&&M.every(p=>d.dn[p])){ d.ph="neg"; d.t0=now; ch=true; M.forEach(p=>{ if(!(d.b[p]||"").length) d.out[p]={k:"none"} }); }
+function insAdvance(d){ const now=Date.now(), M=iMerD(d);
+  if(d.ph==="prep"&&M.length&&M.every(p=>d.dn[p])){ d.ph="neg"; d.t0=now; M.forEach(p=>{ if(!(d.b[p]||"").length) d.out[p]={k:"none"} }); }
   if(d.ph==="neg"){
-    if(now>d.t0+d.tl){ M.forEach(p=>{ if(d.out[p]) return; const B=(d.bl||{})[p]; if(B){ while((d.bl||{})[p]) blindPick(d,p,Math.floor(Math.random()*d.bl[p].c.length)); } else finishPass(d,p,"time"); }); ch=true; }
-    if(M.every(p=>d.out[p])){ d.ph="res"; ch=true; } }
-  if(ch) await up({d}); }
-async function insSkip(){ const d=JSON.parse(JSON.stringify(g.d));
-  if(d.ph==="prep"){ iMerD(d).forEach(p=>{ if(!d.dn[p]){ d.dn[p]=1; d.b[p]=""; } }); }
-  else if(d.ph==="neg") d.t0=Date.now()-d.tl-1;
-  await up({d}); }
+    if(now>d.t0+d.tl){ M.forEach(p=>{ if(d.out[p]) return; const B=(d.bl||{})[p]; if(B){ while((d.bl||{})[p]) blindPick(d,p,Math.floor(Math.random()*d.bl[p].c.length)); } else finishPass(d,p,"time"); }); }
+    if(M.every(p=>d.out[p])) d.ph="res"; } }
+// كل جوال يكتب حركته بنفسه (معاملة)، فما يتعلق شي لو جوال صاحب اللعبة نام
+let iBusy=false;
+async function iTx(fn,quiet){ if(iBusy) return; iBusy=true;
+  try{ await db.runTransaction(async t=>{ const s=await t.get(ref()); if(!s.exists) throw new Error("اللعبة انتهت"); const G=s.data(); if(G.st!=="play"||!G.d||!G.d.ord) return;
+      const d=JSON.parse(JSON.stringify(G.d)), was=JSON.stringify(d), ex=fn(d)||{}; if(ex.st!=="end") insAdvance(d);
+      if(JSON.stringify(d)===was&&!ex.st) return; t.update(ref(),{d,...ex}); });
+    if(ui.err){ ui.err=""; paint(true); } }
+  catch(e){ if(!quiet) msg(e&&e.code==="permission-denied"?"ما تقدر تعدل — قواعد فايربيس تحتاج تحديث":e&&e.message&&!e.code?e.message:"تعذر الاتصال، جرّب مرة ثانية"); }
+  finally{ iBusy=false } }
+function insSkipD(d){ if(d.ph==="prep"){ iMerD(d).forEach(p=>{ if(!d.dn[p]){ d.dn[p]=1; d.b[p]=""; } }); } else if(d.ph==="neg") d.t0=Date.now()-d.tl-1; }
 function insScore(d){ const P=(d.ord||[]).filter(p=>(g.pl||{})[p]), S={};
   P.forEach(p=>S[p]={m:d.m[p]||0,sv:csum(d.sl[p],"v")+csum(d.sx[p],"v"),kq:0,kqd:[],nl:(d.sl[p]||"").length,nx:(d.sx[p]||"").length});
   [...LEG].forEach(c=>{ const arr=P.map(p=>({p,n:ccnt(d.sl[p],c)})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n); if(!arr.length) return; const top=arr[0].n, kings=arr.filter(x=>x.n===top);
@@ -1958,12 +1968,12 @@ function insScore(d){ const P=(d.ord||[]).filter(p=>(g.pl||{})[p]), S={};
     const rest=arr.filter(x=>x.n<top); if(!rest.length) return; const q=rest[0].n, qs=rest.filter(x=>x.n===q), each=Math.floor(IC[c].Q/qs.length);
     qs.forEach(x=>{ S[x.p].kq+=each; S[x.p].kqd.push("ملكة "+IC[c].n+(qs.length>1?" (تعادل)":"")+" +"+an(each)) }); });
   P.forEach(p=>S[p].tot=S[p].m+S[p].sv+S[p].kq); return S; }
-async function insNext(){ const d=JSON.parse(JSON.stringify(g.d)); d.n[d.ins]=(d.n[d.ins]||0)+1; const K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
+function insNextD(d){ if(d.ph!=="res") return; d.n[d.ins]=(d.n[d.ins]||0)+1; const K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
   const all=P.every(p=>(d.n[p]||0)>=K);
-  if(all||d.dry||P.length<2){ d.fin=insScore(d); d.why=all?"":"خلصت الكومة"; const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return up({st:"end",d,sc}); }
+  if(all||d.dry||P.length<2){ d.fin=insScore(d); d.why=all?"":"خلصت الكومة"; const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return {st:"end",sc}; }
   let ri=d.ri, nx=""; for(let k=0;k<d.ord.length;k++){ ri++; const c=d.ord[ri%d.ord.length]; if((g.pl||{})[c]&&(d.n[c]||0)<K){ nx=c; break; } }
-  if(!nx){ d.fin=insScore(d); const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return up({st:"end",d,sc}); }
-  Object.assign(d,{ri,ins:nx,ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},er:{},t0:0}); return up({d,r:(g.r||1)+1}); }
+  if(!nx){ d.fin=insScore(d); const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return {st:"end",sc}; }
+  Object.assign(d,{ri,ins:nx,ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},er:{},t0:0}); d.ord.forEach(p=>refill(d,p)); }
 
 /* --- فيديو «أنت المفتش»: يطلع للمفتش أول كل جولة، والأخضر ينقص بالكود --- */
 function iIntro(id){ const av=((g.pl||{})[id]||{}).av||"01", o=document.createElement("div"); o.className="iintro";
@@ -1979,8 +1989,7 @@ function iIntro(id){ const av=((g.pl||{})[id]||{}).av||"01", o=document.createEl
 function iMaybeIntro(){ if(!g||GT()!=="insp"||g.st!=="play"||ui.ivw) return; const p=iMe(), d=iD(); if(!p||d.ph!=="prep"||p.id!==d.ins) return;
   if(local().length>1&&ui.rev!==p.id) return; const k=gid+":"+d.ri+":"+p.id; if(ui.introK===k) return; ui.introK=k; iIntro(p.id); }
 /* --- شاشات التفتيش --- */
-const iPend=p=>{ const x=(g.a||{})[p]; return !!x&&x.s>((iD().ack||{})[p]||0) };
-async function iAct(p,x){ if(iPend(p)) return; const cur=Math.max(((iD().ack||{})[p])||0,((g.a||{})[p]||{}).s||0); ui.iw=p; return up({["a."+p]:{...x,s:cur+1,at:Date.now()}}); }
+async function iAct(p,x){ return iTx(d=>insApply(d,p,x)); }
 function iMe(){ const L=local(), d=iD(); if(!L.length) return null;
   const blocked=id=>id!==d.ins&&(d.ph==="prep"?!!d.dn[id]:d.ph==="neg"?!!(d.out[id]||(d.bl||{})[id]):false);
   if(ui.lp&&L.some(p=>p.id===ui.lp)&&!(L.length>1&&blocked(ui.lp)&&L.some(p=>p.id!==ui.lp&&(p.id===d.ins?d.ph==="neg":!blocked(p.id))))) return L.find(p=>p.id===ui.lp); ui.lp="";
@@ -1991,7 +2000,6 @@ const dealTxt=(dl,full)=>{ if(!dl) return ""; const o=[]; if(dl.m) o.push(an(dl.
   if(dl.r) o.push(full&&dl.got?"من الكيس: "+cnames(dl.got):"كرت عشوائي من الكيس"+(dl.r>1?" × "+an(dl.r):""));
   if(dl.p) o.push("وعد"); return o.join(" + ")||"بدون شي"; };
 function iToast(){ const ev=(iD().ev||[]).filter(e=>Date.now()-e.at<9000); return ev.length?`<div class="itoast">${esc(ev[ev.length-1].t)}</div>`:"" }
-function iErr(p){ const e=(iD().er||{})[p]; if(!e||(ui.ies||{})[p]===e.s) return ""; return `<p class="gerr">${esc(e.t)}</p>` }
 function iHud(me){ const d=iD(), K=(g.cfg||{}).k||2, tot=(d.ord||[]).length*K, L=local();
   const sw=L.length>1?`<div class="gchips">${L.map(p=>`<button class="gpk ${p.id===me?"on":""}" data-g="ilp" data-x="${p.id}">${esc(p.n)}</button>`).join("")}</div>`:"";
   return `${sw}<div class="ihud"><span>${iava(me,30)} <b>${esc(nm(me))}</b></span><span>💰 <b>${an(d.m[me]||0)}</b></span><span>الجولة ${an((d.ri||0)+1)}/${an(tot)}</span><button class="glnk" data-g="ivw">البسطات ›</button></div>${iToast()}`; }
@@ -2005,26 +2013,32 @@ function vIStands(){ const d=iD(), P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
     ${nx?`<div class="irow"><span class="ihand">${kb(3.6)}</span><small class="gs">${an(nx)} ممنوع مقلوب — يتكشف آخر اللعبة</small></div>`:""}</div>`; }).join("")}
     <small class="gs">الكومة المقلوبة: ${an((d.dk||"").length)} كرت</small>${btn("رجوع","ivw","gl")}</div>`; }
 
-function vIPrepM(me){ const d=iD(), h=d.h[me]||"", st=(ui.ist||{})[me+":"+d.ri]||"mk", sel=ui.isel||[], pd=iPend(me), H=head("التفتيش","المفتش: "+esc(nm(d.ins)));
+function iCar(h,hide,mark){ const it=[...h].map((c,i)=>hide.includes(i)?"":`<button class="icc" data-g="icar" data-x="${i}">${kc(c,14.4,mark.includes(i)?"thr":"")}</button>`).join("");
+  return `<div class="icar" data-sk="icar">${it||`<small class="gs" style="flex:1;text-align:center">ما باقي كروت في يدك</small>`}</div>`; }
+function iCarInit(){ const c=el&&el.querySelector(".icar"); if(!c) return;
+  const f=()=>{ const it=[...c.querySelectorAll(".icc")]; if(!it.length) return; const r=c.getBoundingClientRect(), cx=r.left+r.width/2; let b=it[0], bd=1e9;
+    it.forEach(m=>{ const q=m.getBoundingClientRect(), z=Math.abs(q.left+q.width/2-cx); if(z<bd){ bd=z; b=m; } }); it.forEach(m=>m.classList.toggle("cur",m===b)); };
+  c.addEventListener("scroll",()=>requestAnimationFrame(f),{passive:true}); f(); }
+function iSelFix(me){ const k=me+":"+iD().ri; if(ui.iselK!==k){ ui.iselK=k; ui.isel=[]; ui.ithr=[]; ui.idc=""; } }
+function vIPrepM(me){ const d=iD(), h=d.h[me]||"", st=(ui.ist||{})[me+":"+d.ri]||"mk", H=head("التفتيش","المفتش: "+esc(nm(d.ins))); iSelFix(me);
   if(d.dn[me]){ const M=iMerD(d), w=M.filter(p=>!d.dn[p]);
     return `${H}${iHud(me)}${center(`<img class="isack" src="ins_sack.webp" alt=""><h3>كيسك جاهز</h3><small class="gs">صرّحت: <b class="gold">${IC[d.dc[me]].n} × ${an((d.b[me]||"").length)}</b></small>
-    <div class="ihand">${[...(d.b[me]||"")].map(c=>kc(c,4.6)).join("")}</div><small class="gs">${w.length?"ننتظر: "+names(w):"يبدأ التفاوض…"}</small>${btn("عدّل الكيس","iub","gl")}${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
-  if(st==="mk"){ const left=5-(d.ds[me]||0), can=sel.length&&sel.length<=left, full=h.length>=6, tD=(d.tD||{})[me], go=full||!((d.dk||"").length||(!tD&&(d.L||d.R)));
-    const pile=(P,lbl)=>{ const top=(d[P]||"").slice(-1); return `<div class="ipile"><small>${lbl}</small>${top?kbtn(kc(top,6),"itk",P,"",full||tD||pd):`<span class="iempty">فاضية</span>`}</div>` };
-    return `${H}${iHud(me)}<div class="gmb"><div class="gcard"><b>١. السوق</b><small>ارمِ لين ٥ كروت وكمّل يدك لين ٦. تقدر تاخذ من فوق الكومتين المكشوفة أو من المقلوبة. لو سحبت من المقلوبة ما ترجع للمكشوفة.</small></div>
-    <small class="gs">يدك (${an(h.length)}/٦) — اضغط الكرت اللي تبغى ترميه</small>${iHand(me,sel,"isel")}
-    <div class="ggrid">${btn("ارمِ ← اليمين","ids","gl","R")}${btn("ارمِ ← اليسار","ids","gl","L")}</div>${!can&&sel.length?`<small class="gs">باقي لك ترمي ${an(left)} كروت بس</small>`:""}
-    <div class="ipiles">${pile("R","المكشوفة يمين")}${pile("L","المكشوفة يسار")}<div class="ipile"><small>المقلوبة · ${an((d.dk||"").length)}</small>${kbtn(kb(6),"itk","D","",full||pd||!(d.dk||"").length)}</div></div>
-    ${iErr(me)}${go?btn("التالي: عبّي الكيس ←","ist","gb","bag"):`<small class="gs" style="text-align:center">كمّل يدك لين ٦ عشان تكمل</small>`}</div>`; }
-  const n=sel.length, dc=ui.idc&&LEG.includes(ui.idc)?ui.idc:"", hon=dc&&n&&sel.every(i=>h[i]===dc);
-  return `${H}${iHud(me)}<div class="gmb"><div class="gcard"><b>٢. الكيس والتصريح</b><small>اختار من ١ لين ٥ كروت للكيس، وقول للمفتش صنف مسموح واحد × عدد الكروت.</small></div>
-  <small class="gs">اضغط الكروت اللي تدخل الكيس (${an(n)}/٥)</small>${iHand(me,sel,"isel")}
-  <small class="gs">ايش بتقول للمفتش؟</small><div class="gchips">${[...LEG].map(c=>`<button class="gpk ${dc===c?"on":""}" data-g="idc" data-x="${c}">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
-  ${dc&&n?`<small class="gs" style="color:${hon?"var(--green)":"#ff8f8f"}">${hon?"تصريح صادق — لو فتّشك يدفع لك الغرامة":"تصريح كاذب — لو فتّشك تخسر كل كرت غير "+IC[dc].n}</small>`:""}
-  ${iErr(me)}${n>5?`<small class="gs" style="color:#ff8f8f">الكيس يشيل ٥ كروت بالكثير</small>`:""}${btn("📦 أرسل الكيس للمفتش","isend","gb")}${btn("← رجوع للسوق","ist","gl","mk")}</div>`; }
+    <div class="ihand">${[...(d.b[me]||"")].map(c=>kc(c,4.6)).join("")}</div><small class="gs">${w.length?"ننتظر: "+names(w):"يبدأ التفاوض…"}</small>${btn("عدّل الكيس","iub","gl")}${w.length?btn("كمّلوا بدونهم","skip","gl"):""}${errH()}`)}`; }
+  if(st==="mk"){ const left=5-(d.ds[me]||0), thr=(ui.ithr||[]).filter(i=>i<h.length), dk=(d.dk||"").length;
+    return `${H}${iHud(me)}<div class="gmb"><div class="gcard" style="text-align:center"><b>١. بدّل كروتك</b><small>اسحب يمين ويسار بين كروتك. اضغط الكرت اللي في النص عشان تعلّمه، بعدين «بدّلها» وتجيك بدالها كروت جديدة من الكومة. تقدر تبدّل لين ٥ كروت كل جولة.</small></div>
+    ${iCar(h,[],thr)}
+    <small class="gs" style="text-align:center">${dk?`باقي لك تبدّل ${an(left)} · الكومة ${an(dk)} كرت`:"خلصت الكومة — ما فيه تبديل"}</small>
+    ${thr.length&&dk&&left?btn("🔄 بدّلها ("+an(thr.length)+")","iswp","gl ibad"):""}${errH()}${btn("التالي: عبّي الكيس ←","ist","gb","bag")}</div>`; }
+  const sel=(ui.isel||[]).filter(i=>i<h.length), n=sel.length, dc=ui.idc&&LEG.includes(ui.idc)?ui.idc:"", hon=dc&&n&&sel.every(i=>h[i]===dc);
+  return `${H}${iHud(me)}<div class="gmb"><div style="text-align:center"><b style="color:var(--gold)">٢. عبّي كيسك</b><small class="gs" style="display:block">اضغط الكرت اللي في النص ينزل في الكيس · اضغط الكرت داخل الكيس يرجع</small></div>
+  <div class="isk"><img src="ins_open.webp" alt=""><div class="iin">${sel.map(i=>kbtn(kc(h[i],3.4),"iout",i)).join("")}</div><b class="icnt">${an(n)} / ٥</b></div>
+  ${iCar(h,sel,[])}
+  <div class="gcard" style="text-align:center"><small>ايش بتقول للمفتش إن فيه؟ صنف واحد مسموح × عدد الكروت</small><div class="gchips" style="justify-content:center">${[...LEG].map(c=>`<button class="gpk ${dc===c?"on":""}" data-g="idc" data-x="${c}">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
+  ${dc&&n?`<small style="color:${hon?"var(--green)":"#ff8f8f"}">${hon?"تصريح صادق — لو فتّشك يدفع لك الغرامة":"تصريح كاذب — لو فتّشك ياخذ منك كل كرت غير "+IC[dc].n}</small>`:""}</div>
+  ${errH()}${!n?`<small class="gs" style="text-align:center;color:#ffb4b4">حط كرت واحد على الأقل</small>`:""}${btn("📦 أرسل الكيس للمفتش","isend",n&&dc?"gb":"gb idis")}${btn("← رجوع للتبديل","ist","gl","mk")}</div>`; }
 function vIPrepI(me){ const d=iD(), M=iMerD(d);
   return `${head("التفتيش","🔎 أنت المفتش")}${iHud(me)}${center(`<img class="ibody" style="margin:0 auto" src="${bodyOf(me)}" alt=""><div class="gbig">🔎 أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
-  <div class="gcard gpl">${M.map(p=>`<div class="gpr"><span class="irow">${iava(p,30)} ${esc(nm(p))}</span><b>${d.dn[p]?"✓ جاهز":"يعبّي…"}</b></div>`).join("")}</div>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
+  <div class="gcard gpl">${M.map(p=>`<div class="gpr"><span class="irow">${iava(p,30)} ${esc(nm(p))}</span><b>${d.dn[p]?"✓ جاهز":"يعبّي…"}</b></div>`).join("")}</div>${btn("كمّلوا بدونهم","skip","gl")}${errH()}`)}`; }
 
 function iOfBox(me,to){ // بناء عرض التاجر أو طلب المفتش
   const d=iD(), isI=me===d.ins, owner=isI?to:me, key=(isI?"dm":"of")+owner, O=(ui.iof||{})[key]||(ui.iof={...(ui.iof||{}),[key]:{m:0,sL:[],sX:[],xn:0,r:0,p:0}})[key];
@@ -2046,7 +2060,7 @@ function vINegM(me){ const d=iD(), I=d.ins, o=d.out[me], dc=d.dc[me], bag=d.b[me
   else body=`${of?`<small class="gs" style="text-align:center">عرضك الحالي: <b class="gold">${esc(dealTxt(of))}</b> — تقدر تعدّله</small>`:""}${iOfBox(me)}`;
   return `${H}${iHud(me)}<div class="gmb">${iTimer()}<div class="ifig"><img class="ibody" style="height:130px" src="${bodyOf(I)}" alt=""><div style="padding-bottom:20px"><b>كيسك عند ${esc(nm(I))}</b><small class="gs">🔎 المفتش هالجولة</small></div></div>
    <div class="gcard" style="text-align:center"><small class="gs">صرّحت: <b class="gold">${IC[dc].n} × ${an(bag.length)}</b></small><div class="ihand">${[...bag].map(c=>kc(c,4.4)).join("")}</div></div>
-   ${body}${iErr(me)}</div>`; }
+   ${body}${errH()}</div>`; }
 function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==="none")), H=head("التفتيش","🔎 أنت المفتش");
   const pages=M.map(p=>{ const o=d.out[p], dc=d.dc[p], n=(d.b[p]||"").length||((o&&o.bag)||"").length, of=(d.of||{})[p], dm=(d.dm||{})[p], bl=(d.bl||{})[p], owe=(d.pr||[]).some(x=>x.b===me&&x.t===p);
     let act="";
@@ -2062,7 +2076,7 @@ function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==
       <div class="ifig"><img class="ibody" src="${bodyOf(p)}" alt="">${o?"":`<img class="isack" src="ins_sack.webp" alt="">`}</div>${act}</div>`; }).join("");
   const left=M.filter(p=>!d.out[p]).length;
   return `${H}${iHud(me)}<div class="gmb">${iTimer()}<small class="gs" style="text-align:center">${an(left)} كيس باقي · اسحب يمين ويسار بين الأكياس</small>
-   <div class="isw" data-sk="isw">${pages||`<small class="gs">ما فيه أكياس</small>`}</div>${iErr(me)}${isHost()?btn("خلّص الوقت","skip","gl"):""}</div>`; }
+   <div class="isw" data-sk="isw">${pages||`<small class="gs">ما فيه أكياس</small>`}</div>${errH()}${btn("خلّص الوقت","skip","gl")}</div>`; }
 function vIOut(p,mine){ const d=iD(), o=d.out[p]||{}, dc=o.dc?IC[o.dc].n:"", I=d.ins, cur=(iMe()||{}).id, full=cur===p||cur===I;
   const row=(t,c)=>`<div class="gcard iout ${c||""}" style="text-align:center">${t}</div>`;
   if(o.k==="none") return row(`<b>${esc(nm(p))} ما أرسل كيس</b>`);
@@ -2077,7 +2091,7 @@ function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).
    ${M.map(p=>`<div class="irow">${iava(p,34)}<b>${esc(nm(p))}</b></div>${vIOut(p,p===me)}`).join("")}
    <div class="gcard gpl">${P.map(p=>`<div class="gpr"><span class="irow">${iava(p,26)} ${esc(nm(p))}</span><b>💰 ${an(d.m[p]||0)}</b></div>`).join("")}</div>
    ${d.dry?`<small class="gs" style="text-align:center">خلصت الكومة — هذي آخر جولة</small>`:""}
-   ${isHost()?btn(last?"النتيجة النهائية":"الجولة الجاية ←","next"):waitHost()}</div>`; }
+   ${btn(last?"النتيجة النهائية":"الجولة الجاية ←","next")}${errH()}</div>`; }
 function vInsp(){ if(ui.ivw) return ibg("ins_rug.webp")+vIStands(); const p=iMe(); if(!p) return vJoin(); const d=iD(), L=local(); const BG=ibg(p.id===d.ins&&d.ph!=="res"?"ins_counter.webp":"ins_rug.webp");
   if(L.length>1&&ui.rev!==p.id) return hand(p,false,"التفتيش","الشاشة مخفية");
   const me=p.id; if(d.ph==="prep") return BG+(me===d.ins?vIPrepI(me):vIPrepM(me));
@@ -2092,13 +2106,15 @@ function vIEnd(){ const d=iD(), F=d.fin||{}, BG=ibg("ins_rug.webp"), again=(isHo
 
 async function iClick(a,x){ const p=iMe(), me=p&&p.id, d=iD();
   if(a==="ivw"){ ui.ivw=!ui.ivw; return paint(); }
-  if(a==="ilp"){ ui.lp=x; ui.rev=""; ui.isel=[]; return paint(); }
+  if(a==="ilp"){ ui.lp=x; ui.rev=""; ui.isel=[]; ui.ithr=[]; ui.iselK=""; return paint(); }
   if(!me) return;
-  const er=(d.er||{})[me]; if(er){ ui.ies={...(ui.ies||{}),[me]:er.s}; }
-  if(a==="isel"){ const i=+x, s=ui.isel||[]; ui.isel=s.includes(i)?s.filter(y=>y!==i):s.concat(i); return paint(); }
-  if(a==="ids"){ const s=ui.isel||[]; if(!s.length) return msg("اختار كروت ترميها أول"); ui.isel=[]; return iAct(me,{t:"ds",i:s,p:x}); }
-  if(a==="itk") return iAct(me,{t:"tk",p:x});
-  if(a==="ist"){ ui.ist={...(ui.ist||{}),[me+":"+d.ri]:x}; ui.isel=[]; return paint(); }
+  if(a==="icar"){ const b=el.querySelector(`.icar .icc[data-x="${x}"]`); if(b&&!b.classList.contains("cur")){ b.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}); return; }
+    const i=+x, st=(ui.ist||{})[me+":"+d.ri]||"mk";
+    if(st==="mk"){ const t=ui.ithr||[]; ui.ithr=t.includes(i)?t.filter(y=>y!==i):t.concat(i); return paint(); }
+    const s=ui.isel||[]; if(s.includes(i)) return; if(s.length>=5) return msg("الكيس يشيل ٥ كروت بالكثير"); ui.err=""; ui.isel=s.concat(i); return paint(); }
+  if(a==="iout"){ const i=+x; ui.isel=(ui.isel||[]).filter(y=>y!==i); ui.err=""; return paint(); }
+  if(a==="iswp"){ const t=ui.ithr||[]; if(!t.length) return msg("علّم الكروت اللي تبغى تبدّلها أول"); ui.ithr=[]; return iAct(me,{t:"sw",i:t}); }
+  if(a==="ist"){ ui.ist={...(ui.ist||{}),[me+":"+d.ri]:x}; ui.isel=[]; ui.ithr=[]; ui.err=""; return paint(); }
   if(a==="idc"){ ui.idc=x; return paint(); }
   if(a==="isend"){ const s=ui.isel||[]; if(!s.length) return msg("حط كرت واحد على الأقل"); if(s.length>5) return msg("الكيس يشيل ٥ كروت بالكثير"); if(!ui.idc) return msg("اختار ايش بتصرّح");
     const c=ui.idc; ui.isel=[]; ui.idc=""; return iAct(me,{t:"bg",i:s,c}); }
@@ -2134,13 +2150,12 @@ async function startGame(){ if(busy||!isHost()) return; const P=pls(), t=GT(); i
     else if(t==="mafia"){ say("بدأت اللعبة."); await up({...mafiaDeal(),sc:{},hs:{}}); }
     else if(t==="insp"){ if(P.length>5) return msg("الحد ٥ لاعبين"); await up({...insDeal(),sc:{},hs:{}}); }
   }finally{ busy=false } }
-async function nextRound(){ if(busy||!isHost()) return; busy=true; const t=GT();
+async function nextRound(){ if(GT()==="insp") return iTx(d=>insNextD(d)); if(busy||!isHost()) return; busy=true; const t=GT();
   try{ if(t==="brra"){ if(g.r>=ROUNDS) await up({st:"end"}); else await up(pickRound(g.r+1)); }
     else if(t==="five") await fiveNext();
     else if(t==="lies"){ if(g.r>=QN) await up({st:"end"}); else { const x=await lieQ(g.r+1); if(x) await up(x); } }
     else if(t==="mafia"){ const d=g.d; if(g.ph==="day"){ if(d.win) await up({st:"end"}); else await up({ph:"talk",t0:Date.now()}); }
       else if(g.ph==="out"){ if(d.win) await up({st:"end"}); else await up({ph:"night",a:{},v:{},d:{...d,n:(d.n||1)+1,kill:"",saved:false,out:""}}); } }
-    else if(t==="insp"){ if((g.d||{}).ph==="res") await insNext(); }
   }finally{ busy=false } }
 async function newGame(){ if(busy||!isHost()) return; busy=true; spoke=""; await up({st:"lobby",r:0,ph:"",sc:{},hs:{},seen:{},v:{},g:"",last:null,a:{},d:{},used:[]}); busy=false; }
 let hostBusy=false;
@@ -2162,9 +2177,9 @@ async function host(){ if(!isHost()||!g||g.st!=="play"||hostBusy) return; const 
       else if(g.ph==="night"&&mAlive().every(p=>(g.a||{})[p])) await mafiaNight();
       else if(g.ph==="talk"&&now>g.t0+((g.cfg||{}).talk||180)*1000) await up({ph:"vote",v:{}});
       else if(g.ph==="vote"&&mAlive().every(p=>(g.v||{})[p])) await mafiaVote();
-    } else if(t==="insp") await insHost();
+    }
   }finally{ hostBusy=false } }
-async function skip(){ if(!isHost()||busy) return; busy=true; const t=GT();
+async function skip(){ if(GT()==="insp") return iTx(d=>insSkipD(d)); if(!isHost()||busy) return; busy=true; const t=GT();
   try{ if(t==="brra"){
       if(g.ph==="see") await up({ph:"ask",t0:Date.now(),qi:0});
       else if(g.ph==="ask") await up({ph:"vote"});
@@ -2172,7 +2187,6 @@ async function skip(){ if(!isHost()||busy) return; busy=true; const t=GT();
       else if(g.ph==="guess") await finish(false);
     } else if(t==="five"){ if(g.ph==="ready"){ busy=false; return fiveNext(); } if(g.ph==="say") await up({ph:"vote"}); else if(g.ph==="vote") await fiveFinish(); }
     else if(t==="lies"){ if(g.ph==="q") await lieJudge(); }
-    else if(t==="insp") await insSkip();
     else if(t==="mafia"){ if(g.ph==="see") await up({ph:"night",a:{}}); else if(g.ph==="night") await mafiaNight(); else if(g.ph==="talk") await up({ph:"vote",v:{}}); else if(g.ph==="vote") await mafiaVote(); }
   }finally{ busy=false } }
 
@@ -2341,7 +2355,7 @@ function paint(force){ if(!el||el.hidden) return; const ae=document.activeElemen
   else if(g.st==="end") h=vEnd();
   else { const t=GT(); h=t==="five"?vFive():t==="lies"?vLies():t==="mafia"?vMafia():t==="insp"?vInsp():vBrra(); }
   const keep={}, sk={}; el.querySelectorAll("input[id]").forEach(i=>keep[i.id]=i.value); el.querySelectorAll("[data-sk]").forEach(e=>sk[e.dataset.sk]=e.scrollLeft);
-  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} }
+  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} try{ iCarInit() }catch(e){} }
 async function onClick(e){ const b=e.target.closest("[data-g]"); if(!b) return; const a=b.dataset.g, x=b.dataset.x; ui.err=""; const ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&el.contains(ae)&&a!=="lans") ae.blur();
   if(a==="close") return hide();
   if(a==="set"){ ui.v=x==="insp"?"iov":"set"; ui.gt=x; return paint(); } if(a==="iovgo"){ ui.v="set"; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
