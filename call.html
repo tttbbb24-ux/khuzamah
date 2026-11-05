@@ -262,6 +262,44 @@ html.gmon,html.gmon body{overflow:hidden}
 .gch5{text-align:center;align-items:center}.ghard{align-self:center;background:#ff8a7a22;color:#ffb3a8;border:1px solid #ff8a7a66;border-radius:99px;padding:2px 12px;font-size:13px;font-weight:800}
 .gyes{background:var(--green);color:#06210f}.gno{background:#ff8a7a;color:#2a0805}
 .gok{color:var(--green)!important}.gbad{color:#ff8a7a!important}
+
+/* ===== التفتيش ===== */
+.kc{--a:#2fae7c;--a2:#0f3d2c;--a3:#8ff0c4;position:relative;display:inline-block;vertical-align:top;flex:none;box-sizing:border-box;width:10.4em;aspect-ratio:63/88;border-radius:1.3em;overflow:hidden;font-size:var(--s,10px);background:radial-gradient(ellipse at 50% 35%,var(--a),var(--a2) 75%);box-shadow:0 .8em 1.6em rgba(0,0,0,.6);color:#fff;direction:rtl;font-style:normal}
+.kc.ban{--a:#d63a3a;--a2:#3e0b0b;--a3:#ffa08f}
+.kc>*{position:absolute}
+.kc .fr{inset:.6em;border:.15em solid #d8ab45;border-radius:1em;background:radial-gradient(circle at 0 0,#d8ab45 0 .9em,transparent 1em),radial-gradient(circle at 100% 0,#d8ab45 0 .9em,transparent 1em),radial-gradient(circle at 0 100%,#d8ab45 0 .9em,transparent 1em),radial-gradient(circle at 100% 100%,#d8ab45 0 .9em,transparent 1em)}
+.kc img.ar{inset:31% 14% 27%;width:72%;height:42%;object-fit:contain;filter:drop-shadow(0 .8em .8em rgba(0,0,0,.55))}
+.kc .v,.kc .f{top:1.25em;width:3.3em;height:3.3em;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;line-height:1;font-size:1em;box-shadow:0 .25em .5em rgba(0,0,0,.55)}
+.kc .v b,.kc .f b{font-size:1.55em;color:inherit;margin:0}
+.kc .v{right:1.15em;color:#3a2405;background:radial-gradient(circle at 35% 30%,#fff3c4,#e2b24a 50%,#9a6a1c)}.kc .f{left:1.15em;color:#fff;background:radial-gradient(circle at 35% 30%,#ffd0d0,#c94040 50%,#5a1010)}
+.kc .v small,.kc .f small{font-size:.62em;font-weight:800;margin-top:.12em;color:inherit}
+.kc .ti{bottom:5.2em;left:50%;transform:translateX(-50%);display:flex;gap:.3em;color:#d8ab45}
+.kc .ti i{width:.7em;height:.7em;transform:rotate(45deg);background:currentColor}.kc .ti i.off{opacity:.25}
+.kc .nm{left:1em;right:1em;bottom:1.4em;text-align:center;font-weight:800;font-size:1.75em;color:#fff2c8;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kc.back{background:radial-gradient(ellipse at 50% 45%,#5a2f78,#241034 75%)}
+.kc.back .lg{inset:30% 16%;background:linear-gradient(160deg,#fff3c4,#e2b24a 35%,#9a6a1c 55%,#f3c969 75%,#fff0b8);-webkit-mask:url(logo-white.png) center/contain no-repeat;mask:url(logo-white.png) center/contain no-repeat}
+.kc.sel{outline:.3em solid #4ade80;outline-offset:.15em}.kc.dim{opacity:.42}.kc.lost{outline:.3em solid #ff4d4d;outline-offset:.15em}
+.kbt{border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;line-height:0}.kbt:disabled{opacity:.45}
+.ihand{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.ihud{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 10px;margin-bottom:10px}
+.ihud b{color:var(--gold)}
+.irow{display:flex;align-items:center;gap:8px}
+.iav{position:relative;display:inline-block;width:var(--z);height:var(--z);border-radius:calc(var(--z)*.26);border:2px solid var(--gold);overflow:hidden;flex:none;background:#2a1a3a;vertical-align:middle}
+.iav img{width:100%;height:100%;object-fit:cover;display:block}.iav i{position:absolute;bottom:-3px;left:-3px;font-size:calc(var(--z)*.38);font-style:normal}
+.ipiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}
+.ipile{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
+.iempty{display:flex;align-items:center;justify-content:center;width:62px;height:87px;border:1px dashed var(--line);border-radius:10px;font-size:12px}
+.isack{width:110px;margin:0 auto;display:block;filter:drop-shadow(0 8px 10px rgba(0,0,0,.6))}
+.istep{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
+.step{display:flex;align-items:center;gap:10px}.step button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--gold);font:inherit;font-size:20px;font-weight:800}.step b{min-width:32px;text-align:center;font-size:20px;color:var(--gold)}
+.itm{text-align:center}.itm b{font-size:30px;color:var(--gold);font-weight:900}.itm small{display:block;color:var(--muted);font-size:12px}
+.isw{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;scrollbar-width:none;margin:0 -18px;padding:0 18px}.isw::-webkit-scrollbar{display:none}
+.ipg{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;gap:10px;min-width:0}
+.idem{border-color:#e9c77b;background:#e9c77b14}
+.iout.ok{border-color:#62d49888}.iout.bad{border-color:#ff8f8f88}
+.ibad{border-color:#ff8f8f!important;color:#ff8f8f!important}
+.itoast{background:#e9c77b22;border:1px solid var(--gold);color:var(--gold);border-radius:12px;padding:8px 12px;text-align:center;font-weight:800;margin-bottom:10px}
+.iavs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.iavs button{border:2px solid transparent;border-radius:12px;padding:0;background:none;line-height:0;overflow:hidden}.iavs button.on{border-color:var(--gold)}.iavs img{width:100%;aspect-ratio:1;object-fit:cover}
 .ggrid2{display:flex;gap:6px}.ggrid2 .gpk{padding:6px 14px}
 .grole{font-size:70px;line-height:1.1}.gmoon{font-size:64px}
 .gghost{border-color:#9b90ab55;text-align:center}
@@ -1430,7 +1468,7 @@ const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل ب
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)/,fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*كذاب/,fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
   if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
   if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
@@ -1666,7 +1704,8 @@ const INFO={
  brra:{n:"برا السالفة",d:"الكل يعرف الكلمة إلا واحد. اسألوا بعض واكشفوه.",m:"٣ جولات · من ٣ لاعبين",min:3},
  five:{n:"٥ ثواني",d:"قول ٣ أشياء في ٥ ثواني بس. الباقين يحكمون: قدر ولا ما قدر؟",m:"٣ جولات · من لاعبين وفوق",min:2},
  lies:{n:"تسرق ولا تجاوب؟",d:"فريقين وسؤال. كل فريق يكتب جوابه، أو يسرق جواب الفريق الثاني.",m:"١٠ أسئلة · فريقين",min:2},
- mafia:{n:"المافيا",d:"بينكم مافيا تقتل بالليل. اكشفوهم قبل لا يخلصون عليكم.",m:"من ٥ لاعبين وفوق",min:5}
+ mafia:{n:"المافيا",d:"بينكم مافيا تقتل بالليل. اكشفوهم قبل لا يخلصون عليكم.",m:"من ٥ لاعبين وفوق",min:5},
+ insp:{n:"التفتيش",d:"كل جولة واحد منكم مفتش، والباقين تجار يهرّبون ممنوعات في أكياسهم. صرّح، ارشِ، اكذب… والمفتش يقرر يمرّر ولا يفتّش.",m:"من ٣ لين ٥ لاعبين · كل لاعب على جواله",min:3,max:5}
 };
 const TN={A:"🟣 البنفسجي",B:"🟡 الذهبي"}, RN={m:"مافيا",d:"طبيب",s:"محقق",c:"مواطن"}, RI={m:"🔪",d:"💉",s:"🔎",c:"🙂"};
 const RD={m:"كل ليلة تختارون أنتم المافيا واحد تقتلونه. بالنهار تمثّلون إنكم أبرياء.",d:"كل ليلة تختار واحد تحميه. لو المافيا اختاروه، ما يموت. تقدر تحمي نفسك.",s:"كل ليلة تسأل عن لاعب، والتطبيق يقولك هو مافيا ولا لا. لا تفضح نفسك بسرعة.",c:"ما عندك قوة بالليل. بالنهار ناقش وصوّت عشان تطلعون المافيا."};
@@ -1726,16 +1765,16 @@ async function create(){ if(busy) return; const k=ui.gt||"brra", on=CATS.filter(
   const n=String((el.querySelector("#gmn")||{}).value||"").trim().slice(0,16); if(!n) return msg("اكتب اسمك");
   busy=true; gid=rid(12); const pid=rid(6);
   const doc={seat:sid,k:K,host:uid,at:Date.now(),exp:firebase.firestore.Timestamp.fromMillis(Date.now()+5*3600000),st:"lobby",gt:k,pl:{[pid]:{n,u:uid,o:Date.now()}},r:0,sc:{},hs:{},used:[]};
-  if(k==="brra") doc.cats=on; if(k==="mafia") doc.cfg={...mcfg}; if(k==="lies") doc.tm={[pid]:"A"};
+  if(k==="brra") doc.cats=on; if(k==="mafia") doc.cfg={...mcfg}; if(k==="lies") doc.tm={[pid]:"A"}; if(k==="insp"){ doc.cfg={...icfg}; doc.pl[pid].av=ui.av||"01"; }
   if(k==="mafia") say("أهلاً في المافيا."); // أول صوت لازم يجي من ضغطة، عشان الآيفون يسمح بالباقي
   try{ await ref().set(doc); setMyP([pid]); lsSet("kz-g-"+K,gid); lsSet("kz-gname",n); ui={v:"wait"}; listen(); }
   catch(e){ gid=""; msg("ما قدرنا نبدأ اللعبة. تأكد إن الجلسة مفتوحة."); }
   busy=false; }
 async function addPlayer(n){ n=String(n||"").trim().slice(0,16); if(!n) return msg("اكتب الاسم");
-  if(pls().some(p=>p.n===n)) return msg("الاسم موجود، اكتب اسم ثاني"); if(pls().length>=MAXP) return msg("الحد "+an(MAXP)+" لاعبين");
+  if(pls().some(p=>p.n===n)) return msg("الاسم موجود، اكتب اسم ثاني"); const MX=I().max||MAXP; if(pls().length>=MX) return msg("الحد "+an(MX)+" لاعبين");
   if(!g||g.st!=="lobby") return msg("اللعبة بدأت، انتظروا اللعبة الجاية");
   const pid=rid(6); setMyP(myP().concat(pid)); ui.v=""; ui.err=""; if(!lsGet("kz-gname")) lsSet("kz-gname",n);
-  const d={["pl."+pid]:{n,u:uid,o:Date.now()}};
+  const d={["pl."+pid]:{n,u:uid,o:Date.now()}}; if(GT()==="insp"){ const taken=new Set(pls().map(p=>p.av)); d["pl."+pid].av=(ui.av&&!taken.has(ui.av))?ui.av:(IAV.find(a=>!taken.has(a))||"01"); ui.av=""; }
   if(GT()==="lies"){ const P=pls(), a=P.filter(p=>team(p.id)==="A").length; d["tm."+pid]=a>P.length-a?"B":"A"; }
   await up(d); }
 
@@ -1801,6 +1840,255 @@ async function mafiaVote(){ const d=g.d, al={...d.al}, c={}; mAlive().forEach(p=
   const mx=Math.max(0,...Object.values(c)), tops=Object.keys(c).filter(k=>c[k]===mx), out=mx>0&&tops.length===1&&tops[0]!=="-"?tops[0]:"";
   if(out) al[out]=0; await up({ph:"out",d:{...d,al,out,vc:c,win:winOf(d.ro,al)}}); }
 
+/* ---------- التفتيش (شريف نوتنغهام) ---------- */
+// الكروت: حرف لكل صنف. المسموح kcfh والممنوع xdrw. القيمة v والغرامة f والندرة t والعدد q والملك K والملكة Q
+const IC={k:{n:"كركديه",v:2,f:2,t:1,q:48,K:20,Q:10},c:{n:"قهوة",v:3,f:2,t:1,q:36,K:15,Q:10},f:{n:"بطاطس",v:3,f:2,t:1,q:36,K:15,Q:10},h:{n:"حبش",v:4,f:2,t:2,q:24,K:10,Q:5},
+ x:{n:"فحم",v:6,f:6,t:1,q:22,b:1},d:{n:"كود ريد",v:7,f:7,t:2,q:21,b:1},r:{n:"ريدبول",v:8,f:8,t:2,q:12,b:1},w:{n:"ألعاب نارية",v:9,f:9,t:3,q:5,b:1}};
+const LEG="kcfh", IAV=["01","02","03","04","05","06","07","08","09","10"];
+let icfg={k:2,t:90};
+const kc=(c,s,cls)=>{ const x=IC[c]; if(!x) return ""; return `<span class="kc ${x.b?"ban":""} ${cls||""}" style="--s:${s}px"><span class="fr"></span><img class="ar" src="ins_${c}.webp" alt=""><span class="v"><b>${x.v}</b><small>ريال</small></span><span class="f"><b>${x.f}</b><small>غرامة</small></span><span class="ti">${[1,2,3].map(k=>`<i class="${k<=x.t?"":"off"}"></i>`).join("")}</span><span class="nm">${x.n}</span></span>` };
+const kb=(s,cls)=>`<span class="kc back ${cls||""}" style="--s:${s}px"><span class="fr"></span><span class="lg"></span></span>`;
+const kbtn=(inner,a,x,cls,dis)=>`<button class="kbt ${cls||""}" data-g="${a}" data-x="${esc(String(x))}"${dis?" disabled":""}>${inner}</button>`;
+const iD=()=>(g&&g.d)||{};
+const iMerD=d=>(d.ord||[]).filter(p=>p!==d.ins&&(g.pl||{})[p]);
+const csum=(s,k)=>[...(s||"")].reduce((a,c)=>a+((IC[c]||{})[k]||0),0);
+const ccnt=(s,c)=>[...(s||"")].filter(x=>x===c).length;
+const avOf=id=>{ const p=(g&&g.pl||{})[id]; return "ins_a"+(p&&IAV.includes(p.av)?p.av:"01")+".webp" };
+const iava=(id,z)=>`<span class="iav" style="--z:${z||42}px"><img src="${avOf(id)}" alt="">${(iD().bk||{})[id]?`<i>💔</i>`:""}</span>`;
+const cnames=s=>{ const c={}; [...(s||"")].forEach(x=>c[x]=(c[x]||0)+1); return Object.entries(c).map(([x,k])=>IC[x].n+(k>1?" × "+an(k):"")).join("، ") };
+const sortC=s=>[...(s||"")].sort((a,b)=>"kcfhxdrw".indexOf(a)-"kcfhxdrw".indexOf(b)).join("");
+function rmIdx(s,ids){ const set=new Set(ids); let out="", got=""; [...(s||"")].forEach((c,i)=>set.has(i)?got+=c:out+=c); return [out,got] }
+
+function insDeal(){ const P=shuf(pls().map(p=>p.id)), N=P.length; let dk=[];
+  Object.entries(IC).forEach(([c,x])=>{ if(c==="f"&&N<=3) return; for(let i=0;i<x.q;i++) dk.push(c) }); dk=shuf(dk);
+  const h={}, m={}, sl={}, sx={}, n={}; P.forEach(p=>{ h[p]=dk.splice(0,6).join(""); m[p]=50; sl[p]=""; sx[p]=""; n[p]=0 });
+  const L=dk.splice(0,5).join(""), R=dk.splice(0,5).join("");
+  return {st:"play",r:1,a:{},d:{dk:dk.join(""),L,R,h,m,sl,sx,n,ord:P,ri:0,ins:P[0],ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},pr:[],bk:{},ev:[],ack:{},er:{},t0:0,tl:((g.cfg||{}).t||90)*1000,dry:0}}; }
+
+function insEv(d,t){ d.ev=(d.ev||[]).concat([{t,at:Date.now()}]).slice(-5) }
+function payFrom(d,a,b,amt){ const x=Math.max(0,Math.min(amt,d.m[a]||0)); d.m[a]=(d.m[a]||0)-x; d.m[b]=(d.m[b]||0)+x; return x }
+function toStand(d,p,s){ for(const c of (s||"")){ if(IC[c].b) d.sx[p]=(d.sx[p]||"")+c; else d.sl[p]=(d.sl[p]||"")+c } }
+function keepProm(d,mer){ const i=(d.pr||[]).findIndex(x=>x.b===d.ins&&x.t===mer); if(i>=0){ d.pr.splice(i,1); insEv(d,nm(d.ins)+" وفى بوعده لـ"+nm(mer)+" 🤝"); } }
+function breakProm(d,mer){ const i=(d.pr||[]).findIndex(x=>x.b===d.ins&&x.t===mer); if(i>=0){ d.pr.splice(i,1); d.bk={...(d.bk||{}),[d.ins]:1}; insEv(d,nm(d.ins)+" خلف وعده لـ"+nm(mer)+" 💔"); } }
+function finishPass(d,p,k,deal){ keepProm(d,p); const bag=d.b[p]||""; toStand(d,p,bag); d.b[p]=""; d.out[p]={k,bag,dc:d.dc[p],deal:deal||null}; }
+function doInspect(d,p){ breakProm(d,p); const bag=d.b[p]||"", dc=d.dc[p], keep=[...bag].filter(c=>c===dc).join(""), lost=[...bag].filter(c=>c!==dc).join("");
+  if(!lost){ const paid=payFrom(d,d.ins,p,csum(bag,"f")); toStand(d,p,bag); d.out[p]={k:"hon",bag,dc,fine:paid}; }
+  else { const paid=payFrom(d,p,d.ins,csum(lost,"f")); toStand(d,p,keep); d.L=(d.L||"")+lost; d.out[p]={k:"lie",bag,dc,keep,lost,fine:paid}; }
+  d.b[p]=""; }
+function execDeal(d,p,deal){ const I=d.ins, sl=d.sl[p]||"", sx=d.sx[p]||"", m=Math.max(0,Math.floor(deal.m||0));
+  if(m>(d.m[p]||0)) return "ما عنده فلوس كفاية";
+  const sL=[...new Set(deal.sL||[])]; if(sL.some(i=>i<0||i>=sl.length)) return "بعض كروت البسطة ما عادت موجودة";
+  let sX=[...new Set(deal.sX||[])]; if(sX.some(i=>i<0||i>=sx.length)) return "بعض كروت البسطة ما عادت موجودة";
+  if(deal.xn){ if(deal.xn>sx.length) return "ما عنده ممنوع كفاية في بسطته"; sX=shuf([...Array(sx.length).keys()]).slice(0,deal.xn); }
+  const r=Math.min(Math.max(0,deal.r|0),(d.b[p]||"").length);
+  payFrom(d,p,I,m); let rest, gl, gx; [rest,gl]=rmIdx(sl,sL); d.sl[p]=rest; [rest,gx]=rmIdx(sx,sX); d.sx[p]=rest; toStand(d,I,gl+gx);
+  if(deal.p) d.pr=(d.pr||[]).concat([{b:p,t:I}]);
+  return {m,gl,gx,r,p:deal.p?1:0}; }
+function afterDeal(d,p,dl){ if(dl.r>0) d.bl={...(d.bl||{}),[p]:{n:dl.r,c:shuf([...(d.b[p]||"")]).join(""),got:"",dl}}; else finishPass(d,p,"deal",dl); }
+function blindPick(d,to,i){ const B=d.bl[to]; if(!B||i<0||i>=B.c.length) return; const c=B.c[i]; B.c=B.c.slice(0,i)+B.c.slice(i+1);
+  const j=(d.b[to]||"").indexOf(c); if(j>=0) d.b[to]=d.b[to].slice(0,j)+d.b[to].slice(j+1); toStand(d,d.ins,c); B.got=(B.got||"")+c; B.n--;
+  if(B.n<=0||!(d.b[to]||"").length){ const dl={...B.dl,got:B.got}; const o={...d.bl}; delete o[to]; d.bl=o; finishPass(d,to,"deal",dl); } }
+
+function insApply(d,p,x){ const I=d.ins, ph=d.ph, mer=p!==I, er=t=>{ d.er={...(d.er||{}),[p]:{s:x.s,t}} };
+  d.h[p]=d.h[p]||"";
+  if(x.t==="ds"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))]; if(!ids.length) return;
+    if((d.ds[p]||0)+ids.length>5) return er("ترمي ٥ كروت بالكثير كل جولة"); const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; const pile=x.p==="R"?"R":"L"; d[pile]=(d[pile]||"")+got; d.ds={...d.ds,[p]:(d.ds[p]||0)+ids.length}; return; }
+  if(x.t==="tk"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); if(d.h[p].length>=6) return er("يدك فيها ٦ كروت");
+    if(x.p==="D"){ if(!d.dk.length){ if(!d.dry){ d.dry=1; insEv(d,"خلصت الكومة — هذي آخر جولة"); } return er("خلصت الكومة المقلوبة"); }
+      d.h[p]+=d.dk.slice(-1); d.dk=d.dk.slice(0,-1); d.tD={...d.tD,[p]:1}; if(!d.dk.length&&!d.dry){ d.dry=1; insEv(d,"خلصت الكومة — هذي آخر جولة"); } return; }
+    if((d.tD||{})[p]) return er("سحبت من المقلوبة، ما تقدر ترجع للمكشوفة"); const pile=x.p==="R"?"R":"L"; if(!d[pile]) return er("الكومة فاضية");
+    d.h[p]+=d[pile].slice(-1); d[pile]=d[pile].slice(0,-1); return; }
+  if(x.t==="bg"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))];
+    if(ids.length<1||ids.length>5) return er("حط من ١ لين ٥ كروت"); if(!LEG.includes(x.c)) return er("صرّح بصنف مسموح");
+    if(d.h[p].length<6&&((d.dk||"").length||(!(d.tD||{})[p]&&(d.L||d.R)))) return er("كمّل يدك لين ٦ أول");
+    const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; d.b[p]=got; d.dc={...d.dc,[p]:x.c}; d.dn={...d.dn,[p]:1}; return; }
+  if(x.t==="ub"){ if(ph!=="prep"||!d.dn[p]) return; d.h[p]+=d.b[p]||""; d.b[p]=""; const dc={...d.dc}; delete dc[p]; d.dc=dc; d.dn={...d.dn,[p]:0}; return; }
+  if(ph!=="neg") return er("مو وقتها");
+  if(mer){ if(d.out[p]||(d.bl||{})[p]) return er("كيسك انحسم");
+    if(x.t==="of"){ d.of={...d.of,[p]:{m:x.m|0,sL:x.sL||[],sX:x.sX||[],r:x.r|0,p:x.p?1:0,at:Date.now()}}; return; }
+    if(x.t==="ac"){ const dm=(d.dm||{})[p]; if(!dm) return er("ما فيه طلب"); const r=execDeal(d,p,dm); if(typeof r==="string") return er(r); insEv(d,nm(p)+" وافق على طلب المفتش"); afterDeal(d,p,r); return; }
+    return; }
+  const to=x.to; if(!to||!iMerD(d).includes(to)) return er("اختار كيس"); if(d.out[to]) return er("هالكيس انحسم");
+  if(x.t==="bp") return blindPick(d,to,x.i|0);
+  if((d.bl||{})[to]) return er("اختار الكروت من كيسه أول");
+  if(x.t==="dm"){ d.dm={...d.dm,[to]:{m:x.m|0,sL:x.sL||[],xn:x.xn|0,r:x.r|0,p:x.p?1:0,at:Date.now()}}; return; }
+  if(x.t==="dx"){ const o={...d.dm}; delete o[to]; d.dm=o; return; }
+  if(x.t==="ok"){ const of=(d.of||{})[to]; if(!of) return er("ما فيه عرض"); const r=execDeal(d,to,of); if(typeof r==="string") return er(r); afterDeal(d,to,r); return; }
+  if(x.t==="ps") return finishPass(d,to,"free");
+  if(x.t==="in") return doInspect(d,to); }
+
+async function insHost(){ if(!g.d||!g.d.ord) return; const d=JSON.parse(JSON.stringify(g.d)), a=g.a||{}; let ch=false; d.ack=d.ack||{};
+  Object.keys(a).sort((p,q)=>((a[p]||{}).at||0)-((a[q]||{}).at||0)).forEach(p=>{ const x=a[p]; if(!x||!x.s||x.s<=(d.ack[p]||0)) return; d.ack[p]=x.s; ch=true; try{ insApply(d,p,x) }catch(e){} });
+  const now=Date.now(), M=iMerD(d);
+  if(d.ph==="prep"&&M.length&&M.every(p=>d.dn[p])){ d.ph="neg"; d.t0=now; ch=true; M.forEach(p=>{ if(!(d.b[p]||"").length) d.out[p]={k:"none"} }); }
+  if(d.ph==="neg"){
+    if(now>d.t0+d.tl){ M.forEach(p=>{ if(d.out[p]) return; const B=(d.bl||{})[p]; if(B){ while((d.bl||{})[p]) blindPick(d,p,Math.floor(Math.random()*d.bl[p].c.length)); } else finishPass(d,p,"time"); }); ch=true; }
+    if(M.every(p=>d.out[p])){ d.ph="res"; ch=true; } }
+  if(ch) await up({d}); }
+async function insSkip(){ const d=JSON.parse(JSON.stringify(g.d));
+  if(d.ph==="prep"){ iMerD(d).forEach(p=>{ if(!d.dn[p]){ d.dn[p]=1; d.b[p]=""; } }); }
+  else if(d.ph==="neg") d.t0=Date.now()-d.tl-1;
+  await up({d}); }
+function insScore(d){ const P=(d.ord||[]).filter(p=>(g.pl||{})[p]), S={};
+  P.forEach(p=>S[p]={m:d.m[p]||0,sv:csum(d.sl[p],"v")+csum(d.sx[p],"v"),kq:0,kqd:[],nl:(d.sl[p]||"").length,nx:(d.sx[p]||"").length});
+  [...LEG].forEach(c=>{ const arr=P.map(p=>({p,n:ccnt(d.sl[p],c)})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n); if(!arr.length) return; const top=arr[0].n, kings=arr.filter(x=>x.n===top);
+    if(kings.length>1){ const each=Math.floor((IC[c].K+IC[c].Q)/kings.length); kings.forEach(x=>{ S[x.p].kq+=each; S[x.p].kqd.push("ملك "+IC[c].n+" (تعادل) +"+an(each)) }); return; }
+    S[kings[0].p].kq+=IC[c].K; S[kings[0].p].kqd.push("ملك "+IC[c].n+" +"+an(IC[c].K));
+    const rest=arr.filter(x=>x.n<top); if(!rest.length) return; const q=rest[0].n, qs=rest.filter(x=>x.n===q), each=Math.floor(IC[c].Q/qs.length);
+    qs.forEach(x=>{ S[x.p].kq+=each; S[x.p].kqd.push("ملكة "+IC[c].n+(qs.length>1?" (تعادل)":"")+" +"+an(each)) }); });
+  P.forEach(p=>S[p].tot=S[p].m+S[p].sv+S[p].kq); return S; }
+async function insNext(){ const d=JSON.parse(JSON.stringify(g.d)); d.n[d.ins]=(d.n[d.ins]||0)+1; const K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
+  const all=P.every(p=>(d.n[p]||0)>=K);
+  if(all||d.dry||P.length<2){ d.fin=insScore(d); d.why=all?"":"خلصت الكومة"; const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return up({st:"end",d,sc}); }
+  let ri=d.ri, nx=""; for(let k=0;k<d.ord.length;k++){ ri++; const c=d.ord[ri%d.ord.length]; if((g.pl||{})[c]&&(d.n[c]||0)<K){ nx=c; break; } }
+  if(!nx){ d.fin=insScore(d); const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return up({st:"end",d,sc}); }
+  Object.assign(d,{ri,ins:nx,ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},er:{},t0:0}); return up({d,r:(g.r||1)+1}); }
+
+/* --- شاشات التفتيش --- */
+const iPend=p=>{ const x=(g.a||{})[p]; return !!x&&x.s>((iD().ack||{})[p]||0) };
+async function iAct(p,x){ if(iPend(p)) return; const cur=Math.max(((iD().ack||{})[p])||0,((g.a||{})[p]||{}).s||0); ui.iw=p; return up({["a."+p]:{...x,s:cur+1,at:Date.now()}}); }
+function iMe(){ const L=local(), d=iD(); if(!L.length) return null;
+  const blocked=id=>id!==d.ins&&(d.ph==="prep"?!!d.dn[id]:d.ph==="neg"?!!(d.out[id]||(d.bl||{})[id]):false);
+  if(ui.lp&&L.some(p=>p.id===ui.lp)&&!(L.length>1&&blocked(ui.lp)&&L.some(p=>p.id!==ui.lp&&(p.id===d.ins?d.ph==="neg":!blocked(p.id))))) return L.find(p=>p.id===ui.lp); ui.lp="";
+  const need=L.find(p=>d.ph==="prep"?(p.id!==d.ins&&!d.dn[p.id]):d.ph==="neg"?p.id===d.ins:false); return need||L[0]; }
+const dealTxt=(dl,full)=>{ if(!dl) return ""; const o=[]; if(dl.m) o.push(an(dl.m)+" ريال");
+  const gl=dl.gl!=null?dl.gl:null; if(gl) o.push(cnames(gl)); else if(dl.sL&&dl.sL.length) o.push(an(dl.sL.length)+" من بسطته");
+  const gx=dl.gx!=null?dl.gx.length:(dl.xn||((dl.sX||[]).length)); if(gx) o.push(an(gx)+" ممنوع من البسطة");
+  if(dl.r) o.push(full&&dl.got?"من الكيس: "+cnames(dl.got):"كرت عشوائي من الكيس"+(dl.r>1?" × "+an(dl.r):""));
+  if(dl.p) o.push("وعد"); return o.join(" + ")||"بدون شي"; };
+function iToast(){ const ev=(iD().ev||[]).filter(e=>Date.now()-e.at<9000); return ev.length?`<div class="itoast">${esc(ev[ev.length-1].t)}</div>`:"" }
+function iErr(p){ const e=(iD().er||{})[p]; if(!e||(ui.ies||{})[p]===e.s) return ""; return `<p class="gerr">${esc(e.t)}</p>` }
+function iHud(me){ const d=iD(), K=(g.cfg||{}).k||2, tot=(d.ord||[]).length*K, L=local();
+  const sw=L.length>1?`<div class="gchips">${L.map(p=>`<button class="gpk ${p.id===me?"on":""}" data-g="ilp" data-x="${p.id}">${esc(p.n)}</button>`).join("")}</div>`:"";
+  return `${sw}<div class="ihud"><span>${iava(me,30)} <b>${esc(nm(me))}</b></span><span>💰 <b>${an(d.m[me]||0)}</b></span><span>الجولة ${an((d.ri||0)+1)}/${an(tot)}</span><button class="glnk" data-g="ivw">البسطات ›</button></div>${iToast()}`; }
+const iTimer=()=>{ const d=iD(), end=d.t0+d.tl; return `<div class="itm"><b data-end="${end}">${mmss(end-Date.now())}</b><small>وقت التفاوض</small></div>` };
+function iHand(me,sel,act,s){ const h=iD().h[me]||""; if(!h.length) return `<small class="gs" style="text-align:center">يدك فاضية</small>`;
+  return `<div class="ihand">${[...h].map((c,i)=>kbtn(kc(c,s||6.4,sel.includes(i)?"sel":""),act,i)).join("")}</div>`; }
+function vIStands(){ const d=iD(), P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
+  return `${head("البسطات","مكشوفة للكل")}<div class="gmb">${P.map(p=>{ const sl=sortC(d.sl[p]), nx=(d.sx[p]||"").length;
+    return `<div class="gcard"><div class="irow">${iava(p,40)}<b style="flex:1">${esc(nm(p))}${p===d.ins?" · 🔎 المفتش":""}</b><b class="gold">💰 ${an(d.m[p]||0)}</b></div>
+    <div class="ihand">${sl?[...sl].map(c=>kc(c,3.6)).join(""):`<small class="gs">ما فيه مسموح</small>`}</div>
+    ${nx?`<div class="irow"><span class="ihand">${kb(3.6)}</span><small class="gs">${an(nx)} ممنوع مقلوب — يتكشف آخر اللعبة</small></div>`:""}</div>`; }).join("")}
+    <small class="gs">الكومة المقلوبة: ${an((d.dk||"").length)} كرت</small>${btn("رجوع","ivw","gl")}</div>`; }
+
+function vIPrepM(me){ const d=iD(), h=d.h[me]||"", st=(ui.ist||{})[me+":"+d.ri]||"mk", sel=ui.isel||[], pd=iPend(me), H=head("التفتيش","المفتش: "+esc(nm(d.ins)));
+  if(d.dn[me]){ const M=iMerD(d), w=M.filter(p=>!d.dn[p]);
+    return `${H}${iHud(me)}${center(`<img class="isack" src="ins_sack.webp" alt=""><h3>كيسك جاهز</h3><small class="gs">صرّحت: <b class="gold">${IC[d.dc[me]].n} × ${an((d.b[me]||"").length)}</b></small>
+    <div class="ihand">${[...(d.b[me]||"")].map(c=>kc(c,4.6)).join("")}</div><small class="gs">${w.length?"ننتظر: "+names(w):"يبدأ التفاوض…"}</small>${btn("عدّل الكيس","iub","gl")}${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
+  if(st==="mk"){ const left=5-(d.ds[me]||0), can=sel.length&&sel.length<=left, full=h.length>=6, tD=(d.tD||{})[me], go=full||!((d.dk||"").length||(!tD&&(d.L||d.R)));
+    const pile=(P,lbl)=>{ const top=(d[P]||"").slice(-1); return `<div class="ipile"><small>${lbl}</small>${top?kbtn(kc(top,6),"itk",P,"",full||tD||pd):`<span class="iempty">فاضية</span>`}</div>` };
+    return `${H}${iHud(me)}<div class="gmb"><div class="gcard"><b>١. السوق</b><small>ارمِ لين ٥ كروت وكمّل يدك لين ٦. تقدر تاخذ من فوق الكومتين المكشوفة أو من المقلوبة. لو سحبت من المقلوبة ما ترجع للمكشوفة.</small></div>
+    <small class="gs">يدك (${an(h.length)}/٦) — اضغط الكرت اللي تبغى ترميه</small>${iHand(me,sel,"isel")}
+    <div class="ggrid">${btn("ارمِ ← اليمين","ids","gl","R")}${btn("ارمِ ← اليسار","ids","gl","L")}</div>${!can&&sel.length?`<small class="gs">باقي لك ترمي ${an(left)} كروت بس</small>`:""}
+    <div class="ipiles">${pile("R","المكشوفة يمين")}${pile("L","المكشوفة يسار")}<div class="ipile"><small>المقلوبة · ${an((d.dk||"").length)}</small>${kbtn(kb(6),"itk","D","",full||pd||!(d.dk||"").length)}</div></div>
+    ${iErr(me)}${go?btn("التالي: عبّي الكيس ←","ist","gb","bag"):`<small class="gs" style="text-align:center">كمّل يدك لين ٦ عشان تكمل</small>`}</div>`; }
+  const n=sel.length, dc=ui.idc&&LEG.includes(ui.idc)?ui.idc:"", hon=dc&&n&&sel.every(i=>h[i]===dc);
+  return `${H}${iHud(me)}<div class="gmb"><div class="gcard"><b>٢. الكيس والتصريح</b><small>اختار من ١ لين ٥ كروت للكيس، وقول للمفتش صنف مسموح واحد × عدد الكروت.</small></div>
+  <small class="gs">اضغط الكروت اللي تدخل الكيس (${an(n)}/٥)</small>${iHand(me,sel,"isel")}
+  <small class="gs">ايش بتقول للمفتش؟</small><div class="gchips">${[...LEG].map(c=>`<button class="gpk ${dc===c?"on":""}" data-g="idc" data-x="${c}">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
+  ${dc&&n?`<small class="gs" style="color:${hon?"var(--green)":"#ff8f8f"}">${hon?"تصريح صادق — لو فتّشك يدفع لك الغرامة":"تصريح كاذب — لو فتّشك تخسر كل كرت غير "+IC[dc].n}</small>`:""}
+  ${iErr(me)}${n>5?`<small class="gs" style="color:#ff8f8f">الكيس يشيل ٥ كروت بالكثير</small>`:""}${btn("📦 أرسل الكيس للمفتش","isend","gb")}${btn("← رجوع للسوق","ist","gl","mk")}</div>`; }
+function vIPrepI(me){ const d=iD(), M=iMerD(d);
+  return `${head("التفتيش","🔎 أنت المفتش")}${iHud(me)}${center(`<div class="grole">🔎</div><div class="gbig">أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
+  <div class="gcard gpl">${M.map(p=>`<div class="gpr"><span class="irow">${iava(p,30)} ${esc(nm(p))}</span><b>${d.dn[p]?"✓ جاهز":"يعبّي…"}</b></div>`).join("")}</div>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
+
+function iOfBox(me,to){ // بناء عرض التاجر أو طلب المفتش
+  const d=iD(), isI=me===d.ins, owner=isI?to:me, key=(isI?"dm":"of")+owner, O=(ui.iof||{})[key]||(ui.iof={...(ui.iof||{}),[key]:{m:0,sL:[],sX:[],xn:0,r:0,p:0}})[key];
+  const sl=d.sl[owner]||"", sx=d.sx[owner]||"", bag=(d.b[owner]||"").length, mon=d.m[owner]||0;
+  const st=(lbl,a,v,mx)=>`<div class="istep"><span>${lbl}</span><div class="step"><button data-g="${a}" data-x="-">−</button><b>${an(v)}</b><button data-g="${a}" data-x="+">+</button></div></div>`;
+  return `<div class="gcard">${st("💰 فلوس",isI?"iom":"iom",O.m,isI?99:mon)}
+   ${sl?`<small class="gs">📦 من بسطة${isI?"ه":"ك"} (اضغط الكرت)</small><div class="ihand">${[...sl].map((c,i)=>kbtn(kc(c,4.2,O.sL.includes(i)?"sel":"dim"),"iol",i)).join("")}</div>`:""}
+   ${sx?(isI?st("🔒 ممنوع من بسطته (مقلوب)","iox",O.xn,sx.length):`<small class="gs">🔒 ممنوع من بسطتك</small><div class="ihand">${[...sx].map((c,i)=>kbtn(kc(c,4.2,O.sX.includes(i)?"sel":"dim"),"ioX",i)).join("")}</div>`):""}
+   ${bag?st("🎴 كرت عشوائي من "+(isI?"كيسه":"كيسك"),"ior",O.r,bag):""}
+   <button class="gtg ${O.p?"on":""}" data-g="iop"><span><b>🤝 وعد</b><small>${isI?"يمرّر كيسك لما يصير مفتش":"أمرّر كيسه لما أصير المفتش"}</small></span><i></i></button>
+   ${btn(isI?"أرسل طلبك لـ"+esc(nm(to)):"أرسل العرض للمفتش",isI?"idms":"iofs","gb",to||"")}</div>`; }
+function vINegM(me){ const d=iD(), I=d.ins, o=d.out[me], dc=d.dc[me], bag=d.b[me]||"", H=head("التفتيش","التفاوض");
+  if(o) return `${H}${iHud(me)}${vIOut(me,true)}${center(`<small class="gs">ننتظر المفتش يخلص باقي الأكياس</small>`)}`;
+  if(!bag.length&&!o) return `${H}${iHud(me)}${center(`<h3>ما أرسلت كيس هالجولة</h3>`)}`;
+  const dm=(d.dm||{})[me], of=(d.of||{})[me], bl=(d.bl||{})[me];
+  let body="";
+  if(bl) body=`<div class="gcard" style="text-align:center"><b>المفتش يختار ${an(bl.n)} كرت من كيسك وهو مقلوب…</b></div>`;
+  else if(dm) body=`<div class="gcard idem"><b>المفتش طلب: ${esc(dealTxt(dm))}</b><small>ما تقدر ترسل غير اللي طلبه، إلا لو عدّل طلبه. لو وافقت، كيسك يمرّ.</small>${btn("وافق وأرسل اللي طلبه","iac","gb")}</div>`;
+  else body=`${of?`<small class="gs" style="text-align:center">عرضك الحالي: <b class="gold">${esc(dealTxt(of))}</b> — تقدر تعدّله</small>`:""}${iOfBox(me)}`;
+  return `${H}${iHud(me)}<div class="gmb">${iTimer()}<div class="irow" style="justify-content:center">${iava(I,46)}<b>كيسك عند ${esc(nm(I))}</b></div>
+   <div class="gcard" style="text-align:center"><small class="gs">صرّحت: <b class="gold">${IC[dc].n} × ${an(bag.length)}</b></small><div class="ihand">${[...bag].map(c=>kc(c,4.4)).join("")}</div></div>
+   ${body}${iErr(me)}</div>`; }
+function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==="none")), H=head("التفتيش","🔎 أنت المفتش");
+  const pages=M.map(p=>{ const o=d.out[p], dc=d.dc[p], n=(d.b[p]||"").length||((o&&o.bag)||"").length, of=(d.of||{})[p], dm=(d.dm||{})[p], bl=(d.bl||{})[p], owe=(d.pr||[]).some(x=>x.b===me&&x.t===p);
+    let act="";
+    if(o) act=vIOut(p,false);
+    else if(bl) act=`<div class="gcard" style="text-align:center"><b>اختار ${an(bl.n)} كرت من كيسه</b><small>الكروت مقلوبة ومخلوطة</small><div class="ihand">${[...bl.c].map((_,i)=>kbtn(kb(6),"ibp",p+":"+i)).join("")}</div></div>`;
+    else if(ui.icf===p) act=`<div class="gcard idem"><b>🤝 عليك وعد لـ${esc(nm(p))}</b><small>وعدته إنك تمرّر كيسه لما تصير المفتش. لو فتّشت، الكل بيعرف إنك خلفت وعدك 💔</small><div class="ggrid">${btn("أوفي وأمرّر","ips","gb",p)}${btn("أفتّش وأخلف","iin","gl",p)}</div></div>`;
+    else if(ui.idm===p) act=`${iOfBox(me,p)}${btn("إلغاء","idmc","gl",p)}`;
+    else act=`<div class="gcard"><small class="gs">${of?"عرضه: <b class='gold'>"+esc(dealTxt(of))+"</b>":"ما عرض شي للحين"}</small>${dm?`<small class="gs">طلبك: <b class="gold">${esc(dealTxt(dm))}</b> — ننتظره يوافق</small>`:""}</div>
+      ${owe?`<div class="gcard idem"><small>🤝 عليك وعد لـ${esc(nm(p))} تمرّر كيسه</small></div>`:""}
+      <div class="ggrid">${of?btn("اقبل عرضه","iok","gb",p):btn("مرّر","ips","gb",p)}${btn("🔍 فتّش","iin1","gl ibad",p)}</div>
+      <div class="ggrid">${of?btn("مرّر بدون شي","ips","gl",p):""}${btn(dm?"عدّل طلبك":"اطلب رشوة","idm","gl",p)}</div>`;
+    return `<div class="ipg"><div class="irow" style="justify-content:center">${iava(p,54)}<div><b style="font-size:18px">${esc(nm(p))}</b><small class="gs">يقول إن فيه: <b class="gold">${dc?IC[dc].n+" × "+an(n):"—"}</b></small></div></div>
+      <img class="isack" src="ins_sack.webp" alt="">${act}</div>`; }).join("");
+  const left=M.filter(p=>!d.out[p]).length;
+  return `${H}${iHud(me)}<div class="gmb">${iTimer()}<small class="gs" style="text-align:center">${an(left)} كيس باقي · اسحب يمين ويسار بين الأكياس</small>
+   <div class="isw" data-sk="isw">${pages||`<small class="gs">ما فيه أكياس</small>`}</div>${iErr(me)}${isHost()?btn("خلّص الوقت","skip","gl"):""}</div>`; }
+function vIOut(p,mine){ const d=iD(), o=d.out[p]||{}, dc=o.dc?IC[o.dc].n:"", I=d.ins, cur=(iMe()||{}).id, full=cur===p||cur===I;
+  const row=(t,c)=>`<div class="gcard iout ${c||""}" style="text-align:center">${t}</div>`;
+  if(o.k==="none") return row(`<b>${esc(nm(p))} ما أرسل كيس</b>`);
+  if(o.k==="free"||o.k==="time") return row(`<b>✓ ${mine?"كيسك مرّ":"مرّ"}</b><small>${o.k==="time"?"خلص الوقت ومرّ تلقائياً":"بدون رشوة"}</small>${mine?`<div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
+  if(o.k==="deal") return row(`<b>✓ ${mine?"كيسك مرّ":"مرّ"} برشوة</b><small>${esc(dealTxt(o.deal,full))}</small>${mine?`<div class="ihand">${[...(o.bag||"")].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
+  if(o.k==="hon") return row(`<b>🔍 انفتّش وطلع صادق ✓</b><small>${dc} × ${an(o.bag.length)} بالضبط · المفتش دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div>`,"ok");
+  return row(`<b>🔍 انفتّش وانكشف ✗</b><small>صرّح ${dc} · انصادر: ${esc(cnames(o.lost))} · دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4,o.lost.includes(c)&&c!==o.dc?"lost":"")).join("")}</div>`,"bad"); }
+function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
+  const last=P.every(p=>(d.n[p]||0)+(p===d.ins?1:0)>=K)||d.dry;
+  return `${head("التفتيش","نتيجة الجولة")}${iHud(me)}<div class="gmb"><div class="irow" style="justify-content:center">${iava(d.ins,40)}<b>المفتش: ${esc(nm(d.ins))}</b></div>
+   ${M.map(p=>`<div class="irow">${iava(p,34)}<b>${esc(nm(p))}</b></div>${vIOut(p,p===me)}`).join("")}
+   <div class="gcard gpl">${P.map(p=>`<div class="gpr"><span class="irow">${iava(p,26)} ${esc(nm(p))}</span><b>💰 ${an(d.m[p]||0)}</b></div>`).join("")}</div>
+   ${d.dry?`<small class="gs" style="text-align:center">خلصت الكومة — هذي آخر جولة</small>`:""}
+   ${isHost()?btn(last?"النتيجة النهائية":"الجولة الجاية ←","next"):waitHost()}</div>`; }
+function vInsp(){ if(ui.ivw) return vIStands(); const p=iMe(); if(!p) return vJoin(); const d=iD(), L=local();
+  if(L.length>1&&ui.rev!==p.id) return hand(p,false,"التفتيش","الشاشة مخفية");
+  const me=p.id; if(d.ph==="prep") return me===d.ins?vIPrepI(me):vIPrepM(me);
+  if(d.ph==="neg") return me===d.ins?vINegI(me):vINegM(me);
+  return vIRes(me); }
+function vIEnd(){ const d=iD(), F=d.fin||{}, again=(isHost()?btn("لعبة جديدة","again","gl"):"")+(joinOnly?"":btn("ألعاب ثانية","fresh","gl"));
+  const P=Object.keys(F).sort((a,b)=>F[b].tot-F[a].tot||F[b].nl-F[a].nl||F[b].nx-F[a].nx), W=P[0];
+  return `${head("خلصت اللعبة",d.why||"")}<div class="gmb"><div class="gcard" style="text-align:center">${W?iava(W,70):""}<small class="gs">الفايز</small><div class="gbig">🏆 ${esc(nm(W))}</div></div>
+   ${P.map((p,i)=>{ const x=F[p]; return `<div class="gcard"><div class="irow"><b class="gold">${an(i+1)}</b>${iava(p,36)}<b style="flex:1">${esc(nm(p))}</b><b class="gold" style="font-size:20px">${an(x.tot)}</b></div>
+     <small class="gs">💰 ${an(x.m)} · البسطة ${an(x.sv)}${x.kq?" · 👑 "+an(x.kq):""}</small>${x.kqd.length?`<small class="gs">${x.kqd.join(" · ")}</small>`:""}
+     <div class="ihand">${[...sortC((d.sl[p]||"")+(d.sx[p]||""))].map(c=>kc(c,3.4)).join("")}</div></div>`; }).join("")}${again}</div>`; }
+
+async function iClick(a,x){ const p=iMe(), me=p&&p.id, d=iD();
+  if(a==="ivw"){ ui.ivw=!ui.ivw; return paint(); }
+  if(a==="ilp"){ ui.lp=x; ui.rev=""; ui.isel=[]; return paint(); }
+  if(!me) return;
+  const er=(d.er||{})[me]; if(er){ ui.ies={...(ui.ies||{}),[me]:er.s}; }
+  if(a==="isel"){ const i=+x, s=ui.isel||[]; ui.isel=s.includes(i)?s.filter(y=>y!==i):s.concat(i); return paint(); }
+  if(a==="ids"){ const s=ui.isel||[]; if(!s.length) return msg("اختار كروت ترميها أول"); ui.isel=[]; return iAct(me,{t:"ds",i:s,p:x}); }
+  if(a==="itk") return iAct(me,{t:"tk",p:x});
+  if(a==="ist"){ ui.ist={...(ui.ist||{}),[me+":"+d.ri]:x}; ui.isel=[]; return paint(); }
+  if(a==="idc"){ ui.idc=x; return paint(); }
+  if(a==="isend"){ const s=ui.isel||[]; if(!s.length) return msg("حط كرت واحد على الأقل"); if(s.length>5) return msg("الكيس يشيل ٥ كروت بالكثير"); if(!ui.idc) return msg("اختار ايش بتصرّح");
+    const c=ui.idc; ui.isel=[]; ui.idc=""; return iAct(me,{t:"bg",i:s,c}); }
+  if(a==="iub") return iAct(me,{t:"ub"});
+  // بناء العرض والطلب
+  const key=(me===d.ins?"dm"+(ui.idm||""):"of"+me), O=(ui.iof||{})[key];
+  if(O&&["iom","iol","ioX","iox","ior","iop"].includes(a)){ const owner=me===d.ins?ui.idm:me, sx=(d.sx[owner]||""), bag=(d.b[owner]||"").length;
+    if(a==="iom") O.m=Math.max(0,Math.min(me===d.ins?99:(d.m[me]||0),O.m+(x==="+"?1:-1)));
+    if(a==="iol"){ const i=+x; O.sL=O.sL.includes(i)?O.sL.filter(y=>y!==i):O.sL.concat(i); }
+    if(a==="ioX"){ const i=+x; O.sX=O.sX.includes(i)?O.sX.filter(y=>y!==i):O.sX.concat(i); }
+    if(a==="iox") O.xn=Math.max(0,Math.min(sx.length,O.xn+(x==="+"?1:-1)));
+    if(a==="ior") O.r=Math.max(0,Math.min(bag,O.r+(x==="+"?1:-1)));
+    if(a==="iop") O.p=O.p?0:1; return paint(); }
+  if(a==="iofs"){ const O2=(ui.iof||{})["of"+me]; if(!O2) return; return iAct(me,{t:"of",m:O2.m,sL:O2.sL,sX:O2.sX,r:O2.r,p:O2.p}); }
+  if(a==="iac") return iAct(me,{t:"ac"});
+  if(a==="idm"){ ui.idm=x; return paint(); }
+  if(a==="idmc"){ ui.idm=""; return paint(); }
+  if(a==="idms"){ const O2=(ui.iof||{})["dm"+x]; if(!O2) return; ui.idm=""; return iAct(me,{t:"dm",to:x,m:O2.m,sL:O2.sL,xn:O2.xn,r:O2.r,p:O2.p}); }
+  if(a==="iok"){ ui.icf=""; return iAct(me,{t:"ok",to:x}); }
+  if(a==="ips"){ ui.icf=""; return iAct(me,{t:"ps",to:x}); }
+  if(a==="iin1"){ if((d.pr||[]).some(y=>y.b===me&&y.t===x)){ ui.icf=x; return paint(); } return iAct(me,{t:"in",to:x}); }
+  if(a==="iin"){ ui.icf=""; return iAct(me,{t:"in",to:x}); }
+  if(a==="ibp"){ const [to,i]=x.split(":"); return iAct(me,{t:"bp",to,i:+i}); }
+}
+
 /* ---------- صاحب اللعبة بس يحرك المراحل ---------- */
 async function startGame(){ if(busy||!isHost()) return; const P=pls(), t=GT(); if(P.length<I().min) return msg("تحتاجون "+an(I().min)+" لاعبين على الأقل");
   if(t==="lies"){ const a=P.filter(p=>team(p.id)==="A").length; if(!a||a===P.length) return msg("لازم كل فريق فيه لاعب واحد على الأقل"); }
@@ -1809,6 +2097,7 @@ async function startGame(){ if(busy||!isHost()) return; const P=pls(), t=GT(); i
     else if(t==="five"){ g.used=[]; const x=await fiveTurn(1,0,shuf(P.map(p=>p.id))); if(x) await up({...x,sc:{},hs:{}}); }
     else if(t==="lies"){ g.used=[]; const x=await lieQ(1); if(x) await up({...x,sc:{A:0,B:0},hs:{}}); }
     else if(t==="mafia"){ say("بدأت اللعبة."); await up({...mafiaDeal(),sc:{},hs:{}}); }
+    else if(t==="insp"){ if(P.length>5) return msg("الحد ٥ لاعبين"); await up({...insDeal(),sc:{},hs:{}}); }
   }finally{ busy=false } }
 async function nextRound(){ if(busy||!isHost()) return; busy=true; const t=GT();
   try{ if(t==="brra"){ if(g.r>=ROUNDS) await up({st:"end"}); else await up(pickRound(g.r+1)); }
@@ -1816,6 +2105,7 @@ async function nextRound(){ if(busy||!isHost()) return; busy=true; const t=GT();
     else if(t==="lies"){ if(g.r>=QN) await up({st:"end"}); else { const x=await lieQ(g.r+1); if(x) await up(x); } }
     else if(t==="mafia"){ const d=g.d; if(g.ph==="day"){ if(d.win) await up({st:"end"}); else await up({ph:"talk",t0:Date.now()}); }
       else if(g.ph==="out"){ if(d.win) await up({st:"end"}); else await up({ph:"night",a:{},v:{},d:{...d,n:(d.n||1)+1,kill:"",saved:false,out:""}}); } }
+    else if(t==="insp"){ if((g.d||{}).ph==="res") await insNext(); }
   }finally{ busy=false } }
 async function newGame(){ if(busy||!isHost()) return; busy=true; spoke=""; await up({st:"lobby",r:0,ph:"",sc:{},hs:{},seen:{},v:{},g:"",last:null,a:{},d:{},used:[]}); busy=false; }
 let hostBusy=false;
@@ -1837,7 +2127,7 @@ async function host(){ if(!isHost()||!g||g.st!=="play"||hostBusy) return; const 
       else if(g.ph==="night"&&mAlive().every(p=>(g.a||{})[p])) await mafiaNight();
       else if(g.ph==="talk"&&now>g.t0+((g.cfg||{}).talk||180)*1000) await up({ph:"vote",v:{}});
       else if(g.ph==="vote"&&mAlive().every(p=>(g.v||{})[p])) await mafiaVote();
-    }
+    } else if(t==="insp") await insHost();
   }finally{ hostBusy=false } }
 async function skip(){ if(!isHost()||busy) return; busy=true; const t=GT();
   try{ if(t==="brra"){
@@ -1847,6 +2137,7 @@ async function skip(){ if(!isHost()||busy) return; busy=true; const t=GT();
       else if(g.ph==="guess") await finish(false);
     } else if(t==="five"){ if(g.ph==="ready"){ busy=false; return fiveNext(); } if(g.ph==="say") await up({ph:"vote"}); else if(g.ph==="vote") await fiveFinish(); }
     else if(t==="lies"){ if(g.ph==="q") await lieJudge(); }
+    else if(t==="insp") await insSkip();
     else if(t==="mafia"){ if(g.ph==="see") await up({ph:"night",a:{}}); else if(g.ph==="night") await mafiaNight(); else if(g.ph==="talk") await up({ph:"vote",v:{}}); else if(g.ph==="vote") await mafiaVote(); }
   }finally{ busy=false } }
 
@@ -1860,9 +2151,11 @@ const waitHost=t=>isHost()?"":`<small class="gs" style="text-align:center">${t||
 const names=L=>L.map(p=>esc(typeof p==="string"?nm(p):p.n)).join("، ");
 function pending(field,ids){ const m=myP(); return pls().filter(p=>m.includes(p.id)&&(!ids||ids.includes(p.id))&&!(g[field]||{})[p.id]) }
 const tog=(k,t,s,on)=>`<button class="gtg ${on?"on":""}" data-g="mcfg" data-x="${k}"><span><b>${t}</b><small>${s}</small></span><i></i></button>`;
-const nameIn=()=>`<label class="gs" for="gmn">اسمك في اللعبة</label><input id="gmn" class="gin" maxlength="16" placeholder="اسمك" value="${esc(lsGet("kz-gname")||"")}">`;
+const avPick=()=>{ const taken=new Set(g&&g.pl?Object.values(g.pl).map(p=>p.av):[]); if(!ui.av){ ui.av=IAV.find(a=>!taken.has(a))||"01"; }
+  return `<small class="gs">اختار شكلك</small><div class="iavs">${IAV.map(a=>`<button class="${ui.av===a?"on":""}" data-g="iav" data-x="${a}"><img src="ins_a${a}.webp" alt=""></button>`).join("")}</div>`; };
+const nameIn=()=>`<label class="gs" for="gmn">اسمك في اللعبة</label><input id="gmn" class="gin" maxlength="16" placeholder="اسمك" value="${esc(lsGet("kz-gname")||"")}">${ui.gt==="insp"?avPick():""}`;
 function vPick(){ const card=k=>{ const x=INFO[k]; return `<div class="gcard"><b>${x.n}</b><small>${x.d}<br>${x.m}</small>${btn("العب","set","gb",k)}</div>` };
-  return `${head("ألعاب الجلسة","جلسة "+an(n))}<div class="gmb"><div class="gsec">⚡ سريعة</div>${["brra","five"].map(card).join("")}<div class="gsec">⏳ تطول</div>${["lies","mafia"].map(card).join("")}</div>`; }
+  return `${head("ألعاب الجلسة","جلسة "+an(n))}<div class="gmb"><div class="gsec">⚡ سريعة</div>${["brra","five"].map(card).join("")}<div class="gsec">⏳ تطول</div>${["lies","mafia","insp"].map(card).join("")}</div>`; }
 function vCats(){ const on=CATS.length-off.size;
   return `${head("برا السالفة","الإعدادات")}<div class="gmb"><small class="gs">الكلمات تطلع عشوائي من كل الفئات. اضغط على اللي ما تبغاها.</small>
   <div class="gchips">${CATS.map((c,i)=>`<button class="gch ${off.has(i)?"off":""}" data-g="cat" data-x="${i}">${off.has(i)?"":"✓ "}${esc(c)}</button>`).join("")}</div>
@@ -1872,12 +2165,19 @@ function vSet(){ const k=ui.gt; if(k==="brra") return vCats(); const x=INFO[k]; 
   if(k==="mafia") o=`<div class="gcard"><b>الإعدادات</b>${tog("det","المحقق","كل ليلة يسأل عن لاعب ويعرف هو مافيا ولا لا. يشتغل من ٦ لاعبين.",mcfg.det)}${tog("rev","كشف الدور","لما يطلع أحد، الكل يشوف دوره",mcfg.rev)}${tog("voice","صوت الراوي","جوالك يقرأ المراحل بصوت عالي",mcfg.voice)}
     <small class="gs">وقت النقاش</small><div class="gchips">${[120,180,300].map(s=>`<button class="gpk ${mcfg.talk===s?"on":""}" data-g="talk" data-x="${s}">${TALK[s]}</button>`).join("")}</div></div>`;
   if(k==="lies") o=`<small class="gs">تتقسمون فريقين في الصفحة الجاية.</small>`;
+  if(k==="insp") o=`<div class="gcard"><b>الإعدادات</b><small class="gs">كم مرة يصير كل واحد مفتش؟</small><div class="gchips">${[1,2,3,4].map(v=>`<button class="gpk ${icfg.k===v?"on":""}" data-g="icf" data-x="k:${v}">${an(v)}</button>`).join("")}</div>
+    <small class="gs">وقت التفاوض كل جولة</small><div class="gchips">${[60,90,120,180].map(v=>`<button class="gpk ${icfg.t===v?"on":""}" data-g="icf" data-x="t:${v}">${an(v)} ثانية</button>`).join("")}</div>
+    <small class="gs">لو خلصت الكومة قبل، تنتهي اللعبة. لو خلص الوقت، الكيس يمرّ تلقائياً.</small></div>
+    <div class="gcard"><b>كيف نلعب</b><small>كل لاعب يبدأ بـ٥٠ ريال و٦ كروت. المسموح: كركديه، قهوة، بطاطس، حبش. الممنوع: فحم، كود ريد، ريدبول، ألعاب نارية.<br>
+    التاجر يرمي ويسحب لين ٦، يحط من ١ لين ٥ كروت في الكيس، ويقول للمفتش صنف مسموح واحد × العدد. يقدر يرشي بفلوس أو كروت من بسطته أو كرت عشوائي من كيسه أو وعد.<br>
+    المفتش يمرّر أو يفتّش. لو فتّش وطلع صادق، المفتش يدفع الغرامة. لو كذاب، ينصادر اللي ما صرّح فيه ويدفع غرامته.<br>
+    آخر اللعبة: الفلوس + قيمة البسطة + الملك والملكة (أكثر واحد من كل صنف مسموح).</small></div>`;
   return `${head(x.n,"قبل نبدأ")}<div class="gmb"><div class="gcard"><small>${x.d}<br>${x.m}</small></div>${o}${nameIn()}${errH()}${btn("التالي: ادعُ ربعك","create")}${btn("رجوع","pick","gl")}</div>`; }
 function vAdd(){ return `${head("ضيف لاعب على جوالي")}<div class="gmb"><small class="gs">للي ما معه جوال. يلعب على جوالك، وكل واحد ياخذ دوره.</small>
-  <input id="gma" class="gin" maxlength="16" placeholder="اسمه">${errH()}${btn("ضيف","addok")}${btn("رجوع","back","gl")}</div>`; }
+  <input id="gma" class="gin" maxlength="16" placeholder="اسمه">${g&&GT()==="insp"?avPick():""}${errH()}${btn("ضيف","addok")}${btn("رجوع","back","gl")}</div>`; }
 function vLobby(){ const P=pls(), m=myP(), url=location.origin+location.pathname+"?g="+gid, h=isHost(), t=GT();
   if(!local().length) return vJoin();
-  const row=p=>`<div class="gpr"><span>${esc(p.n)}${m.includes(p.id)?" <i>· على جوالك</i>":""}</span><span>${t==="lies"&&(h||m.includes(p.id))?`<button class="glnk" data-g="swap" data-x="${p.id}">⇄ بدّل</button>`:""}${h&&!m.includes(p.id)?`<button class="glnk" data-g="kick" data-x="${p.id}">شيله</button>`:""}</span></div>`;
+  const row=p=>`<div class="gpr"><span>${t==="insp"?iava(p.id,28)+" ":""}${esc(p.n)}${m.includes(p.id)?" <i>· على جوالك</i>":""}</span><span>${t==="lies"&&(h||m.includes(p.id))?`<button class="glnk" data-g="swap" data-x="${p.id}">⇄ بدّل</button>`:""}${h&&!m.includes(p.id)?`<button class="glnk" data-g="kick" data-x="${p.id}">شيله</button>`:""}</span></div>`;
   const list=t==="lies"?["A","B"].map(T=>`<div class="gcard gpl gteam t${T}"><b>${TN[T]}</b>${P.filter(p=>team(p.id)===T).map(row).join("")||`<small class="gs">ما فيه أحد</small>`}</div>`).join(""):`<div class="gcard gpl">${P.map(row).join("")}</div>`;
   const need=P.length<I().min?`<small class="gs" style="text-align:center">تحتاجون ${an(I().min)} لاعبين على الأقل</small>`:"";
   const note=t==="mafia"&&(g.cfg||{}).det&&P.length<6?`<small class="gs" style="text-align:center">المحقق يشتغل لو صرتوا ٦ وفوق</small>`:"";
@@ -1887,7 +2187,7 @@ function vLobby(){ const P=pls(), m=myP(), url=location.origin+location.pathname
   ${h?btn("ابدأ اللعبة ("+an(P.length)+" لاعبين)","start"):""}</div>`; }
 function vJoin(){ if(g.st!=="lobby") return `${head(I().n)}${center(`<h3>اللعبة بدأت</h3><small class="gs">اطلب منهم يبدون لعبة جديدة، وبعدها امسح الباركود مرة ثانية.</small>`)}`;
   return `${head(I().n,"تنضم للعبة")}<div class="gmb"><small class="gs">${an(pls().length)} لاعبين داخل اللعبة</small>
-  <input id="gmj" class="gin" maxlength="16" placeholder="اسمك" value="${esc(lsGet("kz-gname")||"")}">${errH()}${btn("ادخل","join")}</div>`; }
+  <input id="gmj" class="gin" maxlength="16" placeholder="اسمك" value="${esc(lsGet("kz-gname")||"")}">${GT()==="insp"?avPick():""}${errH()}${btn("ادخل","join")}</div>`; }
 // تسليم الجوال: لو الجوال عليه أكثر من لاعب، كل واحد يضغط اسمه قبل يشوف
 function hand(p,first,title,sub){ if(first||ui.rev===p.id) return ""; return `${head(title,sub)}${center(`<small class="gs">الشاشة مخفية</small><h3>سلّم الجوال لـ${esc(p.n)}</h3><small class="gs">غط الشاشة عن اللي جنبك</small>${btn("أنا "+esc(p.n)+"، وريني","rev","gb",p.id)}`)}`; }
 function vSee(){ const L=pending("seen");
@@ -1986,7 +2286,7 @@ function vMafia(){ const d=g.d||{}, ro=d.ro||{}, al=d.al||{}, rev=(g.cfg||{}).re
   const votes=Object.keys(vc).sort((a,b)=>vc[b]-vc[a]).map(k=>(k==="-"?"ما أحد":esc(nm(k)))+" "+an(vc[k])).join("، ");
   return `${H("🗳 نتيجة التصويت")}${center(`${o?`<small class="gs">طلع</small><div class="gbig">${esc(nm(o))}</div>${rev?`<h3>كان ${RI[ro[o]]} ${RN[ro[o]]}</h3>`:""}`:`<h3>ما اتفقتوا</h3><small class="gs">محد طلع هالمرة</small>`}<small class="gs">الأصوات: ${votes||"ما أحد صوّت"}</small>${ghost}${d.win?`<h3 class="gold">انتهت اللعبة!</h3>`:""}${isHost()?btn(d.win?"النتيجة":"الليل الجاي 🌙","next"):waitHost()}`)}`; }
 
-function vEnd(){ const t=GT(), again=(isHost()?btn("لعبة جديدة","again","gl"):"")+(joinOnly?"":btn("ألعاب ثانية","fresh","gl"));
+function vEnd(){ if(GT()==="insp") return vIEnd(); const t=GT(), again=(isHost()?btn("لعبة جديدة","again","gl"):"")+(joinOnly?"":btn("ألعاب ثانية","fresh","gl"));
   if(t==="lies"){ const sc=g.sc||{}, a=sc.A||0, b=sc.B||0, W=a===b?"تعادل!":TN[a>b?"A":"B"];
     return `${head("خلصت اللعبة")}<div class="gmb"><div class="gcard" style="text-align:center"><small class="gs">${a===b?"النتيجة":"الفريق الفايز"}</small><div class="gbig">${W}</div></div>
     <div class="gteams">${["A","B"].map(T=>`<div class="t${T}"><small>${TN[T]}</small><b>${an(sc[T]||0)}</b><i>${names(pls().filter(p=>team(p.id)===T))}</i></div>`).join("")}</div>${again}</div>`; }
@@ -2003,15 +2303,17 @@ function paint(force){ if(!el||el.hidden) return; const ae=document.activeElemen
   else if(g.st==="lobby") h=vLobby();
   else if(!local().length) h=vJoin();
   else if(g.st==="end") h=vEnd();
-  else { const t=GT(); h=t==="five"?vFive():t==="lies"?vLies():t==="mafia"?vMafia():vBrra(); }
-  const keep={}; el.querySelectorAll("input[id]").forEach(i=>keep[i.id]=i.value);
-  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); }
+  else { const t=GT(); h=t==="five"?vFive():t==="lies"?vLies():t==="mafia"?vMafia():t==="insp"?vInsp():vBrra(); }
+  const keep={}, sk={}; el.querySelectorAll("input[id]").forEach(i=>keep[i.id]=i.value); el.querySelectorAll("[data-sk]").forEach(e=>sk[e.dataset.sk]=e.scrollLeft);
+  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); }
 async function onClick(e){ const b=e.target.closest("[data-g]"); if(!b) return; const a=b.dataset.g, x=b.dataset.x; ui.err=""; const ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&el.contains(ae)&&a!=="lans") ae.blur();
   if(a==="close") return hide();
   if(a==="set"){ ui.v="set"; ui.gt=x; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
   if(a==="cat"){ const i=+x; off.has(i)?off.delete(i):off.add(i); return paint(); }
   if(a==="allcats"){ off.clear(); return paint(); }
   if(a==="mcfg"){ mcfg[x]=!mcfg[x]; return paint(); } if(a==="talk"){ mcfg.talk=+x; return paint(); }
+  if(a==="icf"){ const [k2,v]=x.split(":"); icfg[k2]=+v; return paint(); } if(a==="iav"){ ui.av=x; return paint(true); }
+  if(a[0]==="i"&&g&&GT()==="insp"&&g.st==="play") return iClick(a,x);
   if(a==="create") return create();
   if(a==="add"){ ui.v="add"; return paint(); } if(a==="back"){ ui.v=""; return paint(); }
   if(a==="addok") return addPlayer((el.querySelector("#gma")||{}).value);
