@@ -299,6 +299,25 @@ html.gmon,html.gmon body{overflow:hidden}
 .iout.ok{border-color:#62d49888}.iout.bad{border-color:#ff8f8f88}
 .ibad{border-color:#ff8f8f!important;color:#ff8f8f!important}
 .itoast{background:#e9c77b22;border:1px solid var(--gold);color:var(--gold);border-radius:12px;padding:8px 12px;text-align:center;font-weight:800;margin-bottom:10px}
+
+.ibg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;pointer-events:none}
+.ibg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,9,18,.8),rgba(12,9,18,.55) 35%,rgba(12,9,18,.72))}
+.g-insp .gs{text-shadow:0 1px 4px #000}
+.ifig{display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.ibody{height:170px;width:auto;filter:drop-shadow(0 10px 12px rgba(0,0,0,.6))}
+.ifig .isack{width:96px;margin:0}
+.istp{position:relative;width:92px;margin:0 auto}.istp img{width:100%;display:block;filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}.istp .stp{position:absolute;width:64%;left:18%;top:22%;transform:rotate(-14deg)}
+.iopen{width:88px;margin:0 auto;display:block;filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}
+.iov{position:relative;flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;min-height:80vh;border-radius:20px;overflow:hidden;background:#000 url(ins_start.webp) center/cover;padding:18px}
+.iov::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.1) 50%,rgba(12,9,18,.92))}
+.iov>*{position:relative}
+.iov h2{margin:0;font-size:38px;color:var(--gold);text-align:center;text-shadow:0 3px 14px #000}
+.iintro{position:fixed;inset:0;z-index:9600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .4s}
+.iintro.out{opacity:0}
+.iintro canvas{width:min(78vw,380px);height:auto;aspect-ratio:3/4}
+.iintro video{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.iintro b{font-size:30px;color:var(--gold);text-shadow:0 3px 12px #000}.iintro small{color:#cfc4dc;font-size:13px}
+.iintro .ibody{height:52vh}
 .iavs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.iavs button{border:2px solid transparent;border-radius:12px;padding:0;background:none;line-height:0;overflow:hidden}.iavs button.on{border-color:var(--gold)}.iavs img{width:100%;aspect-ratio:1;object-fit:cover}
 .ggrid2{display:flex;gap:6px}.ggrid2 .gpk{padding:6px 14px}
 .grole{font-size:70px;line-height:1.1}.gmoon{font-size:64px}
@@ -1854,6 +1873,8 @@ const iMerD=d=>(d.ord||[]).filter(p=>p!==d.ins&&(g.pl||{})[p]);
 const csum=(s,k)=>[...(s||"")].reduce((a,c)=>a+((IC[c]||{})[k]||0),0);
 const ccnt=(s,c)=>[...(s||"")].filter(x=>x===c).length;
 const avOf=id=>{ const p=(g&&g.pl||{})[id]; return "ins_a"+(p&&IAV.includes(p.av)?p.av:"01")+".webp" };
+const bodyOf=id=>{ const p=(g&&g.pl||{})[id]; return "ins_b"+(p&&IAV.includes(p.av)?p.av:"01")+".webp" };
+const ibg=img=>`<div class="ibg" style="background-image:url(${img})"></div>`;
 const iava=(id,z)=>`<span class="iav" style="--z:${z||42}px"><img src="${avOf(id)}" alt="">${(iD().bk||{})[id]?`<i>💔</i>`:""}</span>`;
 const cnames=s=>{ const c={}; [...(s||"")].forEach(x=>c[x]=(c[x]||0)+1); return Object.entries(c).map(([x,k])=>IC[x].n+(k>1?" × "+an(k):"")).join("، ") };
 const sortC=s=>[...(s||"")].sort((a,b)=>"kcfhxdrw".indexOf(a)-"kcfhxdrw".indexOf(b)).join("");
@@ -1944,6 +1965,19 @@ async function insNext(){ const d=JSON.parse(JSON.stringify(g.d)); d.n[d.ins]=(d
   if(!nx){ d.fin=insScore(d); const sc={}; Object.entries(d.fin).forEach(([p,x])=>sc[p]=x.tot); return up({st:"end",d,sc}); }
   Object.assign(d,{ri,ins:nx,ph:"prep",b:{},dc:{},dn:{},ds:{},tD:{},of:{},dm:{},out:{},bl:{},er:{},t0:0}); return up({d,r:(g.r||1)+1}); }
 
+/* --- فيديو «أنت المفتش»: يطلع للمفتش أول كل جولة، والأخضر ينقص بالكود --- */
+function iIntro(id){ const av=((g.pl||{})[id]||{}).av||"01", o=document.createElement("div"); o.className="iintro";
+  o.innerHTML=`<div class="ibg" style="background-image:url(ins_counter.webp)"></div><canvas width="624" height="832"></canvas><video src="ins_v${IAV.includes(av)?av:"01"}.mp4" muted playsinline preload="auto"></video><b>أنت المفتش 🔎</b><small>اضغط في أي مكان للتخطي</small>`;
+  document.body.appendChild(o); const v=o.querySelector("video"), cv=o.querySelector("canvas"), cx=cv.getContext("2d",{willReadFrequently:true}); let raf=0, done=false;
+  const close=()=>{ if(done) return; done=true; cancelAnimationFrame(raf); try{ v.pause() }catch(e){} o.classList.add("out"); setTimeout(()=>o.remove(),450); };
+  const draw=()=>{ if(done) return; if(v.readyState>=2){ cx.drawImage(v,0,0,cv.width,cv.height); const im=cx.getImageData(0,0,cv.width,cv.height), D=im.data;
+      for(let q=0;q<D.length;q+=4){ const r=D[q],G=D[q+1],b=D[q+2],m=r>b?r:b,k=G-m; if(k>70) D[q+3]=0; else if(k>25){ D[q+3]=Math.round(255*(1-(k-25)/45)); D[q+1]=m; } else if(k>8) D[q+1]=Math.max(m,G-k*.6); }
+      cx.putImageData(im,0,0); } if(!v.ended) raf=requestAnimationFrame(draw); else setTimeout(close,900); };
+  o.addEventListener("click",close); v.addEventListener("error",close);
+  const still=()=>{ if(done) return; cv.remove(); o.insertAdjacentHTML("afterbegin",""); const im=document.createElement("img"); im.className="ibody"; im.src=bodyOf(id); o.insertBefore(im,o.querySelector("b")); setTimeout(close,2600); };
+  const pr=v.play(); if(pr&&pr.then) pr.then(draw).catch(still); else draw(); setTimeout(close,9000); }
+function iMaybeIntro(){ if(!g||GT()!=="insp"||g.st!=="play"||ui.ivw) return; const p=iMe(), d=iD(); if(!p||d.ph!=="prep"||p.id!==d.ins) return;
+  if(local().length>1&&ui.rev!==p.id) return; const k=gid+":"+d.ri+":"+p.id; if(ui.introK===k) return; ui.introK=k; iIntro(p.id); }
 /* --- شاشات التفتيش --- */
 const iPend=p=>{ const x=(g.a||{})[p]; return !!x&&x.s>((iD().ack||{})[p]||0) };
 async function iAct(p,x){ if(iPend(p)) return; const cur=Math.max(((iD().ack||{})[p])||0,((g.a||{})[p]||{}).s||0); ui.iw=p; return up({["a."+p]:{...x,s:cur+1,at:Date.now()}}); }
@@ -1989,7 +2023,7 @@ function vIPrepM(me){ const d=iD(), h=d.h[me]||"", st=(ui.ist||{})[me+":"+d.ri]|
   ${dc&&n?`<small class="gs" style="color:${hon?"var(--green)":"#ff8f8f"}">${hon?"تصريح صادق — لو فتّشك يدفع لك الغرامة":"تصريح كاذب — لو فتّشك تخسر كل كرت غير "+IC[dc].n}</small>`:""}
   ${iErr(me)}${n>5?`<small class="gs" style="color:#ff8f8f">الكيس يشيل ٥ كروت بالكثير</small>`:""}${btn("📦 أرسل الكيس للمفتش","isend","gb")}${btn("← رجوع للسوق","ist","gl","mk")}</div>`; }
 function vIPrepI(me){ const d=iD(), M=iMerD(d);
-  return `${head("التفتيش","🔎 أنت المفتش")}${iHud(me)}${center(`<div class="grole">🔎</div><div class="gbig">أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
+  return `${head("التفتيش","🔎 أنت المفتش")}${iHud(me)}${center(`<img class="ibody" style="margin:0 auto" src="${bodyOf(me)}" alt=""><div class="gbig">🔎 أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
   <div class="gcard gpl">${M.map(p=>`<div class="gpr"><span class="irow">${iava(p,30)} ${esc(nm(p))}</span><b>${d.dn[p]?"✓ جاهز":"يعبّي…"}</b></div>`).join("")}</div>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
 
 function iOfBox(me,to){ // بناء عرض التاجر أو طلب المفتش
@@ -2010,7 +2044,7 @@ function vINegM(me){ const d=iD(), I=d.ins, o=d.out[me], dc=d.dc[me], bag=d.b[me
   if(bl) body=`<div class="gcard" style="text-align:center"><b>المفتش يختار ${an(bl.n)} كرت من كيسك وهو مقلوب…</b></div>`;
   else if(dm) body=`<div class="gcard idem"><b>المفتش طلب: ${esc(dealTxt(dm))}</b><small>ما تقدر ترسل غير اللي طلبه، إلا لو عدّل طلبه. لو وافقت، كيسك يمرّ.</small>${btn("وافق وأرسل اللي طلبه","iac","gb")}</div>`;
   else body=`${of?`<small class="gs" style="text-align:center">عرضك الحالي: <b class="gold">${esc(dealTxt(of))}</b> — تقدر تعدّله</small>`:""}${iOfBox(me)}`;
-  return `${H}${iHud(me)}<div class="gmb">${iTimer()}<div class="irow" style="justify-content:center">${iava(I,46)}<b>كيسك عند ${esc(nm(I))}</b></div>
+  return `${H}${iHud(me)}<div class="gmb">${iTimer()}<div class="ifig"><img class="ibody" style="height:130px" src="${bodyOf(I)}" alt=""><div style="padding-bottom:20px"><b>كيسك عند ${esc(nm(I))}</b><small class="gs">🔎 المفتش هالجولة</small></div></div>
    <div class="gcard" style="text-align:center"><small class="gs">صرّحت: <b class="gold">${IC[dc].n} × ${an(bag.length)}</b></small><div class="ihand">${[...bag].map(c=>kc(c,4.4)).join("")}</div></div>
    ${body}${iErr(me)}</div>`; }
 function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==="none")), H=head("التفتيش","🔎 أنت المفتش");
@@ -2024,18 +2058,19 @@ function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==
       ${owe?`<div class="gcard idem"><small>🤝 عليك وعد لـ${esc(nm(p))} تمرّر كيسه</small></div>`:""}
       <div class="ggrid">${of?btn("اقبل عرضه","iok","gb",p):btn("مرّر","ips","gb",p)}${btn("🔍 فتّش","iin1","gl ibad",p)}</div>
       <div class="ggrid">${of?btn("مرّر بدون شي","ips","gl",p):""}${btn(dm?"عدّل طلبك":"اطلب رشوة","idm","gl",p)}</div>`;
-    return `<div class="ipg"><div class="irow" style="justify-content:center">${iava(p,54)}<div><b style="font-size:18px">${esc(nm(p))}</b><small class="gs">يقول إن فيه: <b class="gold">${dc?IC[dc].n+" × "+an(n):"—"}</b></small></div></div>
-      <img class="isack" src="ins_sack.webp" alt="">${act}</div>`; }).join("");
+    return `<div class="ipg"><div class="irow" style="justify-content:center"><div style="text-align:center"><b style="font-size:20px">${esc(nm(p))}</b>${(d.bk||{})[p]?" 💔":""}<small class="gs">يقول إن فيه: <b class="gold">${dc?IC[dc].n+" × "+an(n):"—"}</b></small></div></div>
+      <div class="ifig"><img class="ibody" src="${bodyOf(p)}" alt="">${o?"":`<img class="isack" src="ins_sack.webp" alt="">`}</div>${act}</div>`; }).join("");
   const left=M.filter(p=>!d.out[p]).length;
   return `${H}${iHud(me)}<div class="gmb">${iTimer()}<small class="gs" style="text-align:center">${an(left)} كيس باقي · اسحب يمين ويسار بين الأكياس</small>
    <div class="isw" data-sk="isw">${pages||`<small class="gs">ما فيه أكياس</small>`}</div>${iErr(me)}${isHost()?btn("خلّص الوقت","skip","gl"):""}</div>`; }
 function vIOut(p,mine){ const d=iD(), o=d.out[p]||{}, dc=o.dc?IC[o.dc].n:"", I=d.ins, cur=(iMe()||{}).id, full=cur===p||cur===I;
   const row=(t,c)=>`<div class="gcard iout ${c||""}" style="text-align:center">${t}</div>`;
   if(o.k==="none") return row(`<b>${esc(nm(p))} ما أرسل كيس</b>`);
-  if(o.k==="free"||o.k==="time") return row(`<b>✓ ${mine?"كيسك مرّ":"مرّ"}</b><small>${o.k==="time"?"خلص الوقت ومرّ تلقائياً":"بدون رشوة"}</small>${mine?`<div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
-  if(o.k==="deal") return row(`<b>✓ ${mine?"كيسك مرّ":"مرّ"} برشوة</b><small>${esc(dealTxt(o.deal,full))}</small>${mine?`<div class="ihand">${[...(o.bag||"")].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
-  if(o.k==="hon") return row(`<b>🔍 انفتّش وطلع صادق ✓</b><small>${dc} × ${an(o.bag.length)} بالضبط · المفتش دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div>`,"ok");
-  return row(`<b>🔍 انفتّش وانكشف ✗</b><small>صرّح ${dc} · انصادر: ${esc(cnames(o.lost))} · دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4,o.lost.includes(c)&&c!==o.dc?"lost":"")).join("")}</div>`,"bad"); }
+  const STP=`<div class="istp"><img src="ins_sack.webp" alt=""><img class="stp" src="ins_stamp.webp" alt=""></div>`, OPN=`<img class="iopen" src="ins_open.webp" alt="">`;
+  if(o.k==="free"||o.k==="time") return row(`${STP}<b>✓ ${mine?"كيسك مرّ":"مرّ"}</b><small>${o.k==="time"?"خلص الوقت ومرّ تلقائياً":"بدون رشوة"}</small>${mine?`<div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
+  if(o.k==="deal") return row(`${STP}<b>✓ ${mine?"كيسك مرّ":"مرّ"} برشوة</b><small>${esc(dealTxt(o.deal,full))}</small>${mine?`<div class="ihand">${[...(o.bag||"")].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
+  if(o.k==="hon") return row(`${OPN}<b>🔍 انفتّش وطلع صادق ✓</b><small>${dc} × ${an(o.bag.length)} بالضبط · المفتش دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div>`,"ok");
+  return row(`${OPN}<b>🔍 انفتّش وانكشف ✗</b><small>صرّح ${dc} · انصادر: ${esc(cnames(o.lost))} · دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4,o.lost.includes(c)&&c!==o.dc?"lost":"")).join("")}</div>`,"bad"); }
 function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
   const last=P.every(p=>(d.n[p]||0)+(p===d.ins?1:0)>=K)||d.dry;
   return `${head("التفتيش","نتيجة الجولة")}${iHud(me)}<div class="gmb"><div class="irow" style="justify-content:center">${iava(d.ins,40)}<b>المفتش: ${esc(nm(d.ins))}</b></div>
@@ -2043,14 +2078,14 @@ function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).
    <div class="gcard gpl">${P.map(p=>`<div class="gpr"><span class="irow">${iava(p,26)} ${esc(nm(p))}</span><b>💰 ${an(d.m[p]||0)}</b></div>`).join("")}</div>
    ${d.dry?`<small class="gs" style="text-align:center">خلصت الكومة — هذي آخر جولة</small>`:""}
    ${isHost()?btn(last?"النتيجة النهائية":"الجولة الجاية ←","next"):waitHost()}</div>`; }
-function vInsp(){ if(ui.ivw) return vIStands(); const p=iMe(); if(!p) return vJoin(); const d=iD(), L=local();
+function vInsp(){ if(ui.ivw) return ibg("ins_rug.webp")+vIStands(); const p=iMe(); if(!p) return vJoin(); const d=iD(), L=local(); const BG=ibg(p.id===d.ins&&d.ph!=="res"?"ins_counter.webp":"ins_rug.webp");
   if(L.length>1&&ui.rev!==p.id) return hand(p,false,"التفتيش","الشاشة مخفية");
-  const me=p.id; if(d.ph==="prep") return me===d.ins?vIPrepI(me):vIPrepM(me);
-  if(d.ph==="neg") return me===d.ins?vINegI(me):vINegM(me);
-  return vIRes(me); }
-function vIEnd(){ const d=iD(), F=d.fin||{}, again=(isHost()?btn("لعبة جديدة","again","gl"):"")+(joinOnly?"":btn("ألعاب ثانية","fresh","gl"));
+  const me=p.id; if(d.ph==="prep") return BG+(me===d.ins?vIPrepI(me):vIPrepM(me));
+  if(d.ph==="neg") return BG+(me===d.ins?vINegI(me):vINegM(me));
+  return BG+vIRes(me); }
+function vIEnd(){ const d=iD(), F=d.fin||{}, BG=ibg("ins_rug.webp"), again=(isHost()?btn("لعبة جديدة","again","gl"):"")+(joinOnly?"":btn("ألعاب ثانية","fresh","gl"));
   const P=Object.keys(F).sort((a,b)=>F[b].tot-F[a].tot||F[b].nl-F[a].nl||F[b].nx-F[a].nx), W=P[0];
-  return `${head("خلصت اللعبة",d.why||"")}<div class="gmb"><div class="gcard" style="text-align:center">${W?iava(W,70):""}<small class="gs">الفايز</small><div class="gbig">🏆 ${esc(nm(W))}</div></div>
+  return `${BG}${head("خلصت اللعبة",d.why||"")}<div class="gmb"><div class="gcard" style="text-align:center">${W?`<img class="ibody" style="margin:0 auto" src="${bodyOf(W)}" alt="">`:""}<small class="gs">الفايز</small><div class="gbig">🏆 ${esc(nm(W))}</div></div>
    ${P.map((p,i)=>{ const x=F[p]; return `<div class="gcard"><div class="irow"><b class="gold">${an(i+1)}</b>${iava(p,36)}<b style="flex:1">${esc(nm(p))}</b><b class="gold" style="font-size:20px">${an(x.tot)}</b></div>
      <small class="gs">💰 ${an(x.m)} · البسطة ${an(x.sv)}${x.kq?" · 👑 "+an(x.kq):""}</small>${x.kqd.length?`<small class="gs">${x.kqd.join(" · ")}</small>`:""}
      <div class="ihand">${[...sortC((d.sl[p]||"")+(d.sx[p]||""))].map(c=>kc(c,3.4)).join("")}</div></div>`; }).join("")}${again}</div>`; }
@@ -2173,6 +2208,7 @@ function vSet(){ const k=ui.gt; if(k==="brra") return vCats(); const x=INFO[k]; 
     المفتش يمرّر أو يفتّش. لو فتّش وطلع صادق، المفتش يدفع الغرامة. لو كذاب، ينصادر اللي ما صرّح فيه ويدفع غرامته.<br>
     آخر اللعبة: الفلوس + قيمة البسطة + الملك والملكة (أكثر واحد من كل صنف مسموح).</small></div>`;
   return `${head(x.n,"قبل نبدأ")}<div class="gmb"><div class="gcard"><small>${x.d}<br>${x.m}</small></div>${o}${nameIn()}${errH()}${btn("التالي: ادعُ ربعك","create")}${btn("رجوع","pick","gl")}</div>`; }
+function vIOv(){ return `${head("التفتيش","مطل تلال مكة")}<div class="iov"><h2>التفتيش</h2><small class="gs" style="text-align:center;color:#e6dcf0">هرّب، صرّح، ارشِ… والمفتش يقرر يمرّر ولا يفتّش</small>${btn("ابدأ ←","iovgo")}${btn("رجوع","pick","gl")}</div>`; }
 function vAdd(){ return `${head("ضيف لاعب على جوالي")}<div class="gmb"><small class="gs">للي ما معه جوال. يلعب على جوالك، وكل واحد ياخذ دوره.</small>
   <input id="gma" class="gin" maxlength="16" placeholder="اسمه">${g&&GT()==="insp"?avPick():""}${errH()}${btn("ضيف","addok")}${btn("رجوع","back","gl")}</div>`; }
 function vLobby(){ const P=pls(), m=myP(), url=location.origin+location.pathname+"?g="+gid, h=isHost(), t=GT();
@@ -2297,7 +2333,7 @@ function vEnd(){ if(GT()==="insp") return vIEnd(); const t=GT(), again=(isHost()
   return `${head("خلصت اللعبة")}<div class="gmb"><div class="gcard" style="text-align:center"><small class="gs">الفايز</small><div class="gbig">🏆 ${W}</div></div>${board()}${again}</div>`; }
 function paint(force){ if(!el||el.hidden) return; const ae=document.activeElement; if(!force&&ae&&ae.tagName==="INPUT"&&el.contains(ae)) return; let h="";
   if(ui.v==="gone"||(gid&&!g&&ui.v!=="wait")) h=`${head("ألعاب الجلسة")}${center(`<h3>اللعبة انتهت</h3><small class="gs">الباركود قديم أو الجلسة انقفلت.</small>${joinOnly?"":btn("ابدأ لعبة جديدة","fresh")}`)}`;
-  else if(!gid) h=ui.v==="set"?vSet():vPick();
+  else if(!gid) h=ui.v==="set"?vSet():ui.v==="iov"?vIOv():vPick();
   else if(!g) h=center(`<small class="gs">لحظة…</small>`);
   else if(ui.v==="add") h=vAdd();
   else if(g.st==="lobby") h=vLobby();
@@ -2305,10 +2341,10 @@ function paint(force){ if(!el||el.hidden) return; const ae=document.activeElemen
   else if(g.st==="end") h=vEnd();
   else { const t=GT(); h=t==="five"?vFive():t==="lies"?vLies():t==="mafia"?vMafia():t==="insp"?vInsp():vBrra(); }
   const keep={}, sk={}; el.querySelectorAll("input[id]").forEach(i=>keep[i.id]=i.value); el.querySelectorAll("[data-sk]").forEach(e=>sk[e.dataset.sk]=e.scrollLeft);
-  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); }
+  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} }
 async function onClick(e){ const b=e.target.closest("[data-g]"); if(!b) return; const a=b.dataset.g, x=b.dataset.x; ui.err=""; const ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&el.contains(ae)&&a!=="lans") ae.blur();
   if(a==="close") return hide();
-  if(a==="set"){ ui.v="set"; ui.gt=x; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
+  if(a==="set"){ ui.v=x==="insp"?"iov":"set"; ui.gt=x; return paint(); } if(a==="iovgo"){ ui.v="set"; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
   if(a==="cat"){ const i=+x; off.has(i)?off.delete(i):off.add(i); return paint(); }
   if(a==="allcats"){ off.clear(); return paint(); }
   if(a==="mcfg"){ mcfg[x]=!mcfg[x]; return paint(); } if(a==="talk"){ mcfg.talk=+x; return paint(); }
