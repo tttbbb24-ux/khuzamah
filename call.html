@@ -8,7 +8,7 @@
 <title>خزامى</title>
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&family=Lalezar&display=swap">
 <style>
 /* صفحة الزبون: بدون سكرول. شعار فوق، زر الطلب، وأربعة أزرار. المنيو والفاتورة يطلعون من تحت */
 :root{--bg:#0c0912;--card:#17121f;--line:#241b30;--ink:#f3eefa;--muted:#9b90ab;--accent:#b88cf2;--acc-ink:#140a22;--green:#62d498;--gold:#e9c77b;--body:"Noto Naskh Arabic",Tahoma,serif;color-scheme:dark}
@@ -246,6 +246,29 @@ html.gmon,html.gmon body{overflow:hidden}
 .ggrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .gerr{color:#ff9c9c;font-size:14px;margin:0;text-align:center}.gold{color:var(--gold);font-size:18px}
 /* v69: الألعاب الجديدة */
+.ghub{padding:14px 16px 28px;min-height:100%;background:radial-gradient(120% 50% at 50% 0,#2b1747 0,#140d24 60%,#0d0a17)}
+.hht{display:flex;align-items:center;gap:10px}.hht .gmx{position:static;flex:0 0 auto}
+.hhtt{flex:1;display:flex;flex-direction:column}.hhtt b{font-family:Lalezar,inherit;font-weight:400;font-size:32px;line-height:1.15;background:linear-gradient(180deg,#fff3c4,#f3c969 55%,#c8902e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 #5a3a0c)}
+.hhtt small{color:var(--muted);font-size:12.5px}
+.hseat{font-family:Lalezar,inherit;font-size:15px;background:#f3c969;color:#2a1a10;border-radius:12px;padding:4px 10px;transform:rotate(-4deg);box-shadow:0 3px 0 #9a6a1c;white-space:nowrap}
+.hchips{display:flex;gap:8px;margin:14px 0 12px}
+.hchips button{font-weight:700;font-size:13px;font-family:inherit;color:#fff7ea;background:#ffffff10;border:1px solid #ffffff1f;border-radius:20px;padding:7px 14px}
+.hchips button.on{background:#f3c969;color:#2a1a10;border-color:#f3c969}
+.hlist{display:flex;flex-direction:column;gap:14px}
+.hc{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:right;width:100%;min-height:178px;padding:16px 16px 14px;border:0;border-radius:24px;overflow:hidden;isolation:isolate;color:#fff;font-family:inherit;background:var(--hc);box-shadow:0 10px 24px #0008,inset 0 0 0 1px #ffffff1c;cursor:pointer;transition:transform .15s;animation:hcin .45s both}
+.hc:nth-child(2){animation-delay:.06s}.hc:nth-child(3){animation-delay:.12s}.hc:nth-child(4){animation-delay:.18s}.hc:nth-child(5){animation-delay:.24s}
+@keyframes hcin{from{opacity:0;transform:translateY(14px)}}
+.hc:active{transform:scale(.98)}
+.hca{position:absolute;inset:0;z-index:-1}.hca img{width:100%;height:100%;object-fit:cover;object-position:0 50%;display:block}
+.hca::after{content:"";position:absolute;inset:0;background:linear-gradient(270deg,color-mix(in srgb,var(--hc) 70%,#000) 0,color-mix(in srgb,var(--hc) 35%,transparent) 55%,transparent 80%),linear-gradient(0deg,#0007,transparent 50%)}
+.hct{font-family:Lalezar,inherit;font-weight:400;font-size:30px;line-height:1.15;text-shadow:0 3px 0 #0006}
+.hcd{margin:2px 0 10px;font-size:13.5px;line-height:1.55;max-width:60%;text-shadow:0 1px 3px #000c}
+.hcm{display:flex;gap:6px;flex-wrap:wrap;align-items:center;width:100%}
+.hcm i{font-style:normal;font-size:12px;font-weight:700;background:#0006;border:1px solid #ffffff26;border-radius:12px;padding:3px 9px}
+.hcm em{font-style:normal;margin-inline-start:auto;font-weight:900;font-size:15px;border-radius:16px;padding:8px 20px;color:#2a1a10;background:linear-gradient(180deg,#fff0b8,#f3c969);box-shadow:0 4px 0 #9a6a1c,0 6px 12px #0006}
+.hc-insp{min-height:250px}.hc-insp .hca img{object-position:50% 30%}.hc-insp .hca::after{background:linear-gradient(180deg,transparent 25%,#0b1a12d9 70%,#0b1a12)}.hc-insp .hcd{max-width:100%}.hc-insp .hct{color:#f3c969}
+.hc-mafia .hct{color:#ff6070;text-shadow:0 0 18px #ff2a3c88,0 3px 0 #000}
+.hnew{position:absolute;top:12px;right:12px;font-family:Lalezar,inherit;font-size:15px;padding:3px 10px;border-radius:10px;background:#ff4d5e;color:#fff;box-shadow:0 3px 0 #8a1220;transform:rotate(-6deg)}
 .gsec{font-size:15px;font-weight:800;color:var(--gold);margin:6px 2px -4px}
 .gtg{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 0;color:var(--ink);font:inherit}.gtg:last-of-type{border-bottom:0}
 .gtg span{flex:1}.gtg b{display:block;font-size:15.5px}.gtg small{display:block;color:var(--muted);font-size:12.5px;line-height:1.6}
@@ -2203,8 +2226,16 @@ const tog=(k,t,s,on)=>`<button class="gtg ${on?"on":""}" data-g="mcfg" data-x="$
 const avPick=()=>{ const taken=new Set(g&&g.pl?Object.values(g.pl).map(p=>p.av):[]); if(!ui.av){ ui.av=IAV.find(a=>!taken.has(a))||"01"; }
   return `<small class="gs">اختار شكلك</small><div class="iavs">${IAV.map(a=>`<button class="${ui.av===a?"on":""}" data-g="iav" data-x="${a}"><img src="ins_a${a}.webp" alt=""></button>`).join("")}</div>`; };
 const nameIn=()=>`<label class="gs" for="gmn">اسمك في اللعبة</label><input id="gmn" class="gin" maxlength="16" placeholder="اسمك" value="${esc(lsGet("kz-gname")||"")}">${ui.gt==="insp"?avPick():""}`;
-function vPick(){ const card=k=>{ const x=INFO[k]; return `<div class="gcard"><b>${x.n}</b><small>${x.d}<br>${x.m}</small>${btn("العب","set","gb",k)}</div>` };
-  return `${head("ألعاب الجلسة","جلسة "+an(n))}<div class="gmb"><div class="gsec">⚡ سريعة</div>${["brra","five"].map(card).join("")}<div class="gsec">⏳ تطول</div>${["lies","mafia","insp"].map(card).join("")}</div>`; }
+const HUB={brra:{c:"#7b2ff7",t:"fast",tag:"👥 ٣+|🔁 ٣ جولات",d:"الكل يعرف الكلمة إلا واحد. اسألوا بعض واكشفوه."},five:{c:"#ff6a1a",t:"fast",tag:"👥 ٢+|🔁 ٣ جولات",d:"قول ٣ أشياء في ٥ ثواني بس… والباقين يحكمون."},
+  lies:{c:"#5b2bbf",t:"long",tag:"👥 فريقين|❓ ١٠ أسئلة",d:"فريقين وسؤال. اكتب جوابك… أو اسرق جواب خصمك."},mafia:{c:"#7a0f1d",t:"long",tag:"👥 ٥+|🌙 ليل ونهار",d:"بينكم مافيا تقتل بالليل. اكشفوهم قبل لا يخلصون عليكم."},
+  insp:{c:"#1a3a2a",t:"long",tag:"👥 ٣–٥|📱 كل واحد جواله",d:"هرّب ممنوعاتك في الكيس، ارشِ المفتش… أو اكذب وادعِ إنه يمرّرك."}};
+function vPick(){ const f=ui.hf||"all", card=k=>{ const x=INFO[k], h=HUB[k];
+    return `<button class="hc hc-${k}" data-g="set" data-x="${k}" style="--hc:${h.c}"><span class="hca"><img src="${k==="insp"?"ins_start.webp":"hub_"+k+".jpg"}" alt="" loading="lazy"></span>${k==="insp"?`<span class="hnew">جديدة!</span>`:""}
+    <b class="hct">${x.n}</b><span class="hcd">${h.d}</span><span class="hcm">${h.tag.split("|").map(t=>`<i>${t}</i>`).join("")}<em>العب</em></span></button>` };
+  const ks=["insp","brra","five","lies","mafia"].filter(k=>f==="all"||HUB[k].t===f);
+  return `<div class="ghub"><div class="hht">${joinOnly?"":`<button class="gmx" data-g="close" aria-label="إغلاق">✕</button>`}<div class="hhtt"><b>ألعاب الجلسة</b><small>اختاروا لعبة وكل واحد يدخل من جواله</small></div><span class="hseat">جلسة ${an(n)}</span></div>
+  <div class="hchips">${[["all","الكل"],["fast","⚡ سريعة"],["long","⏳ تطول"]].map(([v,t])=>`<button class="${f===v?"on":""}" data-g="hf" data-x="${v}">${t}</button>`).join("")}</div>
+  <div class="hlist">${ks.map(card).join("")}</div></div>`; }
 function vCats(){ const on=CATS.length-off.size;
   return `${head("برا السالفة","الإعدادات")}<div class="gmb"><small class="gs">الكلمات تطلع عشوائي من كل الفئات. اضغط على اللي ما تبغاها.</small>
   <div class="gchips">${CATS.map((c,i)=>`<button class="gch ${off.has(i)?"off":""}" data-g="cat" data-x="${i}">${off.has(i)?"":"✓ "}${esc(c)}</button>`).join("")}</div>
@@ -2358,7 +2389,7 @@ function paint(force){ if(!el||el.hidden) return; const ae=document.activeElemen
   el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} try{ iCarInit() }catch(e){} }
 async function onClick(e){ const b=e.target.closest("[data-g]"); if(!b) return; const a=b.dataset.g, x=b.dataset.x; ui.err=""; const ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&el.contains(ae)&&a!=="lans") ae.blur();
   if(a==="close") return hide();
-  if(a==="set"){ ui.v=x==="insp"?"iov":"set"; ui.gt=x; return paint(); } if(a==="iovgo"){ ui.v="set"; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
+  if(a==="hf"){ ui.hf=x; return paint(); } if(a==="set"){ ui.v=x==="insp"?"iov":"set"; ui.gt=x; return paint(); } if(a==="iovgo"){ ui.v="set"; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
   if(a==="cat"){ const i=+x; off.has(i)?off.delete(i):off.add(i); return paint(); }
   if(a==="allcats"){ off.clear(); return paint(); }
   if(a==="mcfg"){ mcfg[x]=!mcfg[x]; return paint(); } if(a==="talk"){ mcfg.talk=+x; return paint(); }
