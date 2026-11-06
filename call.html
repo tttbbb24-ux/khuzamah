@@ -180,6 +180,8 @@ html[dir=ltr] .row,html[dir=ltr] .primary{text-align:left}
 .pane .primary{margin:0}.pane .status{margin:0}
 .pane .rows{padding:0;grid-template-columns:1fr 1fr 1fr;gap:9px}
 .pane .row{align-items:center;text-align:center;padding:12px 6px;gap:6px}.pane .row b{font-size:14px}
+.pyb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 2px 10px}.pyt{color:var(--gold);font-size:32px;font-weight:700}.pyb small{color:var(--muted);font-size:13.5px;text-align:center}
+.pyg{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:8px}.pyg button{font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.18);border-radius:18px;padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:700;font-size:17px;cursor:pointer}.pyg button span{font-size:36px;line-height:1}.pyg button:active{border-color:var(--gold);background:rgba(233,199,123,.15)}
 .billrow{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 2px;width:100%;text-align:start}
 .billrow b{font-size:16px}.billrow span{color:var(--gold);font-weight:700;font-size:21px}
 .tt{display:block;text-align:center;color:var(--muted);font-size:13px;text-decoration:none;padding:4px 0 2px}
@@ -1439,7 +1441,10 @@ function openSheet(kind,html){ sheet.innerHTML=html; const fresh=!sheetOpen; she
 function closeSheet(){ if(!sheetOpen) return; sheetOpen=null; dim.style.pointerEvents="none"; A(dim,[{opacity:.5},{opacity:0}],{duration:260,fill:"forwards"});
   A(sheet,[{transform:"none"},{transform:"translateY(105%)"}],{duration:320,easing:"cubic-bezier(.4,0,.8,.2)",fill:"forwards"}); }
 dim.onclick=closeSheet;
-sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(); if(e.target.closest("[data-go]")) openChoice(); if(e.target.closest("[data-wb]")){ closeSheet(); setTimeout(()=>call("bill"),D(350)); } });
+sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(); if(e.target.closest("[data-go]")) openChoice(); if(e.target.closest("[data-wb]")){ closeSheet(); setTimeout(payPick,D(350)); } const pm=e.target.closest("[data-pm]"); if(pm){ const v=pm.dataset.pm; closeSheet(); setTimeout(()=>call("bill","",v),D(350)); } });
+// يختار كاش ولا شبكة قبل لا ينادي على الحساب، عشان الموظف يجيب الجهاز أو الباقي
+function payPick(){ if(busy||!db||!sid||ended) return; const T=lang==="en", tot=pub?Number(pub.total)||0:0;
+  openSheet("pay",`<div class="hd"><b>${T?"How will you pay?":"كيف بتدفع؟"}</b><button class="x" data-x aria-label="close">✕</button></div><div class="pyb">${tot?`<div class="pyt num">${tot}${RS}</div>`:""}<small>${T?"So the staff bring the card machine or your change":"عشان الموظف يجيب لك الجهاز أو الباقي"}</small><div class="pyg"><button data-pm="cash"><span>💵</span>${T?"Cash":"كاش"}</button><button data-pm="card"><span>💳</span>${T?"Card":"شبكة"}</button></div></div>`); sheet.style.height=""; }
 
 /* ---------- المنيو: الأقسام على الجنب ---------- */
 let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أصناف
@@ -1488,18 +1493,18 @@ function billTicket(){ if(!pub) return; document.querySelector(".bp")?.remove();
   if(feed) feed.onfinish=()=>{ led.textContent=L("printed"); }; else { rc.style.transform="none"; led.textContent=L("printed"); }
   const close=()=>{ A(bd,[{opacity:.85},{opacity:0}],{duration:280,fill:"forwards"}); const a=A(rc,[{transform:"none"},{transform:"translateY(110%)"}],{duration:380,easing:"cubic-bezier(.4,0,.8,.2)",fill:"forwards"}); if(a) a.onfinish=()=>w.remove(); else w.remove(); };
   w.querySelector(".x").onclick=close; bd.onclick=close;
-  w.querySelector("[data-pay]").onclick=()=>{ close(); setTimeout(()=>call("bill"),D(350)); }; }
+  w.querySelector("[data-pay]").onclick=()=>{ close(); setTimeout(payPick,D(350)); }; }
 
 /* ---------- النداء ---------- */
-document.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(!b) return; if(b.dataset.k==="order") return openChoice(); call(b.dataset.k); });
-async function call(kind,msg){ msg=String(msg||"").trim().slice(0,60); let withM=!!msg; if(busy||!db||!sid||ended) return;
+document.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(!b) return; if(b.dataset.k==="order") return openChoice(); if(b.dataset.k==="bill") return payPick(); call(b.dataset.k); });
+async function call(kind,msg,pay){ msg=String(msg||"").trim().slice(0,60); let withM=!!msg; pay=pay==="cash"||pay==="card"?pay:""; if(busy||!db||!sid||ended) return;
   const left=WAIT-(Date.now()-lastAt);
   if(left>0&&!acked){ show("ok",L("still")(Math.ceil(left/60000))); return; }
   busy=true; lock(true); show("wait",`<svg width="20" height="20" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 150"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur=".8s" repeatCount="indefinite"/></circle></svg> ${L("sending")}`);
   const guard=setTimeout(()=>{ if(busy){ busy=false; lock(false); show("bad","<span>"+L("retry")+"</span>"); } },12000); // لو النت علّق، الأزرار ترجع تشتغل
   try{
-    const send=()=>db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp(),...(withM?{m:msg}:{})});
-    try{ await send(); }catch(e0){ let e1=e0; if(withM&&e1&&e1.code==="permission-denied"){ withM=false; try{ await send(); e1=null }catch(e3){ e1=e3 } } if(e1){ // لو القواعد ما تقبل الرسالة، ننادي بدونها
+    const send=()=>db.doc("calls/"+sid).set({kind,uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp(),...(withM?{m:msg}:{}),...(pay?{pay}:{})});
+    try{ await send(); }catch(e0){ let e1=e0; if((withM||pay)&&e1&&e1.code==="permission-denied"){ withM=false; pay=""; try{ await send(); e1=null }catch(e3){ e1=e3 } } if(e1){ // لو القواعد ما تقبل الرسالة، ننادي بدونها
       if(!(e1&&e1.code==="permission-denied")) throw e1;
       // نداء من نفس الطاولة قبل أقل من دقيقتين وما أحد رد عليه: نطمّنه بدل الخطأ
       let c=null; try{ const d=await db.doc("calls/"+sid).get({source:"server"}); c=d.exists?d.data():null; }catch(x){}
@@ -1520,7 +1525,7 @@ const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل ب
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*كذاب/,fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)/,fries:/بطاطس(?!\s*مشوي)/,ah:/بطاطس\s*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/};
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
   if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
   if(/بطاطس\s*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
