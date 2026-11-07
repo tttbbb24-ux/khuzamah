@@ -473,6 +473,7 @@ html.gmon,html.gmon body{overflow:hidden}
 .gcta{display:flex;align-items:center;gap:12px;margin:4px 16px 12px;padding:12px 14px;border-radius:18px;border:1px solid #e9c77b66;background:linear-gradient(135deg,#e9c77b22,#b88cf218);text-align:start}
 .gcta>span{font-size:30px}.gcta div{flex:1}.gcta b{display:block;font-size:15.5px}.gcta small{color:var(--muted);font-size:12.5px}
 .gcta button{border:0;border-radius:12px;background:var(--gold);color:#1a0d2e;font:inherit;font-weight:800;font-size:15px;padding:9px 16px}
+.sgseg{display:grid!important;grid-template-columns:repeat(4,1fr)}.sgseg.need .chip{border-color:#ff807799!important}
 .chip.xo{opacity:.5;text-decoration:line-through}.chip.xo small{text-decoration:none;color:#ff8077;font-weight:800}
 </style>
 </head>
@@ -517,7 +518,7 @@ const STR={
   noseat:"هذا الرابط ما يشتغل.<small>اطلب من الموظف باركود جلستك.</small>",ended:"انتهت هذي الجلسة.<small>إذا جالس عندنا الحين، اطلب من الموظف باركود جلستك.</small>",noconn:"ما قدرنا نتصل.<small>تأكد من النت وحدّث الصفحة، أو نادِ الموظف.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" جاي لك الحين":"جايين لك الحين"),still:m=>"نداؤك واصل ✓<small>لحظات ونجيك. لو تأخرنا جرّب بعد "+m+" دقيقة.</small>",
   sent:k=>"✓ وصل نداؤك<small>عرفنا إنك "+k+"، لحظات ونجيك.</small>",denied:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نرسل النداء. لو ما زبط بعد التحديث، نادِ الموظف لو سمحت.</small>",
-  retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"حليب خالي من اللاكتوز أو حليب جوز الهند",milk:"الحليب",sug:"السكر",s_reg:"عادي",s_stv:"دايت (ستيفيا)",m_lf:"خالي من اللاكتوز",m_coco:"جوز الهند",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
+  retry:"حدّث الصفحة وجرّب مرة ثانية.<small>ما قدرنا نتصل. تأكد من النت، ولو ما زبط نادِ الموظف.</small>",loading:"جاري تحميل المنيو…",edit:"تعديل",save:"حفظ التعديل",p_go:"أبغاها",p_skip:"كمّل للمنيو",p_new:"جديد",p_lf:"حليب خالي من اللاكتوز أو حليب جوز الهند",milk:"الحليب",sug:"السكر",s_reg:"عادي",s_stv:"دايت (ستيفيا)",sg0:"بدون",sg1:"خفيف",sg2:"وسط",sg3:"زيادة",sg_rq:"اختر",sg_out:"سكر برا",m_lf:"خالي من اللاكتوز",m_coco:"جوز الهند",menufail:"ما قدرنا نحمّل المنيو. جرّب مرة ثانية أو اسأل الموظف.",
   sessions:"الجلسات",hour:"ساعة",open:"وقت مفتوح",toorder:"للطلب اضغط «أبغى أطلب» ونجيك.",or:" أو ",flav:"، وبنكهة ",ice:"، وبثلج ",
   left:"باقي",over:"زاد",sat:"جلست",billp:"فاتورتك",fee_hour:"جلسة ساعة",fee_open:"جلسة وقت مفتوح",fee_free:"جلسة مجانية",final:"الفاتورة النهائية عند الموظف",off:"غير متوفر",soon:"يفتح قريب",flavs:"الخيارات: ",
   printing:"🖨️ تنطبع فاتورتك…",printed:"✓ هذي فاتورتك لين الحين",billt:"فاتورتك لين الحين",total:"المجموع",ry:"ريال",
@@ -531,7 +532,7 @@ const STR={
   noseat:"This link does not work.<small>Ask the staff for your table code.</small>",ended:"This session has ended.<small>If you are seated now, ask the staff for your table code.</small>",noconn:"Could not connect.<small>Check your internet and refresh, or call the staff.</small>",
   coming:n=>"🏃 "+(n?esc(n)+" is coming":"We are coming"),still:m=>"Your call was received ✓<small>We will be there shortly. If we are late, try again in "+m+" min.</small>",
   sent:k=>"✓ Call received<small>We know you "+k+". We will be right there.</small>",denied:"Refresh the page and try again.<small>The call could not be sent. If it still fails, please call the staff.</small>",
-  retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Lactose-free or coconut milk",milk:"Milk",sug:"Sugar",s_reg:"Regular",s_stv:"Diet (stevia)",m_lf:"Lactose-free",m_coco:"Coconut",menufail:"Could not load the menu. Try again or ask the staff.",
+  retry:"Refresh the page and try again.<small>Could not connect. Check your internet, or call the staff.</small>",loading:"Loading the menu…",edit:"Edit",save:"Save changes",p_go:"I want it",p_skip:"Continue to menu",p_new:"New",p_lf:"Lactose-free or coconut milk",milk:"Milk",sug:"Sugar",s_reg:"Regular",s_stv:"Diet (stevia)",sg0:"None",sg1:"Light",sg2:"Medium",sg3:"Extra",sg_rq:"pick one",sg_out:"Sugar on the side",m_lf:"Lactose-free",m_coco:"Coconut",menufail:"Could not load the menu. Try again or ask the staff.",
   sessions:"Seating",hour:"One hour",open:"Open time",toorder:"To order, tap “I want to order”.",or:" or ",flav:", flavored ",ice:", with ice ",
   left:"Left",over:"Over",sat:"Seated",billp:"Your bill",fee_hour:"Hourly seating",fee_open:"Open-time seating",fee_free:"Free seating",final:"The final bill is with the staff",off:"Not available",soon:"Opening soon",flavs:"Options: ",
   printing:"🖨️ Printing your bill…",printed:"✓ Your bill so far",billt:"Your bill so far",total:"Total",ry:"SAR",
@@ -1654,6 +1655,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   return null; }
 const CHEESE=1; // الجبنة على البطاطس المقلية بريال
 function friesNote(sel){ const f=EXTRAS.slice(0,-1), c=sel.includes(EXTRAS.length-1), n=extrasNote(sel.filter(i=>i<f.length),f); return c?(n==="بدون إضافات"?"جبنة بس":n+" + جبنة"):n; }
+const SUGL=["بدون سكر","سكر خفيف","سكر وسط","سكر زيادة"];
 const oOff=(it,x)=>!!(it&&Array.isArray(it.xoff)&&it.xoff.includes(x));
 const freeAll=(sp,it)=>sp.opts.map((_,i)=>i).filter(i=>!(sp.paid&&sp.paid[i])&&!oOff(it,sp.opts[i])); // «كل شي» = الصوصات المجانية بس
 function extrasNote(sel,LIST){ const X=LIST||EXTRAS, on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
@@ -1670,7 +1672,7 @@ function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i))
   if(spec.k==="ak") return v.ex?{...base,note:"بدون إضافات"}:{...base,note:and,ok:on.length>0};
   if(spec.k==="mat"){ const milk=v.size==="coco"?"حليب جوز الهند":"حليب خالي من اللاكتوز"; return v.ex?{...base,note:"بدون سيروب، "+milk}:{...base,note:(and?and+"، ":"")+milk,ok:on.length>0}; }
   if(spec.k==="v60") return {...base,note:and,ok:on.length===1};
-  if(spec.k==="tea"){ const sw=v.size==="stv"?"، سكر دايت (ستيفيا)":""; return v.ex?{...base,note:"سادة"+sw}:{...base,note:and+sw,ok:on.length>0}; }
+  if(spec.k==="tea"){ const g=Number.isInteger(v.sg)&&v.sg>=0&&v.sg<4?v.sg:-1, sw=g<0?"":"، "+SUGL[g]+(g>0&&v.size==="stv"?" دايت (ستيفيا)":""); return v.ex?{...base,note:"سادة"+sw,ok:g>=0}:{...base,note:and+sw,ok:on.length>0&&g>=0}; }
   return base; }
 const lineOf=(it,v)=>{ const sp=specFor(it.name); return sp?resolve(sp,it,v):{name:it.name,price:Number(it.price),note:"",ok:true} };
 const r2=x=>Math.round(x*100)/100;
@@ -1724,7 +1726,7 @@ function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ session
 function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lineOf(it,optv), ph=photo(it.name);
   const ch=[]; if(sp&&sp.cnt){ sp.opts.forEach((o,j)=>{ const c=optv.sel.filter(x=>x===j).length; if(j===0||j===sp.split) ch.push(`<b class="ogh">${L(j?"qd_s":"qd_c")}</b>`); ch.push(`<div class="qdrow ${c?"on":""}"><span>${esc(o.replace(/^(قطعة|عود) /,""))}</span><span class="qdst"><button data-qc="${j}" data-d="-1" aria-label="-" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-qc="${j}" data-d="1" aria-label="+">+</button></span></div>`) }); }
   else if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>(sp.split&&(j===0||j===sp.split)?ch.push(`<b class="ogh">${L(j?"adds":"sauces")}</b>`):0,ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""} ${oOff(it,o)?"xo":""}" data-op="${j}" ${oOff(it,o)&&!optv.sel.includes(j)?"disabled":""}>${esc(o)}${oOff(it,o)?` <small>· ${L("x_out")}</small>`:""}${sp.paid&&sp.paid[j]?` <span class="num">+${sp.paid[j]}</span>`:""}</button>`))); }
-  const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")}</b><div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:"";
+  const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")} ${optv.sg>=0?"✓":`<span style="color:#ff8077">· ${L("sg_rq")}</span>`}</b><div class="chips sgseg ${optv.sg>=0?"":"need"}">${[0,1,2,3].map(k=>`<button class="chip ${optv.sg===k?"on":""}" data-sg="${k}">${L("sg"+k)}</button>`).join("")}</div>${optv.sg>0?`<div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:""}<div class="chips"><button class="chip ${/سكر برا/.test(optv.note||"")?"on":""}" data-sout>🍬 ${L("sg_out")}</button></div>`:"";
   const sz=sp&&sp.k==="corn"&&optv.ex?`<div class="chips"><button class="chip ${optv.size==="small"?"on":""}" data-sz="small">${L("size_s")} · ${CORN.small}</button><button class="chip ${optv.size==="big"?"on":""}" data-sz="big">${L("size_b")} · ${CORN.big}</button></div>`:"";
   const fq=sp&&sp.all?`<div class="chips fq"><button class="chip ${freeAll(sp,it).every(i=>optv.sel.includes(i))?"on":""}" data-fall>${L("f_all")}</button><button class="chip ${optv.none?"on":""}" data-fnone>${L("f_none")}</button></div>`:"";
   const fs=sp&&sp.all?`<p class="fsum ${r.ok?"ok":""}">${r.ok?`<b>${L("yourorder")}:</b> ${esc(r.note)}`:L("f_pick")}</p>`:"";
@@ -1735,15 +1737,15 @@ function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lin
   <div class="sfoot"><button class="sendb" data-addo ${r.ok?"":"disabled"}><span class="t">${r.ok?L(optv.edit!=null?"save":"add"):L("pick")}</span><span class="num">${r.ok?r2(r.price*optv.q):""}${r.ok?RS:""}</span></button></div>`;
   sheetOpen="opt"; }
 function addCart(i,v){ const it=menuData.items[i], r=lineOf(it,v); if(!r.ok) return; const note=String(v.note||"").trim().slice(0,60), label=r.name+(r.note||note?" · "+[r.note,note].filter(Boolean).join(" · "):"");
-  const ex=cart.find(c=>c.i===i&&JSON.stringify(c.sel)===JSON.stringify(v.sel)&&c.ex===!!v.ex&&c.size===(v.size||"")&&c.note===note);
-  if(ex) ex.q=Math.min(20,ex.q+v.q); else cart.push({i,n:it.name,sel:v.sel.slice(),ex:!!v.ex,size:v.size||"",q:v.q,note,label,price:r.price}); }
+  const ex=cart.find(c=>c.i===i&&JSON.stringify(c.sel)===JSON.stringify(v.sel)&&c.ex===!!v.ex&&c.size===(v.size||"")&&(c.sg??-1)===(v.sg??-1)&&c.note===note);
+  if(ex) ex.q=Math.min(20,ex.q+v.q); else cart.push({i,n:it.name,sel:v.sel.slice(),ex:!!v.ex,size:v.size||"",sg:v.sg??-1,q:v.q,note,label,price:r.price}); }
 async function editMine(){ if(busy||!sid) return; busy=true; // قبل الموافقة: نسحب الطلب ويرجع للسلة
   try{ await db.doc("reqs/"+sid).update({st:"cx"}); cart=lastCart.map(c=>({...c,sel:c.sel.slice()})); lastCart=[]; reqSt=""; edited=true; $("status").hidden=true; busy=false;
     await openOrder(); const nt=sheet.querySelector(".ednote"); A(nt,[{transform:"translateY(8px)",opacity:0},{transform:"none",opacity:1}],{duration:320}); }
   catch(e){ busy=false; show("ok","<span>"+L("e_late")+"</span>"); if(sheetOpen==="sent") paintSent(); } }
 async function sendReq(){ if(!cart.length||busy) return; busy=true; const b=sheet.querySelector("[data-send]"); if(b) b.disabled=true;
   try{ await db.doc("reqs/"+sid).set({uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp(),sid:String((pub&&pub.sid)||""),total:cartT(),...(edited?{ed:true}:{}),
-      items:cart.map(c=>({i:c.i,n:c.n,sel:c.sel,ex:c.ex,size:c.size,q:c.q,note:c.note}))});
+      items:cart.map(c=>({i:c.i,n:c.n,sel:c.sel,ex:c.ex,size:c.size,sg:c.sg??-1,q:c.q,note:c.note}))});
     lastSent=cart.map(c=>({label:c.label,q:c.q,p:r2(c.price*c.q)})); lastCart=cart.map(c=>({...c,sel:c.sel.slice()})); cart=[]; reqSt="wait"; edited=false; watchReq(); paintSent.gc=false; try{ if(!localStorage.getItem("kz-gcta-"+K)){ localStorage.setItem("kz-gcta-"+K,"1"); paintSent.gc=true; } }catch(e){} paintSent(); show("wait","<span>"+L("r_wait")+"</span>");
     try{ await db.doc("callers/"+uid).set({seat:sid}); const token=await firebase.auth().currentUser.getIdToken(); // إشعار لياسين والشركاء
       await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,req:sid})}); }catch(e){} }
@@ -1777,7 +1779,7 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   const pg=t.closest("[data-pgo]"); if(pg) return tapItem(+pg.dataset.pgo);
   if(t.closest("[data-pskip]")) return paintOrder();
   const oi=t.closest("[data-oi]"); if(oi) return tapItem(+oi.dataset.oi);
-  const ce=t.closest("[data-ce]"); if(ce){ const k=+ce.dataset.ce, c=cart[k]; if(!c) return; optv={i:c.i,sel:c.sel.slice(),none:!c.sel.length,ex:c.ex,size:c.size,q:c.q,note:c.note,edit:k}; return paintOpt(); }
+  const ce=t.closest("[data-ce]"); if(ce){ const k=+ce.dataset.ce, c=cart[k]; if(!c) return; optv={i:c.i,sel:c.sel.slice(),none:!c.sel.length,ex:c.ex,size:c.size,sg:c.sg??-1,q:c.q,note:c.note,edit:k}; return paintOpt(); }
   const rm=t.closest("[data-rm]"); if(rm){ cart.splice(+rm.dataset.rm,1); return paintOrder(); }
   const dc=t.closest("[data-dec]"); if(dc){ const i=+dc.dataset.dec; for(let k=cart.length-1;k>=0;k--) if(cart[k].i===i){ if(--cart[k].q<=0) cart.splice(k,1); break; } return paintOrder(); }
   const ci=t.closest("[data-ci]"); if(ci){ const c=cart[+ci.dataset.ci]; if(c) c.q=Math.min(20,c.q+1); return paintOrder(); }
@@ -1790,6 +1792,8 @@ sheet.addEventListener("click",e=>{ const t=e.target;
   if(t.closest("[data-fnone]")){ optv.none=!optv.none; optv.sel=[]; return paintOpt(); }
   const qc=t.closest("[data-qc]"); if(qc&&sp){ const j=+qc.dataset.qc, d=+qc.dataset.d; if(d>0){ if(optv.sel.length<40) optv.sel=optv.sel.concat(j).sort((a,b)=>a-b) } else { const k=optv.sel.lastIndexOf(j); if(k>=0){ optv.sel=optv.sel.slice(); optv.sel.splice(k,1) } } optv.q=1; return paintOpt(); }
   const op=t.closest("[data-op]"); if(op&&sp){ const j=+op.dataset.op; optv.ex=false; optv.none=false; if(sp.one) optv.sel=[j]; else optv.sel=optv.sel.includes(j)?optv.sel.filter(x=>x!==j):optv.sel.concat(j); return paintOpt(); }
+  const sgb=t.closest("[data-sg]"); if(sgb){ optv.sg=+sgb.dataset.sg; return paintOpt(); }
+  if(t.closest("[data-sout]")){ const ni=document.getElementById("onote"); if(ni) optv.note=ni.value; const n=String(optv.note||""); optv.note=/سكر برا/.test(n)?n.replace(/\s*·?\s*سكر برا/,"").trim():(n?n+" · ":"")+"سكر برا"; return paintOpt(); }
   const mkb=t.closest("[data-mk]"); if(mkb){ optv.size=mkb.dataset.mk; return paintOpt(); }
   const sz=t.closest("[data-sz]"); if(sz){ optv.size=sz.dataset.sz; return paintOpt(); }
   const qb=t.closest("[data-q]"); if(qb){ optv.q=Math.max(1,Math.min(20,optv.q+Number(qb.dataset.q))); return paintOpt(); }
@@ -1801,7 +1805,7 @@ function flyCart(from){ if(!from||R) return; const r=from.getBoundingClientRect(
   const a=f.animate(k,{duration:720,easing:"cubic-bezier(.45,0,.55,1)"}); a.onfinish=()=>{ f.remove(); const n2=sheet.querySelector(".sendb .n"), b=sheet.querySelector(".sendb"); A(n2,[{transform:"scale(1)"},{transform:"scale(1.8)"},{transform:"scale(.9)"},{transform:"none"}],{duration:500,easing:SPRING}); A(b,[{transform:"scale(1)"},{transform:"scale(1.05)"},{transform:"none"}],{duration:380}); }; }
 function tapItem(i){ const it=menuData.items[i]; if(!it||it.off) return; const sp=specFor(it.name);
   if(!sp){ const im0=sheet.querySelector(`[data-oi="${i}"] img`), src0=im0&&{getBoundingClientRect:()=>im0.getBoundingClientRect(),src:im0.currentSrc||im0.src}; const rr=im0&&im0.getBoundingClientRect(); addCart(i,{sel:[],ex:false,size:"",q:1,note:""}); paintOrder(); if(rr) flyCart({getBoundingClientRect:()=>rr,src:src0.src}); const nb=sheet.querySelector(`[data-oi="${i}"] em`); A(nb,[{transform:"scale(1.6)"},{transform:"none"}],{duration:420,easing:SPRING}); return; }
-  optv={i,sel:[],none:false,ex:false,size:"",q:1,note:""}; return paintOpt(); }
+  optv={i,sel:[],none:false,ex:false,size:"",sg:-1,q:1,note:""}; return paintOpt(); }
 sheet.addEventListener("input",e=>{ if(e.target.id==="onote"&&optv) optv.note=e.target.value; });
 
 $("qrb").addEventListener("click",()=>{ if(!valid) return; const url=location.origin+location.pathname+"?k="+K; // باركود نفس الجلسة لجوال ثاني
