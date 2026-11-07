@@ -314,6 +314,68 @@ html.gmon,html.gmon body{overflow:hidden}
 .icar{display:flex;align-items:center;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -18px;padding:6px calc(50% - 57px);min-height:230px;-webkit-overflow-scrolling:touch}
 .icar::-webkit-scrollbar{display:none}
 .icc{flex:0 0 150px;margin:0 -14px;display:flex;justify-content:center;scroll-snap-align:center;border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;line-height:0;opacity:.35;transform:scale(.82);transition:opacity .25s,transform .25s;position:relative}
+.irv{position:fixed;inset:0;z-index:2147483000;background:rgba(6,2,12,.78);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;font-family:inherit;direction:rtl;color:#fff7ea}
+.irvs{position:relative;width:min(100vw,460px);height:min(100vh,860px);overflow:hidden;background:radial-gradient(70% 45% at 50% 52%,#4a2160,#1a0a26 70%,transparent)}
+.irvs>*{position:absolute}
+.irp{top:calc(18px + env(safe-area-inset-top,0px));width:38%;display:flex;flex-direction:column;align-items:center;gap:2px}
+.irp.m{right:4%}.irp.i{left:4%}
+.irp img{width:78px;height:78px;border-radius:50%;border:3px solid #f3c969;object-fit:cover;background:#2a1238;box-shadow:0 6px 14px #000a}
+.irp b{font-size:16px;font-weight:900}.irp small{font-size:12px;color:#c9bfd9;font-weight:700}
+.irp .iw{font-style:normal;margin-top:4px;font-weight:900;font-size:18px;background:#0006;border:1px solid #ffffff2a;border-radius:14px;padding:2px 12px}
+.irvx{top:calc(60px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;color:#ffffff55}
+.irdc{top:calc(190px + env(safe-area-inset-top,0px));left:50%;translate:-50% 0;white-space:nowrap;font-weight:900;font-size:17px;background:#fff;color:#3a1a40;border-radius:18px;padding:7px 16px;box-shadow:0 4px 0 #0003}
+.irsk{width:170px;left:50%;margin-left:-85px;top:calc(260px + env(safe-area-inset-top,0px));filter:drop-shadow(0 12px 12px #000b)}
+.irst{width:112px;left:50%;margin-left:-56px;top:calc(240px + env(safe-area-inset-top,0px));filter:drop-shadow(0 8px 8px #000a)}
+.ircs{left:0;right:0;top:calc(262px + env(safe-area-inset-top,0px));display:flex;justify-content:center;gap:8px;direction:ltr}
+.irfl{position:relative;display:inline-block;width:calc(10.4 * var(--s));aspect-ratio:63/88;perspective:900px}
+.irin{position:absolute;inset:0;transform-style:preserve-3d}
+.irbk,.irfc{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;line-height:0}.irfc{transform:rotateY(180deg)}
+.irtg{position:absolute;left:50%;bottom:-30px;translate:-50% 0;white-space:nowrap;font-size:12.5px;font-weight:900;padding:2px 8px;border-radius:10px;color:#fff}
+.irtg.ok{background:#1f8f57}.irtg.no{background:#d33;rotate:-8deg}
+.irbn{left:4%;right:4%;top:calc(440px + env(safe-area-inset-top,0px));text-align:center;font-family:Lalezar,inherit;font-weight:400;font-size:46px;line-height:1.1;text-shadow:0 4px 0 #0009}
+.irsb{left:6%;right:6%;top:calc(504px + env(safe-area-inset-top,0px));text-align:center;font-weight:800;font-size:16px;line-height:1.6}
+.irsb b{color:#f3c969}
+.irsl{left:8%;right:8%;top:calc(580px + env(safe-area-inset-top,0px));text-align:center;font-weight:800;font-size:15px;color:#f3c969;background:#0007;border:1px dashed #f3c96988;border-radius:14px;padding:8px;opacity:0}
+.irsl small{display:block;color:#c9bfd9;font-weight:700;font-size:12px}
+.irco{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,#e2b24a 60%,#9a6a1c);box-shadow:0 2px 0 #7a5010;z-index:3}
+.irskip{left:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));font:inherit;font-weight:800;font-size:14px;color:#fff;background:#ffffff1f;border:0;border-radius:14px;padding:8px 16px;cursor:pointer}
+@media (max-height:700px){ .irsk,.irst{top:calc(220px + env(safe-area-inset-top,0px))} .ircs{top:calc(222px + env(safe-area-inset-top,0px))} .irbn{top:calc(380px + env(safe-area-inset-top,0px));font-size:38px} .irsb{top:calc(436px + env(safe-area-inset-top,0px))} .irsl{top:calc(500px + env(safe-area-inset-top,0px))} }
+.irs{gap:10px}
+.irsw{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -18px;padding:4px 18px 6px}
+.irsw::-webkit-scrollbar{display:none}
+.irc{flex:0 0 84%;scroll-snap-align:center;border-radius:20px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);min-height:240px;animation:ircin .5s both}
+.irc:nth-child(2){animation-delay:.1s}.irc:nth-child(3){animation-delay:.2s}.irc:nth-child(4){animation-delay:.3s}
+@keyframes ircin{from{opacity:0;transform:translateY(14px) scale(.96)}}
+.irc.bad{background:linear-gradient(180deg,rgba(90,16,32,.75),rgba(42,8,16,.75));border-color:rgba(255,90,106,.35)}
+.irc.good{background:linear-gradient(180deg,rgba(15,74,48,.75),rgba(8,38,26,.75));border-color:rgba(62,224,138,.35)}
+.irc.me{box-shadow:0 0 0 2px var(--gold) inset}
+.irw{display:flex;align-items:center;gap:8px;align-self:stretch}.irw b{flex:1;font-size:16px}
+.irr{font-family:Lalezar,inherit;font-size:16px;padding:1px 10px;border-radius:10px;color:#fff;transform:rotate(-4deg);white-space:nowrap}
+.irr.no{background:#d33}.irr.ok{background:#1f8f57}.irr.pass{background:#8a6a1c}
+.irsk2{width:84px;filter:drop-shadow(0 8px 10px #000a)}
+.irl{font-size:13.5px;text-align:center}
+.ird{margin-top:auto;font-weight:900;font-size:24px;background:rgba(0,0,0,.35);border-radius:14px;padding:0 14px;direction:ltr}
+.ird.p{color:#3ee08a}.ird.m{color:#ff5a6a}.ird.z{color:var(--muted)}
+.irsec{font-family:Lalezar,inherit;font-size:19px;color:var(--gold);display:flex;align-items:center;gap:8px}
+.irsec::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,transparent,rgba(243,201,105,.35))}
+.irbd{position:relative}
+.irb{position:absolute;left:0;right:0;top:0;height:52px;display:flex;align-items:center;gap:10px;padding:0 12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:transform .9s cubic-bezier(.3,1.3,.4,1)}
+.irb.me{border-color:rgba(243,201,105,.6);background:rgba(243,201,105,.1)}
+.irk{font-family:Lalezar,inherit;font-size:20px;color:var(--gold);width:20px;text-align:center}
+.irb b{flex:1;font-size:15px}.irm{font-weight:900;font-size:17px}
+.irar{font-weight:900;font-size:13px;width:40px;text-align:center;opacity:0;transition:opacity .4s .9s}
+.irar.u{color:#3ee08a}.irar.d{color:#ff5a6a}.irar.s{color:var(--muted)}
+.irs.shown .irar{opacity:1}
+.iraw{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.iraw span{font-weight:800;font-size:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:6px 10px;opacity:0;transform:scale(.6);transition:all .45s cubic-bezier(.3,1.5,.5,1)}
+.irs.shown .iraw span{opacity:1;transform:none}.irs.shown .iraw span:nth-child(2){transition-delay:.15s}.irs.shown .iraw span:nth-child(3){transition-delay:.3s}.irs.shown .iraw span:nth-child(4){transition-delay:.45s}
+.icar{touch-action:pan-x}.icc{-webkit-user-select:none;user-select:none}.icc img{-webkit-user-drag:none}
+.icc.drag .kc{transition:none}.icc.inew .kc{animation:inew .6s both}
+@keyframes inew{0%{transform:rotateY(90deg) translateY(-24px)}100%{transform:none}}
+.igl{display:flex;justify-content:center}.igl button{font:inherit;font-weight:800;font-size:13px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:5px 14px;display:flex;gap:6px;align-items:center;cursor:pointer}
+.igl.up button{color:#2a1a10;background:var(--gold);border-color:var(--gold)}.igl button:disabled{opacity:.4}
+.igl span{display:inline-block;animation:ibob 1.2s ease-in-out infinite}.igl.dn span{animation-name:ibobd}@keyframes ibob{50%{transform:translateY(-4px)}}@keyframes ibobd{50%{transform:translateY(4px)}}
+.ipm{gap:8px}
 .icc.cur{opacity:1;transform:scale(1);z-index:2}
 .kc.thr{outline:.3em solid #ff6b6b;outline-offset:.15em;filter:saturate(.7) brightness(.8)}
 .kc.thr::after{content:"🔄";position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);font-size:4.2em;line-height:1;filter:drop-shadow(0 .1em .2em #000)}
@@ -1954,7 +2016,8 @@ function insApply(d,p,x){ const I=d.ins, ph=d.ph, mer=p!==I, er=t=>{ throw new E
   d.h[p]=d.h[p]||"";
   if(x.t==="sw"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))]; if(!ids.length) return er("اختار الكروت اللي تبغى تبدّلها");
     if((d.ds[p]||0)+ids.length>5) return er("تبدّل ٥ كروت بالكثير كل جولة"); if(!(d.dk||"").length) return er("خلصت الكومة، ما فيه تبديل");
-    const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; d.L=(d.L||"")+got; d.ds={...d.ds,[p]:(d.ds[p]||0)+ids.length}; refill(d,p); return; }
+    const h=[...d.h[p]]; let n=0; ids.forEach(i=>{ if(!(d.dk||"").length) return; d.L=(d.L||"")+h[i]; h[i]=d.dk.slice(-1); d.dk=d.dk.slice(0,-1); n++; }); // الكرت الجديد ياخذ مكان القديم
+    d.h[p]=h.join(""); d.ds={...d.ds,[p]:(d.ds[p]||0)+n}; if(!(d.dk||"").length&&!d.dry){ d.dry=1; insEv(d,"خلصت الكومة — هذي آخر جولة"); } return; }
   if(x.t==="bg"){ if(ph!=="prep"||!mer||d.dn[p]) return er("مو وقتها"); const ids=[...new Set((x.i||[]).filter(i=>i>=0&&i<d.h[p].length))];
     if(ids.length<1||ids.length>5) return er("حط من ١ لين ٥ كروت"); if(!LEG.includes(x.c)) return er("صرّح بصنف مسموح");
     const [rest,got]=rmIdx(d.h[p],ids); d.h[p]=rest; d.b[p]=got; d.dc={...d.dc,[p]:x.c}; d.dn={...d.dn,[p]:1}; return; }
@@ -2041,29 +2104,40 @@ function vIStands(){ const d=iD(), P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
     ${nx?`<div class="irow"><span class="ihand">${kb(3.6)}</span><small class="gs">${an(nx)} ممنوع مقلوب — يتكشف آخر اللعبة</small></div>`:""}</div>`; }).join("")}
     <small class="gs">الكومة المقلوبة: ${an((d.dk||"").length)} كرت</small>${btn("رجوع","ivw","gl")}</div>`; }
 
-function iCar(h,hide,mark){ const it=[...h].map((c,i)=>hide.includes(i)?"":`<button class="icc" data-g="icar" data-x="${i}">${kc(c,14.4,mark.includes(i)?"thr":"")}</button>`).join("");
+function iCar(h,hide,mark){ const nw=ui.inew&&ui.inew.k===(iMe()||{}).id+":"+iD().ri&&h[ui.inew.i]!==ui.inew.c?ui.inew.i:-1;
+  const it=[...h].map((c,i)=>hide.includes(i)?"":`<button class="icc ${i===nw?"inew":""}" data-g="icar" data-x="${i}">${kc(c,14.4,mark.includes(i)?"thr":"")}</button>`).join("");
   return `<div class="icar" data-sk="icar">${it||`<small class="gs" style="flex:1;text-align:center">ما باقي كروت في يدك</small>`}</div>`; }
 function iCarInit(){ const c=el&&el.querySelector(".icar"); if(!c) return;
   const f=()=>{ const it=[...c.querySelectorAll(".icc")]; if(!it.length) return; const r=c.getBoundingClientRect(), cx=r.left+r.width/2; let b=it[0], bd=1e9;
     it.forEach(m=>{ const q=m.getBoundingClientRect(), z=Math.abs(q.left+q.width/2-cx); if(z<bd){ bd=z; b=m; } }); it.forEach(m=>m.classList.toggle("cur",m===b)); };
-  c.addEventListener("scroll",()=>requestAnimationFrame(f),{passive:true}); f(); }
-function iSelFix(me){ const k=me+":"+iD().ri; if(ui.iselK!==k){ ui.iselK=k; ui.isel=[]; ui.ithr=[]; ui.idc=""; } }
-function vIPrepM(me){ const d=iD(), h=d.h[me]||"", st=(ui.ist||{})[me+":"+d.ri]||"mk", H=head("التفتيش","المفتش: "+esc(nm(d.ins))); iSelFix(me);
+  c.addEventListener("scroll",()=>requestAnimationFrame(f),{passive:true}); f();
+  // اسحب الكرت اللي في النص: فوق = للكيس، تحت = بدّل
+  let dg=null; c.addEventListener("dragstart",e=>e.preventDefault());
+  c.addEventListener("pointerdown",e=>{ const b=e.target.closest(".icc.cur"); dg=b?{b,x:e.clientX,y:e.clientY,dy:0,v:0,id:e.pointerId}:null; });
+  c.addEventListener("pointermove",e=>{ if(!dg) return; const dx=e.clientX-dg.x, dy=e.clientY-dg.y;
+    if(!dg.v){ if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)*1.3){ dg.v=1; dg.b.classList.add("drag"); try{ dg.b.setPointerCapture(dg.id) }catch(_){} } else if(Math.abs(dx)>12){ dg=null; return; } else return; }
+    dg.dy=dy; const k=dg.b.querySelector(".kc"); k.style.transform=`translateY(${dy}px) rotate(${dy/25}deg)`; k.style.opacity=String(1-Math.min(.5,Math.abs(dy)/400)); });
+  const end=()=>{ if(!dg) return; const {b,dy,v}=dg; dg=null; if(!v) return; ui.idragT=Date.now(); b.classList.remove("drag"); const k=b.querySelector(".kc"), x=b.dataset.x;
+    const fly=(t,a)=>{ k.style.transition="transform .25s ease-in,opacity .25s"; k.style.transform=t; k.style.opacity="0"; setTimeout(()=>iClick(a,x),220); };
+    if(dy<-70) fly("translateY(-260px) scale(.3)","iup"); else if(dy>70) fly("translateY(260px) rotate(25deg)","idn"); else { k.style.transform=""; k.style.opacity=""; } };
+  c.addEventListener("pointerup",end); c.addEventListener("pointercancel",end); }
+function iSelFix(me){ const k=me+":"+iD().ri; if(ui.iselK!==k){ ui.iselK=k; ui.isel=[]; ui.ithr=[]; ui.idc=""; ui.idcM=0; } }
+function vIPrepM(me){ const d=iD(), h=d.h[me]||"", H=head("التفتيش","المفتش: "+esc(nm(d.ins))); iSelFix(me);
   if(d.dn[me]){ const M=iMerD(d), w=M.filter(p=>!d.dn[p]);
     return `${H}${iHud(me)}${center(`<img class="isack" src="ins_sack.webp" alt=""><h3>كيسك جاهز</h3><small class="gs">صرّحت: <b class="gold">${IC[d.dc[me]].n} × ${an((d.b[me]||"").length)}</b></small>
     <div class="ihand">${[...(d.b[me]||"")].map(c=>kc(c,4.6)).join("")}</div><small class="gs">${w.length?"ننتظر: "+names(w):"يبدأ التفاوض…"}</small>${btn("عدّل الكيس","iub","gl")}${w.length?btn("كمّلوا بدونهم","skip","gl"):""}${errH()}`)}`; }
-  if(st==="mk"){ const left=5-(d.ds[me]||0), thr=(ui.ithr||[]).filter(i=>i<h.length), dk=(d.dk||"").length;
-    return `${H}${iHud(me)}<div class="gmb"><div class="gcard" style="text-align:center"><b>١. بدّل كروتك</b><small>اسحب يمين ويسار بين كروتك. اضغط الكرت اللي في النص عشان تعلّمه، بعدين «بدّلها» وتجيك بدالها كروت جديدة من الكومة. تقدر تبدّل لين ٥ كروت كل جولة.</small></div>
-    ${iCar(h,[],thr)}
-    <small class="gs" style="text-align:center">${dk?`باقي لك تبدّل ${an(left)} · الكومة ${an(dk)} كرت`:"خلصت الكومة — ما فيه تبديل"}</small>
-    ${thr.length&&dk&&left?btn("🔄 بدّلها ("+an(thr.length)+")","iswp","gl ibad"):""}${errH()}${btn("التالي: عبّي الكيس ←","ist","gb","bag")}</div>`; }
-  const sel=(ui.isel||[]).filter(i=>i<h.length), n=sel.length, dc=ui.idc&&LEG.includes(ui.idc)?ui.idc:"", hon=dc&&n&&sel.every(i=>h[i]===dc);
-  return `${H}${iHud(me)}<div class="gmb"><div style="text-align:center"><b style="color:var(--gold)">٢. عبّي كيسك</b><small class="gs" style="display:block">اضغط الكرت اللي في النص ينزل في الكيس · اضغط الكرت داخل الكيس يرجع</small></div>
+  const sel=(ui.isel||[]).filter(i=>i<h.length), n=sel.length, left=5-(d.ds[me]||0), dk=(d.dk||"").length;
+  if(!ui.idcM){ const cnt={}; sel.forEach(i=>{ if(LEG.includes(h[i])) cnt[h[i]]=(cnt[h[i]]||0)+1; }); const b=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]; ui.idc=b?b[0]:(n?"k":""); } // التصريح يختار نفسه
+  const dc=ui.idc&&LEG.includes(ui.idc)?ui.idc:"", hon=dc&&n&&sel.every(i=>h[i]===dc), canUp=n<5&&sel.length<h.length, canDn=left>0&&dk>0&&sel.length<h.length;
+  return `${H}${iHud(me)}<div class="gmb ipm">
   <div class="isk"><img src="ins_open.webp" alt=""><div class="iin">${sel.map(i=>kbtn(kc(h[i],3.4),"iout",i)).join("")}</div><b class="icnt">${an(n)} / ٥</b></div>
+  <small class="gs" style="text-align:center">${n?"اضغط كرت داخل الكيس يرجع ليدك":"اختار الكروت اللي بتدخل الكيس"}</small>
+  <div class="igl up"><button data-g="iup" ${canUp?"":"disabled"}><span>⬆️</span> اسحب فوق: للكيس</button></div>
   ${iCar(h,sel,[])}
-  <div class="gcard" style="text-align:center"><small>ايش بتقول للمفتش إن فيه؟ صنف واحد مسموح × عدد الكروت</small><div class="gchips" style="justify-content:center">${[...LEG].map(c=>`<button class="gpk ${dc===c?"on":""}" data-g="idc" data-x="${c}">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
-  ${dc&&n?`<small style="color:${hon?"var(--green)":"#ff8f8f"}">${hon?"تصريح صادق — لو فتّشك يدفع لك الغرامة":"تصريح كاذب — لو فتّشك ياخذ منك كل كرت غير "+IC[dc].n}</small>`:""}</div>
-  ${errH()}${!n?`<small class="gs" style="text-align:center;color:#ffb4b4">حط كرت واحد على الأقل</small>`:""}${btn("📦 أرسل الكيس للمفتش","isend",n&&dc?"gb":"gb idis")}${btn("← رجوع للتبديل","ist","gl","mk")}</div>`; }
+  <div class="igl dn"><button data-g="idn" ${canDn?"":"disabled"}><span>⬇️</span> اسحب تحت: بدّل · ${dk?(left>0?"باقي "+an(left):"خلصت تبديلاتك"):"خلصت الكومة"}</button></div>
+  <div class="gcard" style="text-align:center"><small>بتقول للمفتش إن فيه:</small><div class="gchips" style="justify-content:center">${[...LEG].map(c=>`<button class="gpk ${dc===c?"on":""}" data-g="idc" data-x="${c}">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
+  ${dc&&n?`<small style="color:${hon?"var(--green)":"#ff8f8f"};font-weight:800">${hon?"✓ صادق — لو فتّشك يدفع لك الغرامة":"✗ كذب — لو فتّشك ينصادر كل كرت مو "+IC[dc].n}</small>`:""}</div>
+  ${errH()}${btn("📦 أرسل الكيس للمفتش","isend",n&&dc?"gb":"gb idis")}</div>`; }
 function vIPrepI(me){ const d=iD(), M=iMerD(d);
   return `${head("التفتيش","🔎 أنت المفتش")}${iHud(me)}${center(`<img class="ibody" style="margin:0 auto" src="${bodyOf(me)}" alt=""><div class="gbig">🔎 أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
   <div class="gcard gpl">${M.map(p=>`<div class="gpr"><span class="irow">${iava(p,30)} ${esc(nm(p))}</span><b>${d.dn[p]?"✓ جاهز":"يعبّي…"}</b></div>`).join("")}</div>${btn("كمّلوا بدونهم","skip","gl")}${errH()}`)}`; }
@@ -2113,13 +2187,37 @@ function vIOut(p,mine){ const d=iD(), o=d.out[p]||{}, dc=o.dc?IC[o.dc].n:"", I=d
   if(o.k==="deal") return row(`${STP}<b>✓ ${mine?"كيسك مرّ":"مرّ"} برشوة</b><small>${esc(dealTxt(o.deal,full))}</small>${mine?`<div class="ihand">${[...(o.bag||"")].map(c=>kc(c,4.4)).join("")}</div><small>نزلت بسطتك</small>`:""}`,"ok");
   if(o.k==="hon") return row(`${OPN}<b>🔍 انفتّش وطلع صادق ✓</b><small>${dc} × ${an(o.bag.length)} بالضبط · المفتش دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4)).join("")}</div>`,"ok");
   return row(`${OPN}<b>🔍 انفتّش وانكشف ✗</b><small>صرّح ${dc} · انصادر: ${esc(cnames(o.lost))} · دفع ${an(o.fine)} ريال غرامة</small><div class="ihand">${[...o.bag].map(c=>kc(c,4.4,o.lost.includes(c)&&c!==o.dc?"lost":"")).join("")}</div>`,"bad"); }
-function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]);
-  const last=P.every(p=>(d.n[p]||0)+(p===d.ins?1:0)>=K)||d.dry;
-  return `${head("التفتيش","نتيجة الجولة")}${iHud(me)}<div class="gmb"><div class="irow" style="justify-content:center">${iava(d.ins,40)}<b>المفتش: ${esc(nm(d.ins))}</b></div>
-   ${M.map(p=>`<div class="irow">${iava(p,34)}<b>${esc(nm(p))}</b></div>${vIOut(p,p===me)}`).join("")}
-   <div class="gcard gpl">${P.map(p=>`<div class="gpr"><span class="irow">${iava(p,26)} ${esc(nm(p))}</span><b>💰 ${an(d.m[p]||0)}</b></div>`).join("")}</div>
+// تغيّر فلوس كل لاعب في هالجولة (من النتائج نفسها)
+function iDelta(d){ const D={}, I=d.ins; Object.entries(d.out||{}).forEach(([p,o])=>{ const x=o.k==="lie"?-(o.fine||0):o.k==="hon"?(o.fine||0):o.k==="deal"?-((o.deal&&o.deal.m)||0):0; D[p]=(D[p]||0)+x; D[I]=(D[I]||0)-x; }); return D; }
+function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).filter(p=>(g.pl||{})[p]), tot=(d.ord||[]).length*K, D=iDelta(d);
+  const last=P.every(p=>(d.n[p]||0)+(p===d.ins?1:0)>=K)||d.dry, cur=(iMe()||{}).id;
+  const sg=x=>x>0?"+"+an(x):x<0?"−"+an(-x):an(0);
+  const card=p=>{ const o=d.out[p]||{k:"none"}, dc=o.dc?IC[o.dc].n:"", mine=p===cur, x=D[p]||0, n=(o.bag||"").length+((o.deal&&o.deal.got)||"").length;
+    const R={lie:["no","انكشف ✗"],hon:["ok","طلع صادق ✓"],free:["pass","مرّ ✓"],time:["pass","مرّ (خلص الوقت)"],deal:["pass","مرّ برشوة 🤝"],none:["","ما أرسل كيس"]}[o.k]||["",""];
+    const shut=`<img class="irsk2" src="ins_sack.webp" alt=""><small class="gs">🔒 الكيس ما انفتح · محد يعرف وش فيه</small>${mine&&o.bag?`<small class="gs">كيسك إنت: ${esc(cnames(o.bag))}</small>`:""}`;
+    const body=o.k==="lie"?`<div class="ihand">${[...o.bag].map(c=>kc(c,5.4,c!==o.dc?"lost":"")).join("")}</div><b class="irl">انصادر ${esc(cnames(o.lost))} · دفع <span style="color:#ff8a95">${an(o.fine)} ريال</span></b>`
+      :o.k==="hon"?`<div class="ihand">${[...o.bag].map(c=>kc(c,5.4)).join("")}</div><b class="irl">المفتش دفع له <span style="color:#8ee0a8">${an(o.fine)} ريال</span></b>`
+      :o.k==="none"?`<small class="gs">ما عبّى كيس هالجولة</small>`:shut+(o.k==="deal"?`<b class="irl">${esc(dealTxt(o.deal,mine||cur===d.ins))}</b>`:"");
+    return `<div class="irc ${o.k==="lie"?"bad":o.k==="hon"?"good":""} ${mine?"me":""}"><div class="irw">${iava(p,40)}<b>${esc(nm(p))}</b>${R[1]?`<span class="irr ${R[0]}">${R[1]}</span>`:""}</div>
+      ${o.k!=="none"?`<small class="gs">${o.k==="hon"||o.k==="lie"?"صرّح":"صرّح"}: <b style="color:#fff">${dc} × ${an(n)}</b></small>`:""}${body}<span class="ird ${x>0?"p":x<0?"m":"z"}">${sg(x)}</span></div>`; };
+  const oi=x=>P.indexOf(x), after=[...P].sort((a,b)=>(d.m[b]||0)-(d.m[a]||0)||oi(a)-oi(b)), before=[...P].sort((a,b)=>((d.m[b]||0)-(D[b]||0))-((d.m[a]||0)-(D[a]||0))||oi(a)-oi(b));
+  const fresh=ui.iresK!==gid+":"+d.ri; // أول مرة تنفتح الشاشة: نحرك الترتيب
+  const rows=P.map(p=>{ const bi=before.indexOf(p), ai=after.indexOf(p), mv=bi-ai, x=D[p]||0, m=d.m[p]||0;
+    return `<div class="irb ${p===cur?"me":""}" data-a="${ai}" data-b="${bi}" data-m0="${m-x}" data-m1="${m}" style="transform:translateY(${(fresh?bi:ai)*58}px)"><span class="irk">${an((fresh?bi:ai)+1)}</span>${iava(p,34)}<b>${esc(nm(p))}${p===d.ins?" 🔎":""}</b><span class="irar ${mv>0?"u":mv<0?"d":"s"}">${mv>0?"↑"+an(mv):mv<0?"↓"+an(-mv):"—"}</span><span class="irm">💰 ${an(fresh?m-x:m)}</span></div>`; }).join("");
+  const L=k=>M.filter(p=>(d.out[p]||{}).k===k||(k==="free"&&(d.out[p]||{}).k==="time")).map(p=>esc(nm(p))).join("، ");
+  const aw=[["🤡 انمسك",L("lie")],["😇 صادق والمفتش دفع",L("hon")],["🤝 رشوة الجولة",L("deal")],["🍀 مرّ بسلام",L("free")]].filter(x=>x[1]).map(x=>`<span>${x[0]}: ${x[1]}</span>`).join("");
+  return `${head("التفتيش","ملخص الجولة "+an((d.ri||0)+1)+" من "+an(tot))}${iHud(me)}<div class="gmb irs ${fresh?"fresh":"shown"}">
+   <div class="irow" style="justify-content:center">${iava(d.ins,34)}<b>المفتش: ${esc(nm(d.ins))}</b></div>
+   <div class="irsw" data-sk="irsw">${M.map(card).join("")}</div>
+   ${M.length>1?`<small class="gs" style="text-align:center">اسحب يمين ويسار بين الأكياس</small>`:""}
+   <div class="irsec">🏆 الترتيب</div><div class="irbd" style="height:${P.length*58}px">${rows}</div>
+   ${aw?`<div class="iraw">${aw}</div>`:""}
    ${d.dry?`<small class="gs" style="text-align:center">خلصت الكومة — هذي آخر جولة</small>`:""}
-   ${btn(last?"النتيجة النهائية":"الجولة الجاية ←","next")}${errH()}</div>`; }
+   ${btn(last?"النتيجة النهائية 🏆":"الجولة الجاية ←","next")}${errH()}</div>`; }
+function iResAnim(){ const b=el&&el.querySelector(".irs.fresh"); if(!b) return; const d=iD(); ui.iresK=gid+":"+d.ri; b.classList.remove("fresh");
+  setTimeout(()=>{ if(!b.isConnected) return; b.classList.add("shown");
+    b.querySelectorAll(".irb").forEach(r=>{ const ai=+r.dataset.a, m0=+r.dataset.m0, m1=+r.dataset.m1, e=r.querySelector(".irm"), k=r.querySelector(".irk"); r.style.transform=`translateY(${ai*58}px)`; k.textContent=an(ai+1);
+      if(m0!==m1){ r.animate([{background:m1>m0?"rgba(62,224,138,.28)":"rgba(255,90,106,.28)"},{background:"rgba(255,255,255,.05)"}],{duration:1400}); const t0=performance.now(); const f=t=>{ const q=Math.min(1,(t-t0)/900); e.textContent="💰 "+an(Math.round(m0+(m1-m0)*q)); if(q<1) requestAnimationFrame(f); }; requestAnimationFrame(f); } }); },900); }
 function vInsp(){ if(ui.ivw) return ibg("ins_rug.webp")+vIStands(); const p=iMe(); if(!p) return vJoin(); const d=iD(), L=local(); const BG=ibg(p.id===d.ins&&d.ph!=="res"?"ins_counter.webp":"ins_rug.webp");
   if(L.length>1&&ui.rev!==p.id) return hand(p,false,"التفتيش","الشاشة مخفية");
   const me=p.id; if(d.ph==="prep") return BG+(me===d.ins?vIPrepI(me):vIPrepM(me));
@@ -2136,16 +2234,15 @@ async function iClick(a,x){ const p=iMe(), me=p&&p.id, d=iD();
   if(a==="ivw"){ ui.ivw=!ui.ivw; return paint(); }
   if(a==="ilp"){ ui.lp=x; ui.rev=""; ui.isel=[]; ui.ithr=[]; ui.iselK=""; return paint(); }
   if(!me) return;
-  if(a==="icar"){ const b=el.querySelector(`.icar .icc[data-x="${x}"]`); if(b&&!b.classList.contains("cur")){ b.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}); return; }
-    const i=+x, st=(ui.ist||{})[me+":"+d.ri]||"mk";
-    if(st==="mk"){ const t=ui.ithr||[]; ui.ithr=t.includes(i)?t.filter(y=>y!==i):t.concat(i); return paint(); }
-    const s=ui.isel||[]; if(s.includes(i)) return; if(s.length>=5) return msg("الكيس يشيل ٥ كروت بالكثير"); ui.err=""; ui.isel=s.concat(i); return paint(); }
+  if(a==="icar"){ if(Date.now()-(ui.idragT||0)<450) return; const b=el.querySelector(`.icar .icc[data-x="${x}"]`); if(b&&!b.classList.contains("cur")){ b.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}); return; } return iClick("iup",x); }
+  if(a==="iup"||a==="idn"){ if(x==null){ const c=el.querySelector(".icar .icc.cur"); if(!c) return; x=c.dataset.x; } const i=+x, h=d.h[me]||"";
+    if(a==="iup"){ const s=ui.isel||[]; if(s.includes(i)||i>=h.length) return; if(s.length>=5) return msg("الكيس يشيل ٥ كروت بالكثير"); ui.err=""; ui.isel=s.concat(i); return paint(); }
+    if(5-(d.ds[me]||0)<=0) return msg("خلصت تبديلاتك هالجولة"); if(!(d.dk||"").length) return msg("خلصت الكومة");
+    ui.inew={k:me+":"+d.ri,i,c:h[i]}; return iAct(me,{t:"sw",i:[i]}); }
   if(a==="iout"){ const i=+x; ui.isel=(ui.isel||[]).filter(y=>y!==i); ui.err=""; return paint(); }
-  if(a==="iswp"){ const t=ui.ithr||[]; if(!t.length) return msg("علّم الكروت اللي تبغى تبدّلها أول"); ui.ithr=[]; return iAct(me,{t:"sw",i:t}); }
-  if(a==="ist"){ ui.ist={...(ui.ist||{}),[me+":"+d.ri]:x}; ui.isel=[]; ui.ithr=[]; ui.err=""; return paint(); }
-  if(a==="idc"){ ui.idc=x; return paint(); }
+  if(a==="idc"){ ui.idc=x; ui.idcM=1; return paint(); }
   if(a==="isend"){ const s=ui.isel||[]; if(!s.length) return msg("حط كرت واحد على الأقل"); if(s.length>5) return msg("الكيس يشيل ٥ كروت بالكثير"); if(!ui.idc) return msg("اختار ايش بتصرّح");
-    const c=ui.idc; ui.isel=[]; ui.idc=""; return iAct(me,{t:"bg",i:s,c}); }
+    const c=ui.idc; ui.isel=[]; ui.idc=""; ui.idcM=0; return iAct(me,{t:"bg",i:s,c}); }
   if(a==="iub") return iAct(me,{t:"ub"});
   // بناء العرض والطلب
   const key=(me===d.ins?"dm"+(ui.idm||""):"of"+me), O=(ui.iof||{})[key];
@@ -2168,6 +2265,73 @@ async function iClick(a,x){ const p=iMe(), me=p&&p.id, d=iD();
   if(a==="ibp"){ const [to,i]=x.split(":"); return iAct(me,{t:"bp",to,i:+i}); }
 }
 
+
+// ---------- لحظة القرار: تطلع للكل أول ما ينحسم كيس ----------
+const iRvQ=[]; let iRvOn=false;
+function iRevCheck(){ if(!g||GT()!=="insp"||g.st!=="play") return; const d=iD(); if(!d.ord) return; const key=gid+":"+d.ri, out=d.out||{};
+  if(ui.irvK!==key){ ui.irvK=key; ui.irvS=new Set(Object.keys(out)); return; } // أول مرة نشوف الجولة: لا نعيد اللي صار قبل
+  Object.keys(out).forEach(p=>{ if(ui.irvS.has(p)) return; ui.irvS.add(p); if(out[p].k!=="none") iRvQ.push({p,o:JSON.parse(JSON.stringify(out[p])),I:d.ins,m:{...d.m}}); });
+  if(!iRvOn&&iRvQ.length) iRvPlay(iRvQ.shift()); }
+function iRvPlay(r){ iRvOn=true; const {p,o,I}=r, me=(iMe()||{}).id, mine=me===p, n=(o.bag||"").length+((o.deal&&o.deal.got)||"").length, dc=o.dc;
+  const W=Math.min(innerWidth,460), cs=Math.min(8.6,(W*.9/Math.max(3,(o.bag||"").length)-8)/10.4);
+  const dm=o.k==="lie"?-(o.fine||0):o.k==="hon"?(o.fine||0):o.k==="deal"?-((o.deal&&o.deal.m)||0):0; // تغيّر فلوس التاجر
+  const mA=r.m[p]||0, iA=r.m[I]||0, mB=mA-dm, iB=iA+dm;
+  const w=document.createElement("div"); w.className="irv"; document.body.appendChild(w);
+  w.innerHTML=`<div class="irvs">
+    <div class="irp m"><img src="${avOf(p)}" alt=""><b>${esc(nm(p))}</b><small>${mine?"إنت":"التاجر"}</small><i class="iw">💰 ${an(mB)}</i></div>
+    <div class="irp i"><img src="${avOf(I)}" alt=""><b>${esc(nm(I))}</b><small>${me===I?"إنت":"المفتش"}</small><i class="iw">💰 ${an(iB)}</i></div>
+    <div class="irvx">ضد</div>
+    <div class="irdc">«فيه ${dc?IC[dc].n:""} × ${an(n)}»</div>
+    <img class="irsk" src="ins_sack.webp" alt="">
+    <div class="ircs"></div><div class="irbn"></div><div class="irsb"></div><div class="irsl"></div>
+    <button class="irskip" type="button">تخطي ←</button></div>`;
+  const $=q=>w.querySelector(q), A=(e,k,op)=>e.animate(k,{duration:500,easing:"cubic-bezier(.2,1.3,.4,1)",fill:"both",...op});
+  let dead=false; const T=[], W8=ms=>new Promise(res=>T.push(setTimeout(res,ms)));
+  const close=()=>{ if(dead) return; dead=true; T.forEach(clearTimeout); A(w,[{opacity:1},{opacity:0}],{duration:250,easing:"ease-in"}).onfinish=()=>{ w.remove(); iRvOn=false; if(iRvQ.length) iRvPlay(iRvQ.shift()); }; };
+  $(".irskip").onclick=e=>{ e.stopPropagation(); close(); }; w.onclick=()=>{ if(w.dataset.done) close(); };
+  const shake=(e,n=6,dd=300)=>e.animate([{translate:"0 0"},{translate:`-${n}px 0`},{translate:`${n}px 0`},{translate:"0 0"}],{duration:dd/2,iterations:2,composite:"add"});
+  const count=(e,a,b)=>{ if(a===b) return; const t0=performance.now(); const f=t=>{ const q=Math.min(1,(t-t0)/850); e.textContent="💰 "+an(Math.round(a+(b-a)*q)); if(q<1) requestAnimationFrame(f); else A(e,[{scale:1.3},{scale:1}],{duration:400}); }; requestAnimationFrame(f); };
+  const coins=(fromM,k)=>{ const a=$(fromM?".irp.m .iw":".irp.i .iw").getBoundingClientRect(), b=$(fromM?".irp.i .iw":".irp.m .iw").getBoundingClientRect(), base=w.firstElementChild.getBoundingClientRect();
+    for(let i=0;i<k;i++){ const c=document.createElement("span"); c.className="irco"; c.style.left=(a.left-base.left+a.width/2-13)+"px"; c.style.top=(a.top-base.top)+"px"; w.firstElementChild.appendChild(c);
+      c.animate([{transform:"scale(.5)",opacity:0},{opacity:1,offset:.15},{transform:`translate(${b.left-a.left}px,${b.top-a.top}px)`,opacity:1,offset:.85},{transform:`translate(${b.left-a.left}px,${b.top-a.top}px) scale(.4)`,opacity:0}],{delay:i*90,duration:800,easing:"cubic-bezier(.4,0,.3,1)",fill:"both"}); } };
+  const ban=(t,col)=>{ const b=$(".irbn"); b.textContent=t; b.style.color=col; A(b,[{scale:2.3,opacity:0},{scale:1,opacity:1}],{duration:450}); };
+  const sub=h=>{ const b=$(".irsb"); b.innerHTML=h; A(b,[{opacity:0},{opacity:1}],{delay:250}); };
+  const done=()=>{ w.dataset.done=1; T.push(setTimeout(close,2600)); };
+  (async()=>{
+    A($(".irp.m"),[{transform:"translateY(-60px)",opacity:0},{transform:"none",opacity:1}],{duration:550}); A($(".irp.i"),[{transform:"translateY(-60px)",opacity:0},{transform:"none",opacity:1}],{duration:550,delay:100});
+    A($(".irdc"),[{scale:0},{scale:1}],{delay:350}); A($(".irsk"),[{transform:"translateY(-220px) rotate(-10deg)",opacity:0},{transform:"none",opacity:1}],{delay:200,duration:650,easing:"cubic-bezier(.3,1.4,.5,1)"});
+    await W8(1300); if(dead) return;
+    if(o.k==="free"||o.k==="time"||o.k==="deal"){
+      const sp=document.createElement("img"); sp.className="irst"; sp.src="ins_stamp.webp"; $(".irvs").appendChild(sp);
+      A(sp,[{transform:"translateY(-180px) scale(1.6) rotate(-20deg)",opacity:0},{transform:"rotate(-12deg)",opacity:1}],{duration:380,easing:"cubic-bezier(.6,0,.6,1.4)"});
+      await W8(330); if(dead) return; shake($(".irvs"),5,260); A($(".irsk"),[{scale:"1.12 .88"},{scale:"1"}],{duration:300});
+      ban(o.k==="deal"?"مرّ برشوة 🤝":"مرّ ✓","#3ee08a");
+      sub(o.k==="time"?"خلص الوقت ومرّ تلقائياً":o.k==="deal"?esc(dealTxt(o.deal,mine||me===I)):mine?"كروتك نزلت بسطتك":"بدون تفتيش");
+      if(o.k==="deal"&&dm){ await W8(400); if(dead) return; coins(true,Math.min(8,-dm)); await W8(250); count($(".irp.m .iw"),mB,mA); count($(".irp.i .iw"),iB,iA); }
+      const sx=[...(o.bag||"")].filter(c=>IC[c].b);
+      if(mine&&sx.length){ await W8(700); if(dead) return; const l=$(".irsl"); l.innerHTML=`😏 هرّبت ${esc(cnames(sx.join("")))} … محد درى<small>هذا السطر يطلع لك إنت بس</small>`; A(l,[{transform:"translateY(20px)",opacity:0},{transform:"none",opacity:1}]); }
+      return done(); }
+    // تفتيش
+    const sk=$(".irsk"); for(let i=0;i<3;i++){ shake(sk,7,240); await W8(260); } if(dead) return;
+    sk.src="ins_open.webp"; A($(".irdc"),[{opacity:1},{opacity:.35}],{duration:300});
+    const box=$(".ircs"), bag=[...(o.bag||"")];
+    box.innerHTML=bag.map(c=>`<span class="irfl" style="--s:${cs}px"><span class="irin"><span class="irbk">${kb(cs)}</span><span class="irfc">${kc(c,cs)}</span></span></span>`).join("");
+    const F=[...box.children]; F.forEach((f,i)=>A(f,[{transform:"translateY(60px) scale(.3)",opacity:0},{transform:"none",opacity:1}],{delay:i*100,duration:550}));
+    A(sk,[{opacity:1},{opacity:0,transform:"translateY(40px) scale(.8)"}],{duration:420,delay:200,easing:"ease-in"});
+    await W8(900); if(dead) return;
+    for(let i=0;i<F.length;i++){ const good=bag[i]===dc; A(F[i].querySelector(".irin"),[{transform:"rotateY(0)"},{transform:"rotateY(180deg)"}],{duration:500,easing:"cubic-bezier(.4,1.4,.5,1)"});
+      await W8(500); if(dead) return; const t=document.createElement("b"); t.className="irtg "+(good?"ok":"no"); t.textContent=good?"✓ صادق":"✗ مصادَر"; F[i].appendChild(t);
+      A(t,[{scale:2.2,opacity:0},{scale:1,opacity:1}],{duration:300,easing:"cubic-bezier(.6,0,.6,1.4)"}); if(!good) shake($(".irvs"),4,220); await W8(380); }
+    if(dead) return; await W8(250);
+    if(o.k==="lie"){ F.forEach((f,i)=>{ if(bag[i]!==dc) A(f,[{transform:"none"},{transform:"translate(0,-260px) scale(.25)",opacity:0}],{duration:650,easing:"cubic-bezier(.5,0,.7,.4)"}); });
+      ban("انكشف! ✗","#ff5a6a"); shake($(".irvs"),7,300);
+      sub(`صرّح ${dc?IC[dc].n:""} · انصادر ${esc(cnames(o.lost||""))}<br>دفع <b>${an(o.fine||0)} ريال</b> غرامة للمفتش`);
+      if(dm){ await W8(450); if(dead) return; coins(true,Math.min(8,-dm)); await W8(250); count($(".irp.m .iw"),mB,mA); count($(".irp.i .iw"),iB,iA); }
+      shake($(".irp.m img"),6,400); A($(".irp.i img"),[{scale:1},{scale:1.15},{scale:1}],{delay:500,duration:500}); }
+    else { ban("طلع صادق! ✓","#3ee08a"); sub(`${dc?IC[dc].n:""} × ${an(bag.length)} بالضبط · المفتش يدفع<br><b>${an(o.fine||0)} ريال</b> غرامة للتاجر 😱`);
+      if(dm){ await W8(450); if(dead) return; coins(false,Math.min(8,dm)); await W8(250); count($(".irp.i .iw"),iB,iA); count($(".irp.m .iw"),mB,mA); }
+      shake($(".irp.i img"),6,400); A($(".irp.m img"),[{scale:1},{scale:1.15},{scale:1}],{delay:500,duration:500}); }
+    done(); })(); }
 /* ---------- صاحب اللعبة بس يحرك المراحل ---------- */
 async function startGame(){ if(busy||!isHost()) return; const P=pls(), t=GT(); if(P.length<I().min) return msg("تحتاجون "+an(I().min)+" لاعبين على الأقل");
   if(t==="lies"){ const a=P.filter(p=>team(p.id)==="A").length; if(!a||a===P.length) return msg("لازم كل فريق فيه لاعب واحد على الأقل"); }
@@ -2391,7 +2555,7 @@ function paint(force){ if(!el||el.hidden) return; const ae=document.activeElemen
   else if(g.st==="end") h=vEnd();
   else { const t=GT(); h=t==="five"?vFive():t==="lies"?vLies():t==="mafia"?vMafia():t==="insp"?vInsp():vBrra(); }
   const keep={}, sk={}; el.querySelectorAll("input[id]").forEach(i=>keep[i.id]=i.value); el.querySelectorAll("[data-sk]").forEach(e=>sk[e.dataset.sk]=e.scrollLeft);
-  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} try{ iCarInit() }catch(e){} }
+  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} try{ iCarInit() }catch(e){} try{ iRevCheck() }catch(e){} try{ iResAnim() }catch(e){} }
 async function onClick(e){ const b=e.target.closest("[data-g]"); if(!b) return; const a=b.dataset.g, x=b.dataset.x; ui.err=""; const ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&el.contains(ae)&&a!=="lans") ae.blur();
   if(a==="close") return hide();
   if(a==="hf"){ ui.hf=x; return paint(); } if(a==="set"){ ui.v=x==="insp"?"iov":"set"; ui.gt=x; return paint(); } if(a==="iovgo"){ ui.v="set"; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
