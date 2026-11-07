@@ -21,8 +21,8 @@ body{margin:0;background:#07040c;color:var(--fg);font-family:Cairo,Tahoma,sans-s
 .tag.dead{filter:grayscale(1) brightness(.45) drop-shadow(0 1.2cqw 1.4cqw #000c)}
 .tag.red{filter:sepia(1) saturate(4) hue-rotate(-30deg) brightness(.85) drop-shadow(0 0 2cqw #ff3040)}
 .tag .vc{top:-3cqw;left:-2cqw;width:6.4cqw;height:6.4cqw;border-radius:50%;background:#c22;color:#fff;font:900 3.6cqw/6.4cqw Cairo;text-align:center;box-shadow:0 .6cqw 1cqw #000a;border:.4cqw solid #ffd9a0}
-.obj{left:50%;top:48%;translate:-50% -50%;z-index:15;filter:drop-shadow(0 2.5cqw 2cqw #000d)}
-.glow{left:50%;top:48%;width:95cqw;height:95cqw;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,rgba(255,190,90,.55),rgba(255,150,40,.16) 40%,transparent 66%);z-index:4;opacity:0;mix-blend-mode:screen}
+.obj{left:50%;top:47%;translate:-50% -50%;z-index:15;filter:drop-shadow(0 2.5cqw 2cqw #000d)}
+.glow{left:50%;top:47%;width:95cqw;height:95cqw;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,rgba(255,190,90,.55),rgba(255,150,40,.16) 40%,transparent 66%);z-index:4;opacity:0;mix-blend-mode:screen}
 .shield{width:30cqw;height:30cqw;border-radius:50%;translate:-50% -50%;z-index:6;background:radial-gradient(circle,rgba(62,224,138,0) 40%,rgba(62,224,138,.6) 62%,rgba(62,224,138,0) 72%);opacity:0}
 .res{left:5cqw;right:5cqw;bottom:6cqw;text-align:center;font:400 9cqw/1.15 Lalezar,Cairo;z-index:20;text-shadow:0 .6cqw 0 #000,0 0 4cqw #000}
 .res small{display:block;position:static;font:800 3.8cqw Cairo;color:#fff;margin-top:1.5cqw}
@@ -47,7 +47,7 @@ async function keyed(url,crop){ const b=await fetch(url).then(r=>r.blob()), bm=a
   x.putImageData(d,0,0); return await new Promise(r=>c.toBlob(bl=>r(URL.createObjectURL(bl)),'image/png')); }
 const st=document.getElementById('st');
 const NAMES=["بكري","سعود","ريم","أبو علي","فهد","نوف","خالد","محمد"];
-const CX=50, CY=48, R=39; // مركز الطاولة ونص القطر (نسبة من العرض)
+const CX=50, CY=47, R=33; // مركز الطاولة ونص القطر (نسبة من العرض)
 let tm=[],run=0; const Wt=ms=>new Promise(r=>tm.push(setTimeout(r,ms)));
 const E=(h,css)=>{const d=document.createElement('div');d.innerHTML=h.trim();const e=d.firstElementChild;if(css)Object.assign(e.style,css);st.appendChild(e);return e};
 const A=(e,k,o)=>e.animate(k,{duration:500,easing:"cubic-bezier(.2,1.3,.4,1)",fill:"both",...o});
