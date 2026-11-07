@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>معاينة المافيا</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@700;800;900&display=swap">
+<style>
+:root{--fg:#fff7ea;--gold:#f3c969;--muted:#c9bfd9}
+*{box-sizing:border-box}
+body{margin:0;background:#07040c;color:var(--fg);font-family:Cairo,Tahoma,sans-serif;padding:12px 12px 30px;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:100vh}
+.note{font-size:13px;color:var(--muted);text-align:center;margin:0;max-width:420px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.tabs button{font:800 13px Cairo;color:var(--fg);background:#ffffff10;border:1px solid #ffffff26;border-radius:14px;padding:8px 12px;cursor:pointer}
+.tabs button.on{background:var(--gold);color:#2a1a10;border-color:var(--gold)}
+.st{position:relative;width:min(100%,420px);aspect-ratio:752/1344;border-radius:26px;overflow:hidden;container-type:inline-size;background:#0b0705 center/cover no-repeat;box-shadow:0 0 0 2px #2a2140,0 24px 50px #000b}
+.st *{position:absolute}
+.load{inset:0;display:grid;place-items:center;font-weight:800;color:var(--muted)}
+.cap{left:5cqw;right:5cqw;top:4cqw;text-align:center;font:400 8.4cqw/1.2 Lalezar,Cairo;color:#fff;text-shadow:0 .6cqw 0 #000,0 0 4cqw #000;z-index:20}
+.cap small{display:block;position:static;font:800 3.6cqw Cairo;color:#e8dcc8;margin-top:1cqw}
+.dark{inset:0;background:radial-gradient(52% 30% at 50% 48%,rgba(0,0,10,.25),rgba(0,0,15,.85) 85%);z-index:3;opacity:0}
+.tag{width:22cqw;aspect-ratio:1024/576;translate:-50% -50%;z-index:5;background:center/100% 100% no-repeat;display:grid;place-items:center;filter:drop-shadow(0 1.2cqw 1.4cqw #000c);transition:filter .5s}
+.tag b{position:static;font:900 3.7cqw Cairo;color:#3a2405;text-shadow:0 .15cqw 0 rgba(255,240,200,.7)}
+.tag.dead{filter:grayscale(1) brightness(.45) drop-shadow(0 1.2cqw 1.4cqw #000c)}
+.tag.red{filter:sepia(1) saturate(4) hue-rotate(-30deg) brightness(.85) drop-shadow(0 0 2cqw #ff3040)}
+.tag .vc{top:-3cqw;left:-2cqw;width:6.4cqw;height:6.4cqw;border-radius:50%;background:#c22;color:#fff;font:900 3.6cqw/6.4cqw Cairo;text-align:center;box-shadow:0 .6cqw 1cqw #000a;border:.4cqw solid #ffd9a0}
+.obj{left:50%;top:48%;translate:-50% -50%;z-index:15;filter:drop-shadow(0 2.5cqw 2cqw #000d)}
+.glow{left:50%;top:48%;width:95cqw;height:95cqw;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,rgba(255,190,90,.55),rgba(255,150,40,.16) 40%,transparent 66%);z-index:4;opacity:0;mix-blend-mode:screen}
+.shield{width:30cqw;height:30cqw;border-radius:50%;translate:-50% -50%;z-index:6;background:radial-gradient(circle,rgba(62,224,138,0) 40%,rgba(62,224,138,.6) 62%,rgba(62,224,138,0) 72%);opacity:0}
+.res{left:5cqw;right:5cqw;bottom:6cqw;text-align:center;font:400 9cqw/1.15 Lalezar,Cairo;z-index:20;text-shadow:0 .6cqw 0 #000,0 0 4cqw #000}
+.res small{display:block;position:static;font:800 3.8cqw Cairo;color:#fff;margin-top:1.5cqw}
+.arm{width:15cqw;height:32cqw;transform-origin:50% 100%;z-index:12;pointer-events:none;background:top center/contain no-repeat;filter:drop-shadow(0 2cqw 1.6cqw #000c)}
+.spark{width:2cqw;height:2cqw;border-radius:50%;background:#7dffb8;box-shadow:0 0 2cqw #3ee08a;z-index:9}
+.chip{width:2.6cqw;height:2.6cqw;z-index:9;border-radius:.4cqw}
+</style></head><body>
+<p class="note">معاينة المافيا بثيم التحقيق · كل الرسومات بالذكاء الاصطناعي</p>
+<div class="tabs"><button data-s="kill" class="on">🔪 قتل</button><button data-s="save">💉 إنقاذ</button><button data-s="inv">🕯️ تحقيق</button><button data-s="vote">🗳️ تصويت</button></div>
+<div class="st" id="st"><div class="load">يحمّل الرسومات…</div></div>
+<p class="note">اضغط على الطاولة تعيد الحركة</p>
+<script>
+const H="https://d8j0ntlcm91z4.cloudfront.net/user_3FlbzJz1I8kC3OkmJz0wmfoPc3n/hf_20261107_";
+const SRC={table:H+"142300_9382a9ab-46e7-43d3-808c-b2dd178b566c.png",knife:H+"142301_e50ebcdf-58ad-4500-a518-b7c64918b1e0.png",candle:H+"142259_2d3037b7-da6a-4eeb-9938-7757e498d578.png",plate:H+"142301_08996a50-7e69-4dd5-afbe-8f1627e4c4b6.png",hand:H+"142300_c7f6d22d-23f9-4ec4-abb8-5766747c4806.png",lens:H+"142301_4e81e494-0877-47db-a975-681e9be6826a.png"};
+const IMG={};
+// نشيل الخلفية البيضاء: نعبي من الأطراف بس، عشان ما ينمسح الأبيض اللي داخل الغرض
+async function keyed(url,crop){ const b=await fetch(url).then(r=>r.blob()), bm=await createImageBitmap(b); const W=bm.width,Hh=bm.height, c=document.createElement('canvas'); c.width=W;c.height=Hh; const x=c.getContext('2d'); x.drawImage(bm,0,0);
+  const d=x.getImageData(0,0,W,Hh), p=d.data, seen=new Uint8Array(W*Hh), q=[]; const wh=i=>p[i*4+3]>0&&p[i*4]>232&&p[i*4+1]>232&&p[i*4+2]>232;
+  for(let i=0;i<W;i++){q.push(i,(Hh-1)*W+i)} for(let j=0;j<Hh;j++){q.push(j*W,j*W+W-1)}
+  while(q.length){ const i=q.pop(); if(seen[i]||!wh(i)) continue; seen[i]=1; p[i*4+3]=0; const xx=i%W, yy=(i/W)|0; if(xx>0)q.push(i-1); if(xx<W-1)q.push(i+1); if(yy>0)q.push(i-W); if(yy<Hh-1)q.push(i+W); }
+  for(let i=0;i<W*Hh;i++){ if(seen[i]) continue; const a=p[i*4],g=p[i*4+1],bb=p[i*4+2]; const xx=i%W,yy=(i/W)|0; const nb=(xx>0&&seen[i-1])||(xx<W-1&&seen[i+1])||(yy>0&&seen[i-W])||(yy<Hh-1&&seen[i+W]); if(nb&&a>205&&g>205&&bb>205) p[i*4+3]=110; }
+  x.putImageData(d,0,0); return await new Promise(r=>c.toBlob(bl=>r(URL.createObjectURL(bl)),'image/png')); }
+const st=document.getElementById('st');
+const NAMES=["بكري","سعود","ريم","أبو علي","فهد","نوف","خالد","محمد"];
+const CX=50, CY=48, R=39; // مركز الطاولة ونص القطر (نسبة من العرض)
+let tm=[],run=0; const Wt=ms=>new Promise(r=>tm.push(setTimeout(r,ms)));
+const E=(h,css)=>{const d=document.createElement('div');d.innerHTML=h.trim();const e=d.firstElementChild;if(css)Object.assign(e.style,css);st.appendChild(e);return e};
+const A=(e,k,o)=>e.animate(k,{duration:500,easing:"cubic-bezier(.2,1.3,.4,1)",fill:"both",...o});
+const center=e=>{ const r=e.getBoundingClientRect(), b=st.getBoundingClientRect(); return [r.left-b.left+r.width/2, r.top-b.top+r.height/2]; };
+const shakeSt=(n=1.6,d=320)=>st.animate([{translate:"0 0"},{translate:`-${n}cqw ${n/2}cqw`},{translate:`${n}cqw -${n/2}cqw`},{translate:"0 0"}],{duration:d/3,iterations:3});
+function setup(){ st.innerHTML=""; E('<div class="dark"></div>');
+  return NAMES.map((n,i)=>{ const a=-Math.PI/2+i*2*Math.PI/NAMES.length; const t=E(`<div class="tag" style="background-image:url(${IMG.plate})"><b>${n}</b></div>`,{left:(CX+R*Math.cos(a))+"%",top:`calc(${CY}% + ${R*Math.sin(a)}cqw)`}); A(t,[{scale:0,opacity:0},{scale:1,opacity:1}],{delay:i*50,duration:420}); return t; }); }
+const cap=(t,s)=>{ st.querySelector('.cap')?.remove(); const c=E(`<div class="cap">${t}${s?`<small>${s}</small>`:""}</div>`); A(c,[{translate:"0 -4cqw",opacity:0},{translate:"0 0",opacity:1}]); return c; };
+const res=(t,col,s)=>{ const r=E(`<div class="res" style="color:${col}">${t}${s?`<small>${s}</small>`:""}</div>`); A(r,[{scale:2.2,opacity:0},{scale:1,opacity:1}],{duration:420}); return r; };
+const night=()=>A(st.querySelector('.dark'),[{opacity:0},{opacity:1}],{duration:800,easing:"ease"});
+const morning=()=>{ cap("☀️ طلع الصبح"); A(st.querySelector('.dark'),[{opacity:1},{opacity:0}],{duration:900,easing:"ease"}); };
+async function play(s){ const id=++run; tm.forEach(clearTimeout); tm=[]; const T=setup(), ok=()=>id===run; await Wt(600); if(!ok()) return;
+  if(s==="kill"||s==="save"){ const v=T[2]; cap("🌙 الليل",s==="kill"?"المافيا اختارت…":"المافيا اختارت… والطبيب اختار"); night();
+    await Wt(900); if(!ok()) return;
+    const k=E(`<img class="obj" src="${IMG.knife}" alt="">`,{width:"30cqw"}); A(k,[{scale:0,opacity:0},{scale:1,opacity:1}],{duration:500});
+    await Wt(550); if(!ok()) return;
+    k.animate([{rotate:"-12deg"},{rotate:"12deg"}],{duration:70,iterations:16,direction:"alternate",composite:"add"}); shakeSt(.8,900);
+    await Wt(1150); if(!ok()) return;
+    const [vx,vy]=center(v), [kx,ky]=center(k), ang=Math.atan2(vy-ky,vx-kx)*180/Math.PI+90;
+    if(s==="kill"){
+      A(k,[{transform:"rotate(0deg)"},{transform:`rotate(${ang}deg)`,offset:.35},{transform:`translate(${(vx-kx)*.86}px,${(vy-ky)*.86}px) rotate(${ang}deg) scale(.75)`}],{duration:520,easing:"cubic-bezier(.6,0,.9,.6)"});
+      await Wt(500); if(!ok()) return; shakeSt(2.6,380);
+      v.classList.add('dead'); A(v,[{scale:1.25},{scale:1}],{duration:300});
+      for(let i=0;i<12;i++){ const c=E('<div class="chip"></div>',{left:vx+"px",top:vy+"px",background:i%2?"#d8ab45":"#7a1414"}); const a=Math.random()*6.28,r=40+Math.random()*60; c.animate([{transform:"none",opacity:1},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) rotate(${r*6}deg)`,opacity:0}],{duration:750,easing:"ease-out",fill:"forwards"}); }
+      await Wt(800); if(!ok()) return; morning(); res("انقتل ريم","#ff5a6a","💀 خرج من اللعبة");
+    } else {
+      const sh=E('<div class="shield"></div>',{left:vx+"px",top:vy+"px"}); A(sh,[{opacity:0,scale:.3},{opacity:1,scale:1}],{duration:400});
+      A(k,[{transform:"rotate(0deg)"},{transform:`rotate(${ang}deg)`,offset:.35},{transform:`translate(${(vx-kx)*.62}px,${(vy-ky)*.62}px) rotate(${ang}deg) scale(.8)`}],{duration:460,easing:"cubic-bezier(.6,0,.9,.6)"});
+      await Wt(460); if(!ok()) return; shakeSt(1,240); sh.animate([{scale:1},{scale:1.35},{scale:1}],{duration:380});
+      A(k,[{transform:`translate(${(vx-kx)*.62}px,${(vy-ky)*.62}px) rotate(${ang}deg) scale(.8)`},{transform:`translate(${(vx-kx)*.15}px,${(vy-ky)*.15-70}px) rotate(${ang+540}deg) scale(.4)`,opacity:0}],{duration:700,easing:"cubic-bezier(.2,.8,.4,1)"});
+      for(let i=0;i<14;i++){ const p=E('<div class="spark"></div>',{left:vx+"px",top:vy+"px"}); const a=Math.random()*6.28,r=30+Math.random()*60; p.animate([{transform:"scale(1)",opacity:1},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r-30}px) scale(.2)`,opacity:0}],{duration:900+Math.random()*400,easing:"ease-out",fill:"forwards"}); }
+      A(v,[{scale:1.15,filter:"drop-shadow(0 0 3cqw #3ee08a)"},{scale:1,filter:"drop-shadow(0 1.2cqw 1.4cqw #000c)"}],{duration:900});
+      await Wt(900); if(!ok()) return; morning(); res("💉 الطبيب أنقذه!","#3ee08a","المافيا حاولت تقتل… وما قدرت");
+    } return; }
+  if(s==="inv"){ const v=T[5]; cap("🕯️ المحقق يحقق","هذا يطلع على جوال المحقق بس"); night();
+    await Wt(700); if(!ok()) return;
+    const g=E('<div class="glow"></div>'); const c=E(`<img class="obj" src="${IMG.candle}" alt="">`,{width:"30cqw"});
+    A(c,[{scale:0,opacity:0},{scale:1,opacity:1}],{duration:500}); await Wt(400); if(!ok()) return;
+    A(g,[{opacity:0},{opacity:1}],{duration:900,easing:"ease"}); g.animate([{scale:1},{scale:1.05},{scale:.97},{scale:1}],{duration:700,iterations:Infinity,delay:900,composite:"add"});
+    A(st.querySelector('.dark'),[{opacity:1},{opacity:.45}],{duration:900});
+    await Wt(1200); if(!ok()) return;
+    const [vx,vy]=center(v), [cx,cy]=center(c);
+    const L=E(`<img class="obj" src="${IMG.lens}" alt="">`,{width:"26cqw",zIndex:16}); A(L,[{transform:"translate(0,0) scale(.3)",opacity:0},{transform:"translate(0,0) scale(1)",opacity:1}],{duration:400});
+    await Wt(450); if(!ok()) return;
+    A(L,[{transform:"translate(0,0)"},{transform:`translate(${vx-cx}px,${vy-cy}px) rotate(-12deg)`}],{duration:900,easing:"cubic-bezier(.5,0,.3,1)"});
+    await Wt(1100); if(!ok()) return; L.animate([{rotate:"-6deg"},{rotate:"6deg"}],{duration:260,iterations:4,direction:"alternate",composite:"add"});
+    await Wt(900); if(!ok()) return; v.classList.add('red'); A(v,[{scale:1},{scale:1.2}],{duration:400});
+    res("نوف… مافيا 😈","#ff5a6a","لا تقولها لأحد… قلها بطريقتك"); return; }
+  if(s==="vote"){ cap("🗳️ التصويت","واحد واحد"); const plan=[[0,3],[1,3],[2,6],[3,6],[4,3],[5,3],[6,3],[7,6]], cnt={};
+    for(const [a,b] of plan){ if(!ok()) return; const ta=T[a], tb=T[b]; A(ta,[{scale:1},{scale:1.12},{scale:1}],{duration:400});
+      const [ax,ay]=center(ta),[bx,by]=center(tb), ang=Math.atan2(by-ay,bx-ax)*180/Math.PI+90, w=st.clientWidth;
+      const h=E(`<div class="arm" style="background-image:url(${IMG.hand})"></div>`,{left:(ax-w*.075)+"px",top:(ay-w*.32)+"px",transform:`rotate(${ang}deg)`});
+      h.animate([{transform:`rotate(${ang}deg) translateY(30%) scale(.4)`,opacity:0},{transform:`rotate(${ang}deg) translateY(-6%) scale(1.03)`,opacity:1,offset:.7},{transform:`rotate(${ang}deg) translateY(0) scale(1)`,opacity:1}],{duration:520,easing:"cubic-bezier(.3,1.2,.5,1)",fill:"forwards"});
+      await Wt(480); if(!ok()) return;
+      A(tb,[{scale:1},{scale:1.22,offset:.4},{scale:1.22,offset:.8},{scale:1}],{duration:900,easing:"ease-in-out"});
+      cnt[b]=(cnt[b]||0)+1; let vc=tb.querySelector('.vc'); if(!vc){ vc=document.createElement('b'); vc.className='vc'; tb.appendChild(vc); } vc.textContent=cnt[b]; A(vc,[{scale:1.8},{scale:1}],{duration:300});
+      await Wt(500); h.animate([{transform:`rotate(${ang}deg) translateY(0)`,opacity:1},{transform:`rotate(${ang}deg) translateY(40%) scale(.5)`,opacity:0}],{duration:320,easing:"ease-in",fill:"forwards"}); await Wt(250); }
+    if(!ok()) return; await Wt(300); const t=T[3]; shakeSt(1.6,360); t.classList.add('dead'); A(t,[{scale:1.3},{scale:1}],{duration:400});
+    res("طلع أبو علي","#f3c969","وكان… 😇 بريء"); return; } }
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b)); play(b.dataset.s); });
+st.onclick=()=>{ if(IMG.plate) play(document.querySelector('.tabs .on').dataset.s); };
+(async()=>{ const [kn,ca,pl,le]=await Promise.all([keyed(SRC.knife),keyed(SRC.candle),keyed(SRC.plate),keyed(SRC.lens)]);
+  Object.assign(IMG,{knife:kn,candle:ca,plate:pl,lens:le,hand:SRC.hand}); st.style.backgroundImage=`url(${SRC.table})`;
+  await document.fonts.ready; play("kill"); })();
+</script></body></html>
