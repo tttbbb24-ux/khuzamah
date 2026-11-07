@@ -149,6 +149,9 @@ select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px soli
 .ord .tog .nm{flex:1;min-width:0;font-weight:600}
 .ord .tog .nm small{display:block;font-weight:400;font-size:13px;color:var(--muted)}
 .menu .xopt{align-items:center;text-align:center}
+.menu .xopt{position:relative}.menu .xopt.xo>:not(.xot){opacity:.4;filter:grayscale(1)}.menu .xopt.xo{border-style:dashed}.menu .xopt.xo b{text-decoration:line-through}
+.xot{position:absolute;top:-7px;left:-5px;background:var(--red);color:#fff;font:800 11px/1 inherit;font-style:normal;padding:3px 7px;border-radius:9px;transform:rotate(-8deg);filter:none}
+.menu .xopt.xhold{transition:box-shadow .9s linear,background .9s linear;box-shadow:inset 0 0 0 4px #ff8077}
 .menu .xopt.on,.menu .xopt.on span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .menu .xopt.paint span,.menu .xopt.paint.on span{background:none;color:#fff}
 .ord .tog .tag{font-weight:700;font-size:14px;white-space:nowrap}
@@ -1733,7 +1736,8 @@ function menuPrice(it){
 }
 const CHEESE=1; // الجبنة على البطاطس المقلية بريال
 function friesNote(sel){ const f=EXTRAS.slice(0,-1), c=sel.includes(EXTRAS.length-1), n=extrasNote(sel.filter(i=>i<f.length),f); return c?(n==="بدون إضافات"?"جبنة بس":n+" + جبنة"):n; }
-const freeAll=sp=>sp.opts.map((_,i)=>i).filter(i=>!(sp.paid&&sp.paid[i])); // «كل شي» = الصوصات المجانية بس
+const oOff=(it,x)=>!!(it&&Array.isArray(it.xoff)&&it.xoff.includes(x));
+const freeAll=(sp,it)=>sp.opts.map((_,i)=>i).filter(i=>!(sp.paid&&sp.paid[i])&&!oOff(it,sp.opts[i])); // «كل شي» = الصوصات المجانية بس
 function extrasNote(sel,LIST){ const X=LIST||EXTRAS;
   const on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات";
@@ -1876,6 +1880,16 @@ function holdOff(t){ let tm=null, ring=null;
   ["pointerup","pointerleave","pointercancel"].forEach(x=>t.addEventListener(x,end)); t.addEventListener("contextmenu",e=>e.preventDefault()); }
 async function restoreDocs(docs,seat){ // تراجع: يرجّع الطلبات المحذوفة بنفس أرقامها
   try{ if(seat&&!seats[seat.id]) await db.doc("seats/"+seat.id).set(seat.data); for(const d of docs){ const {id,...rest}=d; await db.doc("orders/"+id).set(rest) } logIt("تراجع ورجّع "+docs[0].name); toast("✓ رجع "+docs[0].name) }catch(e){ fail(e) } }
+function toggleOpt(x,quiet){ if(!OPS()||!view||!cfg.items[view.i]) return; const on=!oOff(cfg.items[view.i],x); // إضافة أو نكهة خلصت: تنطبق على كل الأصناف اللي فيها
+  const items=cfg.items.map(it=>{ const sp=specFor(it.name); if(!sp||!Array.isArray(sp.opts)||!sp.opts.includes(x)) return it; const st=new Set(it.xoff||[]); on?st.add(x):st.delete(x); return Object.assign({},it,{xoff:[...st]}); });
+  try{ if(navigator.vibrate) navigator.vibrate(on?[20,40,20]:15) }catch(e){} cfg={...cfg,items}; renderSheet();
+  run("cfg",async()=>{ await db.doc("config/menu").update({items}); logIt((on?"علّم ":"رجّع ")+x+(on?" خلصت":" متوفرة"));
+    if(!quiet) toast(on?"⛔ "+x+" خلصت":"✅ "+x+" رجعت متوفرة",()=>toggleOpt(x,true)); }); }
+document.addEventListener("pointerdown",e=>{ const t=e.target.closest&&e.target.closest(".xopt[data-lpo]"); if(!t||e.button>0||!OPS()) return;
+  let tm=setTimeout(()=>{ tm=null; lpJust=Date.now(); toggleOpt(t.dataset.lpo); },RM?500:900); t.classList.add("xhold");
+  const end=()=>{ if(tm){clearTimeout(tm);tm=null} t.classList.remove("xhold"); ["pointerup","pointerleave","pointercancel"].forEach(k=>t.removeEventListener(k,end)); };
+  ["pointerup","pointerleave","pointercancel"].forEach(k=>t.addEventListener(k,end)); },true);
+document.addEventListener("contextmenu",e=>{ if(e.target.closest&&e.target.closest(".xopt[data-lpo]")) e.preventDefault(); });
 function toggleOff(i,quiet){ if(!OPS()||!cfg.items[i]) return; const items=cfg.items.map((x,k)=>k===i?Object.assign({},x,{off:!x.off}):x), it=items[i];
   try{ if(navigator.vibrate) navigator.vibrate(it.off?[20,40,20]:15) }catch(e){}
   run("cfg",async()=>{ await db.doc("config/menu").update({items}); logIt((it.off?"علّم ":"رجّع ")+it.name+(it.off?" غير متوفر":" متوفر"));
@@ -2664,8 +2678,8 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   <div class="xtitle"><b>${view.req?"تعديل طلب الجوال: ":view.edit?"تعديل: ":""}${esc(it.name)}</b><span>${sp?sp.title:"كم حبة؟"}${where}</span></div>
   ${view.edit&&view.eq>1?`<div class="seg xone"><button class="${view.one?"":"on"}" data-act="xone" data-v="0">عدّل الكل (<span class="num">${view.eq}</span>)</button><button class="${view.one?"on":""}" data-act="xone" data-v="1">عدّل حبة وحدة بس</button></div>`:""}
   ${off&&!view.edit?`<div class="notice" style="background:var(--red-bg);color:var(--red);font-weight:700">غير متوفر الحين</div>`:""}
-  ${sp&&sp.all?`<button class="chip ${freeAll(sp).every(i=>view.sel.includes(i))?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
-  ${sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""}" ${L?`style="background:${L[1]}"`:""} data-act="xtoggle" data-x="${i}">${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:sp.paid&&sp.paid[i]?`<span class="num">+${sp.paid[i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
+  ${sp&&sp.all?`<button class="chip ${freeAll(sp,it).every(i=>view.sel.includes(i))?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
+  ${sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""} ${oOff(it,x)?"xo":""}" ${L?`style="background:${L[1]}"`:""} data-act="${oOff(it,x)&&!view.sel.includes(i)?"xoffhint":"xtoggle"}" data-x="${i}" ${OPS()?`data-lpo="${esc(x)}"`:""}>${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${oOff(it,x)?`<i class="xot">خلص</i>`:""}${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:sp.paid&&sp.paid[i]?`<span class="num">+${sp.paid[i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
   ${sp&&sp.k==="mat"?`<h2>الحليب</h2><div class="menu xchips"><button class="xopt ${view.size!=="coco"?"on":""}" data-act="xsize" data-s="lf"><b>خالي من اللاكتوز</b></button><button class="xopt ${view.size==="coco"?"on":""}" data-act="xsize" data-s="coco"><b>جوز الهند</b></button></div>`:""}
   ${sp&&sp.k==="tea"?`<h2>السكر</h2><div class="menu xchips"><button class="xopt ${view.size!=="stv"?"on":""}" data-act="xsize" data-s="reg"><b>عادي</b></button><button class="xopt ${view.size==="stv"?"on":""}" data-act="xsize" data-s="stv"><b>دايت (ستيفيا)</b></button></div>`:""}
   ${sp&&sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu xchips">
@@ -2977,7 +2991,7 @@ async function loadDay(v){ // يجيب بيانات اليوم المعروض
 function settingsHtml(){
   const d=draft;
   return `<div class="phead"><div class="meta"><b>الأصناف والأسعار</b><span>التعديل يظهر عند الكل بعد الحفظ</span></div>${xBtn}</div>
-  <p class="empty" style="font-size:13.5px">عشان تعلّم صنف غير متوفر: من المنيو اضغط على الصنف مطوّل ٣ ثواني.</p>
+  <p class="empty" style="font-size:13.5px">عشان تعلّم صنف غير متوفر: من المنيو اضغط على الصنف مطوّل ٣ ثواني.<br>ولو نكهة أو إضافة خلصت: افتح الصنف واضغط عليها مطوّل ثانية.</p>
   ${P()&&!legacy?`<div class="set pbox"><label for="push-url" style="font-size:14px;color:var(--muted)">رابط خادم الإشعارات ${pushUrl?"(محفوظ)":"(ما انحط للحين)"}</label>
     <div class="row"><input id="push-url" dir="ltr" inputmode="url" autocomplete="off" placeholder="https://....workers.dev" value="${esc(pushUrl)}"><button class="ghost" data-act="pushurl">حفظ</button></div></div>`:""}
   <div class="set">
@@ -3208,11 +3222,12 @@ document.addEventListener("click",e=>{
   if(a==="bmode"){view.mode=b.dataset.m; if(view.mode==="hour"&&!view.hours) view.hours=autoHours(seats[id]); return renderSheet()}
   if(a==="settings"){draft=JSON.parse(JSON.stringify(cfg));return openSheet({kind:"settings"})}
   if(a==="start") return run("seat:"+id,async()=>{ if(reserves[id]){ const m={...reserves}; delete m[id]; db.doc("config/reserve").set(m).catch(()=>{}) }await db.doc("seats/"+id).set({sid:Date.now().toString(36)+Math.random().toString(36).slice(2,6),tok:newTok(),type:b.dataset.type,startedAt:Date.now()}); renderMain.js=id; if(b.dataset.type==="free") logIt("فتح الجلسة "+seatNo(id)+" مجاناً"); if(W()){ const ty=b.dataset.type==="hour"?"ساعة":b.dataset.type==="free"?"مجاناً":"وقت مفتوح"; if(b.dataset.type!=="free") logIt("فتح الجلسة "+seatNo(id)+" · "+ty); pushSend(2,"🪑 جلسة "+seatNo(id)+" انفتحت",ty+" · فتحها "+me.name,"open-"+id); } if(C()) openSheet({kind:"qr",id,wait:true}); });
-  if(a==="xtoggle"){const x=+b.dataset.x,k=view.sel.indexOf(x), sp=specFor(cfg.items[view.i].name); view.ex=false; if(!(sp&&(sp.k==="mat"||sp.k==="tea"))) view.size=null; if(sp&&sp.one) view.sel=[x]; else if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
+  if(a==="xoffhint"){ if(Date.now()-lpJust<800) return; return toast(OPS()?"خلصت · اضغط عليها مطوّل ترجّعها":"هذي خلصت الحين") }
+  if(a==="xtoggle"){ if(Date.now()-lpJust<800) return; const x=+b.dataset.x,k=view.sel.indexOf(x), sp=specFor(cfg.items[view.i].name); view.ex=false; if(!(sp&&(sp.k==="mat"||sp.k==="tea"))) view.size=null; if(sp&&sp.one) view.sel=[x]; else if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
   if(a==="xcnt"){ const x=+b.dataset.x, d=+b.dataset.d; if(d>0){ if(view.sel.length<40) view.sel.push(x) } else { const k=view.sel.lastIndexOf(x); if(k>=0) view.sel.splice(k,1) } view.sel.sort((p,q)=>p-q); view.q=1; return renderSheet() }
   if(a==="xex"){view.ex=!view.ex; view.sel=[]; const spx=specFor((cfg.items[view.i]||{}).name||""); if(!(spx&&(spx.k==="mat"||spx.k==="tea"))) view.size=null; return renderSheet()}
   if(a==="xsize"){view.size=b.dataset.s; return renderSheet()}
-  if(a==="xall"){const sp=specFor(cfg.items[view.i].name), F=freeAll(sp), P=view.sel.filter(i=>!F.includes(i)); view.sel=F.every(i=>view.sel.includes(i))?P:F.concat(P); return renderSheet()}
+  if(a==="xall"){const sp=specFor(cfg.items[view.i].name), F=freeAll(sp,cfg.items[view.i]), P=view.sel.filter(i=>!F.includes(i)); view.sel=F.every(i=>view.sel.includes(i))?P:F.concat(P); return renderSheet()}
   if(a==="xcomp"){view.comp=!view.comp; if(view.comp) view.cprice=""; renderSheet(); const sm=$("x-sum"); if(view.comp&&sm&&!RM){ const s2=sm.querySelector(".cs"), z=sm.querySelector(".c0"), t=sm.querySelector(".ctag"); // ضيافة: السعر ينشطب ويلف لصفر
       if(s2) anim(s2,[{textDecorationColor:"transparent",backgroundSize:"0% 2px"},{backgroundSize:"100% 2px"}],{duration:400,fill:"backwards"}); if(z) anim(z,[{transform:"rotateX(90deg)",opacity:0},{transform:"none",opacity:1}],{duration:420,delay:300,fill:"backwards",easing:SPRING}); if(t) anim(t,[{transform:"translateX(20px)",opacity:0},{transform:"none",opacity:1}],{duration:380,delay:550,fill:"backwards",easing:SPRING}); } return}
   if(a==="xone"){ view.one=b.dataset.v==="1"; view.q=view.one?1:view.eq; return renderSheet() }
@@ -3419,7 +3434,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v79";
+const VER="v80";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
