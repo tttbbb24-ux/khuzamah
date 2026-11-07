@@ -369,6 +369,54 @@ html.gmon,html.gmon body{overflow:hidden}
 .iraw{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .iraw span{font-weight:800;font-size:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:6px 10px;opacity:0;transform:scale(.6);transition:all .45s cubic-bezier(.3,1.5,.5,1)}
 .irs.shown .iraw span{opacity:1;transform:none}.irs.shown .iraw span:nth-child(2){transition-delay:.15s}.irs.shown .iraw span:nth-child(3){transition-delay:.3s}.irs.shown .iraw span:nth-child(4){transition-delay:.45s}
+.gmw:has(.ifit){height:100%;min-height:0}
+.gmw:has(.ifit) .gmh{margin-bottom:8px}
+.ifit{flex:1;min-height:0}
+.ihd .iht{flex:1;min-width:0}.ihd .iht b{font-size:17px}
+.ich{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);font-weight:700;margin-inline-start:auto;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:3px 10px 3px 4px}
+.ich b{color:#fff;display:inline;font-size:inherit}.ich>span{white-space:nowrap}.ihd .iht b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ipm{gap:6px}.ipm .isk{width:min(36vw,150px);flex:none}
+.ipm .icar{flex:1;min-height:96px;padding-top:4px;padding-bottom:4px}
+@media (max-height:720px){ .ipm .isk{width:min(28vw,112px)} .ipm{gap:4px} .igl button{padding:3px 12px;font-size:12px} .idcp img{width:24px;height:24px} .idecl{padding:6px} .ipm>.gb{padding:12px} .ihud{padding-top:4px;padding-bottom:4px} }
+.ifit .icc{flex-basis:var(--cw,150px);margin:0 calc(var(--cw,150px) * -.09)}
+.ifit .icar{padding-left:calc(50% - var(--cw,150px)/2 + 18px);padding-right:calc(50% - var(--cw,150px)/2 + 18px)}
+.icc.drag[data-dir=up] .kc{box-shadow:0 0 0 .35em var(--gold),0 .8em 1.6em rgba(0,0,0,.6)}
+.icc.drag[data-dir=dn] .kc{box-shadow:0 0 0 .35em #ff6b6b,0 .8em 1.6em rgba(0,0,0,.6)}
+.idecl{padding:8px;flex:none}.idch{display:flex;gap:4px;flex-wrap:nowrap;justify-content:stretch}
+.idcp{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 2px 5px;font-size:11.5px;white-space:nowrap}
+.idcp img{width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.ipm>.gb,.irs>.gb{flex:none;margin-top:auto}
+.irs{gap:8px}
+.irs .irsw{flex:none}
+.irs .irc{flex-basis:86%;min-height:0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 8px;padding:8px 10px;text-align:start}
+.irs .irc>*{grid-column:1;justify-self:start}
+.irs .irc .ird{grid-column:2;grid-row:1/span 6;margin:0;align-self:center}
+.irs .irc .ihand{gap:3px;justify-content:flex-start}
+.irshut{display:flex;align-items:center;gap:6px;font-size:12px}.irs .irsk2{width:30px}
+.irs .irl{font-size:12.5px;text-align:start}
+.irdots{display:flex;gap:5px;justify-content:center}.irdots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.25)}
+.irs .irbd{flex:none}.irs .irb{height:42px}
+.irs .iraw{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}.irs .iraw span{white-space:nowrap;font-size:12px}
+
+.mibg{filter:blur(6px) brightness(.45);transform:scale(1.1)}
+.mgm{gap:8px}
+.mtab{position:relative;width:min(100%,62vh);aspect-ratio:1;margin:0 auto;border-radius:50%;background-size:106% auto;background-position:50% 43.6%;background-repeat:no-repeat;box-shadow:0 10px 30px rgba(0,0,0,.7);flex:none}
+.mfx{position:absolute;inset:0;pointer-events:none;z-index:6}
+.mtp{position:absolute;width:24%;aspect-ratio:1.78;translate:-50% -50%;display:grid;place-items:center;border:0;padding:0;background:url(maf_plate.webp) center/100% 100% no-repeat;filter:drop-shadow(0 4px 6px rgba(0,0,0,.8));font-family:inherit;transition:filter .4s,opacity .3s;z-index:3}
+.mtp b{font-size:clamp(11px,3.4vw,15px);font-weight:900;color:#3a2405;text-shadow:0 1px 0 rgba(255,240,200,.7);white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+.mtp.dead{filter:grayscale(1) brightness(.45) drop-shadow(0 4px 6px rgba(0,0,0,.8))}
+.mtp.dim{opacity:.55}.mtp.can{cursor:pointer;animation:mpul 1.6s ease-in-out infinite}
+@keyframes mpul{50%{filter:drop-shadow(0 0 8px rgba(243,201,105,.9))}}
+.mtp.red{filter:sepia(1) saturate(4) hue-rotate(-30deg) brightness(.85) drop-shadow(0 0 10px #ff3040)}
+.mtp.ok{filter:sepia(1) saturate(3) hue-rotate(70deg) brightness(.9) drop-shadow(0 0 10px #3ee08a)}
+.mvc{position:absolute;top:-10px;left:-6px;min-width:22px;height:22px;border-radius:11px;background:#c22;color:#fff;font:900 13px/22px inherit;font-style:normal;text-align:center;border:2px solid #ffd9a0;box-shadow:0 2px 4px #000a}
+.mknife{position:absolute;left:50%;top:50%;width:22%;translate:-50% -50%;filter:drop-shadow(0 8px 8px #000d)}
+.mlens{position:absolute;left:50%;top:50%;width:26%;filter:drop-shadow(0 8px 8px #000d)}
+.mhand{position:absolute;width:13%;filter:drop-shadow(0 6px 6px #000c)}
+.mshield{position:absolute;left:50%;top:14%;width:34%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,rgba(62,224,138,0) 40%,rgba(62,224,138,.6) 62%,rgba(62,224,138,0) 72%)}
+.mspark{position:absolute;left:50%;top:14%;width:8px;height:8px;border-radius:50%;background:#7dffb8;box-shadow:0 0 8px #3ee08a}
+.mchip{position:absolute;width:10px;height:10px;border-radius:2px}
+.mtx{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center}
 .icar{touch-action:pan-x}.icc{-webkit-user-select:none;user-select:none}.icc img{-webkit-user-drag:none}
 .icc.drag .kc{transition:none}.icc.inew .kc{animation:inew .6s both}
 @keyframes inew{0%{transform:rotateY(90deg) translateY(-24px)}100%{transform:none}}
@@ -2091,6 +2139,8 @@ const dealTxt=(dl,full)=>{ if(!dl) return ""; const o=[]; if(dl.m) o.push(an(dl.
   if(dl.r) o.push(full&&dl.got?"من الكيس: "+cnames(dl.got):"كرت عشوائي من الكيس"+(dl.r>1?" × "+an(dl.r):""));
   if(dl.p) o.push("وعد"); return o.join(" + ")||"بدون شي"; };
 function iToast(){ const ev=(iD().ev||[]).filter(e=>Date.now()-e.at<9000); return ev.length?`<div class="itoast">${esc(ev[ev.length-1].t)}</div>`:"" }
+// رأس اللعبة: بدل كلمة «التفتيش» نعرض مين المفتش
+function iHead(me,t){ const d=iD(), I=d.ins; return `<div class="gmh ihd">${joinOnly?"":`<button class="gmx" data-g="close" aria-label="إغلاق">✕</button>`}${t?`<div class="iht"><b>${t}</b></div>`:""}<span class="ich">${iava(I,30)}<span>🔎 ${me===I?"<b>إنت المفتش</b>":"المفتش: <b>"+esc(nm(I))+"</b>"}</span></span></div>`; }
 function iHud(me){ const d=iD(), K=(g.cfg||{}).k||2, tot=(d.ord||[]).length*K, L=local();
   const sw=L.length>1?`<div class="gchips">${L.map(p=>`<button class="gpk ${p.id===me?"on":""}" data-g="ilp" data-x="${p.id}">${esc(p.n)}</button>`).join("")}</div>`:"";
   return `${sw}<div class="ihud"><span>${iava(me,30)} <b>${esc(nm(me))}</b></span><span>💰 <b>${an(d.m[me]||0)}</b></span><span>الجولة ${an((d.ri||0)+1)}/${an(tot)}</span><button class="glnk" data-g="ivw">البسطات ›</button></div>${iToast()}`; }
@@ -2108,38 +2158,49 @@ function iCar(h,hide,mark){ const nw=ui.inew&&ui.inew.k===(iMe()||{}).id+":"+iD(
   const it=[...h].map((c,i)=>hide.includes(i)?"":`<button class="icc ${i===nw?"inew":""}" data-g="icar" data-x="${i}">${kc(c,14.4,mark.includes(i)?"thr":"")}</button>`).join("");
   return `<div class="icar" data-sk="icar">${it||`<small class="gs" style="flex:1;text-align:center">ما باقي كروت في يدك</small>`}</div>`; }
 function iCarInit(){ const c=el&&el.querySelector(".icar"); if(!c) return;
+  if(c.closest(".ifit")){ const H=c.clientHeight, sz=Math.max(7,Math.min(12.4,(H-12)/14.56)); c.style.setProperty("--cw",Math.round(10.4*sz)+"px"); c.querySelectorAll(".kc").forEach(k=>k.style.setProperty("--s",sz+"px")); }
   const f=()=>{ const it=[...c.querySelectorAll(".icc")]; if(!it.length) return; const r=c.getBoundingClientRect(), cx=r.left+r.width/2; let b=it[0], bd=1e9;
     it.forEach(m=>{ const q=m.getBoundingClientRect(), z=Math.abs(q.left+q.width/2-cx); if(z<bd){ bd=z; b=m; } }); it.forEach(m=>m.classList.toggle("cur",m===b)); };
   c.addEventListener("scroll",()=>requestAnimationFrame(f),{passive:true}); f();
-  // اسحب الكرت اللي في النص: فوق = للكيس، تحت = بدّل
-  let dg=null; c.addEventListener("dragstart",e=>e.preventDefault());
-  c.addEventListener("pointerdown",e=>{ const b=e.target.closest(".icc.cur"); dg=b?{b,x:e.clientX,y:e.clientY,dy:0,v:0,id:e.pointerId}:null; });
-  c.addEventListener("pointermove",e=>{ if(!dg) return; const dx=e.clientX-dg.x, dy=e.clientY-dg.y;
-    if(!dg.v){ if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)*1.3){ dg.v=1; dg.b.classList.add("drag"); try{ dg.b.setPointerCapture(dg.id) }catch(_){} } else if(Math.abs(dx)>12){ dg=null; return; } else return; }
-    dg.dy=dy; const k=dg.b.querySelector(".kc"); k.style.transform=`translateY(${dy}px) rotate(${dy/25}deg)`; k.style.opacity=String(1-Math.min(.5,Math.abs(dy)/400)); });
-  const end=()=>{ if(!dg) return; const {b,dy,v}=dg; dg=null; if(!v) return; ui.idragT=Date.now(); b.classList.remove("drag"); const k=b.querySelector(".kc"), x=b.dataset.x;
-    const fly=(t,a)=>{ k.style.transition="transform .25s ease-in,opacity .25s"; k.style.transform=t; k.style.opacity="0"; setTimeout(()=>iClick(a,x),220); };
-    if(dy<-70) fly("translateY(-260px) scale(.3)","iup"); else if(dy>70) fly("translateY(260px) rotate(25deg)","idn"); else { k.style.transform=""; k.style.opacity=""; } };
-  c.addEventListener("pointerup",end); c.addEventListener("pointercancel",end); }
+  // اسحب الكرت اللي في النص: فوق = للكيس، تحت = بدّل (يحسب سرعة الرمية)
+  let dg=null; const K=b=>b.querySelector(".kc");
+  const st=(x,y,t)=>{ const b=t&&t.closest&&t.closest(".icc.cur"); if(!b){ dg=null; return; } dg={b,x,y,dy:0,v:0,ly:y,lt:performance.now(),vy:0,n:0}; const k=K(b); k.style.transition="transform .12s"; k.style.transform="scale(1.04)"; };
+  const mv=(x,y,e)=>{ if(!dg) return; const dx=x-dg.x, dy=y-dg.y, k=K(dg.b);
+    if(!dg.v){ if(Math.abs(dx)<6&&Math.abs(dy)<6) return; if(Math.abs(dy)>=Math.abs(dx)*.8){ dg.v=1; dg.b.classList.add("drag"); k.style.transition="none"; c.style.overflowX="hidden"; } else { k.style.transform=""; dg=null; return; } }
+    if(e&&e.cancelable) e.preventDefault();
+    const now=performance.now(), iv=(y-dg.ly)/Math.max(1,now-dg.lt); dg.vy=dg.n++?.5*dg.vy+.5*iv:iv; dg.ly=y; dg.lt=now; dg.dy=dy;
+    k.style.transform=`translateY(${dy}px) rotate(${dy/28}deg) scale(${1.06-Math.min(1,Math.abs(dy)/160)*.12})`; dg.b.dataset.dir=dy<-40?"up":dy>40?"dn":""; };
+  const end=()=>{ if(!dg) return; const {b,dy,v,vy}=dg; dg=null; const k=K(b); c.style.overflowX="";
+    if(!v){ k.style.transition="transform .15s"; k.style.transform=""; return; }
+    ui.idragT=Date.now(); b.classList.remove("drag"); delete b.dataset.dir; const x=b.dataset.x;
+    const up=dy<-45||(dy<-16&&vy<-.2), dn=dy>45||(dy>16&&vy>.2);
+    const fly=(t,a)=>{ k.style.transition="transform .22s cubic-bezier(.4,0,1,1),opacity .22s"; k.style.transform=t; k.style.opacity="0"; setTimeout(()=>iClick(a,x),200); };
+    if(up) fly("translateY(-280px) scale(.3)","iup"); else if(dn) fly("translateY(280px) rotate(25deg)","idn"); else { k.style.transition="transform .3s cubic-bezier(.3,1.5,.5,1)"; k.style.transform=""; } };
+  c.addEventListener("touchstart",e=>{ const t=e.touches[0]; st(t.clientX,t.clientY,e.target); },{passive:true});
+  c.addEventListener("touchmove",e=>{ const t=e.touches[0]; mv(t.clientX,t.clientY,e); },{passive:false});
+  c.addEventListener("touchend",end); c.addEventListener("touchcancel",end);
+  c.addEventListener("pointerdown",e=>{ if(e.pointerType==="mouse"){ st(e.clientX,e.clientY,e.target); try{ c.setPointerCapture(e.pointerId) }catch(_){} } });
+  c.addEventListener("pointermove",e=>{ if(e.pointerType==="mouse") mv(e.clientX,e.clientY,e); });
+  c.addEventListener("pointerup",e=>{ if(e.pointerType==="mouse") end(); });
+  c.addEventListener("dragstart",e=>e.preventDefault()); }
 function iSelFix(me){ const k=me+":"+iD().ri; if(ui.iselK!==k){ ui.iselK=k; ui.isel=[]; ui.ithr=[]; ui.idc=""; ui.idcM=0; } }
-function vIPrepM(me){ const d=iD(), h=d.h[me]||"", H=head("التفتيش","المفتش: "+esc(nm(d.ins))); iSelFix(me);
+function vIPrepM(me){ const d=iD(), h=d.h[me]||"", H=iHead(me); iSelFix(me);
   if(d.dn[me]){ const M=iMerD(d), w=M.filter(p=>!d.dn[p]);
     return `${H}${iHud(me)}${center(`<img class="isack" src="ins_sack.webp" alt=""><h3>كيسك جاهز</h3><small class="gs">صرّحت: <b class="gold">${IC[d.dc[me]].n} × ${an((d.b[me]||"").length)}</b></small>
     <div class="ihand">${[...(d.b[me]||"")].map(c=>kc(c,4.6)).join("")}</div><small class="gs">${w.length?"ننتظر: "+names(w):"يبدأ التفاوض…"}</small>${btn("عدّل الكيس","iub","gl")}${w.length?btn("كمّلوا بدونهم","skip","gl"):""}${errH()}`)}`; }
   const sel=(ui.isel||[]).filter(i=>i<h.length), n=sel.length, left=5-(d.ds[me]||0), dk=(d.dk||"").length;
   if(!ui.idcM){ const cnt={}; sel.forEach(i=>{ if(LEG.includes(h[i])) cnt[h[i]]=(cnt[h[i]]||0)+1; }); const b=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]; ui.idc=b?b[0]:(n?"k":""); } // التصريح يختار نفسه
   const dc=ui.idc&&LEG.includes(ui.idc)?ui.idc:"", hon=dc&&n&&sel.every(i=>h[i]===dc), canUp=n<5&&sel.length<h.length, canDn=left>0&&dk>0&&sel.length<h.length;
-  return `${H}${iHud(me)}<div class="gmb ipm">
+  return `${H}${iHud(me)}<div class="gmb ipm ifit">
   <div class="isk"><img src="ins_open.webp" alt=""><div class="iin">${sel.map(i=>kbtn(kc(h[i],3.4),"iout",i)).join("")}</div><b class="icnt">${an(n)} / ٥</b></div>
-  <small class="gs" style="text-align:center">${n?"اضغط كرت داخل الكيس يرجع ليدك":"اختار الكروت اللي بتدخل الكيس"}</small>
-  <div class="igl up"><button data-g="iup" ${canUp?"":"disabled"}><span>⬆️</span> اسحب فوق: للكيس</button></div>
+    <div class="igl up"><button data-g="iup" ${canUp?"":"disabled"}><span>⬆️</span> اسحب فوق: للكيس</button></div>
   ${iCar(h,sel,[])}
   <div class="igl dn"><button data-g="idn" ${canDn?"":"disabled"}><span>⬇️</span> اسحب تحت: بدّل · ${dk?(left>0?"باقي "+an(left):"خلصت تبديلاتك"):"خلصت الكومة"}</button></div>
-  <div class="gcard" style="text-align:center"><small>بتقول للمفتش إن فيه:</small><div class="gchips" style="justify-content:center">${[...LEG].map(c=>`<button class="gpk ${dc===c?"on":""}" data-g="idc" data-x="${c}">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
+  <div class="gcard idecl" style="text-align:center"><small>بتقول للمفتش إن فيه:</small><div class="gchips idch">${[...LEG].map(c=>`<button class="gpk idcp ${dc===c?"on":""}" data-g="idc" data-x="${c}"><img src="ins_${c}.webp" alt="">${IC[c].n} × ${an(n||0)}</button>`).join("")}</div>
   ${dc&&n?`<small style="color:${hon?"var(--green)":"#ff8f8f"};font-weight:800">${hon?"✓ صادق — لو فتّشك يدفع لك الغرامة":"✗ كذب — لو فتّشك ينصادر كل كرت مو "+IC[dc].n}</small>`:""}</div>
   ${errH()}${btn("📦 أرسل الكيس للمفتش","isend",n&&dc?"gb":"gb idis")}</div>`; }
 function vIPrepI(me){ const d=iD(), M=iMerD(d);
-  return `${head("التفتيش","🔎 أنت المفتش")}${iHud(me)}${center(`<img class="ibody" style="margin:0 auto" src="${bodyOf(me)}" alt=""><div class="gbig">🔎 أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
+  return `${iHead(me)}${iHud(me)}${center(`<img class="ibody" style="margin:0 auto" src="${bodyOf(me)}" alt=""><div class="gbig">🔎 أنت المفتش</div><small class="gs">التجار يعبّون أكياسهم الحين. بعدها تشوف كل كيس وتصريحه، وتتفاوض.</small>
   <div class="gcard gpl">${M.map(p=>`<div class="gpr"><span class="irow">${iava(p,30)} ${esc(nm(p))}</span><b>${d.dn[p]?"✓ جاهز":"يعبّي…"}</b></div>`).join("")}</div>${btn("كمّلوا بدونهم","skip","gl")}${errH()}`)}`; }
 
 function iOfBox(me,to){ // بناء عرض التاجر أو طلب المفتش
@@ -2152,7 +2213,7 @@ function iOfBox(me,to){ // بناء عرض التاجر أو طلب المفتش
    ${bag?st("🎴 كرت عشوائي من "+(isI?"كيسه":"كيسك"),"ior",O.r,bag):""}
    <button class="gtg ${O.p?"on":""}" data-g="iop"><span><b>🤝 وعد</b><small>${isI?"يمرّر كيسك لما يصير مفتش":"أمرّر كيسه لما أصير المفتش"}</small></span><i></i></button>
    ${btn(isI?"أرسل طلبك لـ"+esc(nm(to)):"أرسل العرض للمفتش",isI?"idms":"iofs","gb",to||"")}</div>`; }
-function vINegM(me){ const d=iD(), I=d.ins, o=d.out[me], dc=d.dc[me], bag=d.b[me]||"", H=head("التفتيش","التفاوض");
+function vINegM(me){ const d=iD(), I=d.ins, o=d.out[me], dc=d.dc[me], bag=d.b[me]||"", H=iHead(me);
   if(o) return `${H}${iHud(me)}${vIOut(me,true)}${center(`<small class="gs">ننتظر المفتش يخلص باقي الأكياس</small>`)}`;
   if(!bag.length&&!o) return `${H}${iHud(me)}${center(`<h3>ما أرسلت كيس هالجولة</h3>`)}`;
   const dm=(d.dm||{})[me], of=(d.of||{})[me], bl=(d.bl||{})[me];
@@ -2163,7 +2224,7 @@ function vINegM(me){ const d=iD(), I=d.ins, o=d.out[me], dc=d.dc[me], bag=d.b[me
   return `${H}${iHud(me)}<div class="gmb">${iTimer()}<div class="ifig"><img class="ibody" style="height:130px" src="${bodyOf(I)}" alt=""><div style="padding-bottom:20px"><b>كيسك عند ${esc(nm(I))}</b><small class="gs">🔎 المفتش هالجولة</small></div></div>
    <div class="gcard" style="text-align:center"><small class="gs">صرّحت: <b class="gold">${IC[dc].n} × ${an(bag.length)}</b></small><div class="ihand">${[...bag].map(c=>kc(c,4.4)).join("")}</div></div>
    ${body}${errH()}</div>`; }
-function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==="none")), H=head("التفتيش","🔎 أنت المفتش");
+function vINegI(me){ const d=iD(), M=iMerD(d).filter(p=>!(d.out[p]&&d.out[p].k==="none")), H=iHead(me);
   const pages=M.map(p=>{ const o=d.out[p], dc=d.dc[p], n=(d.b[p]||"").length||((o&&o.bag)||"").length, of=(d.of||{})[p], dm=(d.dm||{})[p], bl=(d.bl||{})[p], owe=(d.pr||[]).some(x=>x.b===me&&x.t===p);
     let act="";
     if(o) act=vIOut(p,false);
@@ -2194,29 +2255,28 @@ function vIRes(me){ const d=iD(), M=iMerD(d), K=(g.cfg||{}).k||2, P=(d.ord||[]).
   const sg=x=>x>0?"+"+an(x):x<0?"−"+an(-x):an(0);
   const card=p=>{ const o=d.out[p]||{k:"none"}, dc=o.dc?IC[o.dc].n:"", mine=p===cur, x=D[p]||0, n=(o.bag||"").length+((o.deal&&o.deal.got)||"").length;
     const R={lie:["no","انكشف ✗"],hon:["ok","طلع صادق ✓"],free:["pass","مرّ ✓"],time:["pass","مرّ (خلص الوقت)"],deal:["pass","مرّ برشوة 🤝"],none:["","ما أرسل كيس"]}[o.k]||["",""];
-    const shut=`<img class="irsk2" src="ins_sack.webp" alt=""><small class="gs">🔒 الكيس ما انفتح · محد يعرف وش فيه</small>${mine&&o.bag?`<small class="gs">كيسك إنت: ${esc(cnames(o.bag))}</small>`:""}`;
-    const body=o.k==="lie"?`<div class="ihand">${[...o.bag].map(c=>kc(c,5.4,c!==o.dc?"lost":"")).join("")}</div><b class="irl">انصادر ${esc(cnames(o.lost))} · دفع <span style="color:#ff8a95">${an(o.fine)} ريال</span></b>`
-      :o.k==="hon"?`<div class="ihand">${[...o.bag].map(c=>kc(c,5.4)).join("")}</div><b class="irl">المفتش دفع له <span style="color:#8ee0a8">${an(o.fine)} ريال</span></b>`
+    const shut=`<small class="gs irshut"><img class="irsk2" src="ins_sack.webp" alt="">🔒 ما انفتح · محد يعرف وش فيه</small>${mine&&o.bag?`<small class="gs">كيسك إنت: ${esc(cnames(o.bag))}</small>`:""}`;
+    const body=o.k==="lie"?`<div class="ihand">${[...o.bag].map(c=>kc(c,3.6,c!==o.dc?"lost":"")).join("")}</div><b class="irl">انصادر ${esc(cnames(o.lost))} · دفع <span style="color:#ff8a95">${an(o.fine)} ريال</span></b>`
+      :o.k==="hon"?`<div class="ihand">${[...o.bag].map(c=>kc(c,3.6)).join("")}</div><b class="irl">المفتش دفع له <span style="color:#8ee0a8">${an(o.fine)} ريال</span></b>`
       :o.k==="none"?`<small class="gs">ما عبّى كيس هالجولة</small>`:shut+(o.k==="deal"?`<b class="irl">${esc(dealTxt(o.deal,mine||cur===d.ins))}</b>`:"");
-    return `<div class="irc ${o.k==="lie"?"bad":o.k==="hon"?"good":""} ${mine?"me":""}"><div class="irw">${iava(p,40)}<b>${esc(nm(p))}</b>${R[1]?`<span class="irr ${R[0]}">${R[1]}</span>`:""}</div>
+    return `<div class="irc ${o.k==="lie"?"bad":o.k==="hon"?"good":""} ${mine?"me":""}"><div class="irw">${iava(p,30)}<b>${esc(nm(p))}</b>${R[1]?`<span class="irr ${R[0]}">${R[1]}</span>`:""}</div>
       ${o.k!=="none"?`<small class="gs">${o.k==="hon"||o.k==="lie"?"صرّح":"صرّح"}: <b style="color:#fff">${dc} × ${an(n)}</b></small>`:""}${body}<span class="ird ${x>0?"p":x<0?"m":"z"}">${sg(x)}</span></div>`; };
   const oi=x=>P.indexOf(x), after=[...P].sort((a,b)=>(d.m[b]||0)-(d.m[a]||0)||oi(a)-oi(b)), before=[...P].sort((a,b)=>((d.m[b]||0)-(D[b]||0))-((d.m[a]||0)-(D[a]||0))||oi(a)-oi(b));
   const fresh=ui.iresK!==gid+":"+d.ri; // أول مرة تنفتح الشاشة: نحرك الترتيب
   const rows=P.map(p=>{ const bi=before.indexOf(p), ai=after.indexOf(p), mv=bi-ai, x=D[p]||0, m=d.m[p]||0;
-    return `<div class="irb ${p===cur?"me":""}" data-a="${ai}" data-b="${bi}" data-m0="${m-x}" data-m1="${m}" style="transform:translateY(${(fresh?bi:ai)*58}px)"><span class="irk">${an((fresh?bi:ai)+1)}</span>${iava(p,34)}<b>${esc(nm(p))}${p===d.ins?" 🔎":""}</b><span class="irar ${mv>0?"u":mv<0?"d":"s"}">${mv>0?"↑"+an(mv):mv<0?"↓"+an(-mv):"—"}</span><span class="irm">💰 ${an(fresh?m-x:m)}</span></div>`; }).join("");
+    return `<div class="irb ${p===cur?"me":""}" data-a="${ai}" data-b="${bi}" data-m0="${m-x}" data-m1="${m}" style="transform:translateY(${(fresh?bi:ai)*48}px)"><span class="irk">${an((fresh?bi:ai)+1)}</span>${iava(p,34)}<b>${esc(nm(p))}${p===d.ins?" 🔎":""}</b><span class="irar ${mv>0?"u":mv<0?"d":"s"}">${mv>0?"↑"+an(mv):mv<0?"↓"+an(-mv):"—"}</span><span class="irm">💰 ${an(fresh?m-x:m)}</span></div>`; }).join("");
   const L=k=>M.filter(p=>(d.out[p]||{}).k===k||(k==="free"&&(d.out[p]||{}).k==="time")).map(p=>esc(nm(p))).join("، ");
   const aw=[["🤡 انمسك",L("lie")],["😇 صادق والمفتش دفع",L("hon")],["🤝 رشوة الجولة",L("deal")],["🍀 مرّ بسلام",L("free")]].filter(x=>x[1]).map(x=>`<span>${x[0]}: ${x[1]}</span>`).join("");
-  return `${head("التفتيش","ملخص الجولة "+an((d.ri||0)+1)+" من "+an(tot))}${iHud(me)}<div class="gmb irs ${fresh?"fresh":"shown"}">
-   <div class="irow" style="justify-content:center">${iava(d.ins,34)}<b>المفتش: ${esc(nm(d.ins))}</b></div>
+  return `${iHead(me,"ملخص الجولة "+an((d.ri||0)+1)+" من "+an(tot))}<div class="gmb irs ifit ${fresh?"fresh":"shown"}">
    <div class="irsw" data-sk="irsw">${M.map(card).join("")}</div>
-   ${M.length>1?`<small class="gs" style="text-align:center">اسحب يمين ويسار بين الأكياس</small>`:""}
-   <div class="irsec">🏆 الترتيب</div><div class="irbd" style="height:${P.length*58}px">${rows}</div>
+   ${M.length>1?`<div class="irdots">${M.map(()=>"<i></i>").join("")}</div>`:""}
+   <div class="irsec">🏆 الترتيب</div><div class="irbd" style="height:${P.length*48}px">${rows}</div>
    ${aw?`<div class="iraw">${aw}</div>`:""}
    ${d.dry?`<small class="gs" style="text-align:center">خلصت الكومة — هذي آخر جولة</small>`:""}
    ${btn(last?"النتيجة النهائية 🏆":"الجولة الجاية ←","next")}${errH()}</div>`; }
 function iResAnim(){ const b=el&&el.querySelector(".irs.fresh"); if(!b) return; const d=iD(); ui.iresK=gid+":"+d.ri; b.classList.remove("fresh");
   setTimeout(()=>{ if(!b.isConnected) return; b.classList.add("shown");
-    b.querySelectorAll(".irb").forEach(r=>{ const ai=+r.dataset.a, m0=+r.dataset.m0, m1=+r.dataset.m1, e=r.querySelector(".irm"), k=r.querySelector(".irk"); r.style.transform=`translateY(${ai*58}px)`; k.textContent=an(ai+1);
+    b.querySelectorAll(".irb").forEach(r=>{ const ai=+r.dataset.a, m0=+r.dataset.m0, m1=+r.dataset.m1, e=r.querySelector(".irm"), k=r.querySelector(".irk"); r.style.transform=`translateY(${ai*48}px)`; k.textContent=an(ai+1);
       if(m0!==m1){ r.animate([{background:m1>m0?"rgba(62,224,138,.28)":"rgba(255,90,106,.28)"},{background:"rgba(255,255,255,.05)"}],{duration:1400}); const t0=performance.now(); const f=t=>{ const q=Math.min(1,(t-t0)/900); e.textContent="💰 "+an(Math.round(m0+(m1-m0)*q)); if(q<1) requestAnimationFrame(f); }; requestAnimationFrame(f); } }); },900); }
 function vInsp(){ if(ui.ivw) return ibg("ins_rug.webp")+vIStands(); const p=iMe(); if(!p) return vJoin(); const d=iD(), L=local(); const BG=ibg(p.id===d.ins&&d.ph!=="res"?"ins_counter.webp":"ins_rug.webp");
   if(L.length>1&&ui.rev!==p.id) return hand(p,false,"التفتيش","الشاشة مخفية");
@@ -2505,6 +2565,52 @@ function vLies(){ const tag="السؤال "+an(g.r)+" من "+an(QN), H=head(INFO
   return `${H}<div class="gmb">${qc}<div class="gcard" style="text-align:center"><small class="gs">الجواب الصح</small><h3 class="gold">${ans}</h3></div><div class="gcard gpl">${line("A",(a.A&&a.A.s)?pts.A>0:!!ok.A,pts.A||0)}${line("B",(a.B&&a.B.s)?pts.B>0:!!ok.B,pts.B||0)}</div>${tsc}
   ${isHost()?btn(g.r>=QN?"النتيجة النهائية":"السؤال "+an(g.r+1),"next")+`<button class="glnk" data-g="ljedit">✎ عدّل الحكم</button>`:waitHost()}</div>`; }
 
+
+// ---------- المافيا: الطاولة من فوق (ثيم التحقيق) ----------
+const MIMG={day:"maf_day.jpg",night:"maf_night.jpg",cand:"maf_cand.jpg"};
+function mTable(img,o){ o=o||{}; const d=g.d||{}, al=d.al||{}, ids=pls().map(p=>p.id), N=ids.length, me=o.me;
+  const plates=ids.map((id,i)=>{ const a=-Math.PI/2+i*2*Math.PI/N, x=50+36*Math.cos(a), y=50+36*Math.sin(a), can=o.pick&&o.pick.includes(id), dead=!al[id], on=o.sel===id;
+    const cls=`mtp ${dead?"dead":""} ${can?"can":o.pick?"dim":""} ${on?"on":""} ${id===me?"me":""} ${(o.mark||{})[id]||""}`;
+    const inner=`<b>${esc(nm(id))}${id===me?" ⭐":""}</b>${(o.cnt||{})[id]?`<i class="mvc">${o.cnt[id]}</i>`:""}`;
+    return can?`<button class="${cls}" data-g="${o.act}" data-x="${o.pid}:${id}" data-id="${id}" style="left:${x}%;top:${y}%">${inner}</button>`:`<div class="${cls}" data-id="${id}" style="left:${x}%;top:${y}%">${inner}</div>`; }).join("");
+  return `<div class="mtab" style="background-image:url(${img})"><div class="mfx"></div>${plates}</div>`; }
+const mbg=img=>`<div class="ibg mibg" style="background-image:url(${img})"></div>`;
+// الحركات: نقفل الرسم لين تخلص عشان ما تنمسح
+function mLock(ms){ ui.mlock=Date.now()+ms; setTimeout(()=>{ if(ui.mlock&&Date.now()>=ui.mlock-30){ ui.mlock=0; paint(true); } },ms+20); }
+function mAnim(){ if(!g||GT()!=="mafia"||!el) return; const d=g.d||{}, tb=el.querySelector(".mtab"); if(!tb) return;
+  const key=gid+":"+g.ph+":"+(d.n||0)+":"+(ui.det&&ui.det.p||""); if(ui.mak===key) return; ui.mak=key;
+  const fx=tb.querySelector(".mfx"), P=id=>tb.querySelector(`.mtp[data-id="${id}"]`), A=(e,k,op)=>e.animate(k,{duration:500,easing:"cubic-bezier(.2,1.3,.4,1)",fill:"both",...op});
+  const C=e=>{ const r=e.getBoundingClientRect(), b=tb.getBoundingClientRect(); return [r.left-b.left+r.width/2, r.top-b.top+r.height/2]; };
+  const shake=(n=6,dd=320)=>tb.animate([{translate:"0 0"},{translate:`-${n}px ${n/2}px`},{translate:`${n}px -${n/2}px`},{translate:"0 0"}],{duration:dd/3,iterations:3});
+  const W=tb.clientWidth, cx=W/2, cy=W/2;
+  if(g.ph==="day"&&(d.kill||d.saved)){ const tgt=d.kill?P(d.kill):null; if(tgt) tgt.classList.remove("dead"); mLock(3600);
+    const k=document.createElement("img"); k.className="mknife"; k.src="maf_knife.webp"; fx.appendChild(k);
+    A(k,[{scale:0,opacity:0},{scale:1,opacity:1}],{duration:450});
+    k.animate([{rotate:"-12deg"},{rotate:"12deg"}],{duration:70,iterations:14,direction:"alternate",composite:"add",delay:450}); setTimeout(()=>shake(3,900),450);
+    setTimeout(()=>{ if(d.kill&&tgt){ const [vx,vy]=C(tgt), ang=Math.atan2(vy-cy,vx-cx)*180/Math.PI+90;
+        A(k,[{transform:"rotate(0deg)"},{transform:`rotate(${ang}deg)`,offset:.35},{transform:`translate(${(vx-cx)*.86}px,${(vy-cy)*.86}px) rotate(${ang}deg) scale(.75)`}],{duration:520,easing:"cubic-bezier(.6,0,.9,.6)"});
+        setTimeout(()=>{ shake(10,380); tgt.classList.add("dead"); A(tgt,[{scale:1.25},{scale:1}],{duration:300});
+          for(let i=0;i<12;i++){ const c=document.createElement("i"); c.className="mchip"; c.style.cssText=`left:${vx}px;top:${vy}px;background:${i%2?"#d8ab45":"#7a1414"}`; fx.appendChild(c); const a=Math.random()*6.28,r=40+Math.random()*60; c.animate([{transform:"none",opacity:1},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) rotate(${r*6}deg)`,opacity:0}],{duration:750,easing:"ease-out",fill:"forwards"}); } },500); }
+      else { const ang=-30; const sh=document.createElement("i"); sh.className="mshield"; fx.appendChild(sh);
+        A(k,[{transform:"rotate(0deg)"},{transform:`translate(0,${-W*.18}px) rotate(${ang}deg) scale(.8)`}],{duration:420,easing:"cubic-bezier(.6,0,.9,.6)"}); A(sh,[{opacity:0,scale:.3},{opacity:1,scale:1}],{duration:400});
+        setTimeout(()=>{ shake(4,240); A(k,[{transform:`translate(0,${-W*.18}px) rotate(${ang}deg) scale(.8)`},{transform:`translate(${W*.1}px,${-W*.45}px) rotate(${ang+540}deg) scale(.3)`,opacity:0}],{duration:700,easing:"cubic-bezier(.2,.8,.4,1)"});
+          for(let i=0;i<14;i++){ const p=document.createElement("i"); p.className="mspark"; fx.appendChild(p); const a=Math.random()*6.28,r=30+Math.random()*60; p.animate([{transform:"scale(1)",opacity:1},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r-30}px) scale(.2)`,opacity:0}],{duration:900+Math.random()*400,easing:"ease-out",fill:"forwards"}); } },430); } },1500);
+    return; }
+  if(g.ph==="out"){ const v=g.v||{}, voters=pls().map(p=>p.id).filter(p=>v[p]&&v[p]!=="-"&&P(p)&&P(v[p])); if(!voters.length) return; const cnt={}; mLock(voters.length*1200+900);
+    tb.querySelectorAll(".mvc").forEach(x=>x.remove()); if(d.out&&P(d.out)) P(d.out).classList.remove("dead");
+    voters.forEach((a,i)=>setTimeout(()=>{ const ta=P(a), tb2=P(v[a]); if(!ta||!tb2) return; const [ax,ay]=C(ta),[bx,by]=C(tb2), ang=Math.atan2(by-ay,bx-ax)*180/Math.PI+90;
+      A(ta,[{scale:1},{scale:1.12},{scale:1}],{duration:400});
+      const h=document.createElement("img"); h.className="mhand"; h.src="maf_hand.webp"; h.style.left=ax+"px"; h.style.top=ay+"px"; fx.appendChild(h);
+      h.animate([{transform:`translate(-50%,-100%) rotate(${ang}deg) translateY(30%) scale(.4)`,opacity:0,transformOrigin:"50% 100%"},{transform:`translate(-50%,-100%) rotate(${ang}deg) translateY(-6%) scale(1.03)`,opacity:1,offset:.7},{transform:`translate(-50%,-100%) rotate(${ang}deg) scale(1)`,opacity:1}],{duration:520,easing:"cubic-bezier(.3,1.2,.5,1)",fill:"forwards"});
+      setTimeout(()=>{ A(tb2,[{scale:1},{scale:1.22,offset:.4},{scale:1.22,offset:.8},{scale:1}],{duration:800,easing:"ease-in-out"}); cnt[v[a]]=(cnt[v[a]]||0)+1; let c=tb2.querySelector(".mvc"); if(!c){ c=document.createElement("i"); c.className="mvc"; tb2.appendChild(c); } c.textContent=String(cnt[v[a]]); A(c,[{scale:1.8},{scale:1}],{duration:300}); },480);
+      setTimeout(()=>h.animate([{opacity:1},{opacity:0}],{duration:300,fill:"forwards"}),1000); },i*1200));
+    setTimeout(()=>{ if(d.out&&P(d.out)){ shake(6,360); P(d.out).classList.add("dead"); A(P(d.out),[{scale:1.3},{scale:1}],{duration:400}); } },voters.length*1200+200);
+    return; }
+  if(ui.det&&g.ph==="night"){ const t=P(ui.det.t), isM=!!ui.det.m; if(!t) return; mLock(2600); const [vx,vy]=C(t);
+    const l=document.createElement("img"); l.className="mlens"; l.src="maf_lens.webp"; fx.appendChild(l);
+    A(l,[{transform:"translate(-50%,-50%) scale(.3)",opacity:0},{transform:"translate(-50%,-50%) scale(1)",opacity:1}],{duration:400,delay:500});
+    setTimeout(()=>A(l,[{transform:"translate(-50%,-50%)"},{transform:`translate(calc(-50% + ${vx-cx}px),calc(-50% + ${vy-cy}px)) rotate(-12deg)`}],{duration:900,easing:"cubic-bezier(.5,0,.3,1)"}),950);
+    setTimeout(()=>{ t.classList.add(isM?"red":"ok"); A(t,[{scale:1},{scale:1.2}],{duration:400}); },2100); return; } }
 function vMafia(){ const d=g.d||{}, ro=d.ro||{}, al=d.al||{}, rev=(g.cfg||{}).rev, H=s=>head(INFO.mafia.n,s), A=mAlive(), L=local(), dead=L.filter(p=>!al[p.id]);
   const ghost=L.length&&!L.some(p=>al[p.id])?`<div class="gcard gghost"><b>👻 أنت طلعت من اللعبة</b><small>تفرّج بس، ولا تتكلم ولا تلمّح.</small></div>`:"";
   if(g.ph==="see"){ const P=pending("seen");
@@ -2517,24 +2623,24 @@ function vMafia(){ const d=g.d||{}, ro=d.ro||{}, al=d.al||{}, rev=(g.cfg||{}).re
   if(g.ph==="night"){ const P=pending("a",A), tag="الليلة "+an(d.n||1);
     if(P.length){ const p=P[0], first=local().filter(x=>al[x.id]).length===P.length, h=hand(p,first,"🌙 "+tag,"كل واحد يختار بالسر"); if(h) return h;
       const r=ro[p.id];
-      if(r==="s"&&ui.det&&ui.det.p===p.id){ const t=ui.det.t, isM=ro[t]==="m"; return `${H("🌙 "+tag)}${center(`<small class="gs">نتيجة سؤالك</small><div class="gbig">${esc(nm(t))}</div><h3 class="${isM?"gbad":"gok"}">${isM?"🔪 مافيا":"🙂 مو مافيا"}</h3><small class="gs">احفظها، وخبها عن الباقين</small>${btn("تم، خبها","mdet","gb",p.id)}`)}`; }
+      if(r==="s"&&ui.det&&ui.det.p===p.id){ const t=ui.det.t, isM=ro[t]==="m"; ui.det.m=isM; return `${mbg(MIMG.cand)}${H("🕯️ التحقيق")}<div class="gmb mgm">${mTable(MIMG.cand,{me:p.id})}<div class="gcard" style="text-align:center"><small class="gs">نتيجة سؤالك عن ${esc(nm(t))}</small><h3 class="${isM?"gbad":"gok"}">${isM?"😈 مافيا":"🙂 مو مافيا"}</h3><small class="gs">احفظها، وخبها عن الباقين</small></div>${btn("تم، خبها","mdet","gb",p.id)}</div>`; }
       const opts=r==="m"?A.filter(x=>ro[x]!=="m"):r==="d"?A:A.filter(x=>x!==p.id);
       const q={m:"🔪 مين تقتلون الليلة؟",d:"💉 مين تحمي الليلة؟",s:"🔎 مين تبغى تسأل عنه؟",c:"🤔 مين تشك فيه؟"}[r];
       const sub=r==="m"?(()=>{ const mt=Object.keys(ro).filter(x=>ro[x]==="m"&&x!==p.id&&al[x]); return mt.length?`<small class="gs">معك: ${names(mt)}${mt.map(x=>(g.a||{})[x]?" · "+esc(nm(x))+" اختار "+esc(nm(g.a[x])):"").join("")}</small>`:"" })():r==="c"?`<small class="gs">اختيارك ما يأثر. بس الكل لازم يضغط، عشان محد يعرف دورك من حركتك.</small>`:"";
-      return `${H("🌙 "+tag)}<div class="gmb"><small class="gs" style="text-align:center">${esc(p.n)} · ${RI[r]} ${RN[r]}</small><h3 style="text-align:center">${q}</h3>${sub}<div class="ggrid">${opts.map(x=>btn(esc(nm(x))+(x===p.id?" (أنت)":""),r==="s"?"mpick":"mact","gl",p.id+":"+x)).join("")}</div></div>`; }
+      return `${mbg(MIMG.night)}${H("🌙 "+tag)}<div class="gmb mgm"><small class="gs" style="text-align:center">${esc(p.n)} · ${RI[r]} ${RN[r]}</small><h3 style="text-align:center">${q}</h3>${sub}${mTable(MIMG.night,{pick:opts,act:r==="s"?"mpick":"mact",pid:p.id,me:p.id})}<small class="gs" style="text-align:center">اضغط على اسم اللي تختاره</small></div>`; }
     const s=A.filter(p=>(g.a||{})[p]).length;
-    return `${H("🌙 "+tag)}${center(`${ghost}<div class="gmoon">🌙</div><h3>الليل… الكل يختار بالسر</h3><small class="gs">اختار ${an(s)} من ${an(A.length)}</small>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
+    return `${mbg(MIMG.night)}${H("🌙 "+tag)}<div class="gmb mgm">${ghost}<h3 style="text-align:center">الليل… الكل يختار بالسر</h3>${mTable(MIMG.night)}<small class="gs" style="text-align:center">اختار ${an(s)} من ${an(A.length)}</small>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}</div>`; }
   if(g.ph==="day"){ const k=d.kill, txt=k?`<small class="gs">انقتل الليلة</small><div class="gbig">${esc(nm(k))}</div>${rev?`<h3>كان ${RI[ro[k]]} ${RN[ro[k]]}</h3>`:""}`:d.saved?`<h3>المافيا حاولت تقتل…</h3><div class="gbig">💉 الطبيب أنقذه</div><small class="gs">ما مات أحد الليلة</small>`:`<h3>ليلة هادية</h3><small class="gs">ما مات أحد</small>`;
-    return `${H("☀️ طلع الصبح")}${center(`${txt}${ghost}${d.win?`<h3 class="gold">انتهت اللعبة!</h3>`:""}${isHost()?btn(d.win?"النتيجة":"ابدأ النقاش 🗣","next"):waitHost()}`)}`; }
+    return `${mbg(MIMG.day)}${H("☀️ طلع الصبح")}<div class="gmb mgm">${mTable(MIMG.day)}<div class="mtx">${txt}</div>${ghost}${d.win?`<h3 class="gold" style="text-align:center">انتهت اللعبة!</h3>`:""}${isHost()?btn(d.win?"النتيجة":"ابدأ النقاش 🗣","next"):waitHost()}</div>`; }
   if(g.ph==="talk"){ const end=g.t0+((g.cfg||{}).talk||180)*1000;
-    return `${H("🗣 النقاش")}${center(`<div class="gbig" data-end="${end}">${mmss(end-Date.now())}</div><h3>مين المافيا؟ ناقشوا</h3><div class="gcard gpl">${A.map(p=>`<div class="gpr"><span>${esc(nm(p))}</span></div>`).join("")}</div>${ghost}${isHost()?btn("نصوّت الحين","skip"):`<small class="gs">التصويت يبدأ لما يخلص الوقت</small>`}`)}`; }
+    return `${mbg(MIMG.day)}${H("🗣 النقاش")}<div class="gmb mgm"><div class="gbig" style="text-align:center" data-end="${end}">${mmss(end-Date.now())}</div><h3 style="text-align:center">مين المافيا؟ ناقشوا</h3>${mTable(MIMG.day)}${ghost}${isHost()?btn("نصوّت الحين","skip"):`<small class="gs" style="text-align:center">التصويت يبدأ لما يخلص الوقت</small>`}</div>`; }
   if(g.ph==="vote"){ const P=pending("v",A);
-    if(P.length){ const p=P[0]; return `${H("🗳 التصويت")}<div class="gmb"><h3 style="text-align:center">${esc(p.n)}، مين تطلّعون؟</h3><div class="ggrid">${A.filter(x=>x!==p.id).map(x=>btn(esc(nm(x)),"mvote","gl",p.id+":"+x)).join("")}</div>${btn("ما أصوت على أحد","mvote","gl",p.id+":-")}</div>`; }
+    if(P.length){ const p=P[0]; return `${mbg(MIMG.day)}${H("🗳 التصويت")}<div class="gmb mgm"><h3 style="text-align:center">${esc(p.n)}، مين تطلّعون؟</h3>${mTable(MIMG.day,{pick:A.filter(x=>x!==p.id),act:"mvote",pid:p.id,me:p.id})}<small class="gs" style="text-align:center">اضغط على اسم اللي تصوّت عليه</small>${btn("ما أصوت على أحد","mvote","gl",p.id+":-")}</div>`; }
     const s=A.filter(p=>(g.v||{})[p]).length;
-    return `${H("🗳 التصويت")}${center(`${ghost}<h3>ننتظر الباقين يصوتون</h3><small class="gs">صوّت ${an(s)} من ${an(A.length)}</small><small class="gs">${names(A.filter(p=>!(g.v||{})[p]))}</small>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}`)}`; }
+    return `${mbg(MIMG.day)}${H("🗳 التصويت")}<div class="gmb mgm">${ghost}<h3 style="text-align:center">ننتظر الباقين يصوتون</h3>${mTable(MIMG.day)}<small class="gs" style="text-align:center">صوّت ${an(s)} من ${an(A.length)} · ${names(A.filter(p=>!(g.v||{})[p]))}</small>${isHost()?btn("كمّلوا بدونهم","skip","gl"):""}</div>`; }
   const o=d.out, vc=d.vc||{};
   const votes=Object.keys(vc).sort((a,b)=>vc[b]-vc[a]).map(k=>(k==="-"?"ما أحد":esc(nm(k)))+" "+an(vc[k])).join("، ");
-  return `${H("🗳 نتيجة التصويت")}${center(`${o?`<small class="gs">طلع</small><div class="gbig">${esc(nm(o))}</div>${rev?`<h3>كان ${RI[ro[o]]} ${RN[ro[o]]}</h3>`:""}`:`<h3>ما اتفقتوا</h3><small class="gs">محد طلع هالمرة</small>`}<small class="gs">الأصوات: ${votes||"ما أحد صوّت"}</small>${ghost}${d.win?`<h3 class="gold">انتهت اللعبة!</h3>`:""}${isHost()?btn(d.win?"النتيجة":"الليل الجاي 🌙","next"):waitHost()}`)}`; }
+  return `${mbg(MIMG.day)}${H("🗳 نتيجة التصويت")}<div class="gmb mgm">${mTable(MIMG.day,{cnt:Object.fromEntries(Object.entries(vc).filter(([k])=>k!=="-"))})}<div class="mtx">${o?`<small class="gs">طلع</small><div class="gbig">${esc(nm(o))}</div>${rev?`<h3>كان ${RI[ro[o]]} ${RN[ro[o]]}</h3>`:""}`:`<h3>ما اتفقتوا</h3><small class="gs">محد طلع هالمرة</small>`}<small class="gs">الأصوات: ${votes||"ما أحد صوّت"}</small></div>${ghost}${d.win?`<h3 class="gold" style="text-align:center">انتهت اللعبة!</h3>`:""}${isHost()?btn(d.win?"النتيجة":"الليل الجاي 🌙","next"):waitHost()}</div>`; }
 
 function vEnd(){ if(GT()==="insp") return vIEnd(); const t=GT(), again=(isHost()?btn("لعبة جديدة","again","gl"):"")+(joinOnly?"":btn("ألعاب ثانية","fresh","gl"));
   if(t==="lies"){ const sc=g.sc||{}, a=sc.A||0, b=sc.B||0, W=a===b?"تعادل!":TN[a>b?"A":"B"];
@@ -2545,7 +2651,7 @@ function vEnd(){ if(GT()==="insp") return vIEnd(); const t=GT(), again=(isHost()
     <div class="gcard gpl">${pls().map(p=>`<div class="gpr"><span>${esc(p.n)}${al[p.id]?"":" <i>· طلع</i>"}</span><b>${RI[ro[p.id]]||""} ${RN[ro[p.id]]||""}</b></div>`).join("")}</div>${again}</div>`; }
   const P=pls().map(p=>({...p,s:(g.sc||{})[p.id]||0})).sort((a,b)=>b.s-a.s), top=P[0]?P[0].s:0, W=P.filter(p=>p.s===top).map(p=>esc(p.n)).join(" و");
   return `${head("خلصت اللعبة")}<div class="gmb"><div class="gcard" style="text-align:center"><small class="gs">الفايز</small><div class="gbig">🏆 ${W}</div></div>${board()}${again}</div>`; }
-function paint(force){ if(!el||el.hidden) return; const ae=document.activeElement; if(!force&&ae&&ae.tagName==="INPUT"&&el.contains(ae)) return; let h="";
+function paint(force){ if(!el||el.hidden) return; if(!force&&ui.mlock&&Date.now()<ui.mlock) return; const ae=document.activeElement; if(!force&&ae&&ae.tagName==="INPUT"&&el.contains(ae)) return; let h="";
   if(ui.v==="gone"||(gid&&!g&&ui.v!=="wait")) h=`${head("ألعاب الجلسة")}${center(`<h3>اللعبة انتهت</h3><small class="gs">الباركود قديم أو الجلسة انقفلت.</small>${joinOnly?"":btn("ابدأ لعبة جديدة","fresh")}`)}`;
   else if(!gid) h=ui.v==="set"?vSet():ui.v==="iov"?vIOv():vPick();
   else if(!g) h=center(`<small class="gs">لحظة…</small>`);
@@ -2555,7 +2661,7 @@ function paint(force){ if(!el||el.hidden) return; const ae=document.activeElemen
   else if(g.st==="end") h=vEnd();
   else { const t=GT(); h=t==="five"?vFive():t==="lies"?vLies():t==="mafia"?vMafia():t==="insp"?vInsp():vBrra(); }
   const keep={}, sk={}; el.querySelectorAll("input[id]").forEach(i=>keep[i.id]=i.value); el.querySelectorAll("[data-sk]").forEach(e=>sk[e.dataset.sk]=e.scrollLeft);
-  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} try{ iCarInit() }catch(e){} try{ iRevCheck() }catch(e){} try{ iResAnim() }catch(e){} }
+  el.innerHTML=`<div class="gmw g-${gid?GT():"hub"}">${h}</div>`; Object.entries(keep).forEach(([id,v])=>{ const i=el.querySelector("#"+id); if(i&&v!=null) i.value=v; }); Object.entries(sk).forEach(([k,v])=>{ const e=el.querySelector(`[data-sk="${k}"]`); if(e) e.scrollLeft=v; }); try{ iMaybeIntro() }catch(e){} try{ iCarInit() }catch(e){} try{ iRevCheck() }catch(e){} try{ mAnim() }catch(e){} try{ iResAnim() }catch(e){} }
 async function onClick(e){ const b=e.target.closest("[data-g]"); if(!b) return; const a=b.dataset.g, x=b.dataset.x; ui.err=""; const ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&el.contains(ae)&&a!=="lans") ae.blur();
   if(a==="close") return hide();
   if(a==="hf"){ ui.hf=x; return paint(); } if(a==="set"){ ui.v=x==="insp"?"iov":"set"; ui.gt=x; return paint(); } if(a==="iovgo"){ ui.v="set"; return paint(); } if(a==="pick"){ ui.v="pick"; return paint(); }
