@@ -117,6 +117,8 @@ h3.cat{font-size:14px;font-weight:600;margin:0;color:var(--muted);border-block-e
 select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px;min-height:48px;min-width:0}
 .set .row.item{flex-wrap:wrap;padding-block-end:8px;border-block-end:1px solid var(--line)}
 .set .row.item .nm{flex:1 1 150px}
+.fst{font-size:17px;filter:grayscale(1);opacity:.55}.fst.on{background:#f3c969;filter:none;opacity:1;box-shadow:0 0 0 3px #f3c96955}
+.fth{display:flex;justify-content:space-between;align-items:center}.ftc{font-size:13px;font-weight:700;background:var(--gold-bg);color:var(--gold);padding:2px 12px;border-radius:99px}
 .set .row.item select{flex:1 1 130px}
 .wait{display:flex;flex-direction:column;gap:8px}
 .wrow{display:flex;align-items:center;gap:10px;background:var(--red-bg);border-radius:12px;padding:8px 10px 8px 8px}
@@ -3006,11 +3008,13 @@ function settingsHtml(){
     <div class="row"><label for="c-count">عدد الجلسات</label><input class="pr num" id="c-count" data-f="count" inputmode="numeric" value="${esc(d.count)}"></div>
   </div>
   ${P()?`<div class="set"><div class="row"><label>إعلان الماتشا عند طلب الزبون</label><button class="${cfg.promo&&cfg.promo.on?"primary":"ghost"}" data-act="promo">${cfg.promo&&cfg.promo.on?"شغّال":"طافي"}</button></div></div>`:""}
-  <h2>الأصناف</h2>
+  <h2 class="fth">الأصناف <span class="ftc">⭐ ${d.items.filter(i=>i.feat).length} من ${FEATMAX}</span></h2>
+  <p class="empty" style="font-size:13.5px">اضغط ⭐ جنب الصنف عشان يطلع في قسم «مميز» عند الزباين. الحد ${FEATMAX} أصناف.</p>
   <div class="set">${d.items.map((it,i)=>`<div class="row item">
     <input class="nm" id="i-n-${i}" data-i="${i}" data-k="name" placeholder="اسم الصنف" aria-label="اسم الصنف" value="${esc(it.name)}">
     <input class="pr num" id="i-p-${i}" data-i="${i}" data-k="price" inputmode="decimal" placeholder="السعر" aria-label="السعر" value="${esc(it.price)}">
     <select id="i-c-${i}" data-i="${i}" data-k="cat" aria-label="القسم">${CATS.map(([k,t])=>`<option value="${k}" ${itemCat(it)===k?"selected":""}>${t}</option>`).join("")}</select>
+    <button class="close fst ${it.feat?"on":""}" data-act="featitem" data-i="${i}" aria-label="مميز" aria-pressed="${!!it.feat}">⭐</button>
     <button class="close" data-act="rmitem" data-i="${i}" aria-label="حذف الصنف">×</button></div>`).join("")}
     <button class="ghost" data-act="additem">+ صنف جديد</button>
   </div>
@@ -3326,10 +3330,12 @@ document.addEventListener("click",e=>{
   if(a==="promo"){ if(!P()) return; const on=!(cfg.promo&&cfg.promo.on); return run("cfg",async()=>{await db.doc("config/menu").update({promo:{on}}); cfg.promo={on}; renderSheet(); toast(on?"الإعلان صار يطلع للزباين":"وقفنا الإعلان")}) }
   if(a==="additem"){draft.items.push({name:"",price:"",cat:"other"});return renderSheet()}
   if(a==="rmitem"){draft.items.splice(+b.dataset.i,1);return renderSheet()}
+  if(a==="featitem"){ const it=draft.items[+b.dataset.i]; if(!it) return; if(!it.feat&&draft.items.filter(x=>x.feat).length>=FEATMAX) return toast("وصلت الحد: "+FEATMAX+" أصناف. شيل نجمة صنف ثاني أول");
+    it.feat=!it.feat; const sc=$("panel").scrollTop, ss=$("sheet").scrollTop; renderSheet(); $("panel").scrollTop=sc; $("sheet").scrollTop=ss; return toast(it.feat?"⭐ "+(it.name||"الصنف")+" صار مميز · اضغط حفظ":(it.name||"الصنف")+" طلع من المميز · اضغط حفظ") }
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
     const out={...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
-      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.off?{off:true}:{})})).filter(i=>i.name)};
+      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.off?{off:true}:{}),...(Array.isArray(i.xoff)&&i.xoff.length?{xoff:i.xoff}:{}),...(i.feat?{feat:true}:{})})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ");logIt("عدّل الأصناف أو الأسعار")});
   }
@@ -3340,7 +3346,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=18; let migrating=false;
+const MIG=19, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3379,6 +3385,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
     if(!items.some(i=>mt.test(i.name)&&/١٥|15/.test(i.name))) items.push({name:"منتو أفغاني ١٥ حبة",price:10,cat:"dw"});
     if(!items.some(i=>mt.test(i.name)&&/[٧7]/.test(i.name))) items.push({name:"منتو أفغاني ٧ حبات",price:5,cat:"dw"}); }
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
+  if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
@@ -3442,7 +3449,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v82";
+const VER="v83";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);

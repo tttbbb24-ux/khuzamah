@@ -1590,7 +1590,8 @@ function payPick(){ if(busy||!db||!sid||ended) return; const T=lang==="en", tot=
 const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/هوت\s*شوك|كوكومون/;
 const oscr={top:0,rows:{}}, mscr={top:0,rows:{}}, oall=new Set(), mall=new Set(); let onudged=false;
 function secsOf(items){ const secs=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length).map(([c,l])=>({k:c[0],t:lang==="en"?c[3]:c[2],l}));
-  const ft=items.map((it,i)=>[it,i]).filter(([it])=>FEAT.test(String(it.name))&&!it.off);
+  const byStar=(Number(menuData&&menuData.mig)||0)>=19; // بعد التحديث: المميز بالنجمة من تطبيق الموظفين
+  const ft=items.map((it,i)=>[it,i]).filter(([it])=>(byStar?!!it.feat:FEAT.test(String(it.name)))&&!it.off).slice(0,6);
   if(ft.length>=2) secs.unshift({k:"feat",t:"⭐ "+L("feat_t"),l:ft,big:1}); return secs; }
 function oCard(it,i,ro){ const ph=photo(it.name), q=ro?0:cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0), nm=esc(nameOf(it.name));
   const inn=`${ph?`<img src="${ph}.webp" alt="" loading="lazy" decoding="async">`:`<i></i>`}${NEWI.test(it.name)&&!it.off?`<mark class="nw">${L("nw_b")}</mark>`:""}${q?`<em class="num">${q}</em>`:""}<span><b>${nm}</b><small>${priceOf(it)}</small></span>`;
