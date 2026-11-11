@@ -474,8 +474,14 @@ html.gmon,html.gmon body{overflow:hidden}
 .gcta>span{font-size:30px}.gcta div{flex:1}.gcta b{display:block;font-size:15.5px}.gcta small{color:var(--muted);font-size:12.5px}
 .gcta button{border:0;border-radius:12px;background:var(--gold);color:#1a0d2e;font:inherit;font-weight:800;font-size:15px;padding:9px 16px}
 .sgseg{display:grid!important;grid-template-columns:repeat(4,1fr)}.sgseg.need .chip{border-color:#ff807799!important}
-.sheet:has(.ob2){background:radial-gradient(70% 230px at 88% 0,#6a41a655,transparent 70%),radial-gradient(60% 190px at 6% 0,#e9a04c2e,transparent 70%),#17100c;border-top-color:#33261c}
-.sheet:has(.ob2) .hd b{font-family:Lalezar,var(--body);font-weight:400;font-size:24px;color:var(--gold)}.sheet:has(.ob2) .hd small{font-family:var(--body)}
+.sheet:has(.ob2),.sheet:has(.opth){background:radial-gradient(70% 230px at 88% 0,#6a41a655,transparent 70%),radial-gradient(60% 190px at 6% 0,#e9a04c2e,transparent 70%),#17100c;border-top-color:#33261c}
+.sheet:has(.ob2) .hd b,.sheet:has(.opth) .hd b{font-family:Lalezar,var(--body);font-weight:400;font-size:24px;color:var(--gold)}.sheet:has(.ob2) .hd small{font-family:var(--body)}
+.sheet:has(.opth) .opth img{height:240px;object-position:50% 46%;border-radius:22px;background:#241912;box-shadow:0 12px 26px #0009;margin-bottom:14px}
+.sheet:has(.opth) .chip{border-color:#e9c77b55;color:#f0e4d2;background:#ffffff08}
+.sheet:has(.opth) .chip.on{background:var(--gold);color:#2a1a05;border-color:var(--gold)}
+.sheet:has(.opth) .qrow button{background:#2a1d14;border:1px solid #e9c77b66;color:var(--gold)}
+.sheet:has(.opth) .ninp{background:#00000040;border-color:#4a382a}.sheet:has(.opth) .ogh{color:var(--gold)}
+.sheet:has(.opth) .qdrow.on{border-color:var(--gold)}
 .ob2{flex:1;min-height:0;overflow-y:auto;position:relative;scrollbar-width:none;overscroll-behavior:contain}.ob2::-webkit-scrollbar{display:none}
 .oc2chips{position:sticky;top:0;z-index:5;display:flex;gap:8px;padding:6px 14px 12px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;background:linear-gradient(#17100cf7 72%,#17100c00)}.oc2chips::-webkit-scrollbar{display:none}
 .oc2chips button{flex:none;font-size:14px;font-weight:700;padding:6px 15px;border-radius:99px;border:1px solid #e9c77b55;color:#d9cbb8}.oc2chips button.on{background:var(--gold);color:#2a1a05;border-color:var(--gold)}
@@ -569,7 +575,7 @@ const EN=[[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*ح
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-const NP=new Set("matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc".split(" ")); // صور الستايل الغامق الجديد
+const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc".split(" ")); // صور الستايل الغامق الجديد
 function photo(n){ const k=photo0(n); return k&&NP.has(k)?"n_"+k:k; }
 function photo0(n){ n=String(n); if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
