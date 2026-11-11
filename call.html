@@ -474,6 +474,31 @@ html.gmon,html.gmon body{overflow:hidden}
 .gcta>span{font-size:30px}.gcta div{flex:1}.gcta b{display:block;font-size:15.5px}.gcta small{color:var(--muted);font-size:12.5px}
 .gcta button{border:0;border-radius:12px;background:var(--gold);color:#1a0d2e;font:inherit;font-weight:800;font-size:15px;padding:9px 16px}
 .sgseg{display:grid!important;grid-template-columns:repeat(4,1fr)}.sgseg.need .chip{border-color:#ff807799!important}
+.sheet:has(.ob2),.sheet:has(.opth){background:radial-gradient(70% 230px at 88% 0,#6a41a655,transparent 70%),radial-gradient(60% 190px at 6% 0,#e9a04c2e,transparent 70%),#17100c;border-top-color:#33261c}
+.sheet:has(.ob2) .hd b,.sheet:has(.opth) .hd b{font-family:Lalezar,var(--body);font-weight:400;font-size:24px;color:var(--gold)}.sheet:has(.ob2) .hd small{font-family:var(--body)}
+.sheet:has(.opth) .opth img{height:240px;object-position:50% 46%;border-radius:22px;background:#241912;box-shadow:0 12px 26px #0009;margin-bottom:14px}
+.sheet:has(.opth) .chip{border-color:#e9c77b55;color:#f0e4d2;background:#ffffff08}
+.sheet:has(.opth) .chip.on{background:var(--gold);color:#2a1a05;border-color:var(--gold)}
+.sheet:has(.opth) .qrow button{background:#2a1d14;border:1px solid #e9c77b66;color:var(--gold)}
+.sheet:has(.opth) .ninp{background:#00000040;border-color:#4a382a}.sheet:has(.opth) .ogh{color:var(--gold)}
+.sheet:has(.opth) .qdrow.on{border-color:var(--gold)}
+.ob2{flex:1;min-height:0;overflow-y:auto;position:relative;scrollbar-width:none;overscroll-behavior:contain}.ob2::-webkit-scrollbar{display:none}
+.oc2chips{position:sticky;top:0;z-index:5;display:flex;gap:8px;padding:6px 14px 12px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;background:linear-gradient(#17100cf7 72%,#17100c00)}.oc2chips::-webkit-scrollbar{display:none}
+.oc2chips button{flex:none;font-size:14px;font-weight:700;padding:6px 15px;border-radius:99px;border:1px solid #e9c77b55;color:#d9cbb8}.oc2chips button.on{background:var(--gold);color:#2a1a05;border-color:var(--gold)}
+.osec{font:400 19px Lalezar,var(--body);color:var(--gold);padding:6px 16px 8px;display:flex;justify-content:space-between;align-items:center}
+.osec button{font:700 12.5px var(--body);color:#2a1a05;background:var(--gold);padding:3px 13px;border-radius:99px}
+.orow{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:0 14px 12px;scroll-snap-type:x proximity;scroll-padding-inline:14px}.orow::-webkit-scrollbar{display:none}
+.ogrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 14px 12px}
+.oc2{flex:0 0 106px;height:140px;border-radius:18px;padding:0;position:relative;overflow:hidden;background:#241912;color:#f5ecdd;box-shadow:0 8px 18px #0008;scroll-snap-align:start;display:block;text-align:start}
+.orow.big .oc2{flex-basis:150px;height:182px}.ogrid .oc2{height:134px}
+.oc2 img,.oc2>i{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#2a1d14}
+.oc2::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 46%,#0d0907f2)}
+.oc2>span{position:absolute;inset:auto 9px 7px;z-index:1}.oc2 b{display:block;font:400 15.5px/1.15 Lalezar,var(--body)}.orow.big .oc2 b{font-size:17.5px}
+.oc2 small{display:block;color:var(--gold);font-weight:700;font-size:13px}.oc2 small .sar{fill:currentColor}
+.oc2 em{position:absolute;top:7px;left:7px;z-index:2;min-width:24px;height:24px;border-radius:12px;background:var(--gold);color:#2a1a05;font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.oc2 .nw{position:absolute;top:7px;right:7px;z-index:2;background:#e5484d;color:#fff;font:700 11.5px var(--body);padding:1px 9px;border-radius:99px}
+.oc2.has{outline:2.5px solid var(--gold);outline-offset:-2.5px}.oc2.off{opacity:.5}
+.orow.nudge{animation:onudge 1.6s .9s ease-in-out 1}@keyframes onudge{0%,100%{transform:none}35%,60%{transform:translateX(44px)}}
 .chip.xo{opacity:.5;text-decoration:line-through}.chip.xo small{text-decoration:none;color:#ff8077;font-weight:800}
 </style>
 </head>
@@ -525,7 +550,7 @@ const STR={
   hint2:"من المنيو، أو نجيك لين عندك",c_title:"كيف تبغى تطلب؟",c_sub:"اختار اللي يريحك",c_menu:"أنا بختار من المنيو",c_menu_s:"شوف الصور والأسعار، واطلب بنفسك",c_call:"نادِ لي أحد",c_call_s:"نجيك لين عندك وناخذ طلبك",back:"رجوع",
   o_title:"اطلب من المنيو",send:"أرسل الطلب",needok:"الطلب يوصل المطبخ بعد ما يوافق عليه الموظف",add:"أضف",pick:"اختر أول",size_s:"صغير",size_b:"كبير",note_ph:"ملاحظة (اختياري)",
   r_wait:"⏳ وصل طلبك<small>ننتظر موافقة الموظف، وبعدها يروح للمطبخ.</small>",r_ok:"✓ انقبل طلبك<small>يتجهز الحين.</small>",r_no:"🏃 الموظف جايك<small>بيتفاهم معك على طلبك.</small>",r_busy:"عندك طلب ينتظر الموافقة<small>انتظر لين يوافقون عليه، وبعدها تقدر تطلب ثاني.</small>",
-  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا طلبكم وين وصل",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",x_out:"خلصت",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
+  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا طلبكم وين وصل",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",x_out:"خلصت",feat_t:"مميز",nw_b:"جديد",all_b:"الكل ‹",back_b:"رجوع ›",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
  en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"Menu & order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
   k_order:"want to order",sent_m:m=>"✓ Call sent: «"+esc(m)+"»<br>We are on our way.",cm_t:"Call someone over",cm_s:"Want to tell us what you need? (optional)",cm_ph:"Type here, or just tap call",cm_go:"Call staff",qd_p:"2 pieces for 1 SAR",qd_c:"Pieces",qd_s:"Sticks",qd_add1:"Add one more piece",qd_pairs:"Qamar al-din is sold in pairs",qd_n:"pieces",b_mine:"My order",mine_t:"My order",mine_e:"Nothing ordered yet",st_w:"Waiting for approval",st_p:"Being prepared",st_d:"Served",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
@@ -539,7 +564,7 @@ const STR={
   hint2:"From the menu, or we come to you",c_title:"How do you want to order?",c_sub:"Pick what suits you",c_menu:"I will pick from the menu",c_menu_s:"See photos and prices, and order yourself",c_call:"Call someone over",c_call_s:"We come to your table and take your order",back:"Back",
   o_title:"Order from the menu",send:"Send order",needok:"Your order goes to the kitchen once the staff approve it",add:"Add",pick:"Pick first",size_s:"Small",size_b:"Large",note_ph:"Note (optional)",
   r_wait:"⏳ Order received<small>Waiting for the staff to approve it.</small>",r_ok:"✓ Order accepted<small>It is being prepared.</small>",r_no:"🏃 Staff are coming<small>They will check your order with you.</small>",r_busy:"You have an order waiting<small>Once it is approved you can order again.</small>",
-  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table, and what you owe so far. Tap the bill to see details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see where your order is",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",x_out:"sold out",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
+  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table, and what you owe so far. Tap the bill to see details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see where your order is",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",x_out:"sold out",feat_t:"Featured",nw_b:"New",all_b:"All ‹",back_b:"Back ›",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
@@ -550,7 +575,9 @@ const EN=[[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*ح
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-function photo(n){ n=String(n); if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(RX.dw.test(n)) return "ashak";
+const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc".split(" ")); // صور الستايل الغامق الجديد
+function photo(n){ const k=photo0(n); return k&&NP.has(k)?"n_"+k:k; }
+function photo0(n){ n=String(n); if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(/بطاطس\s*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -1559,19 +1586,30 @@ function payPick(){ if(busy||!db||!sid||ended) return; const T=lang==="en", tot=
   openSheet("pay",`<div class="hd"><b>${T?"How will you pay?":"كيف بتدفع؟"}</b><button class="x" data-x aria-label="close">✕</button></div><div class="pyb">${tot?`<div class="pyt num">${tot}${RS}</div>`:""}<small>${T?"So the staff bring the card machine or your change":"عشان الموظف يجيب لك الجهاز أو الباقي"}</small><div class="pyg"><button data-pm="cash"><span>💵</span>${T?"Cash":"كاش"}</button><button data-pm="card"><span>💳</span>${T?"Card":"شبكة"}</button></div></div>`); sheet.style.height=""; }
 
 /* ---------- المنيو: الأقسام على الجنب ---------- */
-let mcat=MENU?1:-1; // منيو السفري يفتح على أول قسم أصناف
+/* ---------- المنيو الجديد: صفوف تنسحب + مميز ---------- */
+const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/هوت\s*شوك|كوكومون/;
+const oscr={top:0,rows:{}}, mscr={top:0,rows:{}}, oall=new Set(), mall=new Set(); let onudged=false;
+function secsOf(items){ const secs=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length).map(([c,l])=>({k:c[0],t:lang==="en"?c[3]:c[2],l}));
+  const ft=items.map((it,i)=>[it,i]).filter(([it])=>FEAT.test(String(it.name))&&!it.off);
+  if(ft.length>=2) secs.unshift({k:"feat",t:"⭐ "+L("feat_t"),l:ft,big:1}); return secs; }
+function oCard(it,i,ro){ const ph=photo(it.name), q=ro?0:cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0), nm=esc(nameOf(it.name));
+  const inn=`${ph?`<img src="${ph}.webp" alt="" loading="lazy" decoding="async">`:`<i></i>`}${NEWI.test(it.name)&&!it.off?`<mark class="nw">${L("nw_b")}</mark>`:""}${q?`<em class="num">${q}</em>`:""}<span><b>${nm}</b><small>${priceOf(it)}</small></span>`;
+  return ro?`<div class="oc2 ${it.off?"off":""}">${inn}</div>`:`<button class="oc2 ${it.off?"off":""} ${q?"has":""}" ${it.off?"disabled":`data-oi="${i}"`} aria-label="${nm}">${inn}</button>`; }
+function rowsHTML(secs,S,ro,nudge){ return `<div class="oc2chips">${secs.map((s,i)=>`<button class="${i?"":"on"}" data-og="${s.k}">${s.t.replace("⭐ ","")}</button>`).join("")}</div>`
+  +secs.map((s,i)=>`<h4 class="osec" data-os="${s.k}">${s.t}${s.l.length>2?`<button data-oall="${s.k}">${S.has(s.k)?L("back_b"):L("all_b")}</button>`:""}</h4><div class="${S.has(s.k)?"ogrid":"orow"+(s.big?" big":"")+(nudge&&!i?" nudge":"")}" data-or="${s.k}">${s.l.map(([it,k])=>oCard(it,k,ro)).join("")}</div>`).join("")+`<div style="height:18px"></div>`; }
+function spy(ob){ const hs=[...ob.querySelectorAll(".osec")]; if(!hs.length) return; let k=hs[0].dataset.os; for(const h of hs){ if(h.offsetTop-76<=ob.scrollTop) k=h.dataset.os; }
+  if(ob.scrollTop+ob.clientHeight>=ob.scrollHeight-4) k=hs[hs.length-1].dataset.os;
+  const ch=ob.querySelector(".oc2chips"); let on=null; ch.querySelectorAll("button").forEach(b=>{ const y=b.dataset.og===k; b.classList.toggle("on",y); if(y) on=b; });
+  if(on){ const a=on.getBoundingClientRect(), c=ch.getBoundingClientRect(); if(a.left<c.left+8||a.right>c.right-8) ch.scrollLeft+=a.left<c.left+8?a.left-c.left-16:a.right-c.right+16; } }
+function restoreScr(st){ const ob=sheet.querySelector(".ob2"); if(!ob) return; ob.querySelectorAll("[data-or]").forEach(r=>{ const v=st.rows[r.dataset.or]; if(v!=null&&r.classList.contains("orow")) r.scrollLeft=v; }); ob.scrollTop=st.top; spy(ob); }
+sheet.addEventListener("scroll",e=>{ const t=e.target; if(!t||!t.classList) return; const ob=t.closest(".ob2"); if(!ob) return; const st=ob.dataset.v==="m"?mscr:oscr;
+  if(t===ob){ st.top=t.scrollTop; spy(ob); } else if(t.dataset.or&&t.classList.contains("orow")) st.rows[t.dataset.or]=t.scrollLeft; },true);
+sheet.addEventListener("click",e=>{ const og=e.target.closest("[data-og]"); if(og){ const ob=og.closest(".ob2"), h=ob.querySelector(`.osec[data-os="${og.dataset.og}"]`); if(h) ob.scrollTo({top:Math.max(0,h.offsetTop-54),behavior:R?"auto":"smooth"}); return; }
+  const oa=e.target.closest("[data-oall]"); if(oa){ const m=oa.closest(".ob2").dataset.v==="m", S=m?mall:oall, k=oa.dataset.oall; S.has(k)?S.delete(k):S.add(k); m?paintMenu():paintOrder(); } });
 function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray(x.items)?x.items:[];
-  const cats=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length);
-  if(mcat<1||mcat>cats.length) mcat=1;
-  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",food:"fries",sn:"pancake",games:"baloot"};
-  const rail=[].concat(cats.map(([c],i)=>`<button class="${mcat===i+1?"on":""}" data-c="${i+1}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`)).join("");
-  let body;
-  if(mcat===0) body=`<div class="banner" style="background:linear-gradient(135deg,#4a1a7a,#2a0e4a)"><div>🪑 ${L("sessions")}</div></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">⏱</i><span>${L("hour")}</span><b>${Number(x.hour)||15}${RS}</b></div><div class="it"><i style="display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px">♾️</i><span>${L("open")}</span><b>${Number(x.open)||30}${RS}</b></div>`;
-  else { const [c,list]=cats[mcat-1]; body=`<div class="banner">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:""}<div>${c[1]} ${lang==="en"?c[3]:c[2]}</div></div>`+subH(c,list.map(([i])=>{const ph=photo(i.name); return [i,`<div class="it ${i.off?"off":""}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i></i>`}<span>${esc(nameOf(i.name))}${flavOf(i.name)}</span><b>${priceOf(i)}</b></div>`]}),"msub").join(""); }
-  const html=`<div class="hd"><b>${L("b_menu")}${MENU?"":`<small>${L("toorder")}</small>`}</b><button class="x" data-x aria-label="close">✕</button></div><div class="mbody"><div class="rail">${rail}</div><div class="list" id="mlist">${body}</div></div>${MENU?"":`<div class="sfoot"><button class="go" data-go>${L("b_order")}</button></div>`}`;
+  const html=`<div class="hd"><b>${L("b_menu")}${MENU?"":`<small>${L("toorder")}</small>`}</b><button class="x" data-x aria-label="close">✕</button></div><div class="ob2" data-v="m">${rowsHTML(secsOf(items),mall,true,false)}</div>${MENU?"":`<div class="sfoot"><button class="go" data-go>${L("b_order")}</button></div>`}`;
   if(sheetOpen==="menu"){ sheet.innerHTML=html; } else openSheet("menu",html);
-  sheet.style.height="88%";
-  sheet.querySelectorAll(".rail [data-c]").forEach(b=>b.onclick=()=>{ mcat=+b.dataset.c; paintMenu(); sheet.querySelectorAll("#mlist > *").forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(12px)"},{opacity:1,transform:"none"}],{duration:360,delay:i*45,fill:"backwards"})); });
+  sheet.style.height="88%"; restoreScr(mscr);
 }
 async function openMenuOnly(){ // منيو السفري (بدون جلسة)
   if(menuData){ paintMenu(); return }
@@ -1700,19 +1738,11 @@ async function openOrder(){
   paintOrder(); }
 const cartN=()=>cart.reduce((a,c)=>a+c.q,0), cartT=()=>r2(cart.reduce((a,c)=>a+c.price*c.q,0));
 function paintOrder(){ const items=Array.isArray(menuData.items)?menuData.items:[];
-  const cats=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length);
-  if(ocat>=cats.length) ocat=0;
-  const CI={hot:"coffee",cold:"mojito",hookah:"hookah",food:"fries",sn:"pancake",games:"baloot",other:"sofa"};
-  const chips=cats.map(([c],k)=>`<button class="${ocat===k?"on":""}" data-oc="${k}">${CI[c[0]]?`<img src="${CI[c[0]]}.webp" alt="">`:`<i>${c[1]}</i>`}${lang==="en"?c[3]:c[2].replace("المشروبات ","")}</button>`).join("");
-  const list=cats[ocat]?subH(cats[ocat][0],cats[ocat][1].map(([it,i])=>{ const ph=photo(it.name), q=cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0);
-    return [it,`<button class="ot ${it.off?"off":""} ${q?"has":""}" ${it.off?"disabled":`data-oi="${i}"`} aria-label="${esc(nameOf(it.name))}">${ph?`<img src="${ph}.webp" alt="" loading="lazy">`:`<i>${(cats[ocat][0])[1]}</i>`}${q?`<em class="num">${q}</em>`:""}<span>${esc(nameOf(it.name))}<small>${priceOf(it)}</small></span></button>`]}),"osub").join(""):"";
   const n2=cartN(), cl=cart.map((c,k)=>`<div><span>${esc(c.label)}</span><span class="cq"><button class="ced" data-ce="${k}">${L("edit")}</button><button data-ci="${k}" aria-label="+">+</button><b class="num">${c.q}</b><button data-cd="${k}" aria-label="-">${c.q>1?"−":"✕"}</button></span><b class="num">${r2(c.price*c.q)}</b></div>`).join("");
-  const keep=sheet.querySelector(".ochips"), sx=keep?keep.scrollLeft:null, ob=sheet.querySelector(".obody"), oy=ob?ob.scrollTop:0, ol=sheet.querySelector("#olist"), oly=ol?ol.scrollTop:0;
-  const html=`<div class="hd"><b>${L("o_title")}<small>${L("seat")} ${n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="obody"><div class="ochips">${chips}</div><div class="otiles" id="olist">${list}</div></div>
+  const nd=!onudged&&!R; onudged=true;
+  const html=`<div class="hd"><b>${L("o_title")}<small>${L("seat")} ${n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="ob2" data-v="o">${rowsHTML(secsOf(items),oall,false,nd)}</div>
   <div class="sfoot">${edited&&cart.length?`<div class="ednote">${L("e_back")}</div>`:""}${cl?`<div class="cartl">${cl}</div>`:""}<button class="sendb" data-send ${n2?"":"disabled"}><span class="n num">${n2}</span><span class="t">${L("send")}</span><span class="num">${cartT()}${RS}</span></button><span class="hint2">${L("needok")}</span></div>`;
-  sheet.innerHTML=html; sheetOpen="order"; sheet.style.height="92%";
-  if(keep){ const ob2=sheet.querySelector(".obody"), ol2=sheet.querySelector("#olist"); if(ob2) ob2.scrollTop=oy; if(ol2) ol2.scrollTop=oly; }
-  const ch=sheet.querySelector(".ochips"); if(ch){ if(sx!==null) ch.scrollLeft=sx; else { const on=ch.querySelector(".on"); if(on) on.scrollIntoView({inline:"center",block:"nearest"}); } } }
+  sheet.innerHTML=html; sheetOpen="order"; sheet.style.height="92%"; restoreScr(oscr); }
 const promoIdx=()=>{ const it=menuData&&menuData.promo&&menuData.promo.on?(menuData.items||[]).findIndex(x=>/ماتشا/.test(x.name)&&!x.off):-1; return it; };
 let promoSeen=false; try{ promoSeen=sessionStorage.getItem("kzpromo"+K)==="1"; }catch(e){}
 function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ sessionStorage.setItem("kzpromo"+K,"1"); }catch(e){}
