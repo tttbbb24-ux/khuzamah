@@ -1,0 +1,45 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>تجربة تنبيه الطلب</title>
+<style>
+body{margin:0;background:#140a24;color:#f4eefc;font-family:-apple-system,"Segoe UI",Tahoma,sans-serif;padding:22px 18px 40px;line-height:1.7}
+h1{font-size:21px;color:#e9c77b;margin:0 0 6px}p{color:#b8a6d6;font-size:15px;margin:0 0 14px}
+.b{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+button{flex:1 1 90px;font:inherit;font-size:17px;padding:16px 10px;border-radius:16px;border:1px solid #c9a3ff66;background:#2a1650;color:#fff}
+button.stop{background:#3b1420;border-color:#f8717166}
+#st{font-size:26px;font-weight:700;text-align:center;padding:26px 10px;border-radius:20px;background:#1e1233;margin:14px 0}
+#st.ok{background:#14532d;color:#bbf7d0}
+ol{color:#d9c2ff;font-size:15px;padding-inline-start:22px}
+pre{direction:ltr;text-align:left;background:#0c0716;border-radius:12px;padding:12px;font-size:12px;white-space:pre-wrap;color:#9f8fc0;max-height:300px;overflow:auto}
+</style></head><body>
+<h1>تجربة: تنبيه «طلبك جاهز» والجوال مقفل</h1>
+<p>صفحة تجربة فقط، مو جزء من التطبيق.</p>
+<ol><li>ارفع صوت الجوال وشيل الوضع الصامت.</li><li>اختر المدة.</li><li>اقفل الشاشة فوراً وانتظر.</li><li>المفروض يرن الجوال بعد المدة، وتشوف على شاشة القفل «طلبك جاهز».</li></ol>
+<div class="b"><button data-s="30">30 ثانية</button><button data-s="120">دقيقتين</button><button data-s="300">5 دقايق</button></div>
+<div id="st">اختر مدة</div>
+<div class="b"><button class="stop" id="stop">إيقاف</button></div>
+<p>السجل (صوّره وأرسله لي بعد التجربة):</p><pre id="log"></pre>
+<audio id="a" playsinline></audio>
+<script>
+const SR=22050, SIL=6, a=document.getElementById('a'), st=document.getElementById('st'), lg=document.getElementById('log');
+let target=0, ready=false, t0=0, lastTick=0, maxGap=0, ticks=0, rings=0;
+function log(m){ const s=((Date.now()-t0)/1000).toFixed(1); lg.textContent+=`[${s}s] ${m}\n`; lg.scrollTop=1e9; try{localStorage.setItem('kz-tj',lg.textContent)}catch(e){} }
+function wav(){ // 6 ثواني صمت ثم رنة 4 ثواني
+  const n=SR*(SIL+4), buf=new ArrayBuffer(44+n*2), v=new DataView(buf), W=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  W(0,'RIFF');v.setUint32(4,36+n*2,true);W(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,SR,true);v.setUint32(28,SR*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);W(36,'data');v.setUint32(40,n*2,true);
+  const notes=[[0,880],[.35,1108.7],[.7,1318.5],[1.5,880],[1.85,1108.7],[2.2,1318.5]];
+  for(let i=SR*SIL;i<n;i++){ const t=i/SR-SIL; let s=0; for(const [at,f] of notes){ const d=t-at; if(d>=0&&d<1.2) s+=Math.sin(6.2832*f*d)*Math.exp(-d*3.2)*(d<.01?d/.01:1); } v.setInt16(44+i*2,Math.max(-1,Math.min(1,s*.55))*32767,true); }
+  return URL.createObjectURL(new Blob([buf],{type:'audio/wav'})); }
+function meta(title){ if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title,artist:'خزامى',album:'طلب سفري 12',artwork:[{src:'icon.png',sizes:'512x512',type:'image/png'}]}); }catch(e){} } }
+a.src=wav();
+a.addEventListener('timeupdate',()=>{ const now=Date.now(); if(lastTick){ const g=now-lastTick; if(g>maxGap) maxGap=g; if(g>3000) log('انقطاع '+(g/1000).toFixed(1)+' ثانية'); } lastTick=now; ticks++;
+  if(!ready&&now>=target){ ready=true; log('حان الوقت: نشغل الرنة'); meta('طلبك جاهز ✅ تفضل استلمه'); st.textContent='طلبك جاهز ✅'; st.className='ok'; if(navigator.vibrate) navigator.vibrate([400,200,400]); a.currentTime=SIL; }
+  else if(!ready&&a.currentTime>SIL-1.2){ a.currentTime=0; }
+  else if(!ready){ st.textContent='باقي '+Math.max(0,Math.ceil((target-now)/1000))+' ثانية'; } });
+a.addEventListener('ended',()=>{ rings++; if(ready&&rings<3){ a.currentTime=SIL; a.play().catch(e=>log('تعذر إعادة الرنة: '+e.name)); } else { log('انتهى. أقصى فجوة بين النبضات: '+(maxGap/1000).toFixed(1)+' ثانية، عدد النبضات: '+ticks); } });
+a.addEventListener('pause',()=>{ if(!a.ended) log('توقف الصوت (pause)'); }); a.addEventListener('playing',()=>log('الصوت شغال'));
+document.addEventListener('visibilitychange',()=>log(document.hidden?'الصفحة اختفت أو انقفلت الشاشة':'رجعت للصفحة'));
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ t0=Date.now(); lg.textContent=''; target=t0+b.dataset.s*1000; ready=false; lastTick=0; maxGap=0; ticks=0; rings=0; st.className=''; st.textContent='بدأنا… اقفل الشاشة'; meta('طلبك قيد التجهيز…'); a.currentTime=0; log('بداية، المدة '+b.dataset.s+' ثانية | '+navigator.userAgent.slice(0,90));
+  a.play().catch(e=>{ log('تعذر التشغيل: '+e.name); st.textContent='ما اشتغل الصوت'; }); });
+document.getElementById('stop').onclick=()=>{ a.pause(); target=Infinity; st.className=''; st.textContent='متوقف'; };
+try{ const o=localStorage.getItem('kz-tj'); if(o) lg.textContent='— سجل التجربة السابقة —\n'+o; }catch(e){}
+</script></body></html>
