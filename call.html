@@ -500,18 +500,63 @@ html.gmon,html.gmon body{overflow:hidden}
 .oc2.has{outline:2.5px solid var(--gold);outline-offset:-2.5px}.oc2.off{opacity:.5}
 .orow.nudge{animation:onudge 1.6s .9s ease-in-out 1}@keyframes onudge{0%,100%{transform:none}35%,60%{transform:translateX(44px)}}
 .chip.xo{opacity:.5;text-decoration:line-through}.chip.xo small{text-decoration:none;color:#ff8077;font-weight:800}
+
+/* v86: مقطع الجلسات خلفية كاملة للصفحة الرئيسية */
+.hero{background:none;overflow:visible}.photo,.petals,.hero::after{display:none}
+.app>.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;background:#0c0912;pointer-events:none}
+.app::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#0c091280 0,#0c091240 22%,#0c091255 60%,#0c0912a6 100%)}
+.hero,.pane{z-index:2}.pane{background:transparent}
+.hi,.tt,.row b{text-shadow:0 1px 8px #000c}.tt{color:#e6dcf5}
+.logo{filter:drop-shadow(0 2px 14px #000b) drop-shadow(0 0 18px #b88cf288)}
+.row{background:transparent;border:1.5px solid #ffffff8c}.row .ic{background:#ffffff1f;color:#fff}.gbar{background:transparent;border-width:1.5px}.pill{background:transparent;border-color:#ffffff8c}
+
+/* v86: الفاتورة طالّة من تحت، والألعاب زر عائم */
+.billrow{position:relative;display:flex;align-items:center;justify-content:space-between;width:auto;margin:6px 6px calc(-14px - env(safe-area-inset-bottom,0px));padding:15px 16px calc(22px + env(safe-area-inset-bottom,0px));background:#f8f2e4;color:#2a1438;border-radius:12px 12px 0 0;box-shadow:0 -10px 26px #000a;text-align:start;animation:pkn 3.4s ease-in-out infinite}
+.billrow[hidden]{display:none}
+.billrow::before{content:"";position:absolute;left:0;right:0;top:-7px;height:8px;background:linear-gradient(135deg,#f8f2e4 33%,transparent 33%) 0 0/12px 8px,linear-gradient(225deg,#f8f2e4 33%,transparent 33%) 0 0/12px 8px}
+.billrow b,.billrow span,.billrow small{text-shadow:none}
+.billrow .bl b{display:block;font-size:14.5px;color:#2a1438}.billrow .bl small{display:block;font-size:11.5px;font-weight:400;opacity:.65;color:#2a1438}
+.billrow #billv{color:#3b1178;font-weight:700;font-size:25px}
+@keyframes pkn{0%,72%,100%{transform:none}84%{transform:translateY(-7px)}}
+#gbtn.gbar{position:absolute;inset-inline-end:16px;bottom:34px;z-index:4;width:74px;height:74px;margin:0;padding:0;border-radius:50%;border:1.5px solid var(--gold);background:#1b0d26b3;color:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;box-shadow:0 0 0 4px #e9c77b26,0 12px 26px #000a;animation:gpl 2.6s ease-in-out infinite}
+#gbtn.gbar[hidden]{display:none}
+#gbtn.gbar b{font-size:11.5px;display:block;color:var(--gold);text-shadow:0 1px 6px #000c}
+#gbtn.gbar .nw{position:absolute;top:-7px;inset-inline-start:-6px;margin:0;font-size:10px;padding:1px 7px;text-shadow:none}
+@keyframes gpl{0%,100%{box-shadow:0 0 0 4px #e9c77b26,0 12px 26px #000a}50%{box-shadow:0 0 0 11px #e9c77b0d,0 12px 26px #000a}}
+@media (prefers-reduced-motion:reduce){.billrow,#gbtn.gbar{animation:none}}
+/* الفاتورة الكاملة: ورقة عاجية بسدو تطلع من تحت */
+.bq{position:fixed;inset:0;z-index:20;max-width:520px;margin:0 auto}
+.bq .bd{position:absolute;inset:0;background:#05020a;opacity:0}
+.bq .x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));inset-inline-end:14px;z-index:2;width:38px;height:38px;border-radius:50%;background:#ffffff1f;color:#fff;font-size:16px}
+.bq .wr{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:calc(62px + env(safe-area-inset-top,0px)) 14px calc(16px + env(safe-area-inset-bottom,0px));overflow:hidden;pointer-events:none}
+.bq .tk{pointer-events:auto;position:relative;width:100%;max-height:100%;overflow-y:auto;scrollbar-width:none;background:#f8f2e4;color:#2a1438;border-radius:20px;padding:30px 18px 16px;box-shadow:0 26px 50px #000c;font-size:15.5px;transform:translateY(110%)}
+.bq .tk::-webkit-scrollbar{display:none}
+.bq .sd{position:absolute;inset:0 0 auto;height:14px;background:linear-gradient(135deg,#3b1178 25%,transparent 25%) -7px 0/14px 14px,linear-gradient(225deg,#3b1178 25%,transparent 25%) -7px 0/14px 14px,linear-gradient(315deg,#d8b46a 25%,transparent 25%) 0 0/14px 14px,linear-gradient(45deg,#d8b46a 25%,transparent 25%) 0 0/14px 14px}
+.bq .top{display:flex;justify-content:space-between;align-items:center}
+.bq .lg{width:88px;height:73px;background:#3b1178;-webkit-mask:url(logo-white.png) center/contain no-repeat;mask:url(logo-white.png) center/contain no-repeat}
+.bq .sn{text-align:end;line-height:1}.bq .sn small{display:block;font-size:12px;opacity:.7;margin-bottom:3px}.bq .sn b{font-size:34px;font-weight:700}
+.bq .meta{display:flex;justify-content:space-between;font-size:12.5px;opacity:.75;padding:8px 0 5px;border-bottom:1px solid #2a143833}
+.bq h4{margin:12px 0 3px;font-size:12.5px;font-weight:700;color:#6d35b5;display:flex;justify-content:space-between;align-items:baseline}.bq h4 small{font-weight:500;font-size:12px;opacity:.85}
+.bq .ln{display:flex;align-items:baseline;gap:8px;padding:4px 0}.bq .ln>i{flex:1;border-bottom:1.5px dotted #2a143840;transform:translateY(-4px)}.bq .ln b{font-weight:600;white-space:nowrap}.bq .ln small{opacity:.7}
+.bq .cut{margin:10px -18px 0;border-top:2px dashed #2a143855;position:relative}
+.bq .cut::before,.bq .cut::after{content:"";position:absolute;top:-10px;width:18px;height:18px;border-radius:50%;background:#0a0610}.bq .cut::before{right:-9px}.bq .cut::after{left:-9px}
+.bq .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}.bq .tot>span{font-size:19px;font-weight:700}.bq .tot b{font-size:31px;font-weight:700;color:#3b1178}
+.bq .fn{display:block;margin:2px 0 12px;font-size:12px;opacity:.65}
+.bq .pay{width:100%;border-radius:14px;padding:14px;text-align:center;font-weight:700;font-size:17px;background:#3b1178;color:#fff}
+.bq .sh{position:absolute;inset:0;border-radius:20px;pointer-events:none;background:linear-gradient(110deg,transparent 35%,#ffffff66 50%,transparent 65%);background-size:250% 100%;background-position:120% 0;opacity:0}
 </style>
 </head>
 <body>
 <div class="app" id="app">
+  <video class="bgv" id="bgv" poster="home-bg.webp" muted loop playsinline preload="auto" aria-hidden="true"></video>
   <div class="hero">
     <div class="photo"></div><div class="glow"></div><div class="petals" id="petals"></div>
     <button class="lang" id="lang" aria-label="Language"></button>
+    <button class="gbar" id="gbtn" hidden><span class="nw">جديد</span><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.3 5H6.7a4 4 0 0 0-4 3.6l-.6 5.4A3 3 0 0 0 5 17.5c1 0 1.9-.5 2.4-1.3L8.5 15h7l1.1 1.2a3 3 0 0 0 5.3-2.3l-.6-5.3A4 4 0 0 0 17.3 5z"/></svg><b>الألعاب</b></button>
     <button class="qrb" id="qrb" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg><span data-t="myqr"></span></button>
     <div class="mid"><span class="logo" id="logo" role="img" aria-label="خزامى"><span class="shine"></span></span><div class="hi" id="hi"></div><div class="pills" id="pills"></div></div>
   </div>
 <div class="pane">
-  <button class="billrow" id="billrow" hidden><b data-t="billnow"></b><span class="num" id="billv"></span></button>
   <button class="primary" id="order" data-k="order"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#140a22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V6a2 2 0 1 1 4 0v5M11 10V4.5a2 2 0 1 1 4 0V10M15 10V6.5a2 2 0 1 1 4 0V14a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.4L3 14.5a1.8 1.8 0 0 1 3-2L7 14"/></svg></span><span class="t"><b data-t="b_order"></b><span data-t="hint2"></span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#140a22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
   <div class="status" id="status" role="status" aria-live="polite" hidden></div>
   <div class="rows" id="rows">
@@ -519,8 +564,8 @@ html.gmon,html.gmon body{overflow:hidden}
     <button class="row" data-k="coal"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg></span><b data-t="b_coal"></b></button>
     <button class="row" id="mbtn"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span><b data-t="b_mine"></b></button>
   </div>
-  <button class="gbar" id="gbtn" hidden><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.3 5H6.7a4 4 0 0 0-4 3.6l-.6 5.4A3 3 0 0 0 5 17.5c1 0 1.9-.5 2.4-1.3L8.5 15h7l1.1 1.2a3 3 0 0 0 5.3-2.3l-.6-5.3A4 4 0 0 0 17.3 5z"/></svg></span><span><b>ألعاب الجلسة</b><small>المافيا · ٥ ثواني · برا السالفة · وأكثر</small></span><span class="nw">جديد</span></button>
   <a class="tt" href="https://www.tiktok.com/@khuzama_6" target="_blank" rel="noopener">🎵 <span data-t="tiktok"></span> @khuzama_6</a>
+  <button class="billrow" id="billrow" hidden><span class="bl"><b data-t="billnow"></b><small id="bills"></small></span><span class="num" id="billv"></span></button>
 </div>
 </div>
 <div class="dim" id="dim"></div>
@@ -550,7 +595,7 @@ const STR={
   hint2:"من المنيو، أو نجيك لين عندك",c_title:"كيف تبغى تطلب؟",c_sub:"اختار اللي يريحك",c_menu:"أنا بختار من المنيو",c_menu_s:"شوف الصور والأسعار، واطلب بنفسك",c_call:"نادِ لي أحد",c_call_s:"نجيك لين عندك وناخذ طلبك",back:"رجوع",
   o_title:"اطلب من المنيو",send:"أرسل الطلب",needok:"الطلب يوصل المطبخ بعد ما يوافق عليه الموظف",add:"أضف",pick:"اختر أول",size_s:"صغير",size_b:"كبير",note_ph:"ملاحظة (اختياري)",
   r_wait:"⏳ وصل طلبك<small>ننتظر موافقة الموظف، وبعدها يروح للمطبخ.</small>",r_ok:"✓ انقبل طلبك<small>يتجهز الحين.</small>",r_no:"🏃 الموظف جايك<small>بيتفاهم معك على طلبك.</small>",r_busy:"عندك طلب ينتظر الموافقة<small>انتظر لين يوافقون عليه، وبعدها تقدر تطلب ثاني.</small>",
-  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم، وكم عليكم لين الحين. اضغطوا الفاتورة تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا طلبكم وين وصل",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",x_out:"خلصت",feat_t:"مميز",nw_b:"جديد",all_b:"الكل ‹",back_b:"رجوع ›",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
+  t_wait:"وصل طلبك",t_ok:"انقبل طلبك",t_no:"الموظف جايك",d_wait:"ننتظر موافقة الموظف، وبعدها يروح للمطبخ",d_ok:"طلبك يتجهز الحين",d_no:"بيجيك أحد يتفاهم معك على طلبك",s1:"انرسل الطلب",s2:"ننتظر الموافقة",s3:"يتجهز في المطبخ",s2ok:"انقبل",yourorder:"طلبك",billnow:"فاتورتك لين الحين",pk_hint:"اضغط أو اسحب لفوق",b_sec1:"الجلسة",b_sec2:"الطلبات",b_in:"دخلتوا",b_min:"دقيقة",tt1:"باركود الجلسة",td1:"صوّروه من جوال ثاني، ويقدر يطلب ويتابع معكم من نفس الجلسة",tt2:"وقتكم وفاتورتكم",td2:"الوقت الباقي على جلستكم هنا، وفاتورتكم طالّة من تحت الشاشة. اضغطوها أو اسحبوها لفوق تشوفون التفاصيل",tt3:"أبغى أطلب",td3:"اطلبوا من المنيو بنفسكم، أو نجيكم ناخذ طلبكم",tt4:"نجيكم لين عندكم",td4:"للحساب، أو تغيير الفحم، أو شوفوا طلبكم وين وصل",tnext:"التالي",tgo:"يلا نبدأ ✓",tskip:"تخطي",w5t:"باقي 5 دقايق على وقتكم",w5d:"تبغون نجيكم بالحساب؟",w0t:"انتهى وقت جلستكم",w0d:"تقدرون تكملون، أو نجيكم بالحساب",wok:"تمام",wbill:"🧾 أبغى أحاسب",myqr:"باركود الجلسة",qr_t:"باركود جلستك",qr_s:"صوّره من جوال ثاني، ويقدر يطلب وينادي من نفس الجلسة",f_all:"✨ كل شي",x_out:"خلصت",feat_t:"مميز",nw_b:"جديد",all_b:"الكل ‹",back_b:"رجوع ›",f_none:"بدون إضافات",f_pick:"اختر الإضافات، أو «كل شي»",more:"أضيف شي ثاني",home:"الرئيسية"},
  en:{seat:"Table",hello:"Welcome to",hint:"Tap and we will come to you",b_order:"Menu & order",b_bill:"I want to pay",b_coal:"Change the coal",b_menu:"Menu & prices",tiktok:"TikTok",other:"عربي",
   w1:"Welcome!",w2:"You light up the place",skip:"Tap to skip",
   k_order:"want to order",sent_m:m=>"✓ Call sent: «"+esc(m)+"»<br>We are on our way.",cm_t:"Call someone over",cm_s:"Want to tell us what you need? (optional)",cm_ph:"Type here, or just tap call",cm_go:"Call staff",qd_p:"2 pieces for 1 SAR",qd_c:"Pieces",qd_s:"Sticks",qd_add1:"Add one more piece",qd_pairs:"Qamar al-din is sold in pairs",qd_n:"pieces",b_mine:"My order",mine_t:"My order",mine_e:"Nothing ordered yet",st_w:"Waiting for approval",st_p:"Being prepared",st_d:"Served",sauces:"Sauces",adds:"Toppings",k_edit:"want to change your order",e_mine:"✏️ Edit my order",e_ask:"✏️ I want to change my order",e_back:"✏️ We pulled your order back. Edit it and send again",e_late:"The staff just accepted your order. Tap «I want to change my order» and we come to you",k_bill:"want to pay",k_coal:"want the coal changed",sending:"Sending…",
@@ -564,7 +609,7 @@ const STR={
   hint2:"From the menu, or we come to you",c_title:"How do you want to order?",c_sub:"Pick what suits you",c_menu:"I will pick from the menu",c_menu_s:"See photos and prices, and order yourself",c_call:"Call someone over",c_call_s:"We come to your table and take your order",back:"Back",
   o_title:"Order from the menu",send:"Send order",needok:"Your order goes to the kitchen once the staff approve it",add:"Add",pick:"Pick first",size_s:"Small",size_b:"Large",note_ph:"Note (optional)",
   r_wait:"⏳ Order received<small>Waiting for the staff to approve it.</small>",r_ok:"✓ Order accepted<small>It is being prepared.</small>",r_no:"🏃 Staff are coming<small>They will check your order with you.</small>",r_busy:"You have an order waiting<small>Once it is approved you can order again.</small>",
-  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table, and what you owe so far. Tap the bill to see details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see where your order is",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",x_out:"sold out",feat_t:"Featured",nw_b:"New",all_b:"All ‹",back_b:"Back ›",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
+  t_wait:"Order received",t_ok:"Order accepted",t_no:"Staff are coming",d_wait:"Waiting for the staff, then it goes to the kitchen",d_ok:"Your order is being prepared",d_no:"Someone will check your order with you",s1:"Sent",s2:"Waiting for approval",s3:"Preparing",s2ok:"Approved",yourorder:"Your order",billnow:"Your bill so far",pk_hint:"Tap or swipe up",b_sec1:"Seating",b_sec2:"Orders",b_in:"Seated at",b_min:"min",tt1:"Table QR",td1:"Scan it with another phone to order and follow up from the same table",tt2:"Your time and bill",td2:"Time left on your table is here, and your bill peeks from the bottom of the screen. Tap it or swipe up for details",tt3:"I want to order",td3:"Order from the menu yourself, or we come to you",tt4:"We come to you",td4:"For the bill, a coal change, or to see where your order is",tnext:"Next",tgo:"Let's go ✓",tskip:"Skip",w5t:"5 minutes left on your time",w5d:"Want us to bring the bill?",w0t:"Your time is up",w0d:"You can stay longer, or we bring the bill",wok:"OK",wbill:"🧾 I want the bill",myqr:"Table QR",qr_t:"Your table QR",qr_s:"Scan it with another phone to order and call from the same table",f_all:"✨ Everything",x_out:"sold out",feat_t:"Featured",nw_b:"New",all_b:"All ‹",back_b:"Back ›",f_none:"No toppings",f_pick:"Pick toppings, or «Everything»",more:"Add something else",home:"Home"}};
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
@@ -626,7 +671,7 @@ function paintHero(){
   const mins=Math.max(0,Math.floor((Date.now()-Number(pub.s||0))/60000)), hourly=pub.m==="hour", left=Number(pub.h||1)*60-mins;
   const tl=hourly?(left>=0?[L("left"),clock(left),left<=5]:[L("over"),clock(-left),true]):[L("sat"),clock(mins),false];
   $("pills").innerHTML=`<span class="pill ${tl[2]?"red":""}" id="tpill">⏱ ${tl[0]} <b class="num">${tl[1]}</b></span>`;
-  const br=$("billrow"); br.hidden=!valid||ended||!n; $("billv").textContent=(Number(pub.total)||0)+" "+L("ry")+" "+(lang==="en"?"›":"‹"); br.onclick=billTicket;
+  const br=$("billrow"), bt=Number(pub.total)||0, bc=(Array.isArray(pub.items)?pub.items:[]).reduce((a,i)=>a+(Number(i.q)||1),0); br.hidden=!valid||ended||!n||!(bt>0); $("billv").innerHTML=bt+RS; $("bills").textContent=(bc?cntTxt(bc)+" · ":"")+L("pk_hint"); br.onclick=billTicket;
   if(hourly&&valid&&!ended&&n) timeAlert(left);
 }
 function timeAlert(left){ const k=K+":"+pub.s+":"+(pub.h||1), w=left<=0?"0":left<=5?"5":""; if(!w) return; let seen=""; try{ seen=sessionStorage.getItem("kz-ta-"+k)||"" }catch(e){}
@@ -666,7 +711,7 @@ function stagger(){ A($("logo"),[{opacity:0,transform:"scale(.6)"},{opacity:1,tr
 /* ---------- الشرح أول مرة: لوح تحت وخط للزر، ٤ خطوات ---------- */
 function tutorial(){ if(!valid||ended||!n||MENU||R) return; try{ if(localStorage.getItem("kz-tut")==="1") return }catch(e){ return }
   if(sheetOpen) return setTimeout(tutorial,3000);
-  const ST=[[()=>[$("qrb")],"tt1","td1"],[()=>[$("tpill"),$("billrow")],"tt2","td2"],[()=>[$("order")],"tt3","td3"],[()=>[...$("rows").querySelectorAll("[data-k],#mbtn")],"tt4","td4"]];
+  const ST=[[()=>[$("qrb")],"tt1","td1"],[()=>[$("tpill")],"tt2","td2"],[()=>[$("order")],"tt3","td3"],[()=>[...$("rows").querySelectorAll("[data-k],#mbtn")],"tt4","td4"]];
   const w=document.createElement("div"); w.className="tut"; document.body.appendChild(w); let i=0;
   const end=()=>{ try{ localStorage.setItem("kz-tut","1") }catch(e){} const a=A(w,[{opacity:1},{opacity:0}],{duration:260,fill:"forwards"}); if(a) a.onfinish=()=>w.remove(); else w.remove(); };
   const paint=()=>{ const els=ST[i][0]().filter(e=>e&&!e.hidden&&e.offsetParent!==null); if(!els.length){ if(++i>=ST.length) return end(); return paint(); }
@@ -1575,10 +1620,12 @@ function qrSvg(text){ let q=null; for(const t of [4,5,6,8,10]){ try{ q=new KZQR.
   if(!q) return ""; const N=q.getModuleCount(), Q=3; let d="";
   for(let y=0;y<N;y++) for(let x=0;x<N;x++) if(q.isDark(y,x)) d+=`M${x+Q} ${y+Q}h1v1h-1z`;
   return `<svg viewBox="0 0 ${N+2*Q} ${N+2*Q}" shape-rendering="crispEdges" role="img" aria-label="QR" style="width:min(72vw,280px);height:auto;border-radius:14px"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`; }
-function openSheet(kind,html){ sheet.innerHTML=html; const fresh=!sheetOpen; sheetOpen=kind;
+function openSheet(kind,html){ sheet.innerHTML=html; const fresh=!sheetOpen; sheetOpen=kind; bgPlay();
   if(fresh){ dim.style.pointerEvents="auto"; A(dim,[{opacity:0},{opacity:.5}],{duration:300,fill:"forwards"}); A(sheet,[{transform:"translateY(105%)"},{transform:"none"}],{duration:560,easing:"cubic-bezier(.2,1.15,.35,1)",fill:"forwards"}); } }
-function closeSheet(){ if(!sheetOpen) return; sheetOpen=null; dim.style.pointerEvents="none"; A(dim,[{opacity:.5},{opacity:0}],{duration:260,fill:"forwards"});
+function closeSheet(){ if(!sheetOpen) return; sheetOpen=null; bgPlay(); dim.style.pointerEvents="none"; A(dim,[{opacity:.5},{opacity:0}],{duration:260,fill:"forwards"});
   A(sheet,[{transform:"none"},{transform:"translateY(105%)"}],{duration:320,easing:"cubic-bezier(.4,0,.8,.2)",fill:"forwards"}); }
+const bgv=document.getElementById("bgv"); function bgPlay(){ if(!bgv||!bgv.getAttribute("src")) return; if(!sheetOpen&&!document.hidden){ const p=bgv.play(); if(p&&p.catch) p.catch(()=>{}); } else bgv.pause(); } // المقطع يوقف ورا اللوحات وإذا الصفحة مخفية
+if(bgv&&valid){ bgv.src="home-bg.mp4"; bgPlay(); } document.addEventListener("visibilitychange",bgPlay);
 dim.onclick=closeSheet;
 sheet.addEventListener("click",e=>{ if(e.target.closest("[data-x]")) closeSheet(); if(e.target.closest("[data-go]")) openChoice(); if(e.target.closest("[data-wb]")){ closeSheet(); setTimeout(payPick,D(350)); } const pm=e.target.closest("[data-pm]"); if(pm){ const v=pm.dataset.pm; closeSheet(); setTimeout(()=>call("bill","",v),D(350)); } });
 // يختار كاش ولا شبكة قبل لا ينادي على الحساب، عشان الموظف يجيب الجهاز أو الباقي
@@ -1628,23 +1675,30 @@ $("mbtn").addEventListener("click",()=>MENU?openMenuOnly():openMine());
 if(MENU){ const mb=$("mbtn").querySelector("b"); mb.dataset.t="b_menu"; mb.textContent=L("b_menu"); }
 
 /* ---------- الفاتورة: تذكرة تطلع من الطابعة ---------- */
-function billTicket(){ if(!pub) return; document.querySelector(".bp")?.remove();
-  const items=Array.isArray(pub.items)?pub.items:[], feeName=pub.m==="hour"?L("fee_hour"):pub.m==="open"?L("fee_open"):L("fee_free");
-  const rows=[`<div class="rw ln"><span>${feeName}</span><b class="num">${Number(pub.fee)||0}${RS}</b></div>`].concat(items.map(i=>`<div class="rw ln"><span>${esc(nameOf(i.n))}${i.q>1?" × "+i.q:""}</span><b class="num">${Math.round(i.p*i.q*100)/100}${RS}</b></div>`)).join("");
-  const w=document.createElement("div"); w.className="bp";
-  w.innerHTML=`<div class="bd"></div><button class="x" aria-label="close">✕</button><div class="clip"><div class="rc"><div class="tk"><div class="top"><span class="lg"></span><span class="sn"><small>${L("seat")}</small><b class="num">${n}</b></span></div><div style="padding:10px 18px 4px">${rows}</div></div>
-    <div class="cut"><i></i><i></i><em></em></div><div class="tk2"><div class="tot ln"><span>${L("total")}</span><span class="num">${Number(pub.total)||0}${RS}</span></div><small class="ln"><span>⏱ ${tclock(Date.now())}</span><span>${L("final")}</span></small><button class="ln" data-pay>${L("b_bill")}</button></div></div></div>
-    <div class="slot"></div><div class="led">${L("printing")}</div>`;
-  document.body.appendChild(w); const rc=w.querySelector(".rc"), bd=w.querySelector(".bd"), led=w.querySelector(".led");
+const cntTxt=k=>lang==="en"?k+(k===1?" item":" items"):k===1?"صنف واحد":k===2?"صنفين":k<=10?k+" أصناف":k+" صنف";
+function billTicket(){ if(!pub) return; document.querySelector(".bq")?.remove();
+  const items=Array.isArray(pub.items)?pub.items:[], feeName=pub.m==="hour"?L("fee_hour"):pub.m==="open"?L("fee_open"):L("fee_free"), total=Number(pub.total)||0;
+  const cnt=items.reduce((a,i)=>a+(Number(i.q)||1),0), mins=Math.max(0,Math.floor((Date.now()-Number(pub.s||0))/60000));
+  const ln=(a,b)=>`<div class="ln st"><span>${a}</span><i></i><b class="num">${b}${RS}</b></div>`;
+  const w=document.createElement("div"); w.className="bq";
+  w.innerHTML=`<div class="bd"></div><button class="x" aria-label="close">✕</button><div class="wr"><div class="tk"><div class="sd"></div>
+    <div class="top st"><span class="lg"></span><span class="sn"><small>${L("seat")}</small><b class="num">${n}</b></span></div>
+    <div class="meta st num"><span>${L("b_in")} ${tclock(Number(pub.s||0))}</span><span>${mins} ${L("b_min")}</span></div>
+    <h4 class="st">${L("b_sec1")}</h4>${ln(feeName,Number(pub.fee)||0)}
+    ${items.length?`<h4 class="st">${L("b_sec2")}<small class="num">${cntTxt(cnt)}</small></h4>`+items.map(i=>ln(esc(nameOf(i.n))+(i.q>1?` <small class="num">× ${i.q}</small>`:""),Math.round(i.p*i.q*100)/100)).join(""):""}
+    <div class="cut st"></div><div class="tot st"><span>${L("total")}</span><b class="num"><span class="tv">${total}</span>${RS}</b></div>
+    <small class="fn st">${L("final")}</small><button class="pay st" data-pay>${L("b_bill")}</button><span class="sh"></span></div></div>`;
+  document.body.appendChild(w); if(bgv) bgv.pause();
+  const tk=w.querySelector(".tk"), bd=w.querySelector(".bd"), tv=w.querySelector(".tv");
   A(bd,[{opacity:0},{opacity:.85}],{duration:300,fill:"forwards"});
-  A(w.querySelector(".slot"),[{transform:"translateY(40px)",opacity:0},{transform:"none",opacity:1}],{duration:380,easing:SPRING,fill:"backwards"});
-  const N=9, kf=[]; for(let i=0;i<=N;i++){ const y=105-105*i/N; kf.push({transform:`translateY(${y}%)`,offset:Math.min(.999,i/N)}); if(i<N) kf.push({transform:`translateY(${y-105/N}%)`,offset:Math.min(.999,(i+.55)/N)}); } kf[kf.length-1]={transform:"translateY(0)",offset:1};
-  const feed=A(rc,kf,{duration:1500,delay:300,easing:"linear",fill:"forwards"});
-  rc.querySelectorAll(".ln").forEach((e,i)=>A(e,[{opacity:0},{opacity:1}],{duration:200,delay:450+i*130,fill:"backwards"}));
-  if(feed) feed.onfinish=()=>{ led.textContent=L("printed"); }; else { rc.style.transform="none"; led.textContent=L("printed"); }
-  const close=()=>{ A(bd,[{opacity:.85},{opacity:0}],{duration:280,fill:"forwards"}); const a=A(rc,[{transform:"none"},{transform:"translateY(110%)"}],{duration:380,easing:"cubic-bezier(.4,0,.8,.2)",fill:"forwards"}); if(a) a.onfinish=()=>w.remove(); else w.remove(); };
+  const up=A(tk,[{transform:"translateY(110%)"},{transform:"none"}],{duration:560,easing:"cubic-bezier(.2,1.15,.35,1)",fill:"forwards"}); if(!up) tk.style.transform="none";
+  tk.querySelectorAll(".st").forEach((e,i)=>A(e,[{opacity:0,transform:"translateY(8px)"},{opacity:1,transform:"none"}],{duration:320,delay:220+i*40,fill:"backwards"}));
+  if(up&&total>0){ tv.textContent="0"; const t0=performance.now()+D(600), dur=D(700)||1; const f=t=>{ if(!tv.isConnected) return; const p=Math.max(0,Math.min(1,(t-t0)/dur)); tv.textContent=Math.round(total*(1-Math.pow(1-p,3))*100)/100; if(p<1) requestAnimationFrame(f); else tv.textContent=total; }; requestAnimationFrame(f); }
+  A(w.querySelector(".sh"),[{opacity:1,backgroundPosition:"120% 0"},{opacity:1,backgroundPosition:"-40% 0"},{opacity:0,backgroundPosition:"-40% 0"}],{duration:900,delay:1150,easing:"ease-out"});
+  const close=()=>{ A(bd,[{opacity:.85},{opacity:0}],{duration:280,fill:"forwards"}); const a=A(tk,[{transform:"none"},{transform:"translateY(110%)"}],{duration:340,easing:"cubic-bezier(.4,0,.8,.2)",fill:"forwards"}); if(a) a.onfinish=()=>w.remove(); else w.remove(); bgPlay(); };
   w.querySelector(".x").onclick=close; bd.onclick=close;
   w.querySelector("[data-pay]").onclick=()=>{ close(); setTimeout(payPick,D(350)); }; }
+(()=>{ const br=$("billrow"); let y0=null; br.addEventListener("touchstart",e=>{ y0=e.touches[0].clientY },{passive:true}); br.addEventListener("touchend",e=>{ if(y0!=null&&y0-e.changedTouches[0].clientY>24) billTicket(); y0=null },{passive:true}); })(); // سحب الفاتورة لفوق
 
 /* ---------- النداء ---------- */
 document.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(!b) return; if(b.dataset.k==="order") return openChoice(); if(b.dataset.k==="bill") return payPick(); call(b.dataset.k); });
