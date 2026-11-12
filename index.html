@@ -2128,13 +2128,13 @@ function peHtml(id){ const e=view.pe; if(!e||!P()) return ""; const s=seats[id];
 const peBtn=(attrs)=>P()?`<button class="pe" ${attrs} aria-label="تعديل السعر">✎</button>`:"";
 
 /* ---------- الرئيسية ---------- */
-const LAYOUT=[5,6,15,4,7,14,3,8,13,2,9,12,1,10,11]; // ترتيب الجلسات على الأرض، صف صف من اليسار
+const LAYOUT=[5,6,17,4,7,16,3,8,15,2,9,14,1,10,13,0,11,12], LAYMAX=17; // ترتيب الجلسات على الأرض، صف صف من اليسار (0 = خانة فاضية)
 function allSeatIds(){ // null = خانة فاضية تحفظ مكانها في الشبكة
-  const live=n=>n<=cfg.count||seats[sid(n)];
+  const live=n=>n>0&&(n<=cfg.count||seats[sid(n)]);
   const ids=LAYOUT.map(n=>live(n)?sid(n):null);
   const extra=new Set();
-  for(let i=16;i<=cfg.count;i++)extra.add(sid(i));
-  Object.keys(seats).forEach(k=>{if(seatNo(k)>15)extra.add(k)});
+  for(let i=LAYMAX+1;i<=cfg.count;i++)extra.add(sid(i));
+  Object.keys(seats).forEach(k=>{if(seatNo(k)>LAYMAX)extra.add(k)});
   return ids.concat([...extra].sort());
 }
 const STATIONS=[["طلبات البطاطس",n=>RX.fries.test(n)],["طلبات الكورن دوق والذرة",n=>RX.dog.test(n)||RX.corn.test(n)],["طلبات الترك",()=>true],["طلبات أحمد",n=>RX.ah.test(n)],["طلبات داوود",n=>RX.dw.test(n)]];
@@ -3346,7 +3346,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=19, FEATMAX=6; let migrating=false;
+const MIG=20, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3386,6 +3386,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
     if(!items.some(i=>mt.test(i.name)&&/[٧7]/.test(i.name))) items.push({name:"منتو أفغاني ٧ حبات",price:5,cat:"dw"}); }
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
+  if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
@@ -3449,7 +3450,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v85";
+const VER="v86";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
