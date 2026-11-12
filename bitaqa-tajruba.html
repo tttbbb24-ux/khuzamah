@@ -18,7 +18,7 @@ pre{direction:ltr;text-align:left;background:#0c0716;border-radius:12px;padding:
 <p>صفحة تجربة فقط، مو جزء من التطبيق وما تحفظ عندنا أي شي.</p>
 <div class="c"><b>فتحتها من</b><span id="mode"></span></div>
 <div class="c"><b>رمز البطاقة اللي وصل للصفحة</b><span id="tok"></span></div>
-<div id="browser" hidden><ol><li>اضغط زر <b>المشاركة</b> تحت في المتصفح.</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اطلع من المتصفح وافتح أيقونة <b>بطاقة خزامى</b>.</li><li>صوّر لي الشاشة اللي تطلع.</li></ol></div>
+<div id="browser" hidden><button id="shr">مشاركة (تجربة الزر من داخل الصفحة)</button><p>اضغط الزر فوق وشوف: هل يطلع في القائمة «إضافة إلى الشاشة الرئيسية»؟ صوّر القائمة وأرسلها لي. ولو ما طلع، امش بالطريقة العادية:</p><ol><li>اضغط زر <b>المشاركة</b> تحت في المتصفح.</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اطلع من المتصفح وافتح أيقونة <b>بطاقة خزامى</b>.</li><li>صوّر لي الشاشة اللي تطلع.</li></ol></div>
 <div id="app" hidden><button id="allow">سماح بالإشعارات</button><button class="g" id="test" hidden>أرسل إشعار تجريبي بعد 8 ثواني</button><div class="c"><b>حالة الإشعارات</b><span id="st">ما بدأنا</span></div></div>
 <p>السجل (صوّره وأرسله لي):</p><pre id="log"></pre>
 <script>
@@ -44,6 +44,7 @@ async function setup(ask){ try{
   $('st').textContent='مفعّلة، والجوال انسجل'; $('st').className='ok'; $('allow').hidden=true; $('test').hidden=false;
  }catch(e){ log('error: '+e.name+' '+e.message); $('st').textContent='صار خطأ، شوف السجل'; $('st').className='no'; } }
 $('allow').onclick=()=>setup(true);
+$('shr').onclick=async()=>{ if(!navigator.share){ log('share: not supported'); return; } try{ await navigator.share({title:'بطاقة خزامى',url:location.href}); log('share: sheet closed ok'); }catch(e){ log('share: '+e.name); } };
 $('test').onclick=()=>{ $('test').textContent='بيوصل بعد 8 ثواني…'; setTimeout(async()=>{ try{ await reg.showNotification('خزامى',{body:'باقي 5 دقايق على جلستكم',icon:'icon.png',dir:'rtl',lang:'ar',tag:'kz-test'}); log('notification shown'); }catch(e){ log('notify error: '+e.name+' '+e.message); } $('test').textContent='أرسل إشعار تجريبي بعد 8 ثواني'; },8000); };
 if(standalone) setup(false);
 </script></body></html>
