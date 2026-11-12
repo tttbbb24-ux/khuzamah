@@ -1744,12 +1744,12 @@ function paintOrder(){ const items=Array.isArray(menuData.items)?menuData.items:
   const html=`<div class="hd"><b>${L("o_title")}<small>${L("seat")} ${n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="ob2" data-v="o">${rowsHTML(secsOf(items),oall,false,nd)}</div>
   <div class="sfoot">${edited&&cart.length?`<div class="ednote">${L("e_back")}</div>`:""}${cl?`<div class="cartl">${cl}</div>`:""}<button class="sendb" data-send ${n2?"":"disabled"}><span class="n num">${n2}</span><span class="t">${L("send")}</span><span class="num">${cartT()}${RS}</span></button><span class="hint2">${L("needok")}</span></div>`;
   sheet.innerHTML=html; sheetOpen="order"; sheet.style.height="92%"; restoreScr(oscr); }
-const promoIdx=()=>{ const it=menuData&&menuData.promo&&menuData.promo.on?(menuData.items||[]).findIndex(x=>/ماتشا/.test(x.name)&&!x.off):-1; return it; };
+const HCRX=/هوت\s*شوك|كوكومون/; const promoIdx=()=>{ if(!(menuData&&menuData.promo&&menuData.promo.on)) return -1; const its=menuData.items||[], h=its.findIndex(x=>HCRX.test(x.name)&&!x.off); return h>=0?h:its.findIndex(x=>/ماتشا/.test(x.name)&&!x.off); }; // الهوت شوكلت أول، ولو مو متوفر يرجع للماتشا
 let promoSeen=false; try{ promoSeen=sessionStorage.getItem("kzpromo"+K)==="1"; }catch(e){}
-function paintPromo(i){ const it=menuData.items[i]; promoSeen=true; try{ sessionStorage.setItem("kzpromo"+K,"1"); }catch(e){}
+function paintPromo(i){ const it=menuData.items[i], hc=HCRX.test(it.name), pv=hc?"hotchoc-ad":"matcha-ad", pbg=hc?' style="background:#130c0a"':""; promoSeen=true; try{ sessionStorage.setItem("kzpromo"+K,"1"); }catch(e){}
   sheet.innerHTML=`<div class="hd"><b></b><button class="x" data-x aria-label="close">✕</button></div>
-  <div class="promo"><video src="matcha-ad.mp4" poster="matcha-ad-end.webp" autoplay muted playsinline preload="auto"></video>
-  <div class="pb"><small>🥛 ${L("p_lf")}</small><button class="pgo" data-pgo="${i}">${L("p_go")} · <span class="num">${priceOf(it)}</span></button></div></div>
+  <div class="promo"${pbg}><video${pbg} src="${pv}.mp4" poster="${pv}-end.webp" autoplay muted playsinline preload="auto"></video>
+  <div class="pb">${hc?"":`<small>🥛 ${L("p_lf")}</small>`}<button class="pgo" data-pgo="${i}">${L("p_go")} · <span class="num">${priceOf(it)}</span></button></div></div>
   <div class="sfoot"><button class="lnk" data-pskip>${L("p_skip")}</button></div>`;
   sheetOpen="promo"; sheet.style.height="92%";
   const vd=sheet.querySelector(".promo video"); if(vd){ const pl=vd.play(); if(pl&&pl.catch) pl.catch(()=>{}); }

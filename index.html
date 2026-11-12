@@ -3007,7 +3007,7 @@ function settingsHtml(){
     <div class="row"><label for="c-open">سعر الوقت المفتوح</label><input class="pr num" id="c-open" data-f="open" inputmode="decimal" value="${esc(d.open)}"></div>
     <div class="row"><label for="c-count">عدد الجلسات</label><input class="pr num" id="c-count" data-f="count" inputmode="numeric" value="${esc(d.count)}"></div>
   </div>
-  ${P()?`<div class="set"><div class="row"><label>إعلان الماتشا عند طلب الزبون</label><button class="${cfg.promo&&cfg.promo.on?"primary":"ghost"}" data-act="promo">${cfg.promo&&cfg.promo.on?"شغّال":"طافي"}</button></div></div>`:""}
+  ${P()?`<div class="set"><div class="row"><label>إعلان الهوت شوكلت عند طلب الزبون</label><button class="${cfg.promo&&cfg.promo.on?"primary":"ghost"}" data-act="promo">${cfg.promo&&cfg.promo.on?"شغّال":"طافي"}</button></div></div>`:""}
   <h2 class="fth">الأصناف <span class="ftc">⭐ ${d.items.filter(i=>i.feat).length} من ${FEATMAX}</span></h2>
   <p class="empty" style="font-size:13.5px">اضغط ⭐ جنب الصنف عشان يطلع في قسم «مميز» عند الزباين. الحد ${FEATMAX} أصناف.</p>
   <div class="set">${d.items.map((it,i)=>`<div class="row item">
@@ -3449,7 +3449,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v84";
+const VER="v85";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
