@@ -621,9 +621,9 @@ const EN=[[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qama
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc".split(" ")); // صور الستايل الغامق الجديد
+const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc balila".split(" ")); // صور الستايل الغامق الجديد
 function photo(n){ const k=photo0(n); return k&&NP.has(k)?"n_"+k:k; }
-function photo0(n){ n=String(n); if(/ساتي/.test(n)) return ""; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(RX.dw.test(n)) return "ashak";
+function photo0(n){ n=String(n); if(/ساتي/.test(n)) return ""; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "balila"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(/بطاطس.*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -1731,7 +1731,7 @@ const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل ب
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/,st:/ساتي/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/,st:/ساتي/};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}, SATEN=["Beef","Chicken","Shrimp","Peanut sauce","Spicy sambal"]; // ساتي علاء، نفس تطبيق الموظفين
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
   if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
@@ -1745,6 +1745,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   if(/ماتشا/.test(n)) return {k:"mat",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
   if(RX.pan.test(n)) return {k:"pan",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
   if(RX.st.test(n)) return {k:"st",opts:SATAY.opts,st:true};
+  if(/بليل/.test(n)) return {k:"ak",excl:"بدون إضافات",opts:["ملح","مخلل","خيار","كمون","شطة","فلفل"]};
   if(RX.dw.test(n)) return {k:"ak",excl:"بدون إضافات",opts:["نعناع","فلفل"]};
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",excl:"سادة",opts:["حبق","نعناع"]};

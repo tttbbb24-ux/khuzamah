@@ -1622,7 +1622,7 @@ const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حام
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/,st:/ساتي/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/,st:/ساتي/};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}; // ساتي علاء: ٥ أسياخ، والسيخ الزايد بـ٤
 const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["ah","الحبش والبطاطس المشوية وورق العنب"],["dw","الأشك (داوود)"],["al","الساتي (علاء)"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
@@ -1654,7 +1654,7 @@ function icon(name){ const n=String(name); if(RX.st.test(n)) return "🍢"; if(R
   if(RX.pan.test(n)) return "🥞"; if(/كوكيز/.test(n)) return "🍪"; if(/كيك/.test(n)) return "🍰"; if(/مكسرات/.test(n)) return "🥜"; if(/جلس[ةه]/.test(n)) return "🪑";
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
-function photo(name){ const n=String(name); if(RX.st.test(n)) return ""; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
+function photo(name){ const n=String(name); if(RX.st.test(n)) return ""; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "n_balila"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -1708,6 +1708,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
   if(/ماتشا/.test(n)) return {k:"mat",title:"بسيروب فانيلا أو بدون · حليب خالي من اللاكتوز أو جوز الهند",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
   if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
   if(RX.st.test(n)) return {k:"st",title:"اختر 5 أسياخ · السيخ الزايد بـ4 ريال",opts:SATAY.opts,st:true};
+  if(/بليل/.test(n)) return {k:"ak",title:"اختر الإضافات",excl:"بدون إضافات",opts:["ملح","مخلل","خيار","كمون","شطة","فلفل"]};
   if(RX.dw.test(n)) return {k:"ak",title:"نعناع أو فلفل أو الاثنين",excl:"بدون إضافات",opts:["نعناع","فلفل"]};
   if(/v\s*60|في\s*60/i.test(n)) return {k:"v60",title:"اختر نوع البن",opts:["إثيوبي","كولومبي"],one:true};
   if(/شاهي/.test(n)) return {k:"tea",title:"سادة، أو حبق أو نعناع أو الاثنين · واختر السكر",excl:"سادة",opts:["حبق","نعناع"]};
@@ -3364,7 +3365,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=21, FEATMAX=6; let migrating=false;
+const MIG=22, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3405,6 +3406,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
   if(m<21&&!items.some(i=>RX.st.test(i.name))) items.push({name:"ساتي",price:20,cat:"al"}); // بسطة علاء
+  if(m<22&&!items.some(i=>/بليل/.test(i.name))){ items.push({name:"بليلة كبير",price:7,cat:"dw"}); items.push({name:"بليلة صغير",price:4,cat:"dw"}); } // بليلة داوود
   if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
@@ -3469,7 +3471,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v88";
+const VER="v89";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
