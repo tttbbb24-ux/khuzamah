@@ -2778,8 +2778,6 @@ function secPay(id,pay){
       cash:pay==="cash"?amt:0,card:pay==="card"?amt:0,type:take?"take":"part",ordered:s.type,converted:false,hours:0,minutes:mins(s.startedAt),fee:0,gross:amt,disc:0,
       items:docs.map(d=>({name:d.name,price:Number(d.price),qty:qty(d),note:d.note||"",served:!!d.served,by:d.byName||"",at:d.at||0,...(d.comp?{comp:true,orig:Number(d.orig)||0}:{})})),total:amt,startedAt:s.startedAt,closedAt:now});
     for(const d of docs) await db.doc("orders/"+d.id).update({pd:true});
-    const left=seatOrders(id).filter(o=>!o.pd&&!docs.includes(o));
-    if(!take&&!left.length&&fee(id)<=0.004){ await db.doc("seats/"+id).delete(); for(const o of seatOrders(id)) await db.doc("orders/"+o.id).delete(); } // ما باقي شي على أحد: تتقفل
     logIt(SECN[me.station]+" حاسب على أصنافه من "+where+" · "+pl+" "+moneyT(amt)); closeSheet(); celebrate();
     toast("💳 انحسب لقسمك "+moneyT(amt)+" "+pl+" من "+where); }); }
 function closePart(id,pay,c,vv,ov){
@@ -3509,7 +3507,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v93";
+const VER="v94";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
