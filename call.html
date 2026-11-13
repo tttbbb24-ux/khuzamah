@@ -614,7 +614,7 @@ const STR={
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس.*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/ساتي\s*لحم/,"Beef satay with rice"],[/ساتي\s*دجاج/,"Chicken satay with rice"],[/ساتي\s*[جق]مبري/,"Shrimp satay with rice"],[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس.*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كنز[ةه]/,"Kinza"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
@@ -1732,6 +1732,7 @@ const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حام
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
 const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/,st:/ساتي/};
+const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):"", SATXEN={"لحم":"beef","دجاج":"chicken","جمبري":"shrimp","قمبري":"shrimp"};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}, SATEN=["Beef","Chicken","Shrimp","Peanut sauce","Spicy sambal"]; // ساتي علاء، نفس تطبيق الموظفين
 function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
   if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
@@ -1744,6 +1745,7 @@ function specFor(name){ const n=String(name); // نفس اختيارات تطب�
   if(RX.kz.test(n)) return {k:"kz",excl:"بدون ثلج",opts:["بثلج"]};
   if(/ماتشا/.test(n)) return {k:"mat",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
   if(RX.pan.test(n)) return {k:"pan",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
+  if(satT(n)) return {k:"sx",opts:[],xs:satT(n)};
   if(RX.st.test(n)) return {k:"st",opts:SATAY.opts,st:true};
   if(/بليل/.test(n)) return {k:"ak",excl:"بدون إضافات",opts:["ملح","مخلل","خيار","كمون","شطة","فلفل"]};
   if(RX.dw.test(n)) return {k:"ak",excl:"بدون إضافات",opts:["نعناع","فلفل"]};
@@ -1761,6 +1763,7 @@ function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i))
   if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel),ok:v.sel.length>0||!!v.none};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK),ok:v.sel.length>0||!!v.none};
   if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
+  if(spec.k==="sx"){ const c=v.sel.length; return {...base,price:base.price+c*SATX,note:c?"+ "+c+" سيخ "+spec.xs+" زيادة":"",ok:true}; }
   if(spec.k==="st"){ const c=[0,1,2].map(i=>v.sel.filter(x=>x===i).length), N=c[0]+c[1]+c[2], need=Math.max(SATAY.n,Number(v.need)||0,N), sc=[3,4].filter(i=>v.sel.includes(i)).map(i=>spec.opts[i]);
     return {...base,price:base.price+(need-SATAY.n)*SATAY.x,note:N?N+" سيخ: "+[0,1,2].map(i=>c[i]?c[i]+" "+spec.opts[i]:"").filter(Boolean).join("، ")+(sc.length?" + "+sc.join(" و"):""):"",ok:N>=SATAY.n&&N===need}; }
   if(spec.k==="corn"){ if(v.ex) return {name:"ذرة سادة"+(v.size?" "+(v.size==="small"?"صغير":"كبير"):""),price:v.size?CORN[v.size]:0,note:"",ok:!!v.size}; return {name:"ذرة "+and+" كبير",price:CORN.big,note:"",ok:on.length>0}; }
@@ -1822,6 +1825,7 @@ function paintOpt(){ const it=menuData.items[optv.i], sp=specFor(it.name), r=lin
     ${full?"":`<p class="sthint">${need>SATAY.n&&n===need-1?(en?"Pick the extra skewer":"اختر نوع السيخ الزايد"):(en?(need-n)+" more to pick":"باقي "+(need-n)+" سيخ")}</p>`}
     ${full||optv.stseen?`<div class="stadd ${optv.stnew?"new":""}"><b class="ogh">${en?"Extras · free":"الإضافات · مجانية"}</b><div class="chips">${[3,4].map(j=>`<button class="chip ${optv.sel.includes(j)?"on":""} ${oOff(it,sp.opts[j])?"xo":""}" data-op="${j}" ${oOff(it,sp.opts[j])&&!optv.sel.includes(j)?"disabled":""}>${esc(T(j))}${oOff(it,sp.opts[j])?` <small>· ${L("x_out")}</small>`:""}</button>`).join("")}</div>
     <button class="stmore" data-stmore>＋ ${en?"Add a skewer":"إضافة سيخ"} · <span class="num">${SATAY.x}</span>${RS}</button>${need>SATAY.n?`<button class="lnk" data-stless>${en?"Remove extra skewer":"شيل سيخ زايد"} (<span class="num">${need-SATAY.n}</span>)</button>`:""}</div>`:""}`; optv.stnew=false; }
+  else if(sp&&sp.xs){ const c=optv.sel.length, en=lang==="en"; ch.push(`<div class="qdrow ${c?"on":""}"><span>${en?"Extra "+(SATXEN[sp.xs]||"")+" skewer":"سيخ "+esc(sp.xs)+" زيادة"} · <span class="num">${SATX}</span>${RS}</span><span class="qdst"><button data-sx="-1" aria-label="-" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-sx="1" aria-label="+">+</button></span></div>`); }
   else if(sp&&sp.cnt){ sp.opts.forEach((o,j)=>{ const c=optv.sel.filter(x=>x===j).length; if(j===0||j===sp.split) ch.push(`<b class="ogh">${L(j?"qd_s":"qd_c")}</b>`); ch.push(`<div class="qdrow ${c?"on":""}"><span>${esc(o.replace(/^(قطعة|عود) /,""))}</span><span class="qdst"><button data-qc="${j}" data-d="-1" aria-label="-" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-qc="${j}" data-d="1" aria-label="+">+</button></span></div>`) }); }
   else if(sp){ if(sp.excl) ch.push(`<button class="chip ${optv.ex?"on":""}" data-ex>${esc(sp.excl)}</button>`); sp.opts.forEach((o,j)=>(sp.split&&(j===0||j===sp.split)?ch.push(`<b class="ogh">${L(j?"adds":"sauces")}</b>`):0,ch.push(`<button class="chip ${!optv.ex&&optv.sel.includes(j)?"on":""} ${oOff(it,o)?"xo":""}" data-op="${j}" ${oOff(it,o)&&!optv.sel.includes(j)?"disabled":""}>${esc(o)}${oOff(it,o)?` <small>· ${L("x_out")}</small>`:""}${sp.paid&&sp.paid[j]?` <span class="num">+${sp.paid[j]}</span>`:""}</button>`))); }
   const mk=sp&&sp.k==="mat"?`<b style="font-size:14px;color:var(--muted)">🥛 ${L("milk")}</b><div class="chips"><button class="chip ${optv.size!=="coco"?"on":""}" data-mk="lf">${L("m_lf")}</button><button class="chip ${optv.size==="coco"?"on":""}" data-mk="coco">${L("m_coco")}</button></div>`:sp&&sp.k==="tea"?`<b style="font-size:14px;color:var(--muted)">🍬 ${L("sug")} ${optv.sg>=0?"✓":`<span style="color:#ff8077">· ${L("sg_rq")}</span>`}</b><div class="chips sgseg ${optv.sg>=0?"":"need"}">${[0,1,2,3].map(k=>`<button class="chip ${optv.sg===k?"on":""}" data-sg="${k}">${L("sg"+k)}</button>`).join("")}</div>${optv.sg>0?`<div class="chips"><button class="chip ${optv.size!=="stv"?"on":""}" data-mk="reg">${L("s_reg")}</button><button class="chip ${optv.size==="stv"?"on":""}" data-mk="stv">${L("s_stv")}</button></div>`:""}<div class="chips"><button class="chip ${/سكر برا/.test(optv.note||"")?"on":""}" data-sout>🍬 ${L("sg_out")}</button></div>`:"";
@@ -1896,6 +1900,7 @@ sheet.addEventListener("click",e=>{ const t=e.target;
       if(d>0){ if(cn()<need) optv.sel=optv.sel.concat(j).sort((a,b)=>a-b) } else { const k=optv.sel.lastIndexOf(j); if(k>=0){ optv.sel=optv.sel.slice(); optv.sel.splice(k,1) } }
       if(cn()===need){ if(!optv.stseen) optv.stnew=true; optv.stseen=true; paintOpt(); const sc=sheet.querySelector(".stsec"); optv.stshut=true; return setTimeout(()=>{ if(sc&&sc.isConnected){ sc.classList.add("shut"); setTimeout(()=>{ if(optv&&sheetOpen==="opt") paintOpt() },D(380)) } },D(260)); }
       return paintOpt(); } }
+  const sxb=t.closest("[data-sx]"); if(sxb&&sp&&sp.xs){ optv.sel=optv.sel.slice(); if(+sxb.dataset.sx>0){ if(optv.sel.length<20) optv.sel.push(0) } else optv.sel.pop(); return paintOpt(); }
   const qc=t.closest("[data-qc]"); if(qc&&sp){ const j=+qc.dataset.qc, d=+qc.dataset.d; if(d>0){ if(optv.sel.length<40) optv.sel=optv.sel.concat(j).sort((a,b)=>a-b) } else { const k=optv.sel.lastIndexOf(j); if(k>=0){ optv.sel=optv.sel.slice(); optv.sel.splice(k,1) } } optv.q=1; return paintOpt(); }
   const op=t.closest("[data-op]"); if(op&&sp){ const j=+op.dataset.op; optv.ex=false; optv.none=false; if(sp.one) optv.sel=[j]; else optv.sel=optv.sel.includes(j)?optv.sel.filter(x=>x!==j):optv.sel.concat(j); return paintOpt(); }
   const sgb=t.closest("[data-sg]"); if(sgb){ optv.sg=+sgb.dataset.sg; return paintOpt(); }

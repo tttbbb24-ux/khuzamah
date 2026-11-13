@@ -1623,7 +1623,7 @@ const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","�
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
 const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كنز[ةه]/,st:/ساتي/};
-const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}; // ساتي علاء: ٥ أسياخ، والسيخ الزايد بـ٤
+const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}; const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):""; // وجبات الساتي الثلاث، والسيخ الزايد من نفس النوع بـ٥ // ساتي علاء: ٥ أسياخ، والسيخ الزايد بـ٤
 const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["ah","الحبش والبطاطس المشوية وورق العنب"],["dw","الأشك (داوود)"],["al","الساتي (علاء)"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
   const n=String(name);
@@ -1707,6 +1707,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
   if(RX.kz.test(n)) return {k:"kz",title:"بثلج أو بدون ثلج",excl:"بدون ثلج",opts:["بثلج"],pr:[KINZA.plain,KINZA.ice]};
   if(/ماتشا/.test(n)) return {k:"mat",title:"بسيروب فانيلا أو بدون · حليب خالي من اللاكتوز أو جوز الهند",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
   if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
+  if(satT(n)) return {k:"sx",title:"إضافة سيخ "+satT(n)+" · "+SATX+" ريال",opts:[],xs:satT(n)};
   if(RX.st.test(n)) return {k:"st",title:"اختر 5 أسياخ · السيخ الزايد بـ4 ريال",opts:SATAY.opts,st:true};
   if(/بليل/.test(n)) return {k:"ak",title:"اختر الإضافات",excl:"بدون إضافات",opts:["ملح","مخلل","خيار","كمون","شطة","فلفل"]};
   if(RX.dw.test(n)) return {k:"ak",title:"نعناع أو فلفل أو الاثنين",excl:"بدون إضافات",opts:["نعناع","فلفل"]};
@@ -1719,6 +1720,7 @@ function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسع
   if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel)};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK)};
   if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
+  if(spec.k==="sx"){ const c=v.sel.length; return {...base,price:base.price+c*SATX,note:c?"+ "+c+" سيخ "+spec.xs+" زيادة":"",ok:true}; }
   if(spec.k==="st"){ const c=[0,1,2].map(i=>v.sel.filter(x=>x===i).length), N=c[0]+c[1]+c[2], need=Math.max(SATAY.n,Number(v.need)||0,N), sc=[3,4].filter(i=>v.sel.includes(i)).map(i=>spec.opts[i]);
     return {...base,price:base.price+(need-SATAY.n)*SATAY.x,note:N?N+" سيخ: "+[0,1,2].map(i=>c[i]?c[i]+" "+spec.opts[i]:"").filter(Boolean).join("، ")+(sc.length?" + "+sc.join(" و"):""):"",ok:N>=SATAY.n&&N===need}; }
   if(spec.k==="corn"){
@@ -2027,6 +2029,7 @@ function prefill(sp,o){ // يرجّع اختيارات الصنف المسجل �
   if(sp.k==="mat"){ v.size=/جوز الهند/.test(sn)?"coco":"lf"; if(sn.startsWith(sp.excl)) v.ex=true; else sp.opts.forEach((x,i)=>{ if(sn.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="tea"){ v.size=/ستيفيا/.test(sn)?"stv":null; v.sg=/سكر زيادة/.test(sn)?3:/سكر وسط/.test(sn)?2:/سكر خفيف/.test(sn)?1:/بدون سكر/.test(sn)?0:-1; const b=sn.replace(/،\s*(بدون سكر|سكر (خفيف|وسط|زيادة))?( ?(سكر )?دايت \(ستيفيا\))?$/,""); if(b===sp.excl) v.ex=true; else sp.opts.forEach((x,i)=>{ if(b.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="st"){ [0,1,2].forEach(i=>{ const m=sn.match(new RegExp("(\\d+) "+sp.opts[i])); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); [3,4].forEach(i=>{ if(sn.includes(sp.opts[i])) v.sel.push(i) }); v.need=v.sel.filter(i=>i<3).length; v.stshut=v.stseen=true; return v }
+  if(sp.k==="sx"){ const m=sn.match(/\+ (\d+) سيخ/); if(m) for(let j=0;j<+m[1];j++) v.sel.push(0); return v }
   if(sp.k==="qd"){ sp.opts.forEach((x,i)=>{ const m=sn.match(new RegExp("(\\d+) "+x)); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); return v }
   if(sp.excl&&sn===sp.excl){ v.ex=true; return v }
   if(sp.k==="fries"){ const ci=EXTRAS.length-1, c=/(^|\+ )جبنة( بس)?$/.test(sn), b=sn.replace(/\s*\+ جبنة$/,"").replace(/^جبنة بس$/,"بدون إضافات"), f=EXTRAS.slice(0,ci);
@@ -2690,6 +2693,7 @@ function stHtml(sp,it){ const c=[0,1,2].map(i=>view.sel.filter(x=>x===i).length)
   +(full?"":`<div class="qdwarn">${need>SATAY.n&&n===need-1?"اختر نوع السيخ الزايد":"باقي "+(need-n)+" سيخ"}</div>`)
   +(full||view.stseen?`<h2 style="margin:8px 0 4px">الإضافات <small style="font-weight:400;opacity:.7">اختياري</small></h2><div class="menu xchips">${[3,4].map(i=>{ const x=sp.opts[i]; return `<button class="xopt ${view.sel.includes(i)?"on":""} ${oOff(it,x)?"xo":""}" data-act="${oOff(it,x)&&!view.sel.includes(i)?"xoffhint":"xtoggle"}" data-x="${i}" ${OPS()?`data-lpo="${esc(x)}"`:""}><b>${esc(x)}</b>${oOff(it,x)?`<i class="xot">خلص</i>`:""}</button>` }).join("")}</div>
   <button class="stmore" data-act="stmore">＋ إضافة سيخ · <span class="num">${SATAY.x}</span>${RS}</button>${need>SATAY.n?`<button class="link" data-act="stless">شيل سيخ زايد (<span class="num">${need-SATAY.n}</span>)</button>`:""}`:""); }
+function sxHtml(sp){ const c=view.sel.length; return `<div class="qdrow ${c?"on":""}"><span>سيخ ${esc(sp.xs)} زيادة · <span class="num">${SATX}</span>${RS}</span><span class="qdst"><button data-act="sxcnt" data-d="-1" aria-label="نقص" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-act="sxcnt" data-d="1" aria-label="زود">+</button></span></div>`; }
 function qdHtml(sp){ const N=view.sel.length; // قمر الدين: عداد لكل نوع، والمجموع لازم زوجي
   return sp.opts.map((o,i)=>{ const c=view.sel.filter(x=>x===i).length; return (i===0||i===sp.split?`<h2 style="margin:8px 0 4px">${i?"أعواد":"قطع"}</h2>`:"")+`<div class="qdrow ${c?"on":""}"><span>${esc(o.replace(/^(قطعة|عود) /,""))}</span><span class="qdst"><button data-act="xcnt" data-x="${i}" data-d="-1" aria-label="نقص" ${c?"":"disabled"}>−</button><b class="num">${c}</b><button data-act="xcnt" data-x="${i}" data-d="1" aria-label="زود">+</button></span></div>` }).join("")
     +(N%2?`<div class="qdwarn">ضيف حبة وحدة كمان<small>قمر الدين ينباع حبتين حبتين</small></div>`:N?`<p class="qdok">${N} حبات</p>`:""); }
@@ -2701,7 +2705,7 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   ${view.edit&&view.eq>1?`<div class="seg xone"><button class="${view.one?"":"on"}" data-act="xone" data-v="0">عدّل الكل (<span class="num">${view.eq}</span>)</button><button class="${view.one?"on":""}" data-act="xone" data-v="1">عدّل حبة وحدة بس</button></div>`:""}
   ${off&&!view.edit?`<div class="notice" style="background:var(--red-bg);color:var(--red);font-weight:700">غير متوفر الحين</div>`:""}
   ${sp&&sp.all?`<button class="chip ${freeAll(sp,it).every(i=>view.sel.includes(i))?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
-  ${sp&&sp.st?stHtml(sp,it):sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""} ${oOff(it,x)?"xo":""}" ${L?`style="background:${L[1]}"`:""} data-act="${oOff(it,x)&&!view.sel.includes(i)?"xoffhint":"xtoggle"}" data-x="${i}" ${OPS()?`data-lpo="${esc(x)}"`:""}>${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${oOff(it,x)?`<i class="xot">خلص</i>`:""}${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:sp.paid&&sp.paid[i]?`<span class="num">+${sp.paid[i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
+  ${sp&&sp.st?stHtml(sp,it):sp&&sp.xs?sxHtml(sp):sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""} ${oOff(it,x)?"xo":""}" ${L?`style="background:${L[1]}"`:""} data-act="${oOff(it,x)&&!view.sel.includes(i)?"xoffhint":"xtoggle"}" data-x="${i}" ${OPS()?`data-lpo="${esc(x)}"`:""}>${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${oOff(it,x)?`<i class="xot">خلص</i>`:""}${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:sp.paid&&sp.paid[i]?`<span class="num">+${sp.paid[i]}${RS}</span>`:""}</button>`}).join("")}</div>`:""}
   ${sp&&sp.k==="mat"?`<h2>الحليب</h2><div class="menu xchips"><button class="xopt ${view.size!=="coco"?"on":""}" data-act="xsize" data-s="lf"><b>خالي من اللاكتوز</b></button><button class="xopt ${view.size==="coco"?"on":""}" data-act="xsize" data-s="coco"><b>جوز الهند</b></button></div>`:""}
   ${sp&&sp.k==="tea"?`<h2 class="sgh">السكر ${view.sg>=0?`<i class="sgok">✓</i>`:`<i class="sgrq">مطلوب</i>`}</h2><div class="sgseg ${view.sg>=0?"":"need"}">${["بدون","خفيف","وسط","زيادة"].map((t,k)=>`<button class="${view.sg===k?"on":""}" data-act="xsug" data-g="${k}">${t}</button>`).join("")}</div>${view.sg>0?`<h2>النوع</h2><div class="menu xchips"><button class="xopt ${view.size!=="stv"?"on":""}" data-act="xsize" data-s="reg"><b>عادي</b></button><button class="xopt ${view.size==="stv"?"on":""}" data-act="xsize" data-s="stv"><b>دايت (ستيفيا)</b></button></div>`:""}`:""}
   ${sp&&sp.k==="corn"&&view.ex?`<h2>الحجم</h2><div class="menu xchips">
@@ -3249,6 +3253,7 @@ document.addEventListener("click",e=>{
   if(a==="xsug"){ view.sg=+b.dataset.g; return renderSheet() }
   if(a==="xoffhint"){ if(Date.now()-lpJust<800) return; return toast(OPS()?"خلصت · اضغط عليها مطوّل ترجّعها":"هذي خلصت الحين") }
   if(a==="xtoggle"){ if(Date.now()-lpJust<800) return; const x=+b.dataset.x,k=view.sel.indexOf(x), sp=specFor(cfg.items[view.i].name); view.ex=false; if(!(sp&&(sp.k==="mat"||sp.k==="tea"))) view.size=null; if(sp&&sp.one) view.sel=[x]; else if(k<0)view.sel.push(x); else view.sel.splice(k,1); return renderSheet()}
+  if(a==="sxcnt"){ if(+b.dataset.d>0){ if(view.sel.length<20) view.sel.push(0) } else view.sel.pop(); return renderSheet() }
   if(a==="sttog"){ view.stshut=!view.stshut; return renderSheet() }
   if(a==="stmore"||a==="stless"){ const n=view.sel.filter(i=>i<3).length, need=Math.max(SATAY.n,view.need||0,n); if(a==="stmore"){ view.need=need+1; view.stshut=false } else if(need>SATAY.n){ view.need=need-1; if(n>view.need){ const k=view.sel.map(i=>i<3).lastIndexOf(true); view.sel.splice(k,1) } view.stshut=view.sel.filter(i=>i<3).length===view.need } return renderSheet() }
   if(a==="xcnt"&&(specFor((cfg.items[view.i]||{}).name||"")||{}).st){ const x=+b.dataset.x, d=+b.dataset.d, n=view.sel.filter(i=>i<3).length, need=Math.max(SATAY.n,view.need||0,n); view.need=need;
@@ -3365,7 +3370,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=22, FEATMAX=6; let migrating=false;
+const MIG=23, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3407,6 +3412,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
   if(m<21&&!items.some(i=>RX.st.test(i.name))) items.push({name:"ساتي",price:20,cat:"al"}); // بسطة علاء
   if(m<22&&!items.some(i=>/بليل/.test(i.name))){ items.push({name:"بليلة كبير",price:7,cat:"dw"}); items.push({name:"بليلة صغير",price:4,cat:"dw"}); } // بليلة داوود
+  if(m<23&&!items.some(i=>satT(i.name))){ const k=items.findIndex(i=>RX.st.test(i.name)), p=k>=0?Number(items[k].price)||20:20, nw=["لحم","جمبري","دجاج"].map(t=>({name:"ساتي "+t+" مع الرز",price:p,cat:"al"})); if(k>=0) items.splice(k,1,...nw); else items.push(...nw); } // ساتي علاء: ٣ وجبات بدل الاختيار
   if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
 }
@@ -3471,7 +3477,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v90";
+const VER="v91";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
