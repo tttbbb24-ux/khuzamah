@@ -621,7 +621,7 @@ const EN=[[/شاهي\s*مغرب/,"Moroccan mint tea"],[/ساتي\s*لحم/,"Beef
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc balila satay".split(" ")); // صور الستايل الغامق الجديد
+const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc mtea balila satay".split(" ")); // صور الستايل الغامق الجديد
 function photo(n){ const k=photo0(n); return k&&NP.has(k)?"n_"+k:k; }
 function photo0(n){ n=String(n); if(/ساتي/.test(n)) return "satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "balila"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
@@ -630,7 +630,7 @@ function photo0(n){ n=String(n); if(/ساتي/.test(n)) return "satay"; if(/هو
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
   if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
   if(/كنز[ةه]/.test(n)) return "kinza"; if(/مو[يى][ةه]/.test(n)) return "water"; if(/بان\s*كيك/.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
-  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return ""; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
+  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return "mtea"; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };

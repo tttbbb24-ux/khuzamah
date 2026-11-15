@@ -1663,7 +1663,7 @@ function photo(name){ const n=String(name); if(RX.st.test(n)) return "n_satay"; 
   if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro";
   if(RX.moj.test(n)||/ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(RX.cr.test(n)) return "codered"; if(RX.rb.test(n)) return "redbull"; if(RX.kz.test(n)) return "kinza";
   if(/مو[يى][ةه]/.test(n)) return "water"; if(RX.pan.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
-  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return ""; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
+  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return "mtea"; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
 const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:"",food:"fries",sn:"cookies"};
