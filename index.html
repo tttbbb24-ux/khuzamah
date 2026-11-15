@@ -1645,7 +1645,7 @@ function catOf(name){ // تخمين القسم من الاسم، للأصناف 
 }
 const CAT_ICON={corn:"🌽",fries:"🍟",cold:"🧊",hot:"☕",hookah:"💨",sweet:"🍰",nuts:"🥜",other:"🍽️"};
 const RED="#c81e2f";
-const OPT_LOOK={"حبق":["🌿","#3d7a3a"],"نعناع":["🌱","#1f9e74"],"إثيوبي":["☕","#5b3420"],"كولومبي":["☕","#8a5a2b"],"بثلج":["🧊","#1f78c1"],"فراولة":["🍓","#d62839"],"حبحب":["🍉","linear-gradient(135deg,#2e9e4f 50%,#e23d50 50%)"],"توت أزرق":["🫐","#3f51b5"],"شوكولاتة":["🍫","#5a3420"],"لوتس":["🍪","#b96f24"]};
+const OPT_LOOK={"حبق":["🌿","#3d7a3a"],"نعناع":["🌱","#1f9e74"],"إثيوبي":["☕","#5b3420"],"كولومبي":["☕","#8a5a2b"],"بثلج":["🧊","#1f78c1"],"فراولة":["🍓","#d62839"],"حبحب":["🍉","linear-gradient(135deg,#2e9e4f 50%,#e23d50 50%)"],"توت أزرق":["🫐","#3f51b5"],"شوكولاتة":["🍫","#5a3420"],"لوتس":["🍪","#b96f24"],"بستاشيو":["🥜","#7fa650"]};
 function icon(name){ const n=String(name); if(RX.st.test(n)) return "🍢"; if(RX.dw.test(n)) return "🥟";
   if(RX.ah.test(n)) return /حبش/.test(n)?"🌽":/عنب/.test(n)?"🍃":"🥔";
   if(RX.dog.test(n)) return "🌭"; if(RX.corn.test(n)) return "🌽"; if(RX.fries.test(n)) return "🍟";
@@ -1663,7 +1663,7 @@ function photo(name){ const n=String(name); if(RX.st.test(n)) return "n_satay"; 
   if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro";
   if(RX.moj.test(n)||/ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(RX.cr.test(n)) return "codered"; if(RX.rb.test(n)) return "redbull"; if(RX.kz.test(n)) return "kinza";
   if(/مو[يى][ةه]/.test(n)) return "water"; if(RX.pan.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
-  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
+  if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return ""; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
 const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:"",food:"fries",sn:"cookies"};
@@ -1706,7 +1706,7 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
   if(RX.rb.test(n)) return {k:"rb",title:"بنكهة أو بدون",excl:"بدون نكهة",opts:FLAV};
   if(RX.kz.test(n)) return {k:"kz",title:"بثلج أو بدون ثلج",excl:"بدون ثلج",opts:["بثلج"],pr:[KINZA.plain,KINZA.ice]};
   if(/ماتشا/.test(n)) return {k:"mat",title:"بسيروب فانيلا أو بدون · حليب خالي من اللاكتوز أو جوز الهند",excl:"بدون سيروب",opts:["سيروب فانيلا"]};
-  if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس"]};
+  if(RX.pan.test(n)) return {k:"pan",title:"اختر الإضافة",excl:"بدون إضافة",opts:["شوكولاتة","لوتس","بستاشيو"]};
   if(satT(n)) return {k:"sx",title:"الإضافات مجانية · والسيخ الزايد "+satT(n)+" بـ"+SATX+" ريال",opts:["صوص لوز","سمبل حار"],xs:satT(n)};
   if(RX.st.test(n)) return {k:"st",title:"اختر 5 أسياخ · السيخ الزايد بـ4 ريال",opts:SATAY.opts,st:true};
   if(/بليل/.test(n)) return {k:"ak",title:"اختر الإضافات",excl:"بدون إضافات",opts:["ملح","مخلل","خيار","كمون","شطة","فلفل"]};
@@ -3400,7 +3400,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=23, FEATMAX=6; let migrating=false;
+const MIG=24, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3440,6 +3440,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
     if(!items.some(i=>mt.test(i.name)&&/[٧7]/.test(i.name))) items.push({name:"منتو أفغاني ٧ حبات",price:5,cat:"dw"}); }
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
+  if(m<24&&!items.some(i=>/شاهي\s*مغرب/.test(i.name))) items.push({name:"شاهي مغربي",price:1,cat:"hot"}); // شاهي مغربي للترك
   if(m<21&&!items.some(i=>RX.st.test(i.name))) items.push({name:"ساتي",price:20,cat:"al"}); // بسطة علاء
   if(m<22&&!items.some(i=>/بليل/.test(i.name))){ items.push({name:"بليلة كبير",price:7,cat:"dw"}); items.push({name:"بليلة صغير",price:4,cat:"dw"}); } // بليلة داوود
   if(m<23&&!items.some(i=>satT(i.name))){ const k=items.findIndex(i=>RX.st.test(i.name)), p=k>=0?Number(items[k].price)||20:20, nw=["لحم","جمبري","دجاج"].map(t=>({name:"ساتي "+t+" مع الرز",price:p,cat:"al"})); if(k>=0) items.splice(k,1,...nw); else items.push(...nw); } // ساتي علاء: ٣ وجبات بدل الاختيار
@@ -3507,7 +3508,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v94";
+const VER="v95";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
