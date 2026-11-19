@@ -1622,7 +1622,7 @@ const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حام
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|نودلز|فشار|علب[ةه]\s*حامض|علب[ةه]\s*قمر/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|نودلز|فشار|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}; const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):""; // وجبات الساتي الثلاث، والسيخ الزايد من نفس النوع بـ٥ // ساتي علاء: ٥ أسياخ، والسيخ الزايد بـ٤
 const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["ah","الحبش والبطاطس المشوية وورق العنب"],["dw","الأشك (داوود)"],["al","الساتي (علاء)"],["pp","باني بوري (منصور)"],["ly","قسم ليان"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
@@ -1655,7 +1655,7 @@ function icon(name){ const n=String(name); if(RX.st.test(n)) return "🍢"; if(R
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
 function photo(name){ const n=String(name); if(/فرابي/.test(n)) return "n_frappe"; if(/قهو[ةه]\s*تركي.*بندق/.test(n)) return "n_turkhaz"; if(/قهو[ةه]\s*تركي/.test(n)) return "n_turkish"; if(/قهو[ةه]\s*حلو/.test(n)) return "n_sweetcof"; if(/نودلز/.test(n)) return "n_noodles"; if(/فشار/.test(n)) return "n_popcorn"; if(/ملفوف/.test(n)) return "n_malfouf"; if(/بصل\s*محشي/.test(n)) return "n_onion"; if(RX.pp.test(n)) return "n_panipuri"; if(/كرات/.test(n)) return "n_cheeseballs"; if(/سينابو?ن/.test(n)) return "n_cinnabon"; if(RX.st.test(n)) return "n_satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "n_balila"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
-  if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
+  if(/^(?!علب).*قمر\s*الدين/.test(n)) return "qamar"; if(/علب[ةه]\s*قمر/.test(n)) return "qbox"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
@@ -1697,7 +1697,7 @@ const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}p
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
 function specFor(name){ // الأصناف اللي لها اختيارات، حسب الاسم
   const n=String(name); if(RX.ly.test(n)&&/تركي/.test(n)) return {k:"tk",title:"اختر السكر",opts:["سادة","وسط","حلو"],one:true}; if(/فشار/.test(n)) return {k:"pop",title:"اختر اللون",opts:["أحمر","أصفر","أخضر"],one:true}; if(RX.pp.test(n)) return {k:"pp",title:"اختر حشوة وحدة · والصوصات مجانية",opts:["حشوة بليلة وحمص","حشوة ورق عنب","تمر هندي","حار","شطة"]}; if(/كرات/.test(n)) return {k:"cb",title:"اختر الصوصات · مجانية",excl:"بدون صوص",opts:["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","سويت شيلي","كتشب"]};
-  if(/قمر\s*الدين/.test(n)) return {k:"qd",title:"اختر الحبات · كل حبتين بريال",opts:QD,cnt:true,split:3};
+  if(/^(?!علب).*قمر\s*الدين/.test(n)) return {k:"qd",title:"اختر الحبات · كل حبتين بريال",opts:QD,cnt:true,split:3};
   if(/بطاطس.*مشوي/.test(n)) return {k:"bk",title:"اختر الصوصات والإضافات",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات · الجبنة بريال",opts:EXTRAS,all:true,paid:{[EXTRAS.length-1]:CHEESE}};
   if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
@@ -3400,7 +3400,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=28, FEATMAX=6; let migrating=false;
+const MIG=29, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3431,7 +3431,7 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
   if(m<13&&!items.some(i=>/حبش/.test(i.name))) items.push({name:"حبش",price:5,cat:"ah"});
   if(m<13&&!items.some(i=>/بطاطس.*مشوي/.test(i.name))) items.push({name:"بطاطس مشوية",price:17,cat:"ah"});
   if(m<13&&!items.some(i=>/ورق\s*عنب/.test(i.name))) items.push({name:"ورق عنب ٧ حبات",price:11,cat:"ah"});
-  if(m<14&&!items.some(i=>/قمر\s*الدين/.test(i.name))) items.push({name:"قمر الدين",price:1,cat:"nuts"});
+  if(m<14&&!items.some(i=>/^(?!علب).*قمر\s*الدين/.test(i.name))) items.push({name:"قمر الدين",price:1,cat:"nuts"});
   if(m<14&&!items.some(i=>/^علب[ةه]\s*حامض/.test(i.name))) items.push({name:"علبة حامض حلو",price:0,cat:"nuts"});
   if(m<15&&!items.some(i=>/[آا]يس\s*تي/.test(i.name))) items.push({name:"آيس تي خوخ",price:10,cat:"cold"});
   if(m<16&&!items.some(i=>RX.dw.test(i.name))) items.push({name:"أشك ٥ حبات",price:10,cat:"dw"});
@@ -3440,7 +3440,8 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
     if(!items.some(i=>mt.test(i.name)&&/[٧7]/.test(i.name))) items.push({name:"منتو أفغاني ٧ حبات",price:5,cat:"dw"}); }
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
-  if(m<28){ const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("آيس فرابيه نسكافيه",12,"cold"); A("قهوة تركي",10,"hot"); A("قهوة تركي بالبندق",12,"hot"); A("قهوة حلوة",10,"hot"); A("نودلز بالدجاج",15,"ly"); A("فشار",3,"ly"); A("علبة قمر الدين صغيرة",2,"nuts"); A("ملفوف",11,"ah"); A("بصل محشي",10,"ah"); } // قسم ليان + محاشي أحمد
+  if(m<29){ items.forEach(x=>{ if(/^علب[ةه]\s*حامض/.test(x.name)) x.name="علبة قمر الدين كبيرة"; }); } // علبة الـ٨ هي علبة قمر الدين الكبيرة
+if(m<28){ const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("آيس فرابيه نسكافيه",12,"cold"); A("قهوة تركي",10,"hot"); A("قهوة تركي بالبندق",12,"hot"); A("قهوة حلوة",10,"hot"); A("نودلز بالدجاج",15,"ly"); A("فشار",3,"ly"); A("علبة قمر الدين صغيرة",2,"nuts"); A("ملفوف",11,"ah"); A("بصل محشي",10,"ah"); } // قسم ليان + محاشي أحمد
 if(m<27&&!items.some(i=>/سينابو?ن/.test(i.name))){ const j=items.findIndex(i=>RX.pan.test(i.name)); items.splice(j<0?items.length:j+1,0,{name:"سينابون",price:10,cat:"sweet"}); } // سينابون في الحلا
 if(m<26){ if(!items.some(i=>RX.pp.test(i.name))) items.push({name:"باني بوري",price:10,cat:"pp"}); if(!items.some(i=>/كرات/.test(i.name))) items.push({name:"كرات البطاطس بالجبنة",price:12,cat:"ah"}); } // باني بوري وكرات البطاطس
 if(m<25){ items.forEach(i=>{ if(RX.kz.test(i.name)&&!/كولا|سفن/.test(i.name)) i.name="كينزا سفن"; }); if(!items.some(i=>RX.kz.test(i.name)&&/كولا/.test(i.name))){ const j=items.findIndex(i=>RX.kz.test(i.name)); items.splice(j<0?items.length:j+1,0,{name:"كينزا كولا",price:KINZA.plain,cat:"cold"}); } } // كينزا كولا وسفن
@@ -3512,7 +3513,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v99";
+const VER="v100";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
