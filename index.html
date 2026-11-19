@@ -2870,7 +2870,7 @@ function payHtml(id){
     <button class="ghost" id="pay-split" data-act="paid" data-pay="split" ${c.splitOk?"":"disabled"}>${splitLabel(c)}</button></div>
   ${part||!P()?"":`<button class="link ${sure==="comp"?"sure":""}" data-act="comp">${sure==="comp"?"اضغط مرة ثانية: ضيافة، يتقفل بدون حساب":"🎁 ضيافة (بدون حساب)"}</button>`}`;
 }
-const SGROUPS=[{t:"البطاطس",f:n=>RX.fries.test(n)},{t:"الكورن دوق والذرة",f:n=>RX.dog.test(n)||RX.corn.test(n)},{t:"باقي الأصناف",f:n=>!RX.ah.test(n)&&!RX.dw.test(n)&&!RX.st.test(n)},{t:"قسم أحمد",f:n=>RX.ah.test(n)},{t:"قسم داوود",f:n=>RX.dw.test(n)},{t:"قسم علاء",f:n=>RX.st.test(n)},{t:"قسم منصور",f:n=>RX.pp.test(n)},{t:"قسم ليان",f:n=>RX.ly.test(n)}];
+const SGROUPS=[{t:"البطاطس",f:n=>RX.fries.test(n)},{t:"الكورن دوق والذرة",f:n=>RX.dog.test(n)||RX.corn.test(n)},{t:"باقي الأصناف",f:n=>!RX.ah.test(n)&&!RX.dw.test(n)&&!RX.st.test(n)&&!RX.pp.test(n)&&!RX.ly.test(n)},{t:"قسم أحمد",f:n=>RX.ah.test(n)},{t:"قسم داوود",f:n=>RX.dw.test(n)},{t:"قسم علاء",f:n=>RX.st.test(n)},{t:"قسم منصور",f:n=>RX.pp.test(n)},{t:"قسم ليان",f:n=>RX.ly.test(n)}];
 function saleDetail(x){ const r=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</span><span class="num">${b}</span></div>`, its=x.items||[];
   return `<div class="bill" style="flex:1 1 100%;margin-top:6px">
   ${r("حاسب",esc(x.byName||"بدون اسم")+" · "+tclock(x.closedAt))}${x.startedAt?r(x.type==="take"?"انفتح":"دخل",tclock(x.startedAt)+(x.minutes?" · جلس "+clock(Number(x.minutes)||0):"")):""}
@@ -2951,7 +2951,7 @@ function summaryHtml(){
     <div class="stile"><small>💵 كاش</small><b class="num" style="color:var(--green)">${money(R.pay.cash)}</b></div>
     <div class="stile"><small>💳 شبكة</small><b class="num" style="color:var(--blue)">${money(R.pay.card)}</b></div>
     ${R.pay.none>0.004?`<div class="stile" style="grid-column:span 2"><small>غير محدد</small><b class="num">${money(R.pay.none)}</b></div>`:""}
-    ${[0,1,3,4,5,2].map(i=>`<button class="stile sec" style="--c:${secs[i][1]};" data-act="ssec" data-i="${i}"><small>${secs[i][0]}</small><b class="num">${money(R.shares[i])}</b>${view.sec===i?secDet(i):`<small style="font-size:11.5px">اضغط للتفاصيل</small>`}</button>`).join("")}
+    ${[0,1,3,4,5,6,7,2].map(i=>`<button class="stile sec" style="--c:${secs[i][1]};" data-act="ssec" data-i="${i}"><small>${secs[i][0]}</small><b class="num">${money(R.shares[i])}</b>${view.sec===i?secDet(i):`<small style="font-size:11.5px">اضغط للتفاصيل</small>`}</button>`).join("")}
   </div>
   ${R.discSum>0.004||R.freeN||R.compN||R.compU?`<div class="bill">${R.discSum>0.004?row("خصومات انعطت (مخصومة من الأرقام)",money(R.discSum),"sub"):""}${R.freeN?row(`جلسات مجانية: ${R.freeN}`,"","sub"):""}${R.compN||R.compU?row(`ضيافة: ${[R.compN?R.compN+" حساب كامل":"",R.compU?R.compU+" حبة":""].filter(Boolean).join(" و")}، قيمتها`,money(R.compV),"sub"):""}</div>`:""}
   <div class="drawer"><div class="row"><b style="flex:1;font-size:16px">💵 الدرج</b><span id="cl-diff">${pill}</span></div>
@@ -3513,7 +3513,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v100";
+const VER="v101";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
