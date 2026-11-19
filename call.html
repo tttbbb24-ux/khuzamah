@@ -614,16 +614,16 @@ const STR={
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/شاهي\s*مغرب/,"Moroccan mint tea"],[/ساتي\s*لحم/,"Beef satay with rice"],[/ساتي\s*دجاج/,"Chicken satay with rice"],[/ساتي\s*[جق]مبري/,"Shrimp satay with rice"],[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس.*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/باني\s*بوري/,"Pani puri"],[/كرات/,"Cheese-stuffed potato balls"],[/شاهي\s*مغرب/,"Moroccan mint tea"],[/ساتي\s*لحم/,"Beef satay with rice"],[/ساتي\s*دجاج/,"Chicken satay with rice"],[/ساتي\s*[جق]مبري/,"Shrimp satay with rice"],[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس.*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كي?نز[ةها]\s*كولا/,"Kinza Cola"],[/كي?نز[ةها]/,"Kinza Seven"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc mtea balila satay kcola".split(" ")); // صور الستايل الغامق الجديد
+const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc mtea balila satay kcola panipuri cheeseballs".split(" ")); // صور الستايل الغامق الجديد
 function photo(n){ const k=photo0(n); return k&&NP.has(k)?"n_"+k:k; }
-function photo0(n){ n=String(n); if(/ساتي/.test(n)) return "satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "balila"; if(RX.dw.test(n)) return "ashak";
+function photo0(n){ n=String(n); if(/باني\s*بوري/.test(n)) return "panipuri"; if(/كرات/.test(n)) return "cheeseballs"; if(/ساتي/.test(n)) return "satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "balila"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(/بطاطس.*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -634,13 +634,13 @@ function photo0(n){ n=String(n); if(/ساتي/.test(n)) return "satay"; if(/هو
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
 const thumb=n=>{const k=photo(n); return k?`<img class="th" src="${k}.webp" alt="" loading="lazy" decoding="async">`:`<i class="th"></i>`};
 const nameOf=nm=>{ if(lang!=="en") return nm; const t=EN.find(x=>x[0].test(nm)); return t?t[1]:nm };
-const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["ah","🥔","الحبش والمشوية","Grilled corn & baked potato"],["dw","🥟","الأشك","Ashak (Afghan dumplings)"],["al","🍢","الساتي","Satay"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
-const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn","ah","dw","al"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
+const CATS=[["hot","☕","المشروبات الحارة","Hot drinks"],["cold","🧊","المشروبات الباردة","Cold drinks"],["hookah","💨","المعسلات","Shisha"],["fries","🍟","البطاطس","Fries"],["corn","🌽","كورن دوق وذرة","Corn dog & corn"],["ah","🥔","الحبش والمشوية","Grilled corn & baked potato"],["dw","🥟","الأشك","Ashak (Afghan dumplings)"],["al","🍢","الساتي","Satay"],["pp","🥟","باني بوري","Pani puri"],["nuts","🥜","المكسرات","Nuts"],["sweet","🍰","الحلا","Desserts"],["games","🎲","الألعاب","Games"],["other","🍽️","أخرى","Other"]];
+const GRP=[["hot","☕","الحارة","Hot",["hot"]],["cold","🧊","الباردة","Cold",["cold"]],["games","🎲","الألعاب","Games",["games"]],["hookah","💨","المعسلات","Shisha",["hookah"]],["food","🍟","المأكولات","Food",["fries","corn","ah","dw","al","pp"]],["sn","🍰","الحلا والمكسرات","Sweets & nuts",["sweet","nuts"]],["other","🍽️","أخرى","Other",["other"]]]; // ترتيب العرض، والأقسام الداخلية زي ما هي
 const CATN=Object.fromEntries(CATS.map(c=>[c[0],c]));
 const grpItems=(g,items)=>g[4].flatMap(k=>items.map((it,i)=>[it,i]).filter(([it])=>(CATS.some(c=>c[0]===it.cat)?it.cat:"other")===k)); // أصناف القسم مرتبة حسب الأقسام الداخلية
 const subH=(g,list,cls)=>{ if(g[4].length<2) return list.map(x=>x[1]); const out=[]; let last=null; list.forEach(x=>{ const k=CATS.some(c=>c[0]===x[0].cat)?x[0].cat:"other"; if(k!==last&&new Set(list.map(y=>y[0].cat)).size>1){ if(g[0]==="food"){ if(last!==null) out.push(`<i class="${cls} sep"></i>`); } else out.push(`<h4 class="${cls}">${lang==="en"?CATN[k][3]:CATN[k][2]}</h4>`); } last=k; out.push(x[1]); }); return out; };
 const RS='<svg class="sar" viewBox="2.2 1.5 7.5 8" aria-label="ريال" role="img"><path d="m6.836 8.468 2.595-.55q-.045.454-.236.876l-2.589.55q.04-.46.23-.876Zm2.359-1.325-2.589.55v-1.65l-.808.173v.916q0 .123-.068.224l-.421.623q-.168.242-.45.298l-2.29.489q.045-.455.236-.876l2.184-.466v-1.04l-2.038.433q.045-.455.235-.87l1.803-.388V2.353q.342-.416.809-.68v3.718l.808-.174v-2.46q.343-.415.803-.68v2.971l2.022-.432q-.045.455-.236.876l-1.786.382v.82l2.022-.427q-.045.46-.236.876Z"/></svg>';
-const FLV=[[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع","سكر دايت"],["Plain","Basil","Mint","Diet sugar"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس","بستاشيو"],["Chocolate","Lotus","Pistachio"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
+const FLV=[[/باني\s*بوري/,["بليلة وحمص","ورق عنب"],["Balila & chickpea","Grape leaves"]],[/v\s*60|في\s*60/i,["إثيوبي","كولومبي"],["Ethiopian","Colombian"]],[/شاهي/,["سادة","حبق","نعناع","سكر دايت"],["Plain","Basil","Mint","Diet sugar"]],[/موهيتو|كود\s*ري?د|ريد\s*بول/,["فراولة","حبحب","توت أزرق"],["Strawberry","Watermelon","Blueberry"]],[/بان\s*كيك/,["شوكولاتة","لوتس","بستاشيو"],["Chocolate","Lotus","Pistachio"]],[/ماتشا/,["سيروب فانيلا أو بدون","الحليب خالي من اللاكتوز 🥛"],["Vanilla syrup or plain","Lactose-free milk 🥛"]]];
 const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="fl">${L("flavs")}${(lang==="en"?f[2]:f[1]).join(" · ")}</small>`:"" };
 const priceOf=it=>{ if(it._soon) return `<span class="offt">${L("soon")}</span>`; if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; if(/قمر\s*الدين/.test(nm)) return L("qd_p"); return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كي?نز[ةها]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
@@ -1635,7 +1635,7 @@ function payPick(){ if(busy||!db||!sid||ended) return; const T=lang==="en", tot=
 
 /* ---------- المنيو: الأقسام على الجنب ---------- */
 /* ---------- المنيو الجديد: صفوف تنسحب + مميز ---------- */
-const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/كي?نز[ةها]\s*كولا|شاهي\s*مغرب|هوت\s*شوك|كوكومون|ساتي/;
+const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/باني\s*بوري|كرات|كي?نز[ةها]\s*كولا|شاهي\s*مغرب|هوت\s*شوك|كوكومون|ساتي/;
 const oscr={top:0,rows:{}}, mscr={top:0,rows:{}}, oall=new Set(), mall=new Set(); let onudged=false;
 function secsOf(items){ const secs=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length).map(([c,l])=>({k:c[0],t:lang==="en"?c[3]:c[2],l}));
   const byStar=(Number(menuData&&menuData.mig)||0)>=19; // بعد التحديث: المميز بالنجمة من تطبيق الموظفين
@@ -1731,10 +1731,10 @@ const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل ب
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*بطاطس(?!.*مشوي)/,ah:/بطاطس.*مشوي|حبش|ورق\s*عنب|كرات/,corn:/ذر[ةه]/,dog:/كورن/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/};
 const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):"", SATXEN={"لحم":"beef","دجاج":"chicken","جمبري":"shrimp","قمبري":"shrimp"};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}, SATEN=["Beef","Chicken","Shrimp","Peanut sauce","Spicy sambal"]; // ساتي علاء، نفس تطبيق الموظفين
-function specFor(name){ const n=String(name); // نفس اختيارات تطبيق الموظفين
+function specFor(name){ const n=String(name); if(RX.pp.test(n)) return {k:"pp",opts:["حشوة بليلة وحمص","حشوة ورق عنب","تمر هندي","حار","شطة"]}; if(/كرات/.test(n)) return {k:"cb",excl:"بدون صوص",opts:["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","سويت شيلي","كتشب"]}; // نفس اختيارات تطبيق الموظفين
   if(/قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
   if(/بطاطس.*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",opts:EXTRAS,all:true,paid:{[EXTRAS.length-1]:CHEESE}};
@@ -1759,7 +1759,7 @@ const oOff=(it,x)=>!!(it&&Array.isArray(it.xoff)&&it.xoff.includes(x));
 const freeAll=(sp,it)=>sp.opts.map((_,i)=>i).filter(i=>!(sp.paid&&sp.paid[i])&&!oOff(it,sp.opts[i])); // «كل شي» = الصوصات المجانية بس
 function extrasNote(sel,LIST){ const X=LIST||EXTRAS, on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات"; if(!off.length) return "كل شي"; if(off.length<=2&&on.length>off.length) return "كل شي ما عدا "+off.join(" و"); return on.join("، "); }
-function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true};
+function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true}; if(spec.k==="pp"){ const fl=on.filter(o=>/^حشوة/.test(o)); return {...base,note:on.join(" + "),ok:fl.length===1}; } if(spec.k==="cb") return v.ex?{...base,note:"بدون صوص"}:{...base,note:and,ok:on.length>0};
   if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel),ok:v.sel.length>0||!!v.none};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK),ok:v.sel.length>0||!!v.none};
   if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
@@ -1946,7 +1946,7 @@ async function start(){
 const plain=v=>v==null?null:"stringValue" in v?v.stringValue:"integerValue" in v?Number(v.integerValue):"doubleValue" in v?v.doubleValue:"booleanValue" in v?v.booleanValue:"arrayValue" in v?(v.arrayValue.values||[]).map(plain):"mapValue" in v?Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,y])=>[k,plain(y)])):null;
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر الساعة ٨ الصبح بتوقيت السعودية
 const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: القسم مفتوح لو ما أحد قرر
-const stOf=nm=>RX.st.test(nm)?5:RX.dw.test(nm)?4:RX.ah.test(nm)?3:RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
+const stOf=nm=>RX.pp.test(nm)?6:RX.st.test(nm)?5:RX.dw.test(nm)?4:RX.ah.test(nm)?3:RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
 function prepMenu(x){ if(!x||!Array.isArray(x.items)) return x; const lk=x.locks||{};
   const open=st=>{ const r=lk[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
   x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st!==2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
