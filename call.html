@@ -614,16 +614,16 @@ const STR={
 let lang="ar"; try{ lang=localStorage.getItem("kz-lang")==="en"?"en":"ar" }catch(e){}
 const L=k=>STR[lang][k];
 // ترجمة أسماء الأصناف المعروفة. اللي ما ينعرف يبقى بالعربي.
-const EN=[[/باني\s*بوري/,"Pani puri"],[/كرات/,"Cheese-stuffed potato balls"],[/شاهي\s*مغرب/,"Moroccan mint tea"],[/ساتي\s*لحم/,"Beef satay with rice"],[/ساتي\s*دجاج/,"Chicken satay with rice"],[/ساتي\s*[جق]مبري/,"Shrimp satay with rice"],[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس.*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
+const EN=[[/باني\s*بوري/,"Pani puri"],[/كرات/,"Cheese-stuffed potato balls"],[/سينابو?ن/,"Cinnabon roll"],[/شاهي\s*مغرب/,"Moroccan mint tea"],[/ساتي\s*لحم/,"Beef satay with rice"],[/ساتي\s*دجاج/,"Chicken satay with rice"],[/ساتي\s*[جق]مبري/,"Shrimp satay with rice"],[/ساتي/,"Satay, 5 skewers with rice"],[/قمر\s*الدين/,"Qamar al-din sour candy"],[/^علب[ةه]\s*حامض/,"Sweet & sour candy box"],[/بطاطس.*مشوي/,"Loaded baked potato"],[/حبش/,"Grilled corn"],[/ورق\s*عنب/,"Stuffed grape leaves (7)"],[/ماتشا/,"Iced matcha latte"],[/بلوت/,"Baloot cards"],[/جاكارو/,"Jackaroo board game"],[/معسل\s*تفاحتين/,"Double apple shisha"],[/معسل\s*عنب\s*توت/,"Grape & berry shisha"],[/معسل\s*عنب\s*نعناع/,"Grape & mint shisha"],[/معسل/,"Shisha"],
  [/بطاطس\s*صغير/,"Fries, small"],[/بطاطس\s*وسط/,"Fries, medium"],[/بطاطس\s*كبير/,"Fries, large"],[/بطاطس/,"Fries"],[/كورن\s*دوق/,"Corn dog"],[/ذر[ةه]/,"Corn cup"],
  [/موهيتو/,"Mojito 7UP"],[/كود\s*ري?د/,"Code Red"],[/ريد\s*بول/,"Red Bull"],[/كي?نز[ةها]\s*كولا/,"Kinza Cola"],[/كي?نز[ةها]/,"Kinza Seven"],[/مو[يى][ةه]/,"Water"],[/كركدي/,"Iced hibiscus"],[/ليمون\s*(و\s*)?نعناع/,"Lemon mint"],
  [/قهو[ةه]\s*اليوم.*بارد/,"Coffee of the day, iced"],[/قهو[ةه]\s*اليوم.*حار/,"Coffee of the day, hot"],[/قهو[ةه]\s*اليوم/,"Coffee of the day"],[/v\s*60.*بارد/i,"V60, iced"],[/v\s*60.*حار/i,"V60, hot"],
  [/دل[ةه]\s*شاهي/,"Tea pot"],[/شاهي/,"Tea"],[/ميني\s*بان\s*كيك|بان\s*كيك/,"Mini pancakes"],[/كوكيز.*شوكو/,"Chocolate cookie"],[/كوكيز.*فانيل/,"Vanilla cookie"],[/كوكيز/,"Cookie"],
  [/تشيز\s*كيك.*فراول/,"Strawberry cheesecake"],[/تشيز\s*كيك.*مان(جو|قا|غا)/,"Mango cheesecake"],[/تشيز\s*كيك/,"Nut cheesecake"],[/مكسرات/,"Nuts"]];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
-const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc mtea balila satay kcola panipuri cheeseballs".split(" ")); // صور الستايل الغامق الجديد
+const NP=new Set("kinza water matcha peachtea fries mojito codered redbull ice karkade icedcoffee coffee tea dallah corn corncheetos corndog habash spuds waraq ashak cheesemango cheesestraw cookies pancake nuts qamar qbox hookah baloot jakaro sofa hotchoc mtea balila satay kcola panipuri cheeseballs cinnabon".split(" ")); // صور الستايل الغامق الجديد
 function photo(n){ const k=photo0(n); return k&&NP.has(k)?"n_"+k:k; }
-function photo0(n){ n=String(n); if(/باني\s*بوري/.test(n)) return "panipuri"; if(/كرات/.test(n)) return "cheeseballs"; if(/ساتي/.test(n)) return "satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "balila"; if(RX.dw.test(n)) return "ashak";
+function photo0(n){ n=String(n); if(/باني\s*بوري/.test(n)) return "panipuri"; if(/كرات/.test(n)) return "cheeseballs"; if(/سينابو?ن/.test(n)) return "cinnabon"; if(/ساتي/.test(n)) return "satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "balila"; if(RX.dw.test(n)) return "ashak";
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(/بطاطس.*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -1635,7 +1635,7 @@ function payPick(){ if(busy||!db||!sid||ended) return; const T=lang==="en", tot=
 
 /* ---------- المنيو: الأقسام على الجنب ---------- */
 /* ---------- المنيو الجديد: صفوف تنسحب + مميز ---------- */
-const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/باني\s*بوري|كرات|كي?نز[ةها]\s*كولا|شاهي\s*مغرب|هوت\s*شوك|كوكومون|ساتي/;
+const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/سينابو?ن|باني\s*بوري|كرات|كي?نز[ةها]\s*كولا|شاهي\s*مغرب|هوت\s*شوك|كوكومون|ساتي/;
 const oscr={top:0,rows:{}}, mscr={top:0,rows:{}}, oall=new Set(), mall=new Set(); let onudged=false;
 function secsOf(items){ const secs=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length).map(([c,l])=>({k:c[0],t:lang==="en"?c[3]:c[2],l}));
   const byStar=(Number(menuData&&menuData.mig)||0)>=19; // بعد التحديث: المميز بالنجمة من تطبيق الموظفين

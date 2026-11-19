@@ -1654,7 +1654,7 @@ function icon(name){ const n=String(name); if(RX.st.test(n)) return "🍢"; if(R
   if(RX.pan.test(n)) return "🥞"; if(/كوكيز/.test(n)) return "🍪"; if(/كيك/.test(n)) return "🍰"; if(/مكسرات/.test(n)) return "🥜"; if(/جلس[ةه]/.test(n)) return "🪑";
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
-function photo(name){ const n=String(name); if(RX.pp.test(n)) return "n_panipuri"; if(/كرات/.test(n)) return "n_cheeseballs"; if(RX.st.test(n)) return "n_satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "n_balila"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
+function photo(name){ const n=String(name); if(RX.pp.test(n)) return "n_panipuri"; if(/كرات/.test(n)) return "n_cheeseballs"; if(/سينابو?ن/.test(n)) return "n_cinnabon"; if(RX.st.test(n)) return "n_satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "n_balila"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
   if(/قمر\s*الدين/.test(n)) return "qamar"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -1667,7 +1667,7 @@ function photo(name){ const n=String(name); if(RX.pp.test(n)) return "n_panipuri
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
 const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:"",food:"fries",sn:"cookies"};
-const GROUPS=[["hot","الحارة",["hot"]],["cold","الباردة",["cold"]],["games","الألعاب",["games"]],["hookah","المعسلات",["hookah"]],["food","المأكولات",["fries","corn","ah","dw","al"]],["sn","الحلا والمكسرات",["sweet","nuts"]],["other","أخرى",["other"]]]; // ترتيب العرض بس، الأقسام الداخلية ما تغيّرت
+const GROUPS=[["hot","الحارة",["hot"]],["cold","الباردة",["cold"]],["games","الألعاب",["games"]],["hookah","المعسلات",["hookah"]],["food","المأكولات",["fries","corn","ah","dw","al","pp"]],["sn","الحلا والمكسرات",["sweet","nuts"]],["other","أخرى",["other"]]]; // ترتيب العرض بس، الأقسام الداخلية ما تغيّرت
 const grpOf=k=>(GROUPS.find(g=>g[0]===k||g[2].includes(k))||GROUPS[GROUPS.length-1])[0];
 const SECS=[[0,"🍟","البطاطس"],[1,"🌭","الكورن دوق والذرة"],[3,"🥔","قسم أحمد"],[4,"🥟","قسم داوود"],[5,"🍢","قسم علاء"],[6,"🥟","قسم منصور"]]; // الأقسام اللي تنقفل وتنفتح
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر ٨ الصبح بتوقيت السعودية
@@ -3400,7 +3400,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=26, FEATMAX=6; let migrating=false;
+const MIG=27, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3440,7 +3440,8 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
     if(!items.some(i=>mt.test(i.name)&&/[٧7]/.test(i.name))) items.push({name:"منتو أفغاني ٧ حبات",price:5,cat:"dw"}); }
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
-  if(m<26){ if(!items.some(i=>RX.pp.test(i.name))) items.push({name:"باني بوري",price:10,cat:"pp"}); if(!items.some(i=>/كرات/.test(i.name))) items.push({name:"كرات البطاطس بالجبنة",price:12,cat:"ah"}); } // باني بوري وكرات البطاطس
+  if(m<27&&!items.some(i=>/سينابو?ن/.test(i.name))){ const j=items.findIndex(i=>RX.pan.test(i.name)); items.splice(j<0?items.length:j+1,0,{name:"سينابون",price:10,cat:"sweet"}); } // سينابون في الحلا
+if(m<26){ if(!items.some(i=>RX.pp.test(i.name))) items.push({name:"باني بوري",price:10,cat:"pp"}); if(!items.some(i=>/كرات/.test(i.name))) items.push({name:"كرات البطاطس بالجبنة",price:12,cat:"ah"}); } // باني بوري وكرات البطاطس
 if(m<25){ items.forEach(i=>{ if(RX.kz.test(i.name)&&!/كولا|سفن/.test(i.name)) i.name="كينزا سفن"; }); if(!items.some(i=>RX.kz.test(i.name)&&/كولا/.test(i.name))){ const j=items.findIndex(i=>RX.kz.test(i.name)); items.splice(j<0?items.length:j+1,0,{name:"كينزا كولا",price:KINZA.plain,cat:"cold"}); } } // كينزا كولا وسفن
 if(m<24&&!items.some(i=>/شاهي\s*مغرب/.test(i.name))) items.push({name:"شاهي مغربي",price:1,cat:"hot"}); // شاهي مغربي للترك
   if(m<21&&!items.some(i=>RX.st.test(i.name))) items.push({name:"ساتي",price:20,cat:"al"}); // بسطة علاء
@@ -3510,7 +3511,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v97";
+const VER="v98";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
