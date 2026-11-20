@@ -2257,7 +2257,7 @@ const ROLE=u=>u.role==="partner"?"شريك":u.role==="cashier"?"كاشير":u.ro
 const PRESET=[["ريان","partner"],["زهير","partner"],["بكري","partner"],["عز الدين","partner"],["سعيد","s0"],["سمعة","s0"],["فادي","s1"]];
 const roleFields=v=>v==="partner"?{role:"partner"}:v==="c"?{role:"cashier"}:v==="w"?{role:"waiter"}:{role:"station",station:v==="s1"?1:v==="s3"?3:v==="s4"?4:v==="s5"?5:v==="s6"?6:v==="s7"?7:0};
 const digits=x=>String(x).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
-const BY=()=>({by:(me&&me.id)||"",byName:(me&&me.name)||""});
+const BY=()=>({...(window.PAYVIA&&Date.now()-window.PAYVIA.at<60000?{via:window.PAYVIA.v}:{}),by:(me&&me.id)||"",byName:(me&&me.name)||""});
 const SECF=()=>secOnly()?{sec:me.station}:{}; // الحساب اللي ياخذه صاحب القسم: الكاش يبقى معه، مو في درج الترك
 function sactHtml(id){ // قائمة الضغط المطوّل على الجلسة: الحساب أول، وبعده أضف طلب، والباقي
   const s=seats[id], take=isTake(id)||s.type==="take", os=seatOrders(id), tot=dueOf(id), full=OPS(), B=[];
@@ -2881,14 +2881,14 @@ function saleDetail(x){ const r=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</sp
   ${Number(x.disc)>0?r("خصم","− "+money(Number(x.disc)),"sub"):""}${r("المجموع",money(Number(x.total||0)),"tot")}</div>`; }
 function summarize(S){ // يحسب أرقام يوم من قائمة حساباته
   const z=()=>({cash:0,card:0,none:0}), g=SGROUPS.map(()=>({})), gp=SGROUPS.map(z), pay=z(), fp=z();
-  let tot=0, discSum=0, compN=0, compV=0, compU=0; const freeN=S.filter(x=>x.type==="free").length, sc=[0,1,2,3,4,5,6,7].map(z);
+  let VIA={rj:0,bq:0}; let tot=0, discSum=0, compN=0, compV=0, compU=0; const freeN=S.filter(x=>x.type==="free").length, sc=[0,1,2,3,4,5,6,7].map(z);
   S.forEach(s=>{
     const its=s.items||[], fee0=Number(s.fee||0), itemsSum=its.reduce((a,o)=>a+Number(o.price||0)*qty(o),0), gross=s.gross!=null?Number(s.gross):fee0+itemsSum;
     if(s.pay==="comp"){compN++;compV+=gross;return}
     const total=Number(s.total||0), base=fee0+itemsSum;
     const sh=s.pay==="cash"?{cash:1,card:0,none:0}:s.pay==="card"?{cash:0,card:1,none:0}:s.pay==="split"&&total>0?{cash:Number(s.cash||0)/total,card:Number(s.card||0)/total,none:0}:{cash:0,card:0,none:1};
     const add=(o,amt)=>{o.cash+=amt*sh.cash;o.card+=amt*sh.card;o.none+=amt*sh.none};
-    tot+=total; discSum+=Math.max(0,gross-total); add(pay,total); if(s.sec!=null&&sc[s.sec]){ sc[s.sec].cash+=total*sh.cash; sc[s.sec].card+=total*sh.card; }
+    tot+=total; if(s.via&&VIA[s.via]!=null) VIA[s.via]+=s.pay==="split"?Number(s.card||0):total; discSum+=Math.max(0,gross-total); add(pay,total); if(s.sec!=null&&sc[s.sec]){ sc[s.sec].cash+=total*sh.cash; sc[s.sec].card+=total*sh.card; }
     // الخصم ينزل أول من الجلسة، بعدها من أصناف الترك، وإذا باقي شي يتوزع على باقي الأقسام
     const L=its.map(o=>{const n=String(o.name||""); return {o,n,gi:SGROUPS.findIndex(x=>x.f(n)),q:qty(o),v:Number(o.price||0)*qty(o)}});
     let feeV=fee0, d=base-total;
@@ -2908,7 +2908,7 @@ function summarize(S){ // يحسب أرقام يوم من قائمة حسابا�
   Object.values(g).forEach(G=>Object.values(G).forEach(x=>x.sum=Math.round(x.sum)));
   const feesR=Math.round(fp.cash+fp.card+fp.none);
   const held=sc.map(x=>r2(x.cash)), heldSum=r2(held.reduce((a,b)=>a+b,0)), owe=shares.map((v,i)=>r2(v-held[i])); // owe موجب: الترك يعطي القسم، سالب: القسم يرجّع للترك
-  return {g,pay,fp,tot,discSum,compN,compV,compU,freeN,fees:feesR,part:i=>parts[i],shares,held,heldSum,owe};
+  return {VIA,g,pay,fp,tot,discSum,compN,compV,compU,freeN,fees:feesR,part:i=>parts[i],shares,held,heldSum,owe};
 }
 function settleHtml(R){ // تسوية آخر الليل: كل قسم كم باع، كم معه كاش، وكم له من الترك
   const L=[0,1,3,4,5,6,7].filter(i=>R.shares[i]>0.004||R.held[i]>0.004); if(!L.length) return "";
@@ -2949,7 +2949,7 @@ function summaryHtml(){
   <div class="stiles">
     <div class="stile big"><small>الدخل</small><b class="num" data-count="${r2(R.tot)}">${money(R.tot)}</b><small class="num">${S.length} حساب مقفل${live&&openNow>0?" · لسه مفتوح "+r2(openNow):""}</small></div>
     <div class="stile"><small>💵 كاش</small><b class="num" style="color:var(--green)">${money(R.pay.cash)}</b></div>
-    <div class="stile"><small>💳 شبكة</small><b class="num" style="color:var(--blue)">${money(R.pay.card)}</b></div>
+    <div class="stile"><small>💳 شبكة</small><b class="num" style="color:var(--blue)">${money(R.pay.card)}</b></div>${R.VIA&&(R.VIA.rj||R.VIA.bq)?`<div class="stile"><small>الراجحي</small><b class="num" style="color:#7c86ff">${money(R.VIA.rj)}</b></div><div class="stile"><small>برق</small><b class="num">${money(R.VIA.bq)}</b></div>`:""}
     ${R.pay.none>0.004?`<div class="stile" style="grid-column:span 2"><small>غير محدد</small><b class="num">${money(R.pay.none)}</b></div>`:""}
     ${[0,1,3,4,5,6,7,2].map(i=>`<button class="stile sec" style="--c:${secs[i][1]};" data-act="ssec" data-i="${i}"><small>${secs[i][0]}</small><b class="num">${money(R.shares[i])}</b>${view.sec===i?secDet(i):`<small style="font-size:11.5px">اضغط للتفاصيل</small>`}</button>`).join("")}
   </div>
@@ -3513,7 +3513,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v101";
+const VER="v102";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
@@ -3536,5 +3536,42 @@ applyWide();
 start();
 </script>
 
+<script>
+/* v102: الدفع بالتحويل (الراجحي وبرق) بدل الشبكة لين يتصلح الجهاز */
+(function(){
+const RJ={name:"زهير وحيد احمد ابولبده",iban:"SA46 8000 0635 6080 1006 7968"}, BQ="+966 56 777 3405";
+const on=()=>{ try{ return !!(cfg&&cfg.trf); }catch(e){ return false; } };
+const keyOf=b=>[...b.attributes].filter(a=>a.name.startsWith("data-")&&a.name!=="data-trf").map(a=>a.name+"="+a.value).sort().join("&");
+function fix(){
+  if(!on()){ document.querySelectorAll("[data-via]").forEach(n=>n.remove()); document.querySelectorAll("[data-trf]").forEach(b=>{ b.style.display=""; b.removeAttribute("data-trf"); }); return; }
+  document.querySelectorAll('[data-pay="card"]:not([data-trf])').forEach(b=>{
+    b.setAttribute("data-trf","1"); b.style.display="none";
+    ["bq","rj"].forEach(v=>{ const n=b.cloneNode(true); ["data-act","data-pay","data-trf","id"].forEach(a=>n.removeAttribute(a)); n.setAttribute("data-via",v); n.disabled=b.disabled;
+      n.style.display=""; n.style.background=v==="rj"?"#2a1ff5":"#000"; n.style.color="#fff"; n.style.borderColor=v==="rj"?"#2a1ff5":"#555";
+      const lab=v==="rj"?"الراجحي":"برق", sp=n.querySelector("span"); if(sp) sp.textContent=lab+(/أكّد/.test(sp.textContent)?" · أكّد":""); else n.textContent=lab;
+      n.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); if(!n.disabled) show(v,b); },true); b.after(n); });
+  });
+}
+function press(b){ const k=keyOf(b); b.click(); setTimeout(()=>{ const m=[...document.querySelectorAll('[data-pay="card"]')].find(x=>keyOf(x)===k); if(m&&/sure/.test(m.className)) m.click(); },180); }
+function show(v,b){ const amt=((b.querySelector(".num")||{}).textContent||"").trim(), rj=v==="rj";
+  const o=document.createElement("div"); o.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:16px";
+  o.innerHTML=`<div style="background:${rj?"#2a1ff5":"#000"};color:#fff;border:1px solid #ffffff33;border-radius:22px;padding:18px;width:min(100%,360px);max-height:92vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+   <img src="${rj?"logo_rajhi.webp":"logo_barq.webp"}" alt="" style="height:${rj?34:22}px;border-radius:6px">
+   ${amt?`<div style="font-size:32px;font-weight:800">${amt}</div>`:""}
+   ${rj?`<div style="background:#fff;border-radius:14px;padding:10px"><img src="qr_rajhi.webp" alt="باركود الراجحي" style="width:240px;max-width:70vw;display:block"></div><div dir="ltr" style="font-weight:700;letter-spacing:.5px">${RJ.iban}</div>`:`<div dir="ltr" style="font-size:26px;font-weight:800">${BQ}</div>`}
+   <div style="opacity:.9">${RJ.name}</div>
+   <button data-ok style="width:100%;border:0;border-radius:14px;padding:15px;background:#86efac;color:#0d2a17;font:inherit;font-weight:800;font-size:17px">تم التحويل</button>
+   <small style="opacity:.8">اضغط بعد ما تشوف إشعار التحويل في جوال الزبون</small>
+   <button data-no style="border:0;background:transparent;color:#fff;font:inherit;text-decoration:underline;padding:6px">رجوع</button></div>`;
+  o.addEventListener("click",e=>{ if(e.target===o||e.target.closest("[data-no]")){ o.remove(); return; } if(e.target.closest("[data-ok]")){ window.PAYVIA={v,at:Date.now()}; o.remove(); press(b); } });
+  document.body.appendChild(o); }
+function tog(){ const pu=document.getElementById("push-url"); if(!pu||document.getElementById("trf-tog")) return;
+  const row=pu.closest(".row")||pu.parentElement; const d=document.createElement("div"); d.className="row"; d.style.marginTop="10px";
+  d.innerHTML=`<button id="trf-tog" class="ghost" style="width:100%">${on()?"✓ الدفع بالتحويل شغّال والشبكة مخفية · اضغط ترجّع الشبكة":"شغّل الدفع بالتحويل (الراجحي وبرق) وأخفِ الشبكة"}</button>`;
+  row.after(d); d.querySelector("button").onclick=async()=>{ try{ await db.doc("config/menu").update({trf:!on()}); try{ toast(on()?"رجعت الشبكة":"صار الدفع بالتحويل"); }catch(_){ } d.remove(); }catch(e){ try{ toast("ما انحفظ، جرب مرة ثانية"); }catch(_){ } } }; }
+let t=null; new MutationObserver(()=>{ clearTimeout(t); t=setTimeout(()=>{ fix(); tog(); },40); }).observe(document.body,{childList:true,subtree:true});
+setInterval(()=>{ fix(); },3000);
+})();
+</script>
 </body>
 </html>
