@@ -1952,7 +1952,7 @@ const plain=v=>v==null?null:"stringValue" in v?v.stringValue:"integerValue" in v
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر الساعة ٨ الصبح بتوقيت السعودية
 const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: القسم مفتوح لو ما أحد قرر
 const stOf=nm=>RX.ly.test(nm)?7:RX.pp.test(nm)?6:RX.st.test(nm)?5:RX.dw.test(nm)?4:RX.ah.test(nm)?3:RX.fries.test(nm)?0:(RX.dog.test(nm)||RX.corn.test(nm))?1:2;
-function prepMenu(x){ window.TRF=!!(x&&x.trf); if(!x||!Array.isArray(x.items)) return x; const lk=x.locks||{};
+function prepMenu(x){ window.TRF=!!x&&x.trf!==false; if(!x||!Array.isArray(x.items)) return x; const lk=x.locks||{};
   const open=st=>{ const r=lk[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
   x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st!==2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
 async function loadMenu(){ return prepMenu(await loadMenu0()); }
