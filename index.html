@@ -3475,7 +3475,7 @@ function listen(){
   } else if(STL()) db.collection("log").where("day","==",TODAY).where("st","==",me.station).onSnapshot(s=>{logs=s.docs.map(d=>d.data());if(view&&view.kind==="log")refresh()},quiet);
   db.doc("config/menu").onSnapshot(d=>{
     const x=d.exists?d.data():null;
-    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0,promo:x.promo||null,locks:x.locks||null}:DEFAULTS;
+    cfg=x&&Array.isArray(x.items)?{hour:Number(x.hour)||DEFAULTS.hour,open:Number(x.open)||DEFAULTS.open,count:Number(x.count)||DEFAULTS.count,items:x.items,mig:Number(x.mig)||0,promo:x.promo||null,locks:x.locks||null,trf:x.trf}:DEFAULTS;
     if(!(d.metadata&&d.metadata.fromCache)) migrate();
     refresh();
   },dead);
@@ -3513,7 +3513,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v104";
+const VER="v105";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
