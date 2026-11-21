@@ -3513,7 +3513,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v103";
+const VER="v104";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
@@ -3566,9 +3566,14 @@ function show(v,b){ const amt=((b.querySelector(".num")||{}).textContent||"").tr
   o.addEventListener("click",e=>{ if(e.target===o||e.target.closest("[data-no]")){ o.remove(); return; } if(e.target.closest("[data-ok]")){ window.PAYVIA={v,at:Date.now()}; o.remove(); press(b); } });
   document.body.appendChild(o); }
 function tog(){ const pu=document.getElementById("push-url"); if(!pu||document.getElementById("trf-tog")) return;
-  const row=pu.closest(".row")||pu.parentElement; const d=document.createElement("div"); d.className="row"; d.style.marginTop="10px";
-  d.innerHTML=`<button id="trf-tog" class="ghost" style="width:100%">${on()?"✓ الدفع بالتحويل شغّال والشبكة مخفية · اضغط ترجّع الشبكة":"شغّل الدفع بالتحويل (الراجحي وبرق) وأخفِ الشبكة"}</button>`;
-  row.after(d); d.querySelector("button").onclick=async()=>{ try{ await db.doc("config/menu").update({trf:!on()}); try{ toast(on()?"رجعت الشبكة":"صار الدفع بالتحويل"); }catch(_){ } d.remove(); }catch(e){ try{ toast("ما انحفظ، جرب مرة ثانية"); }catch(_){ } } }; }
+  const row=pu.closest(".row")||pu.parentElement; const d=document.createElement("div"); d.className="row"; d.id="trf-tog"; d.style.marginTop="10px";
+  const cur=on();
+  d.innerHTML=`<div style="display:flex;gap:8px;width:100%"><button data-tm="trf" class="${cur?"primary":"ghost"}" style="flex:1">تحويل (راجحي وبرق)</button><button data-tm="card" class="${cur?"ghost":"primary"}" style="flex:1">شبكة</button></div>`;
+  row.after(d);
+  d.onclick=async e=>{ const b=e.target.closest("[data-tm]"); if(!b) return; const want=b.dataset.tm==="trf"; if(want===on()) return;
+    try{ await db.doc("config/menu").update({trf:want}); try{ toast(want?"صار الدفع بالتحويل":"صارت الشبكة"); }catch(_){ } d.remove(); }
+    catch(err){ try{ toast("ما انحفظ، جرب مرة ثانية"); }catch(_){ } } };
+}
 let t=null; new MutationObserver(()=>{ clearTimeout(t); t=setTimeout(()=>{ fix(); tog(); },40); }).observe(document.body,{childList:true,subtree:true});
 setInterval(()=>{ fix(); },3000);
 })();
