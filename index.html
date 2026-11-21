@@ -3388,7 +3388,7 @@ document.addEventListener("click",e=>{
     it.feat=!it.feat; const sc=$("panel").scrollTop, ss=$("sheet").scrollTop; renderSheet(); $("panel").scrollTop=sc; $("sheet").scrollTop=ss; return toast(it.feat?"⭐ "+(it.name||"الصنف")+" صار مميز · اضغط حفظ":(it.name||"الصنف")+" طلع من المميز · اضغط حفظ") }
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
-    const out={...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
+    const out={...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),...(typeof cfg.trf==="boolean"?{trf:cfg.trf}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
       items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.off?{off:true}:{}),...(Array.isArray(i.xoff)&&i.xoff.length?{xoff:i.xoff}:{}),...(i.feat?{feat:true}:{})})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ");logIt("عدّل الأصناف أو الأسعار")});
@@ -3450,7 +3450,7 @@ if(m<24&&!items.some(i=>/شاهي\s*مغرب/.test(i.name))) items.push({name:"�
   if(m<22&&!items.some(i=>/بليل/.test(i.name))){ items.push({name:"بليلة كبير",price:7,cat:"dw"}); items.push({name:"بليلة صغير",price:4,cat:"dw"}); } // بليلة داوود
   if(m<23&&!items.some(i=>satT(i.name))){ const k=items.findIndex(i=>RX.st.test(i.name)), p=k>=0?Number(items[k].price)||20:20, nw=["لحم","جمبري","دجاج"].map(t=>({name:"ساتي "+t+" مع الرز",price:p,cat:"al"})); if(k>=0) items.splice(k,1,...nw); else items.push(...nw); } // ساتي علاء: ٣ وجبات بدل الاختيار
   if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
-  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{})}).catch(()=>{migrating=false});
+  db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),...(typeof cfg.trf==="boolean"?{trf:cfg.trf}:{})}).catch(()=>{migrating=false});
 }
 function listen(){
   db=fdb; $("gate").hidden=true; if(!OPS()&&!W()){ myStation=me.station; mainTab="orders"; }
@@ -3513,7 +3513,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v105";
+const VER="v106";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
