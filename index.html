@@ -3516,7 +3516,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v107";
+const VER="v108";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
@@ -3579,6 +3579,41 @@ function tog(){ const pu=document.getElementById("push-url"); if(!pu||document.g
 }
 let t=null; new MutationObserver(()=>{ clearTimeout(t); t=setTimeout(()=>{ fix(); tog(); },40); }).observe(document.body,{childList:true,subtree:true});
 setInterval(()=>{ fix(); },3000);
+})();
+</script>
+<script>
+/* زر نداء ياسين: يروح لتليقرام بس، ويوصل ساعته */
+(function(){
+  const OPTS=["تعال بسرعة","تعال عند الترك","باشر الجلسات الجديدة","الفحم"];
+  const css=document.createElement("style");
+  css.textContent=`.yfab{position:fixed;inset-inline-end:16px;inset-block-end:calc(78px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:18px;padding:12px 16px;font:inherit;font-weight:700;font-size:15px;box-shadow:0 8px 22px rgba(0,0,0,.25)}
+body.wide .yfab{inset-block-end:22px}
+.ybg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.ybox{background:var(--surface);color:var(--ink);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px;box-sizing:border-box}
+.ybox h3{margin:0 0 4px;font-size:18px}
+.ybox .yo{text-align:start;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:transparent;color:inherit;font:inherit;font-size:16px;font-weight:600}
+.ybox textarea{width:100%;min-height:64px;border-radius:14px;border:1.5px solid var(--line);background:transparent;color:inherit;padding:12px;font:inherit;font-size:16px;box-sizing:border-box;resize:none}
+.ybox .yrow{display:flex;gap:8px}
+.ybox .yrow button{flex:1;padding:14px;border-radius:14px;font:inherit;font-weight:700;font-size:16px;border:0}
+.ybox .ysend{background:var(--accent);color:var(--accent-ink)}
+.ybox .ycancel{background:transparent;color:var(--muted);border:1.5px solid var(--line)}`;
+  document.head.appendChild(css);
+  const b=document.createElement("button"); b.className="yfab"; b.id="yfab"; b.type="button"; b.textContent="📣 نادِ ياسين"; b.hidden=true; document.body.appendChild(b);
+  const sync=()=>{ try{ b.hidden=!(me&&!legacy); }catch(e){ b.hidden=true; } };
+  setInterval(sync,1500); sync();
+  let busy=false;
+  async function send(msg){ if(busy){ try{ toast("لحظة، النداء انرسل قبل شوي"); }catch(_){ } return; } busy=true;
+    try{ await pushSend(2,"📣 "+((me&&me.name)||"الفريق")+" يناديك",String(msg).slice(0,200),"yassin"); try{ toast("انرسل النداء لياسين ✓"); }catch(_){ } }
+    finally{ setTimeout(()=>{ busy=false; },4000); } }
+  function open(){ const bg=document.createElement("div"); bg.className="ybg";
+    bg.innerHTML=`<div class="ybox" role="dialog" aria-label="نداء ياسين"><h3>📣 نادِ ياسين</h3>${OPTS.map(o=>`<button type="button" class="yo">${o}</button>`).join("")}<textarea maxlength="200" placeholder="أو اكتب رسالة…"></textarea><div class="yrow"><button type="button" class="ysend">إرسال</button><button type="button" class="ycancel">إلغاء</button></div></div>`;
+    const close=()=>bg.remove(), ta=bg.querySelector("textarea");
+    bg.addEventListener("click",e=>{ e.stopPropagation();
+      if(e.target===bg||e.target.closest(".ycancel")) return close();
+      const o=e.target.closest(".yo"); if(o){ close(); send(o.textContent); return; }
+      if(e.target.closest(".ysend")){ const t=ta.value.trim(); if(!t){ ta.focus(); return; } close(); send(t); } });
+    document.body.appendChild(bg); }
+  b.addEventListener("click",e=>{ e.stopPropagation(); open(); });
 })();
 </script>
 </body>
