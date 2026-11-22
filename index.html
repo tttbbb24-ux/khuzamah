@@ -540,7 +540,11 @@ button:active{transform:none}
 body.wide .cdrawer.open{max-height:78%}
 .cartlist{display:flex;flex-direction:column;gap:6px}
 .cartlist .cl{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:12px;padding:6px 10px}
-.cartlist .cl span{flex:1;font-size:14px}.cartlist small{color:var(--muted)}
+.cartlist .cl span{flex:1;font-size:14px}
+.cartlist .cl .tcq{flex:none;display:flex;align-items:center;gap:6px}
+.cartlist .cl .tcq button{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:inherit;font-size:18px;line-height:1;padding:0}
+.cartlist .cl .tcq b{min-width:18px;text-align:center}
+.cartlist .cl .tced{border:0;background:transparent;padding:2px 4px;font-size:15px;cursor:pointer}.cartlist small{color:var(--muted)}
 /* الاختيارات */
 .xhero{position:relative;margin:-16px -16px 0;height:150px;overflow:hidden;border-radius:28px 28px 0 0;flex:none}
 .xhero img{width:100%;height:100%;object-fit:cover;display:block}
@@ -1918,11 +1922,13 @@ function addHtml(id){ const nt=view.newTake, cart=nt?(view.cart||(view.cart=[]))
   const n=nt?cart.reduce((a,c)=>a+c.q,0):units(seatOrders(id)), sum=nt?cart.reduce((a,c)=>a+c.r.price*c.q,0):fee(id)+itemsTotal(id);
   return `<div class="phead">${nt?`<span class="big">🥡</span>`:`<span class="big num">${esc(lab(id))}</span>`}<div class="meta"><b>${nt?(view.tq?"تعديل فاتورة "+esc(String(view.tno||"")):"سفري جديد"):"أضف طلب"}</b><span>${nt?(view.tq?"عدّل الأصناف، وبعدين اختر كاش أو شبكة":"سجّل الطلب، وبعدين أكّده"):"اضغط الصنف ينضاف على طول"}</span></div>${xBtn}</div>
   ${menuHtml()}
-  ${nt?`<div class="cartlist">${cart.map((c,i)=>`<div class="cl"><span>${esc(c.r.name)}${c.r.note?` <small>${esc(c.r.note)}</small>`:""}</span><b class="num">× ${c.q}</b><b class="num">${money(c.r.price*c.q)}</b><button class="nx" data-act="tcdel" data-n="${i}" aria-label="شيل">✕</button></div>`).join("")}</div>
+  ${nt?`<div class="cartlist">${cart.map((c,i)=>`<div class="cl"><span>${esc(c.r.name)}${c.r.note?` <small>${esc(c.r.note)}</small>`:""}${tcSpec(c)?` <button class="tced" data-act="tcedit" data-n="${i}" aria-label="عدّل الخيارات">✏️</button>`:""}</span><span class="tcq"><button data-act="tcq" data-n="${i}" data-d="1" aria-label="زيد">＋</button><b class="num">${c.q}</b><button data-act="tcq" data-n="${i}" data-d="-1" aria-label="نقّص">−</button></span><b class="num">${money(c.r.price*c.q)}</b><button class="nx" data-act="tcdel" data-n="${i}" aria-label="شيل">✕</button></div>`).join("")}</div>
     ${tPayer(cart)?`<div class="tpay"><button class="cartbar tcash" data-act="tconfirm" data-pay="cash" ${cart.length?"":"disabled"}><span>💵 كاش · أكّد</span><b class="num">${money(sum)}</b></button><button class="cartbar tcard" data-act="tconfirm" data-pay="card" ${cart.length?"":"disabled"}><span>💳 شبكة · أكّد</span><b class="num">${money(sum)}</b></button></div>
     ${view.tq?"":`<button class="link" data-act="tconfirm" ${cart.length?"":"disabled"} style="display:block;margin:2px auto 0">فاتورة معلّقة، يدفع بعدين</button>`}`
     :`<button class="cartbar" data-act="tconfirm" ${cart.length?"":"disabled"}><span>أرسل للترك · فاتورة${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`}`
   :`<button class="cartbar" data-act="stab" data-t="orders"><span>🧾 الطلبات${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`}`; }
+function tcIdx(c){ const its=cfg.items||[]; if(c.i!=null&&its[c.i]&&String(c.r.name).startsWith(its[c.i].name)) return c.i; let best=-1, bl=0; its.forEach((x,k)=>{ if(x&&String(c.r.name).startsWith(x.name)&&x.name.length>bl){ best=k; bl=x.name.length } }); return best; }
+const tcSpec=c=>{ const it=(cfg.items||[])[tcIdx(c)]; return !!(it&&specFor(it.name)); };
 const tPayer=cart=>PAY(); // v110: فلوس السفري عند موظفين الترك بس، والباقي يرسلونها فاتورة معلّقة
 function doAdd(it,r,n){ const id=view.id, s=seats[id], nt=view.newTake; if(!it||!r.ok||!mine(r.name)) return false;
   if(nt){ const c=view.cart||(view.cart=[]), ex=c.find(x=>x.r.name===r.name&&(x.r.note||"")===(r.note||"")&&x.r.price===r.price&&!!x.r.comp===!!r.comp);
@@ -3150,6 +3156,9 @@ document.addEventListener("click",e=>{
   if(a==="xreqdel"&&view.req){ const {id:rid,n}=view.req, E=reqEdit(rid); E.L[n]=null; E.ch[n]=1; toast("انشال الصنف من الطلب"); closeSheet(); return renderMain() }
   if(a==="rrej") return rejectReq(b.dataset.id);
   if(a==="tcdel"){ if(view&&view.cart){ view.cart.splice(+b.dataset.n,1); renderSheet() } return }
+  if(a==="tcq"){ const n=+b.dataset.n, c=view&&view.cart&&view.cart[n]; if(!c) return; c.q=Math.min(50,c.q+Number(b.dataset.d)); if(c.q<1) view.cart.splice(n,1); renderSheet(); return }
+  if(a==="tcedit"){ const n=+b.dataset.n, c=view&&view.cart&&view.cart[n], ix=c?tcIdx(c):-1, it=cfg.items[ix]; if(!it) return; const sp=specFor(it.name);
+    return openSheet({kind:"extras",id,i:ix,...prefill(sp,{name:c.r.name,note:c.r.note}),q:c.q,comp:!!c.r.comp,cprice:c.r.custom?String(c.r.price):"",cat:view.cat,newTake:view.newTake,cart:view.cart,tq:view.tq,tno:view.tno,cedit:n}); }
   if(a==="tconfirm"){ const cart=view&&view.cart||[]; if(!cart.length) return; const sum=r2(cart.reduce((x,c)=>x+c.r.price*c.q,0)), pay=tPayer(cart)&&["cash","card"].includes(b.dataset.pay)?b.dataset.pay:"";
     const etq=view&&view.tq||"";
     if(!pay){ if(etq){ toast("اختر كاش أو شبكة"); return } return tqCreate(cart); }
@@ -3323,6 +3332,7 @@ document.addEventListener("click",e=>{
       okFlash("تعدّل",now); if(back==="main") closeSheet(); else openSheet({kind:"seat",id:o.seat,tab:"orders",vars:vv}); }) }
   if(a==="xadd"&&view.req) return;
   if(a==="xadd"){ const it=cfg.items[view.i]; if(!it||(!seats[id]&&!view.newTake)||it.off) return; const r=pickLine(); if(!r.ok||!mine(r.name)) return;
+    if(view.newTake&&view.cedit!=null){ const c=view.cart&&view.cart[view.cedit]; if(c){ c.r=r; c.q=view.q; c.i=view.i; toast("✓ تعدّل "+r.name) } return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tq:view.tq,tno:view.tno,tab:"add"}); }
     if(doAdd(it,r,view.q)) return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tq:view.tq,tno:view.tno,tab:"add"}); return }
   if(a==="add"){ if(Date.now()-lpJust<800) return; const i=+b.dataset.i, it=cfg.items[i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)||it.off||itemLocked(it)) return;
     const sp=specFor(it.name);
@@ -3527,7 +3537,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v111";
+const VER="v112";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
