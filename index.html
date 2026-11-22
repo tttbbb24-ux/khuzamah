@@ -1916,11 +1916,11 @@ let stampI=-1;
 /* ---------- v41: إضافة الأصناف ---------- */
 function addHtml(id){ const nt=view.newTake, cart=nt?(view.cart||(view.cart=[])):null;
   const n=nt?cart.reduce((a,c)=>a+c.q,0):units(seatOrders(id)), sum=nt?cart.reduce((a,c)=>a+c.r.price*c.q,0):fee(id)+itemsTotal(id);
-  return `<div class="phead">${nt?`<span class="big">🥡</span>`:`<span class="big num">${esc(lab(id))}</span>`}<div class="meta"><b>${nt?"سفري جديد":"أضف طلب"}</b><span>${nt?"سجّل الطلب، وبعدين أكّده":"اضغط الصنف ينضاف على طول"}</span></div>${xBtn}</div>
+  return `<div class="phead">${nt?`<span class="big">🥡</span>`:`<span class="big num">${esc(lab(id))}</span>`}<div class="meta"><b>${nt?(view.tq?"تعديل فاتورة "+esc(String(view.tno||"")):"سفري جديد"):"أضف طلب"}</b><span>${nt?(view.tq?"عدّل الأصناف، وبعدين اختر كاش أو شبكة":"سجّل الطلب، وبعدين أكّده"):"اضغط الصنف ينضاف على طول"}</span></div>${xBtn}</div>
   ${menuHtml()}
   ${nt?`<div class="cartlist">${cart.map((c,i)=>`<div class="cl"><span>${esc(c.r.name)}${c.r.note?` <small>${esc(c.r.note)}</small>`:""}</span><b class="num">× ${c.q}</b><b class="num">${money(c.r.price*c.q)}</b><button class="nx" data-act="tcdel" data-n="${i}" aria-label="شيل">✕</button></div>`).join("")}</div>
     ${tPayer(cart)?`<div class="tpay"><button class="cartbar tcash" data-act="tconfirm" data-pay="cash" ${cart.length?"":"disabled"}><span>💵 كاش · أكّد</span><b class="num">${money(sum)}</b></button><button class="cartbar tcard" data-act="tconfirm" data-pay="card" ${cart.length?"":"disabled"}><span>💳 شبكة · أكّد</span><b class="num">${money(sum)}</b></button></div>
-    <button class="link" data-act="tconfirm" ${cart.length?"":"disabled"} style="display:block;margin:2px auto 0">فاتورة معلّقة، يدفع بعدين</button>`
+    ${view.tq?"":`<button class="link" data-act="tconfirm" ${cart.length?"":"disabled"} style="display:block;margin:2px auto 0">فاتورة معلّقة، يدفع بعدين</button>`}`
     :`<button class="cartbar" data-act="tconfirm" ${cart.length?"":"disabled"}><span>أرسل للترك · فاتورة${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`}`
   :`<button class="cartbar" data-act="stab" data-t="orders"><span>🧾 الطلبات${n?` · <span class="num">${n}</span>`:""}</span><b class="num">${money(sum)}</b></button>`}`; }
 const tPayer=cart=>PAY(); // v110: فلوس السفري عند موظفين الترك بس، والباقي يرسلونها فاتورة معلّقة
@@ -3151,12 +3151,15 @@ document.addEventListener("click",e=>{
   if(a==="rrej") return rejectReq(b.dataset.id);
   if(a==="tcdel"){ if(view&&view.cart){ view.cart.splice(+b.dataset.n,1); renderSheet() } return }
   if(a==="tconfirm"){ const cart=view&&view.cart||[]; if(!cart.length) return; const sum=r2(cart.reduce((x,c)=>x+c.r.price*c.q,0)), pay=tPayer(cart)&&["cash","card"].includes(b.dataset.pay)?b.dataset.pay:"";
-    if(!pay) return tqCreate(cart);
-    return run("newtake",async()=>{ const ref=db.doc("counters/take"), tno=await safeTx(async tx=>{const d=await tx.get(ref), k=((d.exists&&Number(d.data().n))||100)+1; tx.set(ref,{n:k}); return k});
+    const etq=view&&view.tq||"";
+    if(!pay){ if(etq){ toast("اختر كاش أو شبكة"); return } return tqCreate(cart); }
+    return run("newtake",async()=>{ const ref=db.doc("counters/take"), tno=etq?await safeTx(async tx=>{ const tr=db.doc("treqs/"+etq), d=await tx.get(tr); if(!d.exists||d.data().st) return 0; tx.update(tr,{st:"paid",pay,stBy:(me&&me.name)||"",stAt:Date.now()}); return Number(d.data().no)||0 })
+        :await safeTx(async tx=>{const d=await tx.get(ref), k=((d.exists&&Number(d.data().n))||100)+1; tx.set(ref,{n:k}); return k});
+      if(!tno){ toast("أحد ثاني تصرف في الفاتورة قبلك"); closeSheet(); return }
       const nid="t"+Date.now().toString(36), now=Date.now();
       if(pay) await db.collection("sales").add({...BY(),...SECF(),day:dayKey(now),seat:0,tno,pay,cash:pay==="cash"?sum:0,card:pay==="card"?sum:0,type:"take",ordered:"take",converted:false,hours:0,minutes:0,fee:0,gross:sum,disc:0,
-        items:cart.map(c=>({name:c.r.name,price:Number(c.r.price),qty:c.q,note:c.r.note||"",served:false,by:(me&&me.name)||"",at:now,...(c.r.comp?{comp:true,orig:Number(c.r.orig)||0}:{})})),total:sum,startedAt:now,closedAt:now,pre:true});
-      await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:now,...BY(),...(pay?{pre:pay}:{})});
+        items:cart.map(c=>({name:c.r.name,price:Number(c.r.price),qty:c.q,note:c.r.note||"",served:false,by:(me&&me.name)||"",at:now,...(c.r.comp?{comp:true,orig:Number(c.r.orig)||0}:{})})),total:sum,startedAt:now,closedAt:now,pre:true,...(etq?{tq:etq}:{})});
+      await db.doc("seats/"+nid).set({sid:nid,type:"take",tno,startedAt:now,...BY(),...(pay?{pre:pay}:{}),...(etq?{tq:etq}:{})});
       for(const c of cart){ const r=c.r; await db.collection("orders").add({seat:nid,sid:nid,name:r.name,price:r.price,note:r.note,served:false,qty:c.q,at:Date.now(),st:stationOf(r.name),...BY(),...(pay?{pd:true}:{}),...(r.comp?{comp:true,orig:r.orig}:r.custom?{orig:r.orig}:{})});
         if(r.comp) logIt("ضيافة: "+r.name+" × "+c.q+" على سفري "+tno+" (قيمتها "+moneyT(r.orig*c.q)+")"); if(r.custom) logIt("سعر خاص: "+r.name+" × "+c.q+" بـ"+r.price+" بدل "+r.orig+" على سفري "+tno); }
       const by={}; cart.forEach(c=>{const st=stationOf(c.r.name);(by[st]=by[st]||[]).push(c)});
@@ -3320,11 +3323,11 @@ document.addEventListener("click",e=>{
       okFlash("تعدّل",now); if(back==="main") closeSheet(); else openSheet({kind:"seat",id:o.seat,tab:"orders",vars:vv}); }) }
   if(a==="xadd"&&view.req) return;
   if(a==="xadd"){ const it=cfg.items[view.i]; if(!it||(!seats[id]&&!view.newTake)||it.off) return; const r=pickLine(); if(!r.ok||!mine(r.name)) return;
-    if(doAdd(it,r,view.q)) return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tab:"add"}); return }
+    if(doAdd(it,r,view.q)) return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tq:view.tq,tno:view.tno,tab:"add"}); return }
   if(a==="add"){ if(Date.now()-lpJust<800) return; const i=+b.dataset.i, it=cfg.items[i]; if(!it||(!seats[id]&&!view.newTake)||!mine(it.name)||it.off||itemLocked(it)) return;
     const sp=specFor(it.name);
     if(!sp){ flyFrom(b); if(doAdd(it,{name:it.name,price:Number(it.price),note:"",ok:true},1)&&view.newTake) renderSheet(); return }
-    return openSheet({kind:"extras",id,i,sel:[],ex:sp.k==="tea",size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake,cart:view.cart}) }
+    return openSheet({kind:"extras",id,i,sel:[],ex:sp.k==="tea",size:null,q:1,comp:false,cprice:"",cat:view.cat,newTake:view.newTake,cart:view.cart,tq:view.tq,tno:view.tno}) }
   if(a==="toggle"||a==="serve"||a==="qinc"||a==="qdec"){const o=orders.find(x=>x.id===oid); if(!o||!mine(o.name)) return; if((a==="qinc"||a==="qdec")&&!ownLine(o)) return; const docs=orders.filter(x=>sameLine(x,o));
     if(a==="qinc"){ rollQty(b,1); const wh=isTake(o.seat)?"سفري "+lab(o.seat):"جلسة "+seatNo(o.seat); pushSend(stationOf(o.name),"زاد الطلب",o.name+" × 1 · "+wh,"o"+Date.now()); return setTimeout(()=>run("o:"+oid,async()=>{ await bump(o,1); logIt("زاد حبة "+o.name+(o.note?" ("+o.note+")":"")+" على "+wh,{k:"add",st:stationOf(o.name)}) }),DM(260)); }
     if(a==="qdec"){ const big=docs.find(x=>qty(x)>1);
@@ -3347,6 +3350,7 @@ document.addEventListener("click",e=>{
   if(a==="tq") return openSheet({kind:"tq",tq:b.dataset.tq});
   if(a==="tqpay") return tqPay(b.dataset.tq,b.dataset.pay==="card"?"card":"cash");
   if(a==="tqcx") return tqCancel(b.dataset.tq);
+  if(a==="tqedit"){ const k=b.dataset.tq, r=treqs[k]; if(!r||!tqLive(k)||!PAY()) return; return openSheet({kind:"seat",id:"tnew",newTake:true,cart:tqLines(r).map(c=>({r:{...c.r},q:c.q})),tab:"add",tq:k,tno:Number(r.no)||0}); }
   if(a==="newtake") return openSheet({kind:"menuqr"});
   if(a==="mqok") return openSheet({kind:"seat",id:"tnew",newTake:true,cart:[],tab:"add"});
   if(a==="move") return openSheet({kind:"move",id});
@@ -3369,7 +3373,7 @@ document.addEventListener("click",e=>{
     const nw=document.querySelector("#panel .rail button.on"); if(nw&&oy!=null){ const dy=oy-nw.getBoundingClientRect().top; anim(nw,[{transform:`translateY(${dy}px)`,boxShadow:"inset -3px 0 0 var(--accent)"},{transform:"none"}],{duration:380,easing:SPRING}); [...nw.children].forEach(ch=>anim(ch,[{transform:`translateY(${-dy}px)`},{transform:"none"}],{duration:380,easing:SPRING})); } return } // المؤشر ينزلق للقسم الجديد
   if(a==="pay") return openSheet({kind:"pay",id});
   if(a==="back"&&view.kind==="link") return openSheet({kind:"seat",id,tab:"hub"});
-  if(a==="back"){ if(view.kind==="extras"&&(view.req||(view.edit&&view.from==="main"))) return closeSheet(); if(view.kind==="extras"&&view.edit) return openSheet({kind:"seat",id,tab:"orders",vars:view.vars}); return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tab:view.kind==="extras"&&!view.edit?"add":view.kind==="extras"?"orders":view.tab}) }
+  if(a==="back"){ if(view.kind==="extras"&&(view.req||(view.edit&&view.from==="main"))) return closeSheet(); if(view.kind==="extras"&&view.edit) return openSheet({kind:"seat",id,tab:"orders",vars:view.vars}); return openSheet({kind:"seat",id,cat:view.cat,newTake:view.newTake,cart:view.cart,tq:view.tq,tno:view.tno,tab:view.kind==="extras"&&!view.edit?"add":view.kind==="extras"?"orders":view.tab}) }
   if(a==="hplus"){view.hours++;return renderSheet()}
   if(a==="hminus"){view.hours=Math.max(1,view.hours-1);return renderSheet()}
   if(a==="asopen"){view.asOpen=!view.asOpen;return renderSheet()}
@@ -3523,7 +3527,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v110";
+const VER="v111";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
@@ -3647,6 +3651,7 @@ function tqHtml(id){ const r=treqs[id]; if(!r) return `<div class="phead"><span 
   <div class="tqlist">${L.map(c=>`<div class="tql"><span>${esc(c.r.name)}${c.r.note?` <small>${esc(c.r.note)}</small>`:""} <i>${esc(SECN[stationOf(c.r.name)]||"الترك")}</i></span><b class="num">× ${c.q}</b><b class="num">${money(c.r.price*c.q)}</b></div>`).join("")||`<p class="empty">ما فيه أصناف متوفرة في الطلب</p>`}</div>
   <div class="tqtot"><span>المطلوب من الزبون</span><b class="num">${money(tot)}</b></div>
   ${live?(PAY()?`<div class="tpay"><button class="cartbar tcash" data-act="tqpay" data-tq="${esc(id)}" data-pay="cash" ${L.length?"":"disabled"}><span>💵 كاش · اندفع</span><b class="num">${money(tot)}</b></button><button class="cartbar tcard" data-act="tqpay" data-tq="${esc(id)}" data-pay="card" ${L.length?"":"disabled"}><span>💳 شبكة · اندفع</span><b class="num">${money(tot)}</b></button></div>
+  <button class="link tqed" data-act="tqedit" data-tq="${esc(id)}">✏️ عدّل الفاتورة</button>
   <button class="link tqcx" data-act="tqcx" data-tq="${esc(id)}">${sure==="tqcx:"+id?"اضغط مرة ثانية عشان تلغي":"إلغاء الفاتورة"}</button>`:`<p class="empty">الدفع عند موظفين الترك بس. قل للزبون يروح للترك ويقول رقم فاتورته.</p>`):""}`; }
 function tqDoneHtml(v){ return `<div class="phead"><span class="big">🥡</span><div class="meta"><b>انرسلت للترك</b><span>الطلب ما يتجهز إلا بعد الدفع</span></div>${xBtn}</div>
   <div class="tqdone"><small>رقم الفاتورة</small><b class="num">${esc(String(v.no||""))}</b><span>قل للزبون: روح للفود ترك وادفع، وقول لهم رقم فاتورتك</span><small class="num">${money(v.sum||0)}</small></div>
@@ -3678,6 +3683,7 @@ function tqCancel(id){ if(!PAY()||!treqs[id]) return; if(!arm("tqcx:"+id)) retur
 .tql{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
 .tql span{min-width:0}.tql small{color:var(--muted)}.tql i{font-style:normal;font-size:12px;color:var(--muted);display:block}
 .tqtot{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:18px;padding:10px 4px 12px}
+.tqed{display:block;margin:10px auto 0;font-weight:700}
 .tqcx{display:block;margin:8px auto 0;color:var(--red,#ff7a6e)}
 .tqdone{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 8px 22px;text-align:center}
 .tqdone b{font-size:64px;line-height:1.1;color:#ffb04a}
