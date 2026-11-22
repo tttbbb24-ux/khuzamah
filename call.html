@@ -1677,8 +1677,8 @@ function openMine(){ // طلبي: كل صنف وحالته
   const rows=wait.map(x=>row(x.label+(x.q>1?" × "+x.q:""),"w")).concat(its.map(i=>{ const q=Number(i.q)||0, s=Math.min(Number(i.s)||0,q); return row(nameOf(i.n)+(q>1?" × "+q:""), s>=q?"d":"p", s>0&&s<q?s+"/"+q:"") }));
   const html=`<div class="hd"><b>${L("mine_t")}</b><button class="x" data-x aria-label="close">✕</button></div><div class="mine">${rows.length?rows.join(""):`<p class="mempty">${L("mine_e")}</p>`}</div>`;
   if(sheetOpen==="mine") sheet.innerHTML=html; else openSheet("mine",html); }
-$("mbtn").addEventListener("click",()=>MENU?openMenuOnly():openMine());
-if(MENU){ const mb=$("mbtn").querySelector("b"); mb.dataset.t="b_menu"; mb.textContent=L("b_menu"); }
+$("mbtn").addEventListener("click",()=>MENU?openTake():openMine());
+if(MENU){ const mb=$("mbtn").querySelector("b"); mb.dataset.t="b_order"; mb.textContent=L("b_order"); }
 
 /* ---------- الفاتورة: تذكرة تطلع من الطابعة ---------- */
 const cntTxt=k=>lang==="en"?k+(k===1?" item":" items"):k===1?"صنف واحد":k===2?"صنفين":k<=10?k+" أصناف":k+" صنف";
@@ -1811,8 +1811,8 @@ const cartN=()=>cart.reduce((a,c)=>a+c.q,0), cartT=()=>r2(cart.reduce((a,c)=>a+c
 function paintOrder(){ const items=Array.isArray(menuData.items)?menuData.items:[];
   const n2=cartN(), cl=cart.map((c,k)=>`<div><span>${esc(c.label)}</span><span class="cq"><button class="ced" data-ce="${k}">${L("edit")}</button><button data-ci="${k}" aria-label="+">+</button><b class="num">${c.q}</b><button data-cd="${k}" aria-label="-">${c.q>1?"−":"✕"}</button></span><b class="num">${r2(c.price*c.q)}</b></div>`).join("");
   const nd=!onudged&&!R; onudged=true;
-  const html=`<div class="hd"><b>${L("o_title")}<small>${L("seat")} ${n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="ob2" data-v="o">${rowsHTML(secsOf(items),oall,false,nd)}</div>
-  <div class="sfoot">${edited&&cart.length?`<div class="ednote">${L("e_back")}</div>`:""}${cl?`<div class="cartl">${cl}</div>`:""}<button class="sendb" data-send ${n2?"":"disabled"}><span class="n num">${n2}</span><span class="t">${L("send")}</span><span class="num">${cartT()}${RS}</span></button><span class="hint2">${L("needok")}</span></div>`;
+  const html=`<div class="hd"><b>${L("o_title")}<small>${MENU?(lang==="en"?"Takeaway":"سفري"):L("seat")+" "+n}</small></b><button class="x" data-x aria-label="close">✕</button></div><div class="ob2" data-v="o">${rowsHTML(secsOf(items),oall,false,nd)}</div>
+  <div class="sfoot">${edited&&cart.length?`<div class="ednote">${L("e_back")}</div>`:""}${cl?`<div class="cartl">${cl}</div>`:""}<button class="sendb" data-send ${n2?"":"disabled"}><span class="n num">${n2}</span><span class="t">${L("send")}</span><span class="num">${cartT()}${RS}</span></button><span class="hint2">${MENU?(lang==="en"?"You pay at the truck, then we start preparing":"تدفع عند الترك، وبعدها يبدأ التجهيز"):L("needok")}</span></div>`;
   sheet.innerHTML=html; sheetOpen="order"; sheet.style.height="92%"; restoreScr(oscr); }
 const HCRX=/هوت\s*شوك|كوكومون/; const promoIdx=()=>{ if(!(menuData&&menuData.promo&&menuData.promo.on)) return -1; const its=menuData.items||[], h=its.findIndex(x=>HCRX.test(x.name)&&!x.off); return h>=0?h:its.findIndex(x=>/ماتشا/.test(x.name)&&!x.off); }; // الهوت شوكلت أول، ولو مو متوفر يرجع للماتشا
 let promoSeen=false; try{ promoSeen=sessionStorage.getItem("kzpromo"+K)==="1"; }catch(e){}
@@ -1852,7 +1852,7 @@ async function editMine(){ if(busy||!sid) return; busy=true; // قبل المو�
   try{ await db.doc("reqs/"+sid).update({st:"cx"}); cart=lastCart.map(c=>({...c,sel:c.sel.slice()})); lastCart=[]; reqSt=""; edited=true; $("status").hidden=true; busy=false;
     await openOrder(); const nt=sheet.querySelector(".ednote"); A(nt,[{transform:"translateY(8px)",opacity:0},{transform:"none",opacity:1}],{duration:320}); }
   catch(e){ busy=false; show("ok","<span>"+L("e_late")+"</span>"); if(sheetOpen==="sent") paintSent(); } }
-async function sendReq(){ if(!cart.length||busy) return; busy=true; const b=sheet.querySelector("[data-send]"); if(b) b.disabled=true;
+async function sendReq(){ if(MENU) return sendTake(); if(!cart.length||busy) return; busy=true; const b=sheet.querySelector("[data-send]"); if(b) b.disabled=true;
   try{ await db.doc("reqs/"+sid).set({uid,k:K,at:firebase.firestore.FieldValue.serverTimestamp(),sid:String((pub&&pub.sid)||""),total:cartT(),...(edited?{ed:true}:{}),
       items:cart.map(c=>({i:c.i,n:c.n,sel:c.sel,ex:c.ex,size:c.size,sg:c.sg??-1,q:c.q,note:c.note}))});
     lastSent=cart.map(c=>({label:c.label,q:c.q,p:r2(c.price*c.q)})); lastCart=cart.map(c=>({...c,sel:c.sel.slice()})); cart=[]; reqSt="wait"; edited=false; watchReq(); paintSent.gc=false; try{ if(!localStorage.getItem("kz-gcta-"+K)){ localStorage.setItem("kz-gcta-"+K,"1"); paintSent.gc=true; } }catch(e){} paintSent(); show("wait","<span>"+L("r_wait")+"</span>");
@@ -1928,6 +1928,34 @@ sheet.addEventListener("input",e=>{ if(e.target.id==="onote"&&optv) optv.note=e.
 
 $("qrb").addEventListener("click",()=>{ if(!valid) return; const url=location.origin+location.pathname+"?k="+K; // باركود نفس الجلسة لجوال ثاني
   openSheet("qr",`<div class="hd"><b>${L("qr_t")}${n?` · ${n}`:""}</b><button class="x" data-x aria-label="close">✕</button></div><div style="padding:6px 20px 26px;text-align:center">${qrSvg(url)}<p style="color:var(--muted);font-size:15px;margin:14px 0 0">${L("qr_s")}</p></div>`); });
+/* سفري بالباركود: الزبون يطلب، يطلع له رقم فاتورة، ويدفع عند الترك */
+let tqId="", tqDoc=null, unTq=null; try{ tqId=localStorage.getItem("kz-tq")||""; }catch(e){}
+const TQ_TTL=30*60000;
+const tqState=()=>{ if(!tqDoc) return ""; if(tqDoc.st) return tqDoc.st; const at=tqDoc.at&&tqDoc.at.toMillis?tqDoc.at.toMillis():0; return at&&Date.now()-at>=TQ_TTL?"exp":"wait"; };
+function watchTq(){ if(unTq){unTq();unTq=null} if(!tqId||!db) return;
+  unTq=db.doc("treqs/"+tqId).onSnapshot(d=>{ tqDoc=d.exists?d.data():null; if(!tqDoc||tqDoc.uid!==uid){ tqDoc=null; return } if(sheetOpen==="tq") paintTq(); else if(tqState()==="paid"&&!watchTq.shown){ watchTq.shown=true; paintTq(); } },()=>{}); }
+async function openTake(){ if(tqId&&!tqDoc&&db){ try{ const d=await db.doc("treqs/"+tqId).get(); tqDoc=d.exists?d.data():null; if(tqDoc&&tqDoc.uid!==uid) tqDoc=null; }catch(e){} if(tqDoc) watchTq(); }
+  const st=tqState(); if(tqDoc&&(st==="wait"||st==="paid")&&Date.now()-((tqDoc.at&&tqDoc.at.toMillis&&tqDoc.at.toMillis())||0)<3*3600000) return paintTq();
+  openSheet("order",`<div class="hd"><b>${L("o_title")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("loading")}</p>`); return openOrder(); }
+function paintTq(){ const en=lang==="en", st=tqState(), no=tqDoc?String(tqDoc.no||""):"", tot=tqDoc?Number(tqDoc.total)||0:0;
+  const T={wait:[en?"Order sent ✓":"تم إرسال الطلب ✓",en?"Go to the food truck and pay cash or card. Tell them your invoice number.":"روح للفود ترك وادفع كاش أو شبكة، وقول لهم رقم فاتورتك",en?"Your order is prepared only after payment":"طلبك ما يبدأ تجهيزه إلا بعد الدفع","#e9c77b"],
+    paid:[en?"Paid ✓":"تم الدفع ✓",en?"Your order is being prepared. We'll call your number.":"طلبك يتجهز الحين، وبننادي على رقمك","","#62d498"],
+    cx:[en?"Order cancelled":"انلغى الطلب",en?"Talk to the staff at the truck if this is a mistake.":"إذا فيه غلط كلّم الموظف عند الترك","","#ff8077"],
+    exp:[en?"Order expired":"انتهى الطلب",en?"It wasn't paid within 30 minutes. You can order again.":"ما اندفع خلال ٣٠ دقيقة، تقدر تطلب من جديد","","#ff8077"]}[st]||["","","","#e9c77b"];
+  const html=`<div class="hd"><b>${en?"Takeaway":"سفري"}</b><button class="x" data-x aria-label="close">✕</button></div>
+  <div class="tqinv"><small style="color:${T[3]}">${T[0]}</small><small>${en?"Invoice number":"رقم فاتورتك"}</small><b class="num">${esc(no)}</b><p>${T[1]}</p>${T[2]?`<small>${T[2]}</small>`:""}<span class="num">${r2(tot)}${RS}</span></div>
+  <div class="sfoot">${st==="wait"?"":`<button class="sendb" data-tqnew><span class="t">${en?"New order":"طلب جديد"}</span></button>`}</div>`;
+  if(sheetOpen==="tq") sheet.innerHTML=html; else openSheet("tq",html); sheetOpen="tq"; sheet.style.height=""; }
+async function sendTake(){ if(!cart.length||busy) return; busy=true; const b=sheet.querySelector("[data-send]"); if(b) b.disabled=true;
+  try{ const ref=db.doc("counters/take"), no=await db.runTransaction(async tx=>{ const d=await tx.get(ref), k=((d.exists&&Number(d.data().n))||100)+1; tx.set(ref,{n:k}); return k; });
+    const doc=await db.collection("treqs").add({uid,at:firebase.firestore.FieldValue.serverTimestamp(),no,total:cartT(),items:cart.map(c=>({i:c.i,n:c.n,sel:c.sel,ex:c.ex,size:c.size,sg:c.sg??-1,q:c.q,note:c.note}))});
+    tqId=doc.id; try{ localStorage.setItem("kz-tq",tqId); }catch(e){} tqDoc={uid,no,total:cartT(),at:{toMillis:()=>Date.now()}}; cart=[]; watchTq.shown=false; watchTq(); busy=false; paintTq(); }
+  catch(err){ busy=false; if(b) b.disabled=false; show("bad","<span>"+L("retry")+"</span>"); } }
+sheet.addEventListener("click",e=>{ if(e.target.closest("[data-tqnew]")){ tqId=""; tqDoc=null; if(unTq){unTq();unTq=null} try{ localStorage.removeItem("kz-tq"); }catch(e2){} openTake(); } });
+(function(){ const css=document.createElement("style"); css.textContent=`.tqinv{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:22px 18px 26px}
+.tqinv small{color:var(--muted);font-size:14px}.tqinv b{font-family:var(--display,inherit);font-size:72px;line-height:1.05;color:#e9c77b;letter-spacing:2px}
+.tqinv p{margin:6px 0 0;font-size:18px;font-weight:700;line-height:1.6;max-width:30ch}.tqinv span{font-size:16px;color:var(--muted)}`; document.head.appendChild(css); })();
+
 applyLang();
 start();
 async function start(){
@@ -1935,7 +1963,7 @@ async function start(){
   try{
     firebase.initializeApp(CFG); db=firebase.firestore();
     for(let i=0;;i++){ try{ uid=(await firebase.auth().signInAnonymously()).user.uid; break }catch(e){ if(i>=3) throw e; await new Promise(r=>setTimeout(r,1200)); } }
-    lock(false); if(GV&&!valid){ const go=()=>typeof GAME!=="undefined"?GAME.boot(G):setTimeout(go,50); go(); return } if(MENU) setTimeout(()=>$("mbtn").click(),250); if(!valid) return;
+    lock(false); if(GV&&!valid){ const go=()=>typeof GAME!=="undefined"?GAME.boot(G):setTimeout(go,50); go(); return } if(MENU){ if(tqId) watchTq(); setTimeout(()=>$("mbtn").click(),250); } if(!valid) return;
     $("gbtn").hidden=false;
     db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub; if(sheetOpen==="mine") setTimeout(openMine,0);
       const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
