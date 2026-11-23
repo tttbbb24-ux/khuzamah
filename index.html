@@ -1620,7 +1620,7 @@ const DEFAULTS = { hour:15, open:30, count:15, items:[
   {name:"ميني بانكيك",price:10},{name:"موهيتو سفن",price:10},{name:"موهيتو كودرد",price:12},
   {name:"كودرد",price:7},{name:"قهوة اليوم حار",price:7},{name:"قهوة اليوم بارد",price:7},{name:"موية",price:1}
 ]};
-const ND=["ليمون","سمسم","بقدونس","كزبرة","كراث"], NDM=["نودلز بالدجاج","نودلز دجاج وخضار","بيبسي","ديو","موية","ليمون","سمسم","بقدونس","كزبرة","كراث"], NDD=["بيبسي","ديو","موية"]; // إضافات نودلز فتون ووجبتها
+const ND=["ليمون","سمسم","بقدونس","كزبرة","كراث"], NDD=["بيبسي","ديو","موية"], NDMX=3, FTX=["زبادي","رمان","عيش مقلي"]; // نودلز فتون: صحن، أو وجبة بـ٣ زيادة مع مشروب · وإضافات فتة حلا
 const KB=["سلطة","طحينة","شطة"]; // إضافات ساندويتش الكباب (فادي)
 const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","زيتون أخضر وأسود","فلفل رومي","جبنة شدر","جبنة موزاريلا","ذرة","شيبس دوريتوس","ملح وفلفل أسود"];
 const AHIMG={habash:"habash",spuds:"spuds",waraq:"waraq"}; // صور قسم أحمد من الاستوديو (بدون .webp، تنضاف بعدين)
@@ -1702,7 +1702,7 @@ function menuHtml(){ // قائمة جانبية للأقسام، والأصنا�
 const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}px) / ${Math.max(1,rows)}))`; // البلاطات تملى الشاشة
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
 function specFor(name){ // الأصناف اللي لها اختيارات، حسب الاسم
-  const n=String(name); if(/وجب[ةه]\s*نودلز/.test(n)) return {k:"ndm",title:"اختر نوع النودلز ومشروب واحد · والإضافات مجانية",opts:NDM}; if(/نودلز/.test(n)) return {k:"nd",title:"اختر الإضافات · مجانية",opts:ND,all:true}; if(/كباب/.test(n)) return {k:"kb",title:"اختر الإضافات · مجانية",opts:KB,all:true}; if(RX.ly.test(n)&&/تركي/.test(n)) return {k:"tk",title:"اختر السكر",opts:["سادة","وسط","حلو"],one:true}; if(/فشار/.test(n)) return {k:"pop",title:"اختر اللون",opts:["أحمر","أصفر","أخضر"],one:true}; if(RX.pp.test(n)) return {k:"pp",title:"اختر حشوة وحدة · والصوصات مجانية",opts:["حشوة بليلة وحمص","حشوة ورق عنب","تمر هندي","حار","شطة"]}; if(/كرات/.test(n)) return {k:"cb",title:"اختر الصوصات · مجانية",excl:"بدون صوص",opts:["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","سويت شيلي","كتشب"]};
+  const n=String(name); if(/نودلز/.test(n)) return {k:"nd",title:"صحن أو وجبة · والإضافات مجانية",opts:ND,all:true}; if(/فت[ةه]\s*ورق/.test(n)) return {k:"ftx",title:"اختر الإضافات · مجانية",opts:FTX,all:true}; if(/كباب/.test(n)) return {k:"kb",title:"اختر الإضافات · مجانية",opts:KB,all:true}; if(RX.ly.test(n)&&/تركي/.test(n)) return {k:"tk",title:"اختر السكر",opts:["سادة","وسط","حلو"],one:true}; if(/فشار/.test(n)) return {k:"pop",title:"اختر اللون",opts:["أحمر","أصفر","أخضر"],one:true}; if(RX.pp.test(n)) return {k:"pp",title:"اختر حشوة وحدة · والصوصات مجانية",opts:["حشوة بليلة وحمص","حشوة ورق عنب","تمر هندي","حار","شطة"]}; if(/كرات/.test(n)) return {k:"cb",title:"اختر الصوصات · مجانية",excl:"بدون صوص",opts:["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","سويت شيلي","كتشب"]};
   if(/^(?!علب).*قمر\s*الدين/.test(n)) return {k:"qd",title:"اختر الحبات · كل حبتين بريال",opts:QD,cnt:true,split:3};
   if(/بطاطس.*مشوي/.test(n)) return {k:"bk",title:"اختر الصوصات والإضافات",opts:BK,all:true,split:4};
   if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات · الجبنة بريال",opts:EXTRAS,all:true,paid:{[EXTRAS.length-1]:CHEESE}};
@@ -1726,8 +1726,8 @@ function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسع
   if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel)};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK)};
   if(spec.k==="kb") return {...base,note:extrasNote(v.sel,KB)};
-  if(spec.k==="nd") return {...base,note:extrasNote(v.sel,ND)};
-  if(spec.k==="ndm"){ const t=on.filter(o=>/^نودلز/.test(o)), d=on.filter(o=>NDD.includes(o)), x=on.filter(o=>!t.includes(o)&&!d.includes(o)); return {...base,note:[t.join(""),d.join(""),x.length?x.join(" و"):"بدون إضافات"].join(" + "),ok:t.length===1&&d.length===1}; }
+  if(spec.k==="nd"){ const mm=/^m/.test(v.size||""), dr=mm?NDD[(String(v.size).match(/^m(\d)$/)||[])[1]]||"":"", ad=extrasNote(v.sel,ND); return {...base,price:base.price+(mm?NDMX:0),note:mm?"وجبة ("+(dr||"؟")+") + "+ad:ad,ok:!mm||!!dr}; }
+  if(spec.k==="ftx") return {...base,note:extrasNote(v.sel,FTX)};
   if(spec.k==="qd"){ const c=spec.opts.map((_,i)=>v.sel.filter(x=>x===i).length), N=c.reduce((a,b)=>a+b,0); return {...base,price:N/2,note:N?N+" حبات: "+spec.opts.map((o,i)=>c[i]?c[i]+" "+o:"").filter(Boolean).join("، "):"",ok:N>0&&N%2===0}; }
   if(spec.k==="sx"){ const c=Number(v.xn)||0; return {...base,price:base.price+c*SATX,note:[and,c?"+ "+c+" سيخ "+spec.xs+" زيادة":""].filter(Boolean).join(" "),ok:true}; }
   if(spec.k==="st"){ const c=[0,1,2].map(i=>v.sel.filter(x=>x===i).length), N=c[0]+c[1]+c[2], need=Math.max(SATAY.n,Number(v.need)||0,N), sc=[3,4].filter(i=>v.sel.includes(i)).map(i=>spec.opts[i]);
@@ -2042,6 +2042,8 @@ function prefill(sp,o){ // يرجّع اختيارات الصنف المسجل �
   if(sp.k==="st"){ [0,1,2].forEach(i=>{ const m=sn.match(new RegExp("(\\d+) "+sp.opts[i])); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); [3,4].forEach(i=>{ if(sn.includes(sp.opts[i])) v.sel.push(i) }); v.need=v.sel.filter(i=>i<3).length; v.stshut=v.stseen=true; return v }
   if(sp.k==="sx"){ const m=sn.match(/\+ (\d+) سيخ/); v.xn=m?+m[1]:0; sp.opts.forEach((x,i)=>{ if(sn.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="qd"){ sp.opts.forEach((x,i)=>{ const m=sn.match(new RegExp("(\\d+) "+x)); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); return v }
+  if(sp.k==="nd"||sp.k==="ftx"){ let b=sn; const m=b.match(/^وجبة \((.+?)\) \+ (.*)$/); if(m){ const k=NDD.indexOf(m[1]); v.size="m"+(k>=0?k:""); b=m[2]; }
+    if(b.startsWith("كل شي")){ const ex=b.includes("ما عدا")?b.split("ما عدا")[1]:""; sp.opts.forEach((x,i)=>{ if(!ex.includes(x)) v.sel.push(i) }) } else if(b!=="بدون إضافات") sp.opts.forEach((x,i)=>{ if(b.includes(x)) v.sel.push(i) }); return v }
   if(sp.excl&&sn===sp.excl){ v.ex=true; return v }
   if(sp.k==="fries"){ const ci=EXTRAS.length-1, c=/(^|\+ )جبنة( بس)?$/.test(sn), b=sn.replace(/\s*\+ جبنة$/,"").replace(/^جبنة بس$/,"بدون إضافات"), f=EXTRAS.slice(0,ci);
     if(b.startsWith("كل شي")){ const ex=b.includes("ما عدا")?b.split("ما عدا")[1]:""; f.forEach((x,i)=>{ if(!ex.includes(x)) v.sel.push(i) }) }
@@ -2320,7 +2322,7 @@ try{const v=parseInt(localStorage.getItem("kz-station"),10); if(v>=0&&v<=2) mySt
 let reqs={}, reqsSeeded=false; const reqSeen=new Set();
 const liveReq=id=>{ const r=reqs[id], s=seats[id]; return !!(r&&!r.st&&s&&r.k===s.tok&&r.at&&Date.now()-tsMs(r.at)<60*60000) };
 function reqLines(r){ return (Array.isArray(r.items)?r.items:[]).slice(0,30).map(x=>{ let it=cfg.items[Number(x.i)]; if(!it||it.name!==x.n) it=cfg.items.find(y=>y.name===x.n); if(!it||it.off) return null;
-  const sp=specFor(it.name), v={sel:Array.isArray(x.sel)?x.sel.map(Number).filter(n=>n>=0&&n<20):[],ex:!!x.ex,size:["small","big","lf","coco","stv"].includes(x.size)?x.size:"",sg:[0,1,2,3].includes(Number(x.sg))?Number(x.sg):-1};
+  const sp=specFor(it.name), v={sel:Array.isArray(x.sel)?x.sel.map(Number).filter(n=>n>=0&&n<20):[],ex:!!x.ex,size:["small","big","lf","coco","stv","m","m0","m1","m2"].includes(x.size)?x.size:"",sg:[0,1,2,3].includes(Number(x.sg))?Number(x.sg):-1};
   const r=sp?resolve(sp,it,v):{name:it.name,price:Number(it.price),note:"",ok:true}; if(!r.ok) return null; const u=String(x.note||"").trim().slice(0,60); if(u) r.note=[r.note,u].filter(Boolean).join(" · ");
   return {it,r,q:Math.max(1,Math.min(20,Math.round(Number(x.q)||1)))} }).filter(Boolean); } // الأسعار من القائمة عندنا، مو من جوال الزبون
 const reqEd={}; // تعديلات الموظف على طلب الجوال قبل التأكيد
@@ -2721,6 +2723,7 @@ function extrasHtml(){ // صورة كبيرة فوق، والاختيارات، 
   <div class="xtitle"><b>${view.req?"تعديل طلب الجوال: ":view.edit?"تعديل: ":""}${esc(it.name)}</b><span>${sp?sp.title:"كم حبة؟"}${where}</span></div>
   ${view.edit&&view.eq>1?`<div class="seg xone"><button class="${view.one?"":"on"}" data-act="xone" data-v="0">عدّل الكل (<span class="num">${view.eq}</span>)</button><button class="${view.one?"on":""}" data-act="xone" data-v="1">عدّل حبة وحدة بس</button></div>`:""}
   ${off&&!view.edit?`<div class="notice" style="background:var(--red-bg);color:var(--red);font-weight:700">غير متوفر الحين</div>`:""}
+  ${sp&&sp.k==="nd"?`<div class="seg xone"><button class="${/^m/.test(view.size||"")?"":"on"}" data-act="xsize" data-s="">صحن فقط · <span class="num">${Number(it.price)}</span></button><button class="${/^m/.test(view.size||"")?"on":""}" data-act="xsize" data-s="m">وجبة مع مشروب · <span class="num">${Number(it.price)+NDMX}</span></button></div>${/^m/.test(view.size||"")?`<h2 class="sgh">المشروب ${/^m\d/.test(view.size)?`<i class="sgok">✓</i>`:`<i class="sgrq">مطلوب</i>`}</h2><div class="menu xchips">${NDD.map((d,k)=>`<button class="xopt ${view.size==="m"+k?"on":""}" data-act="xsize" data-s="m${k}"><b>${d}</b></button>`).join("")}</div><h2>الإضافات</h2>`:""}`:""}
   ${sp&&sp.all?`<button class="chip ${freeAll(sp,it).every(i=>view.sel.includes(i))?"on":""}" data-act="xall" style="text-align:center">كل شي</button>`:""}
   ${sp&&sp.st?stHtml(sp,it):sp&&sp.cnt?qdHtml(sp):sp?`<div class="menu xchips">${sp.excl?`<button class="xopt ${view.ex?"on":""}" data-act="xex"><b>${sp.excl}</b>${sp.pr?`<span class="num">${sp.pr[0]}${RS}</span>`:""}</button>`:""}${sp.opts.map((x,i)=>{const L=OPT_LOOK[x]; return (sp.split&&(i===0||i===sp.split)?`<h2 style="grid-column:1/-1;width:100%;margin:6px 0 0">${i?"الإضافات":"الصوصات"}</h2>`:"")+`<button class="xopt ${L?"paint":""} ${view.sel.includes(i)?"on":""} ${oOff(it,x)?"xo":""}" ${L?`style="background:${L[1]}"`:""} data-act="${oOff(it,x)&&!view.sel.includes(i)?"xoffhint":"xtoggle"}" data-x="${i}" ${OPS()?`data-lpo="${esc(x)}"`:""}>${L?`<span>${L[0]}</span>`:""}<b>${esc(x)}</b>${oOff(it,x)?`<i class="xot">خلص</i>`:""}${sp.pr?`<span class="num">${sp.pr[1+i]}${RS}</span>`:sp.paid&&sp.paid[i]?`<span class="num">+${sp.paid[i]}${RS}</span>`:""}</button>`}).join("")}</div>${sp.xs?sxHtml(sp):""}`:""}
   ${sp&&sp.k==="mat"?`<h2>الحليب</h2><div class="menu xchips"><button class="xopt ${view.size!=="coco"?"on":""}" data-act="xsize" data-s="lf"><b>خالي من اللاكتوز</b></button><button class="xopt ${view.size==="coco"?"on":""}" data-act="xsize" data-s="coco"><b>جوز الهند</b></button></div>`:""}
@@ -2892,6 +2895,8 @@ function saleDetail(x){ const r=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</sp
   ${x.type!=="take"&&Number(x.fee)>0?r("رسوم الجلسة"+(MODE[x.type]?" · "+MODE[x.type]:""),money(Number(x.fee))):""}
   ${its.map(i=>r(esc(i.name)+(qty(i)>1?` <span class="q">× ${qty(i)}</span>`:"")+(i.note?`<br><span class="q" style="font-size:12.5px">${esc(i.note)}</span>`:"")+(i.by?`<br><span class="q" style="font-size:12px">سجّله ${esc(i.by)}${i.at?" · "+tclock(i.at):""}</span>`:""),i.comp?"ضيافة":money(Number(i.price)*qty(i)))).join("")}
   ${Number(x.disc)>0?r("خصم","− "+money(Number(x.disc)),"sub"):""}${r("المجموع",money(Number(x.total||0)),"tot")}</div>`; }
+const T114=Date.UTC(2026,10,23,19,0); // قبل رفع v114 كان النودلز عند ليان
+const sgi=(n,at)=>Number(at)>0&&Number(at)<T114&&/نودلز/.test(n)?7:SGROUPS.findIndex(x=>x.f(n));
 function summarize(S){ // يحسب أرقام يوم من قائمة حساباته
   const z=()=>({cash:0,card:0,none:0}), g=SGROUPS.map(()=>({})), gp=SGROUPS.map(z), pay=z(), fp=z();
   let VIA={rj:0,bq:0}; let tot=0, discSum=0, compN=0, compV=0, compU=0; const freeN=S.filter(x=>x.type==="free").length, sc=[0,1,2,3,4,5,6,7,8,9].map(z);
@@ -2903,7 +2908,7 @@ function summarize(S){ // يحسب أرقام يوم من قائمة حسابا�
     const add=(o,amt)=>{o.cash+=amt*sh.cash;o.card+=amt*sh.card;o.none+=amt*sh.none};
     tot+=total; if(s.via&&VIA[s.via]!=null) VIA[s.via]+=s.pay==="split"?Number(s.card||0):total; discSum+=Math.max(0,gross-total); add(pay,total); if(s.sec!=null&&sc[s.sec]){ sc[s.sec].cash+=total*sh.cash; sc[s.sec].card+=total*sh.card; }
     // الخصم ينزل أول من الجلسة، بعدها من أصناف الترك، وإذا باقي شي يتوزع على باقي الأقسام
-    const L=its.map(o=>{const n=String(o.name||""); return {o,n,gi:SGROUPS.findIndex(x=>x.f(n)),q:qty(o),v:Number(o.price||0)*qty(o)}});
+    const L=its.map(o=>{const n=String(o.name||""); return {o,n,gi:sgi(n,s.closedAt||s.at),q:qty(o),v:Number(o.price||0)*qty(o)}});
     let feeV=fee0, d=base-total;
     if(d>=0){ const cut=(sum,f)=>{ if(d<=0||sum<=0) return; const c=Math.min(d,sum), r=(sum-c)/sum; f(r); d-=c; };
       cut(feeV,r=>{feeV*=r});
@@ -2944,7 +2949,7 @@ function summaryHtml(){
   if(W()) return `<div class="phead"><div class="meta"><b>الملخص</b><span>الأرقام عند الشركاء</span></div>${xBtn}</div><p class="empty">ما في ملخص لحسابك.</p>`;
   if(!P()){ const st=me?me.station:0, v=view; if(v.mon===undefined){ v.mon=null; loadMon(v); }
     const M=v.mon, mR=M?summarize(M.S):null, mp=mR?mR.part(st):null;
-    const mon=`<h2>دخل قسمي هذا الشهر</h2><div class="bill">${!M?row(`<span class="q">جاري التحميل…</span>`,""):row("المجموع · "+esc(monthLabel(M.ym)),money(mR.shares[st]),"tot")+split(mp)+row(`أيام فيها بيع`,M.days,"sub")}</div>`;
+    const mon=`<h2>دخل قسمي هذا الشهر</h2><div class="bill">${!M?row(`<span class="q">جاري التحميل…</span>`,""):row("المجموع · "+esc(monthLabel(M.ym)),money(mR.shares[st]),"tot")+split(mp)+row(`أيام فيها بيع`,new Set(M.S.filter(x=>x.pay!=="comp"&&(x.sec===st||(x.items||[]).some(o=>sgi(String(o.name||""),x.closedAt||x.at)===st))).map(x=>x.day)).size,"sub")}</div>`;
     const mySet=!SEC()?"":`<h2>تسوية اليوم</h2><div class="bill">${row("الكاش اللي حاسبت عليه (معك)",money(R.held[st]||0))}${row(R.owe[st]>=0?"لك من الترك آخر الليل":"عليك للترك آخر الليل",money(Math.abs(R.owe[st]||0)),"tot")}</div>`;
     return `<div class="phead"><div class="meta"><b>ملخص قسمي اليوم</b><span>الحسابات اللي تقفلت من 8 الصبح</span></div>${xBtn}</div>${block(st)}${mySet}${mon}`; }
   const payName=x=>({cash:"كاش",card:"شبكة",split:"مقسوم",comp:"ضيافة"}[x.pay]||"غير محدد");
@@ -3425,7 +3430,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=31, FEATMAX=6; let migrating=false;
+const MIG=32, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3465,7 +3470,8 @@ function migrate(){ // تعديلات قائمة الأصناف، كل خطوة 
     if(!items.some(i=>mt.test(i.name)&&/[٧7]/.test(i.name))) items.push({name:"منتو أفغاني ٧ حبات",price:5,cat:"dw"}); }
   if(m<18&&!items.some(i=>/هوت\s*شوك/.test(i.name))) items.push({name:"هوت شوكلت",price:12,cat:"hot",off:true}); // ينضاف غير متوفر لين تجهز البودرة
   if(m<19){ let k=0; items.forEach(i=>{ if(k<FEATMAX&&/ماتشا|هوت\s*شوك|[آا]يس\s*تي|كوكيز/.test(i.name)){ i.feat=true; k++; } }); } // أصناف «مميز» الأولى، وبعدها بالنجمة من الإعدادات
-  if(m<31){ for(let k=items.length-1;k>=0;k--) if(/نودلز/.test(items[k].name)&&items[k].cat==="ly") items.splice(k,1); const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("دلة قهوة",15,"hl"); A("بسبوسة حبة",3,"hl"); A("بسبوسة حبتين",5,"hl"); A("فتة ورق عنب",1,"hl"); A("نودلز بالدجاج",15,"ft"); A("نودلز دجاج وخضار",15,"ft"); A("وجبة نودلز + مشروب",18,"ft"); A("حلا طبقات",6,"ft"); } // قسم حلا وقسم فتون، والنودلز انتقل من ليان لفتون
+  if(m<32){ for(let k=items.length-1;k>=0;k--){ const x=items[k]; if(/نودلز/.test(x.name)&&(/وجب[ةه]/.test(x.name)||x.cat!=="ft")) items.splice(k,1); } const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("نودلز بالدجاج",15,"ft"); A("نودلز دجاج وخضار",15,"ft"); } // النودلز صحن أو وجبة، وما يبقى نودلز عند ليان
+  if(m<31){ for(let k=items.length-1;k>=0;k--) if(/نودلز/.test(items[k].name)&&items[k].cat==="ly") items.splice(k,1); const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("دلة قهوة",15,"hl"); A("بسبوسة حبة",3,"hl"); A("بسبوسة حبتين",5,"hl"); A("فتة ورق عنب",1,"hl"); A("نودلز بالدجاج",15,"ft"); A("نودلز دجاج وخضار",15,"ft"); A("حلا طبقات",6,"ft"); } // قسم حلا وقسم فتون، والنودلز انتقل من ليان لفتون
   if(m<30){ const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("ساندويتش كباب دجاج",12,"corn"); A("ساندويتش كباب لحم",12,"corn"); A("مكرونة بشاميل لحم مفروم",10,"ly"); } // كباب فادي + بشاميل ليان
   if(m<29){ items.forEach(x=>{ if(/^علب[ةه]\s*حامض/.test(x.name)) x.name="علبة قمر الدين كبيرة"; }); } // علبة الـ٨ هي علبة قمر الدين الكبيرة
 if(m<28){ const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("آيس فرابيه نسكافيه",12,"cold"); A("قهوة تركي",10,"hot"); A("قهوة تركي بالبندق",12,"hot"); A("قهوة حلوة",10,"hot"); A("نودلز بالدجاج",15,"ft"); A("فشار",3,"ly"); A("علبة قمر الدين صغيرة",2,"nuts"); A("ملفوف",11,"ah"); A("بصل محشي",10,"ah"); } // قسم ليان + محاشي أحمد
@@ -3541,7 +3547,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v114";
+const VER="v115";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
