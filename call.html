@@ -499,6 +499,16 @@ html.gmon,html.gmon body{overflow:hidden}
 .oc2 em{position:absolute;top:7px;left:7px;z-index:2;min-width:24px;height:24px;border-radius:12px;background:var(--gold);color:#2a1a05;font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0 6px}
 .oc2 .nw{position:absolute;top:7px;right:7px;z-index:2;background:#e5484d;color:#fff;font:700 11.5px var(--body);padding:1px 9px;border-radius:99px}
 .oc2.has{outline:2.5px solid var(--gold);outline-offset:-2.5px}.oc2.off{opacity:.5}
+.og3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:0 14px 14px}
+.og3 .oc2{height:auto;aspect-ratio:3/4;width:100%;border:1px solid #e9c77b24}
+.og3 .oc2::after{background:linear-gradient(180deg,transparent 36%,#0d0907b8 60%,#0d0907f7)}
+.og3 .oc2>span{inset:auto 8px 8px 36px}.og3 .oc2 b{font-size:14.5px;line-height:1.2}
+.og3 .oc2 em{top:auto;bottom:8px;left:7px;width:26px;min-width:26px;height:26px;border-radius:50%;padding:0}
+.og3 .oc2 .pl{position:absolute;bottom:8px;left:7px;z-index:2;width:26px;height:26px;border-radius:50%;background:#ffffff1f;border:1px solid #ffffff47;color:#fff;display:grid;place-items:center;font-style:normal;font-size:17px;line-height:1}
+.og3 .oc2 .nw{background:var(--gold);color:#2a1a05}
+.og3 .oc2.has{outline:2px solid var(--gold);outline-offset:-2px}
+.osub{display:flex;align-items:center;gap:10px;padding:2px 16px 9px;font:700 14.5px var(--body);color:#eadfca}.osub i{flex:1;height:1px;background:linear-gradient(90deg,transparent,#e9c77b70)}
+@media (min-width:640px){.og3{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .orow.nudge{animation:onudge 1.6s .9s ease-in-out 1}@keyframes onudge{0%,100%{transform:none}35%,60%{transform:translateX(44px)}}
 .chip.xo{opacity:.5;text-decoration:line-through}.chip.xo small{text-decoration:none;color:#ff8077;font-weight:800}
 
@@ -1642,15 +1652,29 @@ function payPick(){ if(busy||!db||!sid||ended) return; const T=lang==="en", tot=
 /* ---------- المنيو الجديد: صفوف تنسحب + مميز ---------- */
 const FEAT=/ماتشا|هوت\s*شوك|كوكومون|[آا]يس\s*تي|كوكيز/, NEWI=/[اأإآ]ندومي|^ديو$|^ببسي$|[آا]يس\s*تي.*ليمون|دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق|حلا\s*طبقات|كباب|بشاميل|فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|نودلز|فشار|ملفوف|بصل\s*محشي|سينابو?ن|باني\s*بوري|كرات|كي?نز[ةها]\s*كولا|شاهي\s*مغرب|هوت\s*شوك|كوكومون|ساتي/;
 const oscr={top:0,rows:{}}, mscr={top:0,rows:{}}, oall=new Set(), mall=new Set(); let onudged=false;
-function secsOf(items){ const secs=GRP.map(g=>[g,grpItems(g,items)]).filter(c=>c[1].length).map(([c,l])=>({k:c[0],t:lang==="en"?c[3]:c[2],l}));
-  const byStar=(Number(menuData&&menuData.mig)||0)>=19; // بعد التحديث: المميز بالنجمة من تطبيق الموظفين
-  const ft=items.map((it,i)=>[it,i]).filter(([it])=>(byStar?!!it.feat:FEAT.test(String(it.name)))&&!it.off).slice(0,6);
-  if(ft.length>=2) secs.unshift({k:"feat",t:"⭐ "+L("feat_t"),l:ft,big:1}); return secs; }
+const SUBS={hot:[["spec","القهوة المختصة","Specialty coffee"],["arab","القهوة العربية والتركية","Arabic & Turkish coffee"],["tea","الشاي","Tea"],["hoth","المشروبات الساخنة الأخرى","Other hot drinks"]],
+ cold:[["sig","مشروبات خزامى الخاصة","Khuzamah signature drinks"],["icoff","القهوة المثلجة","Iced coffee"],["energy","مشروبات الطاقة","Energy drinks"],["soda","المشروبات الغازية","Soft drinks"],["water","المياه والثلج","Water & ice"]],
+ food:[["main","الأطباق الرئيسية","Main dishes"],["share","أطباق للمشاركة","Sharing plates"],["light","المقبلات والوجبات الخفيفة","Starters & light bites"]],
+ sn:[["sweets","الحلويات","Desserts"],["nuts","المكسرات","Nuts"]],hookah:[["hk","المعسلات","Shisha"],["hkx","الإضافات","Extras"]],games:[["board","ألعاب الطاولة","Board games"]],other:[["sessx","إضافات الجلسة","Session extras"]]};
+function guessSub(n,g){ n=String(n); // v120: القسم الفرعي من الاسم، للأصناف الجديدة
+  if(g==="food") return /ساتي|ندومي|ساندويتش|مكرون|فت[ةه]|مشوي/.test(n)?"main":/كبير|كرات|باني|١٥|15|فشار|ورق\s*عنب/.test(n)?"share":"light";
+  if(g==="hot") return /V60|اليوم/.test(n)?"spec":/قهو/.test(n)?"arab":/شاهي|شاي/.test(n)?"tea":"hoth";
+  if(g==="cold") return /ماتشا|[آا]يس\s*تي|كركدي|موهيتو|ليمون/.test(n)?"sig":/V60|قهو|فراب/.test(n)?"icoff":/ريد|كود|طاق/.test(n)?"energy":/كولا|سفن|ببسي|بيبسي|ديو|غاز/.test(n)?"soda":/مو[يى]|ماء|ثلج/.test(n)?"water":"sig";
+  if(g==="sn") return /مكسر|قمر|فستق|لوز/.test(n)?"nuts":"sweets";
+  if(g==="hookah") return /فحم/.test(n)?"hkx":"hk";
+  return (SUBS[g]||[[""]])[0][0]; }
+const subOfG=(it,g)=>{ const L=SUBS[g]||[]; return L.some(s=>s[0]===it.sub)?it.sub:guessSub(it.name,g); };
+function secsOf(items){ const T=lang==="en", av=items.map((it,i)=>[it,i]); // v120: عناوين فرعية رسمية، والأكثر طلبًا والمميز والجديد فوق
+  const secs=GRP.map(g=>{ const l=grpItems(g,items); if(!l.length) return null; const ok=x=>x.filter(([it])=>!it.off).concat(x.filter(([it])=>it.off));
+    let subs=(SUBS[g[0]]||[]).map(([k,ta,te])=>({t:T?te:ta,l:ok(l.filter(([it])=>subOfG(it,g[0])===k))})).filter(x=>x.l.length); if(!subs.length) subs=[{t:"",l:ok(l)}];
+    return {k:g[0],t:T?g[3]:g[2],subs}; }).filter(Boolean);
+  const V=[["top",T?"Most ordered":"الأكثر طلبًا",x=>x.top],["feat",T?"Featured":"الأصناف المميزة",x=>x.feat],["nw",T?"New":"الأصناف الجديدة",x=>x.nw]];
+  return V.map(([k,t,f])=>({k,t,v:1,subs:[{t:"",l:av.filter(([it])=>f(it)&&!it.off).slice(0,9)}]})).filter(s=>s.subs[0].l.length).concat(secs); }
 function oCard(it,i,ro){ const ph=photo(it.name), q=ro?0:cart.filter(c=>c.i===i).reduce((a,c)=>a+c.q,0), nm=esc(nameOf(it.name));
-  const inn=`${ph?`<img src="${ph}.webp" alt="" loading="lazy" decoding="async">`:`<i></i>`}${NEWI.test(it.name)&&!it.off?`<mark class="nw">${L("nw_b")}</mark>`:""}${q?`<em class="num">${q}</em>`:""}<span><b>${nm}</b><small>${priceOf(it)}</small></span>`;
+  const inn=`${ph?`<img src="${ph}.webp" alt="" loading="lazy" decoding="async">`:`<i></i>`}${it.nw&&!it.off?`<mark class="nw">${L("nw_b")}</mark>`:""}${q?`<em class="num">${q}</em>`:!ro&&!it.off?`<i class="pl">+</i>`:""}<span><b>${nm}</b><small>${priceOf(it)}</small></span>`;
   return ro?`<div class="oc2 ${it.off?"off":""}">${inn}</div>`:`<button class="oc2 ${it.off?"off":""} ${q?"has":""}" ${it.off?"disabled":`data-oi="${i}"`} aria-label="${nm}">${inn}</button>`; }
-function rowsHTML(secs,S,ro,nudge){ return `<div class="oc2chips">${secs.map((s,i)=>`<button class="${i?"":"on"}" data-og="${s.k}">${s.t.replace("⭐ ","")}</button>`).join("")}</div>`
-  +secs.map((s,i)=>`<h4 class="osec" data-os="${s.k}">${s.t}${s.l.length>2?`<button data-oall="${s.k}">${S.has(s.k)?L("back_b"):L("all_b")}</button>`:""}</h4><div class="${S.has(s.k)?"ogrid":"orow"+(s.big?" big":"")+(nudge&&!i?" nudge":"")}" data-or="${s.k}">${s.l.map(([it,k])=>oCard(it,k,ro)).join("")}</div>`).join("")+`<div style="height:18px"></div>`; }
+function rowsHTML(secs,S,ro,nudge){ return `<div class="oc2chips">${secs.map((s,i)=>`<button class="${i?"":"on"}" data-og="${s.k}">${s.t}</button>`).join("")}</div>`
+  +secs.map(s=>`<h4 class="osec" data-os="${s.k}">${s.t}</h4>`+s.subs.map(b=>(b.t&&s.subs.length>1?`<h5 class="osub"><span>${b.t}</span><i></i></h5>`:"")+`<div class="og3">${b.l.map(([it,k])=>oCard(it,k,ro)).join("")}</div>`).join("")).join("")+`<div style="height:18px"></div>`; }
 function spy(ob){ const hs=[...ob.querySelectorAll(".osec")]; if(!hs.length) return; let k=hs[0].dataset.os; for(const h of hs){ if(h.offsetTop-76<=ob.scrollTop) k=h.dataset.os; }
   if(ob.scrollTop+ob.clientHeight>=ob.scrollHeight-4) k=hs[hs.length-1].dataset.os;
   const ch=ob.querySelector(".oc2chips"); let on=null; ch.querySelectorAll("button").forEach(b=>{ const y=b.dataset.og===k; b.classList.toggle("on",y); if(y) on=b; });

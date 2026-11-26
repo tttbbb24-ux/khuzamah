@@ -513,10 +513,16 @@ button:active{transform:none}
 .mvb button:disabled{opacity:.3}
 .msub{grid-column:1/-1;margin:6px 2px 0;font-size:14px;font-weight:800;color:var(--gold)}.sthead{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:6px;font-weight:700;text-align:start;background:var(--s2)}.sthead small{font-weight:400;opacity:.8;font-size:13px}.sthead .stc{border-radius:99px;padding:2px 10px;background:var(--line);font-size:13px}.sthead.ok{border-color:var(--green)}.sthead.ok .stc{color:var(--green)}.stmore{width:100%;margin-top:8px;border:1.5px dashed var(--gold);color:var(--gold);border-radius:14px;padding:12px;font-weight:800;background:transparent}.qdrow{display:flex;justify-content:space-between;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;margin-bottom:6px;font-weight:700}.qdrow.on{border-color:var(--green)}.qdst{display:flex;align-items:center;gap:12px}.qdst button{width:38px;height:38px;border-radius:50%;background:var(--s2);font-size:20px}.qdst button:disabled{opacity:.35}.qdst b{min-width:18px;text-align:center;font-size:18px}.qdwarn{background:var(--gold);color:#1a0d2e;border-radius:16px;padding:14px;text-align:center;font-size:19px;font-weight:800;margin:10px 0}.qdwarn small{display:block;font-size:13px;font-weight:600}.qdok{text-align:center;color:var(--green);font-weight:700;margin:8px 0}.msub.msep{display:block;height:1px;margin:6px 2px;background:var(--line)}.msub:first-child{margin-top:0}
 .lockchip{border:1.5px solid var(--red);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:700;min-height:38px;flex:none}
-.mgrid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;align-content:start}
+.mgrid{flex:1;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;align-content:start}
+body.wide .mgrid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+.mvt{display:flex;justify-content:flex-end;gap:4px;margin:0 0 8px}.mvt button{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted)}.mvt button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.mgrid.txt .mt{min-height:66px;justify-content:space-between}.mgrid.txt .mt .tx{padding:8px 8px 8px}.mt .odot{position:absolute;top:6px;inset-inline-start:6px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.mt .flg{display:flex;gap:3px;justify-content:center;padding:0 4px 4px}.mt .flg button{font-size:14px;padding:2px 5px;border-radius:8px;border:1px solid var(--line);background:transparent;opacity:.45}.mt .flg button.on{opacity:1;border-color:var(--accent);background:var(--s2)}
+.subpick{grid-column:1/-1;background:var(--s2);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}.subpick div{display:flex;flex-wrap:wrap;gap:6px}.subpick div button{font:inherit;font-size:13px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:transparent;color:inherit}.subpick div button.on{background:var(--accent);color:var(--accent-ink)}
 .mt{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:start;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-.mt img,.mt .ph0{width:100%;height:96px;object-fit:cover;display:block;background:var(--s2);pointer-events:none}
-.mt .tx{padding:7px 10px 9px}.mt b{display:block;font-size:14.5px;line-height:1.35}.mt .pr{font-size:13px;font-weight:700;color:var(--gold)}
+.mt img,.mt .ph0{width:100%;height:68px;object-fit:cover;display:block;background:var(--s2);pointer-events:none}
+.mt .tx{padding:5px 7px 7px}.mt b{display:block;font-size:12.5px;line-height:1.35}.mt .pr{font-size:12px;font-weight:700;color:var(--gold)}
+body.wide .mt img,body.wide .mt .ph0{height:84px}
 .mt .opt{position:absolute;top:6px;inset-inline-end:6px;background:rgba(0,0,0,.62);color:#fff;font-size:11px;border-radius:999px;padding:1px 8px}
 .mt.off img{filter:grayscale(1) brightness(.55)} .mt.off b{color:var(--muted)} .mt.off .pr{color:var(--red)}
 .mt .offtag{position:absolute;top:6px;inset-inline-start:6px;background:var(--red);color:#2a0606;font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 9px}
@@ -1671,7 +1677,9 @@ function icon(name){ const n=String(name); if(RX.st.test(n)) return "🍢"; if(R
   if(RX.pan.test(n)) return "🥞"; if(/كوكيز/.test(n)) return "🍪"; if(/كيك/.test(n)) return "🍰"; if(/مكسرات/.test(n)) return "🥜"; if(/جلس[ةه]/.test(n)) return "🪑";
   if(/دل[ةه]/.test(n)) return "🫖"; if(/شاهي/.test(n)) return "🍵"; if(/بارد/.test(n)) return "🧋"; if(/قهوة|v\s*60|حار/i.test(n)) return "☕";
   return "🍽️"; }
-function photo(name){ const n=String(name); if(/دل[ةه]\s*قهو/.test(n)) return "n_dallahc"; if(/بسبوس/.test(n)) return "n_basbousa"; if(/فت[ةه]\s*ورق/.test(n)) return "n_fatteh"; if(/حلا\s*طبقات/.test(n)) return "n_layers"; if(/وجب[ةه]\s*نودلز/.test(n)) return "n_ndmeal"; if(/[اأإآ]ندومي.*ربيان/.test(n)) return "n_indshrimp"; if(/^ديو$/.test(n)) return "n_dew"; if(/^ببسي$/.test(n)) return "n_pepsi"; if(/[اأإآ]ندومي/.test(n)) return "n_noodles"; if(/نودلز.*خضار/.test(n)) return "n_ndveg"; if(/كباب.*دجاج/.test(n)) return "n_kebabc"; if(/كباب/.test(n)) return "n_kebabl"; if(/بشاميل/.test(n)) return "n_bechamel"; if(/فرابي/.test(n)) return "n_frappe"; if(/قهو[ةه]\s*تركي.*بندق/.test(n)) return "n_turkhaz"; if(/قهو[ةه]\s*تركي/.test(n)) return "n_turkish"; if(/قهو[ةه]\s*حلو/.test(n)) return "n_sweetcof"; if(/نودلز/.test(n)) return "n_noodles"; if(/فشار/.test(n)) return "n_popcorn"; if(/ملفوف/.test(n)) return "n_malfouf"; if(/بصل\s*محشي/.test(n)) return "n_onion"; if(RX.pp.test(n)) return "n_panipuri"; if(/كرات/.test(n)) return "n_cheeseballs"; if(/سينابو?ن/.test(n)) return "n_cinnabon"; if(RX.st.test(n)) return "n_satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي.*ليمون/.test(n)) return "n_lemontea"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "n_balila"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
+const NPS=new Set("ashak balila baloot basbousa bechamel cheeseballs cheesemango cheesestraw cinnabon codered coffee cookies corn corncheetos corndog dallah dallahc dew fatteh frappe fries habash hookah hotchoc ice icedcoffee indshrimp jakaro karkade kcola kebabc kebabl kinza layers lemontea malfouf matcha mojito mtea noodles nuts onion pancake panipuri peachtea pepsi popcorn qamar qbox redbull satay sofa spuds sweetcof tea turkhaz turkish waraq water".split(" "));
+function photo(name){ const p=photo1(name); return p&&!/^n_/.test(p)&&NPS.has(p)?"n_"+p:p; } // v120: صور تطبيقنا نفس صور المنيو الجديدة
+function photo1(name){ const n=String(name); if(/دل[ةه]\s*قهو/.test(n)) return "n_dallahc"; if(/بسبوس/.test(n)) return "n_basbousa"; if(/فت[ةه]\s*ورق/.test(n)) return "n_fatteh"; if(/حلا\s*طبقات/.test(n)) return "n_layers"; if(/وجب[ةه]\s*نودلز/.test(n)) return "n_ndmeal"; if(/[اأإآ]ندومي.*ربيان/.test(n)) return "n_indshrimp"; if(/^ديو$/.test(n)) return "n_dew"; if(/^ببسي$/.test(n)) return "n_pepsi"; if(/[اأإآ]ندومي/.test(n)) return "n_noodles"; if(/نودلز.*خضار/.test(n)) return "n_ndveg"; if(/كباب.*دجاج/.test(n)) return "n_kebabc"; if(/كباب/.test(n)) return "n_kebabl"; if(/بشاميل/.test(n)) return "n_bechamel"; if(/فرابي/.test(n)) return "n_frappe"; if(/قهو[ةه]\s*تركي.*بندق/.test(n)) return "n_turkhaz"; if(/قهو[ةه]\s*تركي/.test(n)) return "n_turkish"; if(/قهو[ةه]\s*حلو/.test(n)) return "n_sweetcof"; if(/نودلز/.test(n)) return "n_noodles"; if(/فشار/.test(n)) return "n_popcorn"; if(/ملفوف/.test(n)) return "n_malfouf"; if(/بصل\s*محشي/.test(n)) return "n_onion"; if(RX.pp.test(n)) return "n_panipuri"; if(/كرات/.test(n)) return "n_cheeseballs"; if(/سينابو?ن/.test(n)) return "n_cinnabon"; if(RX.st.test(n)) return "n_satay"; if(/هوت\s*شوك|كوكومون|cocoamon/i.test(n)) return "n_hotchoc"; if(/[آا]يس\s*تي.*ليمون/.test(n)) return "n_lemontea"; if(/[آا]يس\s*تي/.test(n)) return "peachtea"; if(/بليل/.test(n)) return "n_balila"; if(RX.dw.test(n)) return "ashak"; // صورة الصنف من مجلد img
   if(/^(?!علب).*قمر\s*الدين/.test(n)) return "qamar"; if(/علب[ةه]\s*قمر/.test(n)) return "qbox"; if(/^علب[ةه]\s*حامض/.test(n)) return "qbox";
   if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
@@ -1683,9 +1691,23 @@ function photo(name){ const n=String(name); if(/دل[ةه]\s*قهو/.test(n)) re
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return "mtea"; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee";
   return ""; }
-const CAT_IMG={hot:"coffee",cold:"mojito",hookah:"hookah",fries:"fries",corn:"corndog",nuts:"nuts",sweet:"cookies",games:"baloot",other:"",food:"fries",sn:"cookies"};
+const CAT_IMG={hot:"n_coffee",cold:"n_mojito",hookah:"n_hookah",fries:"n_fries",corn:"n_corndog",nuts:"n_nuts",sweet:"n_cookies",games:"n_baloot",other:"",food:"n_fries",sn:"n_cookies"};
 const GROUPS=[["hot","الحارة",["hot"]],["cold","الباردة",["cold"]],["games","الألعاب",["games"]],["hookah","المعسلات",["hookah"]],["food","المأكولات",["hl","ft","fries","corn","ah","dw","al","pp","ly"]],["sn","الحلا والمكسرات",["sweet","nuts"]],["other","أخرى",["other"]]]; // ترتيب العرض بس، الأقسام الداخلية ما تغيّرت
 const grpOf=k=>(GROUPS.find(g=>g[0]===k||g[2].includes(k))||GROUPS[GROUPS.length-1])[0];
+const SUBS={hot:[["spec","القهوة المختصة","Specialty coffee"],["arab","القهوة العربية والتركية","Arabic & Turkish coffee"],["tea","الشاي","Tea"],["hoth","المشروبات الساخنة الأخرى","Other hot drinks"]],
+ cold:[["sig","مشروبات خزامى الخاصة","Khuzamah signature drinks"],["icoff","القهوة المثلجة","Iced coffee"],["energy","مشروبات الطاقة","Energy drinks"],["soda","المشروبات الغازية","Soft drinks"],["water","المياه والثلج","Water & ice"]],
+ food:[["main","الأطباق الرئيسية","Main dishes"],["share","أطباق للمشاركة","Sharing plates"],["light","المقبلات والوجبات الخفيفة","Starters & light bites"]],
+ sn:[["sweets","الحلويات","Desserts"],["nuts","المكسرات","Nuts"]],hookah:[["hk","المعسلات","Shisha"],["hkx","الإضافات","Extras"]],games:[["board","ألعاب الطاولة","Board games"]],other:[["sessx","إضافات الجلسة","Session extras"]]};
+function guessSub(n,g){ n=String(n); // v120: القسم الفرعي من الاسم، للأصناف الجديدة
+  if(g==="food") return /ساتي|ندومي|ساندويتش|مكرون|فت[ةه]|مشوي/.test(n)?"main":/كبير|كرات|باني|١٥|15|فشار|ورق\s*عنب/.test(n)?"share":"light";
+  if(g==="hot") return /V60|اليوم/.test(n)?"spec":/قهو/.test(n)?"arab":/شاهي|شاي/.test(n)?"tea":"hoth";
+  if(g==="cold") return /ماتشا|[آا]يس\s*تي|كركدي|موهيتو|ليمون/.test(n)?"sig":/V60|قهو|فراب/.test(n)?"icoff":/ريد|كود|طاق/.test(n)?"energy":/كولا|سفن|ببسي|بيبسي|ديو|غاز/.test(n)?"soda":/مو[يى]|ماء|ثلج/.test(n)?"water":"sig";
+  if(g==="sn") return /مكسر|قمر|فستق|لوز/.test(n)?"nuts":"sweets";
+  if(g==="hookah") return /فحم/.test(n)?"hkx":"hk";
+  return (SUBS[g]||[[""]])[0][0]; }
+const subOfG=(it,g)=>{ const L=SUBS[g]||[]; return L.some(s=>s[0]===it.sub)?it.sub:guessSub(it.name,g); };
+const subOf=it=>subOfG(it,grpOf(itemCat(it)));
+let MVIEW="p"; try{ MVIEW=localStorage.getItem("kz-mv")==="t"?"t":"p"; }catch(e){}
 const SECS=[[0,"🍟","البطاطس"],[1,"🌭","الكورن دوق والذرة"],[3,"🥔","قسم أحمد"],[4,"🥟","قسم داوود"],[5,"🍢","قسم علاء"],[6,"🥟","قسم منصور"],[7,"☕","قسم ليان"],[8,"🍯","قسم حلا"],[9,"🍜","قسم فتون"]]; // الأقسام اللي تنقفل وتنفتح
 const last8=()=>{ const H=3600000, t=Date.now()+3*H; let e=t-t%(24*H)+8*H; if(t<e) e-=24*H; return e-3*H; }; // آخر ٨ الصبح بتوقيت السعودية
 const LOCK_T0=Date.UTC(2026,9,23,5); // قبل أول ٨ الصبح بعد التحديث: مفتوح لو ما أحد قرر
@@ -1696,19 +1718,22 @@ function hookahBg(name){ const n=String(name); if(!/معسل/.test(n)) return ""
   if(/تفاح/.test(n)) return `linear-gradient(135deg,${RED} 50%,#2e9e4f 50%)`;
   if(/نعناع/.test(n)) return `linear-gradient(135deg,${RED} 50%,#38bdf8 50%)`;
   return RED; }
-function menuHtml(){ // قائمة جانبية للأقسام، والأصناف جنبها
+function menuHtml(){ // v120: الأقسام على الجنب، والأصناف بثلاث أعمدة تحت عناوين فرعية
   const by=k=>cfg.items.map((it,i)=>[it,i]).filter(([it])=>itemCat(it)===k&&pickable(it.name));
   const gby=g=>g[2].flatMap(by), live=GROUPS.filter(g=>gby(g).length);
   if(!live.length) return `<p class="empty">ما في أصناف لقسمك في القائمة.</p>`;
   if(view.cat) view.cat=grpOf(view.cat);
   if(!view.cat||!live.some(g=>g[0]===view.cat)) view.cat=live[0][0];
   const rail=live.length>1?`<div class="rail">${live.map(([k,t])=>`<button class="${view.cat===k?"on":""}" data-act="cat" data-c="${k}" ${P()&&(k==="food")?`data-lps="1"`:""}>${CAT_IMG[k]?`<img src="${CAT_IMG[k]}.webp" alt="">`:`<span class="ph0" style="display:grid;place-items:center;font-size:26px">${k==="other"?"➕":""}</span>`}${t}</button>`).join("")}</div>`:"";
-  const G=GROUPS.find(g=>g[0]===view.cat), subs=G[2].filter(k=>by(k).length), srt=P()&&!!view.sort;
-  const subT=k=>(CATS.find(c=>c[0]===k)||[,""])[1];
-  const sbar=P()&&!view.newTake?`<div class="sortbar">${srt?`<span>رتّب بالأسهم، ويتغيّر عند الكل وعند الزباين</span><button class="primary" data-act="sortmode">تم</button>`:`<button class="ghost" data-act="sortmode">↕ ترتيب الأصناف</button>`}</div>`:"";
-  return `<div class="mwrap">${rail}<div class="mcol">${sbar}<div class="mgrid ${srt?"sorting":""}">${subs.map(sk=>{ const list=by(sk); return (subs.length>1?(G[0]==="food"?(sk===subs[0]?"":`<i class="msub msep"></i>`):`<h4 class="msub">${subT(sk)}</h4>`):"")+list.map(([it,i],k)=>{ const lk=itemLocked(it), off=!!it.off||lk, sp=specFor(it.name), ph=photo(it.name);
-    if(srt) return `<div class="mt srt">${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}<span class="tx"><b>${esc(it.name)}</b></span><span class="mvb"><button data-act="imove" data-i="${i}" data-d="-1" ${k===0?"disabled":""} aria-label="قدّم">→</button><b class="num">${k+1}</b><button data-act="imove" data-i="${i}" data-d="1" ${k===list.length-1?"disabled":""} aria-label="أخّر">←</button></span></div>`;
-    return `<button class="mt ${off?"off":""}" data-act="${lk?"lockhint":off?"offhint":"add"}" data-i="${i}" ${OPS()&&!lk?`data-lp="${i}"`:""}>${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}${sp&&!off?`<span class="opt">خيارات</span>`:""}${off?`<span class="offtag">${lk?"القسم مقفل":"غير متوفر"}</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${lk?"القسم مقفل":off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")}).join("")}</div></div></div>`;
+  const G=GROUPS.find(g=>g[0]===view.cat), srt=P()&&!!view.sort, inG=cfg.items.map((it,i)=>[it,i]).filter(([it])=>grpOf(itemCat(it))===G[0]&&pickable(it.name));
+  const subs=(SUBS[G[0]]||[]).map(([k,t])=>[k,t,inG.filter(([it])=>subOf(it)===k)]).filter(x=>x[2].length).map(([k,t,l])=>[k,t,srt?l:l.filter(x=>!x[0].off&&!itemLocked(x[0])).concat(l.filter(x=>x[0].off||itemLocked(x[0])))]);
+  const tx=MVIEW==="t"&&!srt;
+  const sbar=P()&&!view.newTake?`<div class="sortbar">${srt?`<span>رتّب بالأسهم، وانقل بين العناوين بـ⇄. 🔥 الأكثر طلبًا · ⭐ مميز · ✨ جديد</span><button class="primary" data-act="sortmode">تم</button>`:`<button class="ghost" data-act="sortmode">↕ ترتيب الأصناف</button>`}</div>`:"";
+  const mv=srt?"":`<div class="mvt"><button class="${tx?"":"on"}" data-act="mview" data-v="p">🖼 صور</button><button class="${tx?"on":""}" data-act="mview" data-v="t">☰ بدون صور</button></div>`;
+  const pick=srt&&view.subPick!=null&&cfg.items[view.subPick]?`<div class="subpick"><b>انقل «${esc(cfg.items[view.subPick].name)}» إلى:</b><div>${(SUBS[G[0]]||[]).map(([k,t])=>`<button class="${subOf(cfg.items[view.subPick])===k?"on":""}" data-act="isubset" data-k="${k}">${t}</button>`).join("")}</div><button class="ghost" data-act="isubx">إلغاء</button></div>`:"";
+  return `<div class="mwrap">${rail}<div class="mcol">${sbar}${mv}${pick}<div class="mgrid ${srt?"sorting":""} ${tx?"txt":""}">${subs.map(([sk,st,list])=>`<h4 class="msub">${st}</h4>`+list.map(([it,i],k)=>{ const lk=itemLocked(it), off=!!it.off||lk, sp=specFor(it.name), ph=photo(it.name);
+    if(srt) return `<div class="mt srt">${ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:40px">${icon(it.name)}</span>`}<span class="tx"><b>${esc(it.name)}</b></span><span class="flg"><button class="${it.top?"on":""}" data-act="iflag" data-f="top" data-i="${i}" aria-label="الأكثر طلبًا">🔥</button><button class="${it.feat?"on":""}" data-act="iflag" data-f="feat" data-i="${i}" aria-label="مميز">⭐</button><button class="${it.nw?"on":""}" data-act="iflag" data-f="nw" data-i="${i}" aria-label="جديد">✨</button><button data-act="isub" data-i="${i}" aria-label="انقل لعنوان ثاني">⇄</button></span><span class="mvb"><button data-act="imove" data-i="${i}" data-d="-1" ${k===0?"disabled":""} aria-label="قدّم">→</button><b class="num">${k+1}</b><button data-act="imove" data-i="${i}" data-d="1" ${k===list.length-1?"disabled":""} aria-label="أخّر">←</button></span></div>`;
+    return `<button class="mt ${off?"off":""}" data-act="${lk?"lockhint":off?"offhint":"add"}" data-i="${i}" ${OPS()&&!lk?`data-lp="${i}"`:""}>${tx?"":ph?`<img src="${ph}.webp" alt="" decoding="async">`:`<span class="ph0" style="display:grid;place-items:center;font-size:30px">${icon(it.name)}</span>`}${sp&&!off?(tx?`<i class="odot"></i>`:`<span class="opt">خيارات</span>`):""}${off?`<span class="offtag">${lk?"القسم مقفل":"غير متوفر"}</span>`:""}<span class="tx"><b>${esc(it.name)}</b><span class="pr">${lk?"القسم مقفل":off?"غير متوفر":menuPrice(it)}</span></span></button>`}).join("")).join("")}</div></div></div>`;
 }
 const fillH=(rows,reserve,min=96)=>`max(${min}px, calc((100dvh - ${reserve+140}px) / ${Math.max(1,rows)}))`; // البلاطات تملى الشاشة
 const itemCat=it=>CATS.some(c=>c[0]===it.cat)?it.cat:catOf(it.name);
@@ -3398,9 +3423,16 @@ document.addEventListener("click",e=>{
   if(a==="mute"){muted=!muted; try{localStorage.setItem("kz-mute",muted?"1":"0")}catch(e){} if(!muted) beep([880]); return renderSheet()}
 
   if(a==="station"){myStation=+b.dataset.k; try{localStorage.setItem("kz-station",String(myStation))}catch(e){} return renderMain()}
-  if(a==="sortmode"){ if(!P()) return; view.sort=!view.sort; return renderSheet() }
+  if(a==="sortmode"){ if(!P()) return; view.sort=!view.sort; view.subPick=null; return renderSheet() }
+  if(a==="mview"){ MVIEW=b.dataset.v==="t"?"t":"p"; try{ localStorage.setItem("kz-mv",MVIEW) }catch(e){} return renderSheet() }
+  if(a==="iflag"){ if(!P()) return; const i=+b.dataset.i, f=b.dataset.f; if(!cfg.items[i]||!["top","feat","nw"].includes(f)) return; const items=cfg.items.map((x,k)=>{ if(k!==i) return x; const y={...x}; if(y[f]) delete y[f]; else y[f]=true; return y; }); cfg={...cfg,items}; renderSheet();
+    db.doc("config/menu").update({items}).then(()=>toast(items[i][f]?"✓ "+({top:"صار من الأكثر طلبًا",feat:"صار مميز",nw:"صار جديد"})[f]:"✓ انشال")).catch(fail); return }
+  if(a==="isub"){ if(!P()) return; view.subPick=+b.dataset.i; return renderSheet() }
+  if(a==="isubx"){ view.subPick=null; return renderSheet() }
+  if(a==="isubset"){ if(!P()) return; const i=view.subPick, k=b.dataset.k; if(i==null||!cfg.items[i]) return; const it={...cfg.items[i],sub:k}, rest=cfg.items.filter((x,j)=>j!==i), g=grpOf(itemCat(it)); let at=-1; rest.forEach((x,j)=>{ if(grpOf(itemCat(x))===g&&subOf(x)===k) at=j; }); const items=rest.slice(); items.splice(at<0?rest.length:at+1,0,it); view.subPick=null; cfg={...cfg,items}; renderSheet();
+    db.doc("config/menu").update({items}).then(()=>toast("✓ انتقل")).catch(fail); return }
   if(a==="imove"){ if(!P()) return; const i=+b.dataset.i, d=+b.dataset.d, it=cfg.items[i]; if(!it) return; const c=itemCat(it);
-    const idx=cfg.items.map((x,j)=>j).filter(j=>itemCat(cfg.items[j])===c), k=idx.indexOf(i), j=idx[k+d]; if(j==null) return;
+    const sb=subOf(it), idx=cfg.items.map((x,j)=>j).filter(j=>grpOf(itemCat(cfg.items[j]))===grpOf(c)&&subOf(cfg.items[j])===sb), k=idx.indexOf(i), j=idx[k+d]; if(j==null) return;
     const items=cfg.items.slice(); [items[i],items[j]]=[items[j],items[i]]; cfg={...cfg,items}; renderSheet(); // يتحرك فوراً، والحفظ بعد ما يوقف شوي
     clearTimeout(sortT); sortT=setTimeout(()=>{ const L=cfg.items; db.doc("config/menu").update({items:L}).then(()=>toast("✓ انحفظ الترتيب")).catch(fail); },700); return }
   if(a==="cat"){ if(Date.now()-lpJust<800) return; const old=document.querySelector("#panel .rail button.on"), oy=old?old.getBoundingClientRect().top:null; view.cat=b.dataset.c||null; renderSheet(); const g=document.querySelector("#panel .mgrid"); if(g) stagger(g.children);
@@ -3435,7 +3467,7 @@ document.addEventListener("click",e=>{
   if(a==="savecfg"){
     const n=x=>{const v=parseFloat(String(x).replace(",","."));return isFinite(v)&&v>=0?v:null};
     const out={...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),...(typeof cfg.trf==="boolean"?{trf:cfg.trf}:{}),mig:cfg.mig||0,hour:n(draft.hour),open:n(draft.open),count:Math.round(n(draft.count)||0),
-      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.off?{off:true}:{}),...(Array.isArray(i.xoff)&&i.xoff.length?{xoff:i.xoff}:{}),...(i.feat?{feat:true}:{})})).filter(i=>i.name)};
+      items:draft.items.map(i=>({name:String(i.name).trim(),price:n(i.price),cat:itemCat(i),...(i.sub?{sub:i.sub}:{}),...(i.top?{top:true}:{}),...(i.nw?{nw:true}:{}),...(i.off?{off:true}:{}),...(Array.isArray(i.xoff)&&i.xoff.length?{xoff:i.xoff}:{}),...(i.feat?{feat:true}:{})})).filter(i=>i.name)};
     if(out.hour===null||out.open===null||out.count<1||out.count>60||out.items.some(i=>i.price===null)){toast("راجع الأسعار وعدد الجلسات (من 1 إلى 60)");return}
     return run("cfg",async()=>{await db.doc("config/menu").set(out);closeSheet();toast("انحفظ");logIt("عدّل الأصناف أو الأسعار")});
   }
@@ -3446,7 +3478,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=35, FEATMAX=6; let migrating=false;
+const MIG=36, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3501,6 +3533,9 @@ if(m<24&&!items.some(i=>/شاهي\s*مغرب/.test(i.name))) items.push({name:"�
   if(m<23&&!items.some(i=>satT(i.name))){ const k=items.findIndex(i=>RX.st.test(i.name)), p=k>=0?Number(items[k].price)||20:20, nw=["لحم","جمبري","دجاج"].map(t=>({name:"ساتي "+t+" مع الرز",price:p,cat:"al"})); if(k>=0) items.splice(k,1,...nw); else items.push(...nw); } // ساتي علاء: ٣ وجبات بدل الاختيار
   if(m<34){ for(let k=items.length-1;k>=0;k--) if(/نودلز|[اأإآ]ندومي/.test(items[k].name)) items.splice(k,1); const A=(nm,p,ct)=>{ if(!items.some(x=>x.name===nm)) items.push({name:nm,price:p,cat:ct}); }; A("أندومي بالدجاج",15,"ft"); A("أندومي بالربيان",17,"ft"); A("ديو",3,"ft"); A("ببسي",3,"ft"); } // قائمة فتون: أندومي دجاج وربيان، وديو وببسي
   if(m<35) items.forEach(x=>{ const n=String(x.name||""); if(/دل[ةه]\s*قهو/.test(n)) x.cat="hot"; else if(/بسبوس|حلا\s*طبقات/.test(n)) x.cat="sweet"; else if(/^ديو$|^ببسي$/.test(n)) x.cat="cold"; }); // أصناف حلا وفتون حسب نوعها في المنيو، والحساب يبقى لهم
+  if(m<36){ const O=[["main", ["ساتي دجاج مع الرز", "ساتي لحم مع الرز", "ساتي جمبري مع الرز", "بطاطس مشوية تركية", "أندومي بالربيان", "أندومي بالدجاج", "ساندويتش كباب لحم", "ساندويتش كباب دجاج", "مكرونة بشاميل لحم مفروم", "فتة ورق عنب"]], ["share", ["بطاطس كبير", "كرات البطاطس بالجبنة", "باني بوري", "منتو أفغاني ١٥ حبة", "ورق عنب ٧ حبات", "فشار"]], ["light", ["كورن دوق", "ذرة", "حبش", "ملفوف", "بصل محشي", "بليلة كبير", "بليلة صغير", "بطاطس وسط", "بطاطس صغير", "منتو أفغاني ٧ حبات"]], ["spec", ["V60 حار", "قهوة اليوم حار"]], ["arab", ["دلة قهوة", "قهوة تركي بالبندق", "قهوة تركي", "قهوة حلوة"]], ["tea", ["دلة شاهي", "شاهي مغربي", "شاهي"]], ["hoth", ["هوت شوكلت"]], ["sig", ["ماتشا", "آيس تي خوخ", "كركديه", "آيس تي ليمون", "موهيتو سفن", "ليمون نعناع"]], ["icoff", ["V60 بارد", "آيس فرابيه نسكافيه", "قهوة اليوم بارد"]], ["energy", ["ريد بول", "كودرد"]], ["soda", ["كينزا كولا", "كينزا سفن", "ببسي", "ديو"]], ["water", ["موية", "كاسة ثلج"]], ["sweets", ["سينابون", "ميني بانكيك", "كوكيز شوكولاتة", "كوكيز فانيليا", "حلا طبقات", "بسبوسة حبتين", "بسبوسة حبة"]], ["nuts", ["علبة قمر الدين كبيرة", "مكسرات", "علبة قمر الدين صغيرة", "قمر الدين"]], ["hk", ["معسل تفاحتين", "معسل عنب توت", "معسل عنب نعناع"]], ["hkx", ["فحم(٨ حبات)"]], ["board", ["بلوت", "جاكارو"]], ["sessx", ["جلسة زيادة"]]], pos=new Map(); let k=0; O.forEach(([sb,L])=>L.forEach(nm=>{ pos.set(nm,[k++,sb]); }));
+    items.forEach(x=>{ const p=pos.get(x.name); if(p) x.sub=p[1]; if(/[اأإآ]ندومي.*ربيان|فت[ةه]\s*ورق/.test(x.name)) x.nw=true; });
+    const a=items.filter(x=>pos.has(x.name)).sort((x,y)=>pos.get(x.name)[0]-pos.get(y.name)[0]), b=items.filter(x=>!pos.has(x.name)); items.length=0; items.push(...a,...b); } // ترتيب تسويقي وعناوين فرعية رسمية
   if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),...(typeof cfg.trf==="boolean"?{trf:cfg.trf}:{})}).catch(()=>{migrating=false});
 }
@@ -3566,7 +3601,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v118";
+const VER="v120";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
