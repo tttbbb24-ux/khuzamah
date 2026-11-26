@@ -1668,8 +1668,8 @@ function paintMenu(){ const x=menuData; if(!x) return; const items=Array.isArray
 async function openMenuOnly(){ // منيو السفري (بدون جلسة)
   if(menuData){ paintMenu(); return }
   openSheet("menu",`<div class="hd"><b>${L("b_menu")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("loading")}</p>`); sheet.style.height="";
-  try{ menuData=await loadMenu(); if(sheetOpen==="menu") paintMenu(); }
-  catch(e){ if(sheetOpen==="menu") sheet.innerHTML=`<div class="hd"><b>${L("b_menu")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("menufail")}<br><span dir="ltr" style="opacity:.6;font-size:11px">${esc(String((e&&(e.code||e.message))||e).slice(0,60))}</span></p>`; }
+  try{ const m=await menuNow(); if(!menuData) menuData=m; if(sheetOpen==="menu") paintMenu(); }
+  catch(e){ if(sheetOpen==="menu"){ sheet.innerHTML=`<div class="hd"><b>${L("b_menu")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("menufail")}${RETRY()}</p>`; const b=sheet.querySelector("[data-retrymenu]"); if(b) b.onclick=()=>openMenuOnly(); } }
 }
 function openMine(){ // طلبي: كل صنف وحالته
   const its=(pub&&Array.isArray(pub.items))?pub.items:[], wait=reqSt==="wait"?lastSent:[];
@@ -1807,7 +1807,7 @@ function openChoice(){ if(!db||!sid||ended) return;
 async function openOrder(){
   if(reqSt==="wait") return paintSent();
   if(!menuData){ sheet.innerHTML=`<div class="hd"><b>${L("o_title")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("loading")}</p>`;
-    try{ menuData=await loadMenu(); }catch(e){ sheet.innerHTML=`<div class="hd"><b>${L("o_title")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("menufail")}</p>`; return } }
+    try{ const m=await menuNow(); if(!menuData) menuData=m; }catch(e){ sheet.innerHTML=`<div class="hd"><b>${L("o_title")}</b><button class="x" data-x>✕</button></div><p style="padding:30px;text-align:center;color:var(--muted)">${L("menufail")}${RETRY()}</p>`; const b=sheet.querySelector("[data-retrymenu]"); if(b) b.onclick=()=>openOrder(); return } }
   const pi=promoIdx(); if(pi>=0&&!promoSeen&&!cart.length) return paintPromo(pi);
   paintOrder(); }
 const cartN=()=>cart.reduce((a,c)=>a+c.q,0), cartT=()=>r2(cart.reduce((a,c)=>a+c.price*c.q,0));
@@ -1967,7 +1967,8 @@ async function start(){
   try{
     firebase.initializeApp(CFG); db=firebase.firestore();
     for(let i=0;;i++){ try{ uid=(await firebase.auth().signInAnonymously()).user.uid; break }catch(e){ if(i>=3) throw e; await new Promise(r=>setTimeout(r,1200)); } }
-    lock(false); if(GV&&!valid){ const go=()=>typeof GAME!=="undefined"?GAME.boot(G):setTimeout(go,50); go(); return } if(MENU){ if(tqId) watchTq(); setTimeout(()=>$("mbtn").click(),250); } if(!valid) return;
+    lock(false); setTimeout(()=>{ if(!menuData&&!GV) menuNow().then(m=>{ if(!menuData) menuData=m }).catch(()=>{}) },300); // المنيو تتحمل من أول ما تفتح الصفحة
+    if(GV&&!valid){ const go=()=>typeof GAME!=="undefined"?GAME.boot(G):setTimeout(go,50); go(); return } if(MENU){ if(tqId) watchTq(); setTimeout(()=>$("mbtn").click(),250); } if(!valid) return;
     $("gbtn").hidden=false;
     db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub; if(sheetOpen==="mine") setTimeout(openMine,0);
       const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
@@ -1990,13 +1991,21 @@ function prepMenu(x){ window.TRF=!!x&&x.trf!==false; if(!x||!Array.isArray(x.ite
   const open=st=>{ const r=lk[st]; if(!r) return Date.now()<LOCK_T0; return !!r.open&&Number(r.at)>=last8(); };
   x.items=x.items.map(it=>{ const st=stOf(String(it.name||"")); return st!==2&&!open(st)?{...it,off:true,_soon:true}:it; }); return x; }
 async function loadMenu(){ return prepMenu(await loadMenu0()); }
-async function loadMenu0(){ // يجرب القراءة العادية مرتين، وبعدها طريق ثاني مباشر
+async function loadMenu0(){ // v119: كل محاولة لها حد، وآخر منيو تنحفظ في الجوال
+  const TO=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),ms))]);
+  const save=x=>{ try{ localStorage.setItem("kz-menu",JSON.stringify({at:Date.now(),x})) }catch(e){} return x; };
+  const viaDb=async()=>{ if(!db) throw new Error("not-ready"); const d=await TO(db.doc("config/menu").get(),5000); if(!d.exists) throw new Error("no-menu"); return d.data(); };
+  const viaRest=async()=>{ const u=firebase.auth().currentUser, h=u?{Authorization:"Bearer "+await TO(u.getIdToken(),4000)}:{}, ac=new AbortController(), t=setTimeout(()=>ac.abort(),8000);
+    try{ const r=await fetch("https://firestore.googleapis.com/v1/projects/"+CFG.projectId+"/databases/(default)/documents/config/menu",{headers:h,signal:ac.signal}); if(!r.ok) throw new Error("rest-"+r.status); return plain({mapValue:await r.json()}); } finally{ clearTimeout(t) } };
   let last=null;
-  for(let i=0;i<2;i++){ try{ if(!db) throw new Error("not-ready"); const d=await db.doc("config/menu").get(); if(d.exists) return d.data(); last=new Error("no-menu"); }catch(e){ last=e; } await new Promise(r=>setTimeout(r,900)); }
-  try{ const u=firebase.auth().currentUser, h=u?{Authorization:"Bearer "+await u.getIdToken()}:{};
-    const r=await fetch("https://firestore.googleapis.com/v1/projects/"+CFG.projectId+"/databases/(default)/documents/config/menu",{headers:h});
-    if(!r.ok) throw new Error("rest-"+r.status); return plain({mapValue:await r.json()}); }catch(e){ throw last&&last.code?last:e; }
+  for(const f of [viaDb,viaRest,viaDb]){ try{ return save(await f()); }catch(e){ last=e; } }
+  throw last;
 }
+function cachedMenu(){ try{ const o=JSON.parse(localStorage.getItem("kz-menu")||"null"); if(o&&o.x&&Array.isArray(o.x.items)&&Date.now()-o.at<12*3600000) return prepMenu(o.x); }catch(e){} return null; }
+let menuLoading=null;
+function menuNow(){ if(menuData) return Promise.resolve(menuData); const c=cachedMenu(); if(!menuLoading) menuLoading=loadMenu().then(m=>{ menuData=m; return m }).finally(()=>{ menuLoading=null });
+  if(c){ menuLoading.catch(()=>{}); return Promise.resolve(c); } return menuLoading; } // النسخة المحفوظة تفتح على طول، والجديدة تتحمل من وراه
+const RETRY=()=>`<br><br><button class="go" data-retrymenu style="max-width:240px;margin:0 auto">${lang==="en"?"Try again":"جرّب مرة ثانية"}</button>`;
 
 </script>
 <script>
