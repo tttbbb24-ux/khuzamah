@@ -2033,7 +2033,7 @@ function stickBoot(){
   w.addEventListener("click",e=>{ const b=e.target.closest("[data-s]"); if(!b) return; const a=b.dataset.s;
     if(a==="hour"||a==="open"){ st.mode=a; paint() } else if(a==="send") send(); else if(a==="again"){ st.ph="pick"; st.asked=false; paint() } });
   paint();
-  db.doc("pub/"+QP).onSnapshot(d=>{ const x=d.exists?d.data():null;
+  db.doc("stk/"+QP).onSnapshot(d=>{ const x=d.exists?d.data():null;
     if(!x||!x.stk||!/^s[0-9][0-9]$/.test(String(x.seat||""))){ st.x=null; st.ph="dead"; return paint() }
     st.x=x; if(typeof x.k==="string"&&/^[A-Za-z0-9]{8,16}$/.test(x.k)){ location.replace("call.html?k="+x.k+"&q="+QP+(st.asked?"&go=1":"")); return }
     if(st.ph==="load"||st.ph==="dead") st.ph="pick"; watch(); paint(); },()=>{ st.ph="dead"; paint() });

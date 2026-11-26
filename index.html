@@ -2411,7 +2411,7 @@ function approveReq(id){ if(!RQ()) return; const r=reqs[id], s=seats[id]; if(!r|
     Object.entries(by).forEach(([st,X])=>pushSend(+st,"📱 جلسة "+seatNo(id)+" من الجوال",X.map(l=>l.r.name+(l.q>1?" × "+l.q:"")+(l.r.note?" ("+l.r.note+")":"")).join("، "),"q"+Date.now()));
     logIt("وافق على طلب جلسة "+seatNo(id)+" من الجوال"+(ed?" (بعد ما عدّله)":"")+": "+L.map(l=>l.r.name+(l.q>1?" × "+l.q:"")+(l.r.note?" ("+l.r.note+")":"")).join("، ")); delete reqEd[id]; flash(); toast("✓ انضاف طلب جلسة "+seatNo(id)+" وراح للمطبخ"); }); }
 function rejectReq(id){ if(!RQ()||!reqs[id]) return; run("req:"+id,async()=>{ await db.doc("reqs/"+id).update({st:"no",stBy:(me&&me.name)||"",stAt:Date.now()}); logIt("رفض طلب جلسة "+seatNo(id)+" من الجوال"); toast("انرفض · الزبون يشوف «الموظف جايك»، روح له"); }); }
-let sticks={}; // v122: باركود ثابت ملصوق على كل جلسة
+let stks={}, stkReady=false; let sticks={}; // v122: باركود ثابت ملصوق على كل جلسة
 const STOK=/^[A-Za-z0-9]{8,16}$/;
 const stickUrl=t=>location.origin+location.pathname.replace(/[^/]*$/,"")+"call.html?q="+t;
 const MODEN=c=>c&&c.mode==="open"?"وقت مفتوح":"ساعة";
@@ -2435,8 +2435,10 @@ function syncPub(){ // يحدّث اللي يشوفه الزبون من ملصق
   pubTimer=setTimeout(()=>{ pubTimer=null; if(!db) return;
     const live=new Set(); // صفحة الزبون محفوظة باسم رمز الجلسة، فما أحد يشوفها إلا اللي صوّر باركودها
     Object.keys(seats).filter(x=>!isTake(x)&&seats[x].tok).forEach(id=>{ const t=seats[id].tok, w=pubWant(id); live.add(t); if(JSON.stringify(w)!==JSON.stringify(pubs[t]||null)){ pubs[t]=w; db.doc("pub/"+t).set(w).catch(()=>{}) } });
-    Object.keys(sticks).forEach(id=>{ const t=String(sticks[id]||""); if(!STOK.test(t)||live.has(t)) return; const s=seats[id], w={hour:Number(cfg.hour)||0,k:s&&!isTake(id)&&s.tok?String(s.tok):"",open:Number(cfg.open)||0,seat:id,stk:1}; live.add(t); // الملصق الثابت: يدل الزبون على الجلسة المفتوحة الحين
-      if(JSON.stringify(w)!==JSON.stringify(pubs[t]||null)){ pubs[t]=w; db.doc("pub/"+t).set(w).catch(()=>{}) } });
+    if(stickEnsure.loaded&&stkReady){ const sl=new Set(); // الملصق الثابت: يدل الزبون على الجلسة المفتوحة الحين (مجموعة لحالها عشان النسخ القديمة ما تمسحها)
+      Object.keys(sticks).forEach(id=>{ const t=String(sticks[id]||""); if(!STOK.test(t)) return; const s=seats[id], w={hour:Number(cfg.hour)||0,k:s&&!isTake(id)&&s.tok?String(s.tok):"",open:Number(cfg.open)||0,seat:id,stk:1}; sl.add(t);
+        if(JSON.stringify(w)!==JSON.stringify(stks[t]||null)){ stks[t]=w; db.doc("stk/"+t).set(w).catch(()=>{}) } });
+      Object.keys(stks).forEach(t=>{ if(!sl.has(t)){ delete stks[t]; db.doc("stk/"+t).delete().catch(()=>{}) } }); }
     Object.keys(pubs).forEach(t=>{ if(!live.has(t)){ delete pubs[t]; db.doc("pub/"+t).delete().catch(()=>{}) } });
   },1500); }
 const LATE=10; // دقايق، بعدها الطلب اللي ما نزل ينحسب متأخر
@@ -3615,6 +3617,7 @@ function listen(){
   db.doc("config/reserve").onSnapshot(d=>{reserves=d.exists?d.data():{}; refresh()},()=>{});
   db.doc("config/waitlist").onSnapshot(d=>{waitlist=(d.exists&&Array.isArray(d.data().items))?d.data().items:[]; refresh()},()=>{});
   db.collection("pub").onSnapshot(s=>{pubs={};s.docs.forEach(d=>pubs[d.id]=d.data());pubReady=true},()=>{});
+  db.collection("stk").onSnapshot(s=>{stks={};s.docs.forEach(d=>stks[d.id]=d.data());stkReady=true},()=>{});
   db.doc("config/sticks").onSnapshot(d=>{sticks=d.exists?d.data():{}; stickEnsure.loaded=true; stickEnsure(); refresh()},()=>{});
   if(W()||P()) db.collection("attend").where("day",">=",dayKey(Date.now()-30*864e5)).onSnapshot(s=>{attends=s.docs.map(d=>Object.assign({id:d.id},d.data())); refresh()},()=>{});
   if(W()||CA()) db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
@@ -3670,7 +3673,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v122b";
+const VER="v122c";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
