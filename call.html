@@ -656,7 +656,7 @@ function photo0(n){ n=String(n); if(/دل[ةه]\s*قهو/.test(n)) return "dalla
   if(/بطاطس.*مشوي|حبش|ورق\s*عنب/.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(/كورن/.test(n)) return "corndog"; if(/ذر[ةه]/.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn";
-  if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
+  if(/تشي?كن\s*فرايز/.test(n)) return "n_chickenfries"; if(/بطاطس/.test(n)) return "fries"; if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro"; if(/موهيتو|ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(/كود\s*ري?د/.test(n)) return "codered"; if(/ريد\s*بول/.test(n)) return "redbull";
   if(/كي?نز[ةها]/.test(n)) return /كولا/.test(n)?"kcola":"kinza"; if(/مو[يى][ةه]/.test(n)) return "water"; if(/بان\s*كيك/.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
   if(/مكسرات/.test(n)) return "nuts"; if(/كركدي/.test(n)) return "karkade"; if(/دل[ةه]/.test(n)) return "dallah"; if(/شاهي\s*مغرب/.test(n)) return "mtea"; if(/شاهي/.test(n)) return "tea"; if(/تشيز\s*كيك/.test(n)) return /فراول/.test(n)?"cheesestraw":/مان(جو|قا|غا)/.test(n)?"cheesemango":"";
   if(/قهوة|v\s*60|في\s*60/i.test(n)) return /بارد/.test(n)?"icedcoffee":"coffee"; return ""; }
@@ -1781,12 +1781,14 @@ const BK=["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل ب
 const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حامض كهرباء","عود حامض حلو","عود حامض كهرباء"];
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"], FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*بطاطس(?!.*مشوي)/,ah:/^(?!.*فت[ةه]\s*ورق).*(بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي)/,corn:/ذر[ةه]/,dog:/كورن|كباب/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|فشار|بشاميل|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/,hl:/دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق/,ft:/نودلز|[اأإآ]ندومي|حلا\s*طبقات|^ديو$|^ببسي$/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*(بطاطس(?!.*مشوي)|تشي?كن\s*فرايز)/,ah:/^(?!.*فت[ةه]\s*ورق).*(بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي)/,corn:/ذر[ةه]/,dog:/كورن|كباب/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|فشار|بشاميل|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/,hl:/دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق/,ft:/نودلز|[اأإآ]ندومي|حلا\s*طبقات|^ديو$|^ببسي$/};
 const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):"", SATXEN={"لحم":"beef","دجاج":"chicken","جمبري":"shrimp","قمبري":"shrimp"};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}, SATEN=["Beef","Chicken","Shrimp","Peanut sauce","Spicy sambal"]; // ساتي علاء، نفس تطبيق الموظفين
 function specFor(name){ const n=String(name); if(/نودلز|[اأإآ]ندومي/.test(n)) return {k:"nd",opts:ND,all:true}; if(/فت[ةه]\s*ورق/.test(n)) return {k:"ftx",opts:FTX,all:true}; if(/كباب/.test(n)) return {k:"kb",opts:KB,all:true}; if(RX.ly.test(n)&&/تركي/.test(n)) return {k:"tk",opts:["سادة","وسط","حلو"],one:true}; if(/فشار/.test(n)) return {k:"pop",opts:["أحمر","أصفر","أخضر"],one:true}; if(RX.pp.test(n)) return {k:"pp",opts:["حشوة بليلة وحمص","حشوة ورق عنب","تمر هندي","حار","شطة"]}; if(/كرات/.test(n)) return {k:"cb",excl:"بدون صوص",opts:["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","سويت شيلي","كتشب"]}; // نفس اختيارات تطبيق الموظفين
   if(/^(?!علب).*قمر\s*الدين/.test(n)) return {k:"qd",opts:QD,cnt:true,split:3};
   if(/بطاطس.*مشوي/.test(n)) return {k:"bk",opts:BK,all:true,split:4};
+  if(/تشي?كن\s*فرايز/.test(n)) return {k:"fries",opts:EXTRAS,all:true};
+  if(/بشاميل/.test(n)) return {k:"bch",opts:["شطة"],all:true};
   if(RX.fries.test(n)) return {k:"fries",opts:EXTRAS,all:true,paid:{[EXTRAS.length-1]:CHEESE}};
   if(RX.corn.test(n)) return {k:"corn",excl:"سادة",opts:["كريمة","شيتوس"]};
   if(RX.moj.test(n)) return {k:"moj",opts:FLAV};
@@ -1810,7 +1812,8 @@ const freeAll=(sp,it)=>sp.opts.map((_,i)=>i).filter(i=>!(sp.paid&&sp.paid[i])&&!
 function extrasNote(sel,LIST){ const X=LIST||EXTRAS, on=X.filter((_,i)=>sel.includes(i)), off=X.filter((_,i)=>!sel.includes(i));
   if(!on.length) return "بدون إضافات"; if(!off.length) return "كل شي"; if(off.length<=2&&on.length>off.length) return "كل شي ما عدا "+off.join(" و"); return on.join("، "); }
 function resolve(spec,it,v){ const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true}; if(spec.k==="tk"||spec.k==="pop") return {...base,note:and,ok:on.length===1}; if(spec.k==="pp"){ const fl=on.filter(o=>/^حشوة/.test(o)); return {...base,note:on.join(" + "),ok:fl.length===1}; } if(spec.k==="cb") return v.ex?{...base,note:"بدون صوص"}:{...base,note:and,ok:on.length>0};
-  if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel),ok:v.sel.length>0||!!v.none};
+  if(spec.k==="fries") return {...base,price:base.price+(spec.paid&&v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel),ok:v.sel.length>0||!!v.none};
+  if(spec.k==="bch") return {...base,note:v.sel.length?"شطة":"بدون إضافات",ok:true};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK),ok:v.sel.length>0||!!v.none};
   if(spec.k==="kb") return {...base,note:extrasNote(v.sel,KB),ok:v.sel.length>0||!!v.none};
   if(spec.k==="nd"){ const mm=/^m/.test(v.size||""), dr=mm?NDD[(String(v.size).match(/^m(\d)$/)||[])[1]]||"":"", ad=extrasNote(v.sel,ND); return {...base,price:base.price+(mm?NDX[NDD.indexOf(dr)]||3:0),note:mm?"وجبة ("+(dr||"؟")+") + "+ad:ad,ok:(v.sel.length>0||!!v.none)&&(!mm||!!dr)}; }

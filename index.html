@@ -1669,7 +1669,7 @@ const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حام
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*بطاطس(?!.*مشوي)/,ah:/^(?!.*فت[ةه]\s*ورق).*(بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي)/,corn:/ذر[ةه]/,dog:/كورن|كباب/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|فشار|بشاميل|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/,hl:/دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق/,ft:/نودلز|[اأإآ]ندومي|حلا\s*طبقات|^ديو$|^ببسي$/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*(بطاطس(?!.*مشوي)|تشي?كن\s*فرايز)/,ah:/^(?!.*فت[ةه]\s*ورق).*(بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي)/,corn:/ذر[ةه]/,dog:/كورن|كباب/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|فشار|بشاميل|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/,hl:/دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق/,ft:/نودلز|[اأإآ]ندومي|حلا\s*طبقات|^ديو$|^ببسي$/};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}; const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):""; // وجبات الساتي الثلاث، والسيخ الزايد من نفس النوع بـ٥ // ساتي علاء: ٥ أسياخ، والسيخ الزايد بـ٤
 const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["ah","الحبش والبطاطس المشوية وورق العنب"],["dw","الأشك (داوود)"],["al","الساتي (علاء)"],["pp","باني بوري (منصور)"],["ly","قسم ليان"],["hl","قسم حلا"],["ft","قسم فتون"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
@@ -1708,7 +1708,7 @@ function photo1(name){ const n=String(name); if(/دل[ةه]\s*قهو/.test(n)) r
   if(RX.ah.test(n)) return /حبش/.test(n)?AHIMG.habash:/عنب/.test(n)?AHIMG.waraq:AHIMG.spuds;
   if(/جلس[ةه]\s*زياد/.test(n)) return "sofa"; if(/كاس[ةه]\s*ثلج|^ثلج/.test(n)) return "ice";
   if(/معسل/.test(n)) return "hookah"; if(RX.dog.test(n)) return "corndog";
-  if(RX.corn.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn"; if(RX.fries.test(n)) return "fries";
+  if(RX.corn.test(n)) return /كريم|شيتوس/.test(n)?"corncheetos":"corn"; if(/تشي?كن\s*فرايز/.test(n)) return "n_chickenfries"; if(RX.fries.test(n)) return "fries";
   if(/ماتشا/.test(n)) return "matcha"; if(/بلوت/.test(n)) return "baloot"; if(/جاكارو/.test(n)) return "jakaro";
   if(RX.moj.test(n)||/ليمون\s*(و\s*)?نعناع/.test(n)) return "mojito"; if(RX.cr.test(n)) return "codered"; if(RX.rb.test(n)) return "redbull"; if(RX.kz.test(n)) return /كولا/.test(n)?"kcola":"kinza";
   if(/مو[يى][ةه]/.test(n)) return "water"; if(RX.pan.test(n)) return "pancake"; if(/كوكيز/.test(n)) return "cookies";
@@ -1765,6 +1765,8 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
   const n=String(name); if(/نودلز|[اأإآ]ندومي/.test(n)) return {k:"nd",title:"صحن أو وجبة · والإضافات مجانية",opts:ND,all:true}; if(/فت[ةه]\s*ورق/.test(n)) return {k:"ftx",title:"اختر الإضافات · مجانية",opts:FTX,all:true}; if(/كباب/.test(n)) return {k:"kb",title:"اختر الإضافات · مجانية",opts:KB,all:true}; if(RX.ly.test(n)&&/تركي/.test(n)) return {k:"tk",title:"اختر السكر",opts:["سادة","وسط","حلو"],one:true}; if(/فشار/.test(n)) return {k:"pop",title:"اختر اللون",opts:["أحمر","أصفر","أخضر"],one:true}; if(RX.pp.test(n)) return {k:"pp",title:"اختر حشوة وحدة · والصوصات مجانية",opts:["حشوة بليلة وحمص","حشوة ورق عنب","تمر هندي","حار","شطة"]}; if(/كرات/.test(n)) return {k:"cb",title:"اختر الصوصات · مجانية",excl:"بدون صوص",opts:["صوص الكوكتيل","سبايسي كوكتيل","كوكتيل بالثوم","صوص السومطرا","سويت شيلي","كتشب"]};
   if(/^(?!علب).*قمر\s*الدين/.test(n)) return {k:"qd",title:"اختر الحبات · كل حبتين بريال",opts:QD,cnt:true,split:3};
   if(/بطاطس.*مشوي/.test(n)) return {k:"bk",title:"اختر الصوصات والإضافات",opts:BK,all:true,split:4};
+  if(/تشي?كن\s*فرايز/.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات · الجبنة ببلاش",opts:EXTRAS,all:true}; // تشيكن فرايز: الجبنة مجانية
+  if(/بشاميل/.test(n)) return {k:"bch",title:"تبغاها بشطة؟ · مجانية",opts:BCH,all:true};
   if(RX.fries.test(n)) return {k:"fries",title:"اختر الصوصات والإضافات · الجبنة بريال",opts:EXTRAS,all:true,paid:{[EXTRAS.length-1]:CHEESE}};
   if(RX.corn.test(n)) return {k:"corn",title:"سادة، أو كريمة وشيتوس",excl:"سادة",opts:["كريمة","شيتوس"]};
   if(RX.moj.test(n)) return {k:"moj",title:"اختر النكهة",opts:FLAV};
@@ -1783,7 +1785,8 @@ function specFor(name){ // الأصناف اللي لها اختيارات، ح�
 }
 function resolve(spec,it,v){ // يحوّل الاختيار إلى اسم وسعر وملاحظة
   const on=spec.opts.filter((_,i)=>v.sel.includes(i)), and=on.join(" و"), base={name:it.name,price:Number(it.price),note:"",ok:true}; if(spec.k==="tk"||spec.k==="pop") return {...base,note:and,ok:on.length===1}; if(spec.k==="pp"){ const fl=on.filter(o=>/^حشوة/.test(o)); return {...base,note:on.join(" + "),ok:fl.length===1}; } if(spec.k==="cb") return v.ex?{...base,note:"بدون صوص"}:{...base,note:and,ok:on.length>0};
-  if(spec.k==="fries") return {...base,price:base.price+(v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel)};
+  if(spec.k==="fries") return {...base,price:base.price+(spec.paid&&v.sel.includes(EXTRAS.length-1)?CHEESE:0),note:friesNote(v.sel)};
+  if(spec.k==="bch") return {...base,note:v.sel.length?"شطة":"بدون إضافات"};
   if(spec.k==="bk") return {...base,note:extrasNote(v.sel,BK)};
   if(spec.k==="kb") return {...base,note:extrasNote(v.sel,KB)};
   if(spec.k==="nd"){ const mm=/^m/.test(v.size||""), dr=mm?NDD[(String(v.size).match(/^m(\d)$/)||[])[1]]||"":"", ad=extrasNote(v.sel,ND); return {...base,price:base.price+(mm?NDX[NDD.indexOf(dr)]||3:0),note:mm?"وجبة ("+(dr||"؟")+") + "+ad:ad,ok:!mm||!!dr}; }
@@ -1816,6 +1819,7 @@ function menuPrice(it){
   if(sp&&sp.k==="kz") return KINZA.plain+" أو "+KINZA.ice+RS;
   return Number(it.price)+RS;
 }
+const BCH=["شطة"]; // إضافة البشاميل
 const CHEESE=1; // الجبنة على البطاطس المقلية بريال
 function friesNote(sel){ const f=EXTRAS.slice(0,-1), c=sel.includes(EXTRAS.length-1), n=extrasNote(sel.filter(i=>i<f.length),f); return c?(n==="بدون إضافات"?"جبنة بس":n+" + جبنة"):n; }
 const SUGL=["بدون سكر","سكر خفيف","سكر وسط","سكر زيادة"];
@@ -1994,7 +1998,7 @@ function addHtml(id){ const nt=view.newTake, cart=nt?(view.cart||(view.cart=[]))
 function tcIdx(c){ const its=cfg.items||[]; if(c.i!=null&&its[c.i]&&String(c.r.name).startsWith(its[c.i].name)) return c.i; let best=-1, bl=0; its.forEach((x,k)=>{ if(x&&String(c.r.name).startsWith(x.name)&&x.name.length>bl){ best=k; bl=x.name.length } }); return best; }
 const tcSpec=c=>{ const it=(cfg.items||[])[tcIdx(c)]; return !!(it&&specFor(it.name)); };
 const tPayer=cart=>PAY()||SEC(); // v118: الترك والأقسام يحاسبون أي سفري، والكاش اللي مع القسم يطلع في تسويته
-const pickable=nm=>mine(nm)||(SEC()&&!!view&&!!view.newTake); // في السفري الجديد القسم يقدر يسجل أصناف أي قسم
+const pickable=nm=>mine(nm); // v123: كل قسم يسجل أصنافه بس (رجعنا مثل أول)
 function doAdd(it,r,n){ const id=view.id, s=seats[id], nt=view.newTake; if(!it||!r.ok||!pickable(r.name)) return false;
   if(nt){ const c=view.cart||(view.cart=[]), ex=c.find(x=>x.r.name===r.name&&(x.r.note||"")===(r.note||"")&&x.r.price===r.price&&!!x.r.comp===!!r.comp);
     if(ex) ex.q+=n; else c.push({r,q:n,i:view.i}); toast("✓ انضاف "+r.name+(n>1?" × "+n:"")); return true; }
@@ -2104,7 +2108,7 @@ function prefill(sp,o){ // يرجّع اختيارات الصنف المسجل �
   if(sp.k==="st"){ [0,1,2].forEach(i=>{ const m=sn.match(new RegExp("(\\d+) "+sp.opts[i])); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); [3,4].forEach(i=>{ if(sn.includes(sp.opts[i])) v.sel.push(i) }); v.need=v.sel.filter(i=>i<3).length; v.stshut=v.stseen=true; return v }
   if(sp.k==="sx"){ const m=sn.match(/\+ (\d+) سيخ/); v.xn=m?+m[1]:0; sp.opts.forEach((x,i)=>{ if(sn.includes(x)) v.sel.push(i) }); return v }
   if(sp.k==="qd"){ sp.opts.forEach((x,i)=>{ const m=sn.match(new RegExp("(\\d+) "+x)); if(m) for(let j=0;j<+m[1];j++) v.sel.push(i) }); return v }
-  if(sp.k==="nd"||sp.k==="ftx"){ let b=sn; const m=b.match(/^وجبة \((.+?)\) \+ (.*)$/); if(m){ const k=NDD.indexOf(m[1]); v.size="m"+(k>=0?k:""); b=m[2]; }
+  if(sp.k==="nd"||sp.k==="ftx"||sp.k==="bch"){ let b=sn; const m=b.match(/^وجبة \((.+?)\) \+ (.*)$/); if(m){ const k=NDD.indexOf(m[1]); v.size="m"+(k>=0?k:""); b=m[2]; }
     if(b.startsWith("كل شي")){ const ex=b.includes("ما عدا")?b.split("ما عدا")[1]:""; sp.opts.forEach((x,i)=>{ if(!ex.includes(x)) v.sel.push(i) }) } else if(b!=="بدون إضافات") sp.opts.forEach((x,i)=>{ if(b.includes(x)) v.sel.push(i) }); return v }
   if(sp.excl&&sn===sp.excl){ v.ex=true; return v }
   if(sp.k==="fries"){ const ci=EXTRAS.length-1, c=/(^|\+ )جبنة( بس)?$/.test(sn), b=sn.replace(/\s*\+ جبنة$/,"").replace(/^جبنة بس$/,"بدون إضافات"), f=EXTRAS.slice(0,ci);
@@ -3548,7 +3552,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=36, FEATMAX=6; let migrating=false;
+const MIG=37, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3606,6 +3610,7 @@ if(m<24&&!items.some(i=>/شاهي\s*مغرب/.test(i.name))) items.push({name:"�
   if(m<36){ const O=[["main", ["ساتي دجاج مع الرز", "ساتي لحم مع الرز", "ساتي جمبري مع الرز", "بطاطس مشوية تركية", "أندومي بالربيان", "أندومي بالدجاج", "ساندويتش كباب لحم", "ساندويتش كباب دجاج", "مكرونة بشاميل لحم مفروم", "فتة ورق عنب"]], ["share", ["بطاطس كبير", "كرات البطاطس بالجبنة", "باني بوري", "منتو أفغاني ١٥ حبة", "ورق عنب ٧ حبات", "فشار"]], ["light", ["كورن دوق", "ذرة", "حبش", "ملفوف", "بصل محشي", "بليلة كبير", "بليلة صغير", "بطاطس وسط", "بطاطس صغير", "منتو أفغاني ٧ حبات"]], ["spec", ["V60 حار", "قهوة اليوم حار"]], ["arab", ["دلة قهوة", "قهوة تركي بالبندق", "قهوة تركي", "قهوة حلوة"]], ["tea", ["دلة شاهي", "شاهي مغربي", "شاهي"]], ["hoth", ["هوت شوكلت"]], ["sig", ["ماتشا", "آيس تي خوخ", "كركديه", "آيس تي ليمون", "موهيتو سفن", "ليمون نعناع"]], ["icoff", ["V60 بارد", "آيس فرابيه نسكافيه", "قهوة اليوم بارد"]], ["energy", ["ريد بول", "كودرد"]], ["soda", ["كينزا كولا", "كينزا سفن", "ببسي", "ديو"]], ["water", ["موية", "كاسة ثلج"]], ["sweets", ["سينابون", "ميني بانكيك", "كوكيز شوكولاتة", "كوكيز فانيليا", "حلا طبقات", "بسبوسة حبتين", "بسبوسة حبة"]], ["nuts", ["علبة قمر الدين كبيرة", "مكسرات", "علبة قمر الدين صغيرة", "قمر الدين"]], ["hk", ["معسل تفاحتين", "معسل عنب توت", "معسل عنب نعناع"]], ["hkx", ["فحم(٨ حبات)"]], ["board", ["بلوت", "جاكارو"]], ["sessx", ["جلسة زيادة"]]], pos=new Map(); let k=0; O.forEach(([sb,L])=>L.forEach(nm=>{ pos.set(nm,[k++,sb]); }));
     items.forEach(x=>{ const p=pos.get(x.name); if(p) x.sub=p[1]; if(/[اأإآ]ندومي.*ربيان|فت[ةه]\s*ورق/.test(x.name)) x.nw=true; });
     const a=items.filter(x=>pos.has(x.name)).sort((x,y)=>pos.get(x.name)[0]-pos.get(y.name)[0]), b=items.filter(x=>!pos.has(x.name)); items.length=0; items.push(...a,...b); } // ترتيب تسويقي وعناوين فرعية رسمية
+  if(m<37&&!items.some(x=>/تشي?كن\s*فرايز/.test(x.name))){ const j=items.findIndex(x=>x.name==="بطاطس كبير"), r=j>=0?items[j]:items.find(x=>RX.fries.test(x.name)); items.splice(j<0?items.length:j+1,0,{name:"تشيكن فرايز",price:15,cat:(r&&r.cat)||"fries",...(r&&r.sub?{sub:r.sub}:{}),nw:true}); } // تشيكن فرايز عند سعيد
   if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),...(typeof cfg.trf==="boolean"?{trf:cfg.trf}:{})}).catch(()=>{migrating=false});
 }
@@ -3673,7 +3678,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v122c";
+const VER="v123";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
