@@ -3552,7 +3552,7 @@ function refresh(){renderMain(); const ae=document.activeElement, typing=ae&&ae.
 function dead(e){ $("notice").hidden=false;$("notice").textContent="انقطع الاتصال بالبيانات. حدّث الصفحة." }
 const CFG={apiKey:"AIzaSyDL7CEqeKrh5QRFV1xWVma6AcsX4wsHKVo",authDomain:"khuzama-8a568.firebaseapp.com",projectId:"khuzama-8a568",storageBucket:"khuzama-8a568.firebasestorage.app",messagingSenderId:"153820191466",appId:"1:153820191466:web:2c1afd8b1a9bbf56481593"};
 let fdb=null, uid=null;
-const MIG=37, FEATMAX=6; let migrating=false;
+const MIG=38, FEATMAX=6; let migrating=false;
 function migrate(){ // تعديلات قائمة الأصناف، كل خطوة تنفذ مرة وحدة
   const m=cfg.mig||0; if(migrating||m>=MIG) return; migrating=true;
   let items=cfg.items.map(i=>({...i}));
@@ -3611,6 +3611,11 @@ if(m<24&&!items.some(i=>/شاهي\s*مغرب/.test(i.name))) items.push({name:"�
     items.forEach(x=>{ const p=pos.get(x.name); if(p) x.sub=p[1]; if(/[اأإآ]ندومي.*ربيان|فت[ةه]\s*ورق/.test(x.name)) x.nw=true; });
     const a=items.filter(x=>pos.has(x.name)).sort((x,y)=>pos.get(x.name)[0]-pos.get(y.name)[0]), b=items.filter(x=>!pos.has(x.name)); items.length=0; items.push(...a,...b); } // ترتيب تسويقي وعناوين فرعية رسمية
   if(m<37&&!items.some(x=>/تشي?كن\s*فرايز/.test(x.name))){ const j=items.findIndex(x=>x.name==="بطاطس كبير"), r=j>=0?items[j]:items.find(x=>RX.fries.test(x.name)); items.splice(j<0?items.length:j+1,0,{name:"تشيكن فرايز",price:15,cat:(r&&r.cat)||"fries",...(r&&r.sub?{sub:r.sub}:{}),nw:true}); } // تشيكن فرايز عند سعيد
+  if(m<38){ const B=[[["main",["ساتي دجاج مع الرز","ساتي لحم مع الرز","أندومي بالدجاج","أندومي بالربيان","بطاطس مشوية تركية","مكرونة بشاميل لحم مفروم","فتة ورق عنب"]],["share",["بطاطس كبير","بطاطس وسط","تشيكن فرايز","منتو أفغاني ١٥ حبة","منتو أفغاني ٧ حبات","ورق عنب ٧ حبات","باني بوري","فشار"]],["light",["كورن دوق","ذرة","حبش"]]],[["nuts",["علبة قمر الدين كبيرة","قمر الدين","مكسرات"]]]];
+    const out=[], used=new Set();
+    items.forEach(x=>{ if(used.has(x)) return; const blk=B.find(bl=>bl.some(([,L])=>L.includes(x.name))); if(!blk){ out.push(x); used.add(x); return }
+      blk.forEach(([sb,L])=>L.forEach(nm=>{ const it=items.find(y=>y.name===nm&&!used.has(y)); if(it){ it.sub=sb; out.push(it); used.add(it); } })); if(!used.has(x)){ out.push(x); used.add(x) } });
+    items.length=0; items.push(...out); } // v125: الأصناف المتشابهة جنب بعض (البطاطس، المنتو، الساتي، الأندومي، قمر الدين)
   if(m<20&&cfg.count<17) cfg.count=17; // جلستين جديدة: ١١ تحت النص و١٢ تحت اليمين
   db.doc("config/menu").set({hour:cfg.hour,open:cfg.open,count:cfg.count,items,mig:MIG,...(cfg.promo?{promo:cfg.promo}:{}),...(cfg.locks?{locks:cfg.locks}:{}),...(typeof cfg.trf==="boolean"?{trf:cfg.trf}:{})}).catch(()=>{migrating=false});
 }
@@ -3678,7 +3683,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v123";
+const VER="v125";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
