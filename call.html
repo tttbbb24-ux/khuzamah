@@ -555,6 +555,24 @@ html.gmon,html.gmon body{overflow:hidden}
 .bq .fn{display:block;margin:2px 0 12px;font-size:12px;opacity:.65}
 .bq .pay{width:100%;border-radius:14px;padding:14px;text-align:center;font-weight:700;font-size:17px;background:#3b1178;color:#fff}
 .bq .sh{position:absolute;inset:0;border-radius:20px;pointer-events:none;background:linear-gradient(110deg,transparent 35%,#ffffff66 50%,transparent 65%);background-size:250% 100%;background-position:120% 0;opacity:0}
+#stk{position:fixed;inset:0;z-index:9000;background:radial-gradient(120% 60% at 50% -10%,rgba(124,58,237,.28),transparent 60%),var(--bg);color:var(--ink);font-family:var(--body);direction:rtl;overflow:auto}
+#stk .in{min-height:100%;max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:max(34px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(26px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}
+#stk .lg{height:50px;margin-bottom:22px}
+#stk .bd{font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px}
+#stk h2{font-size:30px;margin:16px 0 6px;font-weight:700}
+#stk p{font-size:15.5px;color:var(--muted);line-height:1.75;margin:0}
+#stk .op{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin:26px 0 14px}
+#stk .op button{all:unset;cursor:pointer;border-radius:20px;padding:16px 8px;background:var(--card);border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px}
+#stk .op button[aria-pressed=true]{border-color:var(--accent);background:#241a35;box-shadow:0 0 0 1px var(--accent)}
+#stk .op em{font-style:normal;font-size:26px}#stk .op b{font-size:19px}
+#stk .op .pr{font-size:22px;font-weight:700;color:var(--gold)}#stk .op small{font-size:13px;color:var(--muted)}
+#stk .go{all:unset;box-sizing:border-box;cursor:pointer;margin-top:auto;width:100%;border-radius:20px;padding:15px;background:linear-gradient(180deg,#c9a4ff,#9d6bf0);color:var(--acc-ink);font-weight:700;font-size:17px;text-align:center}
+#stk .go[disabled]{opacity:.6}
+#stk .nt{font-size:12.5px;color:var(--muted);margin-top:10px}
+#stk .er{color:#f59e0b;font-size:14px;margin-top:10px;line-height:1.6}
+#stk .big{font-size:56px;margin:28px 0 4px}
+@keyframes stkp{50%{transform:scale(1.12)}}#stk .pl{animation:stkp 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#stk .pl{animation:none}}
 </style>
 </head>
 <body>
@@ -655,6 +673,7 @@ const flavOf=nm=>{ const f=FLV.find(x=>x[0].test(nm)); return f?`<small class="f
 const priceOf=it=>{ if(it._soon) return `<span class="offt">${L("soon")}</span>`; if(it.off) return `<span class="offt">${L("off")}</span>`; const nm=it.name; if(/^(?!علب).*قمر\s*الدين/.test(nm)) return L("qd_p"); return (/ذر[ةه]/.test(nm)?"5"+L("or")+"10":/كود\s*ري?د/.test(nm)?"6"+L("flav")+"12":/ريد\s*بول/.test(nm)?"15"+L("flav")+"20":/كي?نز[ةها]/.test(nm)?"3"+L("ice")+"5":Number(it.price))+RS };
 
 const G=(new URLSearchParams(location.search).get("g")||"").trim(), GV=/^[A-Za-z0-9]{12}$/.test(G); // باركود لعبة
+const QP=(new URLSearchParams(location.search).get("q")||"").trim(), QV=/^[A-Za-z0-9]{8,16}$/.test(QP), GO=new URLSearchParams(location.search).has("go"); // v122: الملصق الثابت على الجلسة
 const K=(new URLSearchParams(location.search).get("k")||"").trim(), valid=/^[A-Za-z0-9]{8,16}$/.test(K), MENU=!valid&&new URLSearchParams(location.search).has("m"); // ?m = منيو للعرض بس (باركود السفري)
 let sid="", n=0, ended=false, unCall=null;
 let db=null, uid="", busy=false, lastAt=0, acked=false, menuData=null, pub=null, pubSeen=false;
@@ -1984,6 +2003,41 @@ sheet.addEventListener("click",e=>{ if(e.target.closest("[data-tqnew]")){ tqId="
 .tqinv small{color:var(--muted);font-size:14px}.tqinv b{font-family:var(--display,inherit);font-size:72px;line-height:1.05;color:#e9c77b;letter-spacing:2px}
 .tqinv p{margin:6px 0 0;font-size:18px;font-weight:700;line-height:1.6;max-width:30ch}.tqinv span{font-size:16px;color:var(--muted)}`; document.head.appendChild(css); })();
 
+function stickBoot(){
+  const w=document.createElement("div"); w.id="stk"; document.body.appendChild(w); document.title="خزامى";
+  const st={mode:"hour",ph:"load",x:null,err:"",asked:false,busy:false}; let unC=null, okT=null;
+  const ms=t=>t&&t.toMillis?t.toMillis():0;
+  const paint=()=>{ const x=st.x||{}, no=parseInt(String(x.seat||"").slice(1),10)||"", head=`<img class="lg" src="logo-white.png" alt="خزامى">`;
+    let h="";
+    if(st.ph==="load") h=`${head}<p style="margin-top:40px">لحظات…</p>`;
+    else if(st.ph==="dead") h=`${head}<div class="big">🪑</div><h2>الرمز هذا ما عاد يشتغل</h2><p>نادِ الموظف لو سمحت، ويفتح لك الجلسة.</p>`;
+    else if(st.ph==="wait") h=`${head}<span class="bd">جلسة ${no}</span><div class="big pl">⏳</div><h2>وصل طلبك</h2><p>طلبت ${st.mode==="open"?"وقت مفتوح":"ساعة"}، والموظف يفتحها لك الحين.<br>خلّك على هذي الصفحة، تفتح لحالها.</p>`;
+    else if(st.ph==="ok") h=`${head}<span class="bd">جلسة ${no}</span><div class="big">✓</div><h2>انفتحت جلستك</h2><p>لحظات وتفتح لك المنيو…</p>`;
+    else if(st.ph==="no") h=`${head}<span class="bd">جلسة ${no}</span><div class="big">🏃</div><h2>الموظف بيجيك</h2><p>ما انفتحت الجلسة من الجوال، والموظف جاي يكلمك.</p><button class="go" data-s="again" style="margin-top:28px">اطلب مرة ثانية</button>`;
+    else h=`${head}<span class="bd">جلسة ${no} · مقفلة الحين</span><h2>حيّاك 👋</h2><p>الجلسة ما انفتحت لين الحين<br>اختر وقتك ونرسل للموظف يفتحها لك</p>
+      <div class="op"><button data-s="hour" aria-pressed="${st.mode==="hour"}"><em>⏱</em><b>ساعة</b><span class="pr">${Number(x.hour)||""} ريال</span><small>تقدر تمدد بعدين</small></button><button data-s="open" aria-pressed="${st.mode==="open"}"><em>∞</em><b>وقت مفتوح</b><span class="pr">${Number(x.open)||""} ريال</span><small>اجلس براحتك</small></button></div>
+      ${st.err?`<div class="er">${st.err}</div>`:""}<button class="go" data-s="send" ${st.busy?"disabled":""}>${st.busy?"يرسل…":"اطلب فتح الجلسة"}</button><div class="nt">بعد ما يوافق الموظف تفتح لك المنيو تلقائي</div>`;
+    w.innerHTML=`<div class="in">${h}</div>`; };
+  const watch=()=>{ if(unC||!st.x||!st.x.seat) return;
+    unC=db.doc("calls/"+st.x.seat).onSnapshot(d=>{ const c=d.exists?d.data():null; if(!c||c.uid!==uid||c.kind!=="open"||c.k!==QP||Date.now()-ms(c.at)>20*60000) return;
+      if(c.mode==="open"||c.mode==="hour") st.mode=c.mode;
+      if(!c.ack){ if(st.ph==="pick"||st.ph==="load"){ st.asked=true; st.ph="wait"; paint() } return }
+      if(!st.asked&&st.ph!=="wait") return;
+      if(c.ackName==="✕"){ st.ph="no"; paint(); return }
+      st.ph="ok"; paint(); clearTimeout(okT); okT=setTimeout(()=>{ if(st.ph==="ok"){ st.ph="pick"; paint() } },15000); },()=>{}); };
+  const send=async()=>{ if(st.busy||!st.x||!st.x.seat) return; st.busy=true; st.err=""; paint(); const sid0=st.x.seat;
+    try{ await db.doc("calls/"+sid0).set({kind:"open",mode:st.mode,uid,k:QP,at:firebase.firestore.FieldValue.serverTimestamp(),m:"يبغى يفتح الجلسة · "+(st.mode==="open"?"وقت مفتوح":"ساعة")});
+      st.asked=true; st.ph="wait"; st.busy=false; paint();
+      try{ await db.doc("callers/"+uid).set({seat:sid0}); const token=await firebase.auth().currentUser.getIdToken(); await fetch(PUSH,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,call:sid0})}); }catch(e){} }
+    catch(e){ st.busy=false; st.err=e&&e.code==="permission-denied"?"فيه طلب قبلك لهذي الجلسة أو الطلبات موقّفة الحين. جرّب بعد دقيقة، أو نادِ الموظف.":"ما وصل الطلب. تأكد من النت وجرّب مرة ثانية."; paint(); } };
+  w.addEventListener("click",e=>{ const b=e.target.closest("[data-s]"); if(!b) return; const a=b.dataset.s;
+    if(a==="hour"||a==="open"){ st.mode=a; paint() } else if(a==="send") send(); else if(a==="again"){ st.ph="pick"; st.asked=false; paint() } });
+  paint();
+  db.doc("pub/"+QP).onSnapshot(d=>{ const x=d.exists?d.data():null;
+    if(!x||!x.stk||!/^s[0-9][0-9]$/.test(String(x.seat||""))){ st.x=null; st.ph="dead"; return paint() }
+    st.x=x; if(typeof x.k==="string"&&/^[A-Za-z0-9]{8,16}$/.test(x.k)){ location.replace("call.html?k="+x.k+"&q="+QP+(st.asked?"&go=1":"")); return }
+    if(st.ph==="load"||st.ph==="dead") st.ph="pick"; watch(); paint(); },()=>{ st.ph="dead"; paint() });
+}
 applyLang();
 start();
 async function start(){
@@ -1992,9 +2046,9 @@ async function start(){
     firebase.initializeApp(CFG); db=firebase.firestore();
     for(let i=0;;i++){ try{ uid=(await firebase.auth().signInAnonymously()).user.uid; break }catch(e){ if(i>=3) throw e; await new Promise(r=>setTimeout(r,1200)); } }
     lock(false); setTimeout(()=>{ if(!menuData&&!GV) menuNow().then(m=>{ if(!menuData) menuData=m }).catch(()=>{}) },300); // المنيو تتحمل من أول ما تفتح الصفحة
-    if(GV&&!valid){ const go=()=>typeof GAME!=="undefined"?GAME.boot(G):setTimeout(go,50); go(); return } if(MENU){ if(tqId) watchTq(); setTimeout(()=>$("mbtn").click(),250); } if(!valid) return;
+    if(GV&&!valid){ const go=()=>typeof GAME!=="undefined"?GAME.boot(G):setTimeout(go,50); go(); return } if(MENU){ if(tqId) watchTq(); setTimeout(()=>$("mbtn").click(),250); } if(QV&&!valid){ stickBoot(); return } if(!valid) return;
     $("gbtn").hidden=false;
-    db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub; if(sheetOpen==="mine") setTimeout(openMine,0);
+    db.doc("pub/"+K).onSnapshot(d=>{ pub=d.exists?d.data():null; ended=!pub; if(ended&&QV){ location.replace("call.html?q="+QP); return } if(sheetOpen==="mine") setTimeout(openMine,0);
       const ns=pub&&typeof pub.seat==="string"?pub.seat:"";
       if(ns!==sid){ sid=ns; n=sid?parseInt(sid.slice(1),10):0; if(unCall){unCall();unCall=null} reqSt=""; cart=[]; if(sid) watchReq();
         // لما الموظف يضغط «رايح لها» يطلع للزبون مين جاي
@@ -2002,7 +2056,7 @@ async function start(){
           if(x&&x.uid===uid&&x.ack&&!acked){ acked=true; show("go","<span>"+L("coming")(x.ackName)+"</span>"); if(!sheetOpen||sheetOpen==="fx") fxSheet(`<div class="stage" style="width:260px"><span class="chr">🪑</span><div class="pth"></div><span class="rnr"><i>🏃</i></span></div><b>${L("coming")(x.ackName).replace(/^🏃\s*/,"")}</b>`,3800); } },()=>{}); }
       if(n) document.title="خزامى · "+n;
       if(ended) $("status").hidden=true; applyLang();
-      if(!pubSeen){ pubSeen=true; if(n&&!ended) welcome(); } },()=>{});
+      if(!pubSeen){ pubSeen=true; if(n&&!ended){ if(GO){ welcomed=true; try{ history.replaceState(null,"","call.html?k="+K+"&q="+QP) }catch(e){} setTimeout(openChoice,500) } else welcome(); } } },()=>{});
     setInterval(paintHero,30000);
   }catch(e){ show("bad",L("noconn")); }
 }
