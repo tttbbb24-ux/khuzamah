@@ -2017,9 +2017,7 @@ function stickBoot(){
     else if(st.ph==="wait") h=`${head}<span class="bd">جلسة ${no}</span><div class="big pl">⏳</div><h2>وصل طلبك</h2><p>طلبت ${st.mode==="open"?"وقت مفتوح":"ساعة"}، والموظف يفتحها لك الحين.<br>خلّك على هذي الصفحة، تفتح لحالها.</p>`;
     else if(st.ph==="ok") h=`${head}<span class="bd">جلسة ${no}</span><div class="big">✓</div><h2>انفتحت جلستك</h2><p>لحظات وتفتح لك المنيو…</p>`;
     else if(st.ph==="no") h=`${head}<span class="bd">جلسة ${no}</span><div class="big">🏃</div><h2>الموظف بيجيك</h2><p>ما انفتحت الجلسة من الجوال، والموظف جاي يكلمك.</p><button class="go" data-s="again" style="margin-top:28px">اطلب مرة ثانية</button>`;
-    else h=`${head}<span class="bd">جلسة ${no} · مقفلة الحين</span><h2>حيّاك 👋</h2><p>الجلسة ما انفتحت لين الحين<br>اختر وقتك ونرسل للموظف يفتحها لك</p>
-      <div class="op"><button data-s="hour" aria-pressed="${st.mode==="hour"}"><em>⏱</em><b>ساعة</b><span class="pr">${Number(x.hour)||""} ريال</span><small>تقدر تمدد بعدين</small></button><button data-s="open" aria-pressed="${st.mode==="open"}"><em>∞</em><b>وقت مفتوح</b><span class="pr">${Number(x.open)||""} ريال</span><small>اجلس براحتك</small></button></div>
-      ${st.err?`<div class="er">${st.err}</div>`:""}<button class="go" data-s="send" ${st.busy?"disabled":""}>${st.busy?"يرسل…":"اطلب فتح الجلسة"}</button><div class="nt">بعد ما يوافق الموظف تفتح لك المنيو تلقائي</div>`;
+    else h=`${head}<span class="bd">جلسة ${no}</span><div class="big">🪑</div><h2>حيّاك 👋</h2><p>الجلسة مقفلة الحين.<br>نادِ الموظف يفتحها لك، وأول ما تنفتح تطلع لك صفحتها هنا لحالها.</p><div class="nt" style="margin-top:auto">خلّك على هذي الصفحة، أو صوّر الباركود مرة ثانية بعد ما تنفتح</div>`; // v124: الملصق لاسترجاع صفحة الجلسة بس، بدون طلب فتح
     w.innerHTML=`<div class="in">${h}</div>`; };
   const watch=()=>{ if(unC||!st.x||!st.x.seat) return;
     unC=db.doc("calls/"+st.x.seat).onSnapshot(d=>{ const c=d.exists?d.data():null; if(!c||c.uid!==uid||c.kind!=="open"||c.k!==QP||Date.now()-ms(c.at)>20*60000) return;
