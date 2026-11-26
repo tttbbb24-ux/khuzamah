@@ -2416,7 +2416,7 @@ const STOK=/^[A-Za-z0-9]{8,16}$/;
 const stickUrl=t=>location.origin+location.pathname.replace(/[^/]*$/,"")+"call.html?q="+t;
 const MODEN=c=>c&&c.mode==="open"?"وقت مفتوح":"ساعة";
 const liveOpen=id=>{const c=calls[id]; return c&&c.kind==="open"&&!c.ack&&!seats[id]&&c.at&&Date.now()-tsMs(c.at)<20*60000?c:null};
-function stickEnsure(){ if(!P()||!db||legacy||stickEnsure.busy) return; const add={}; allSeatIds().filter(Boolean).filter(x=>!isTake(x)&&!isHung(x)).forEach(id=>{ if(!STOK.test(String(sticks[id]||""))) add[id]=newTok() });
+function stickEnsure(){ if(!P()||!db||legacy||stickEnsure.busy||!stickEnsure.loaded) return; const add={}; allSeatIds().filter(Boolean).filter(x=>!isTake(x)&&!isHung(x)).forEach(id=>{ if(!STOK.test(String(sticks[id]||""))) add[id]=newTok() });
   if(!Object.keys(add).length) return; stickEnsure.busy=true; db.doc("config/sticks").set(add,{merge:true}).catch(()=>{}).then(()=>{stickEnsure.busy=false}); }
 let calls={}, callsOff=false, callsSeeded=false; const callSeen=new Set(), callSwept=new Set();
 const CALLK={order:["🙋","يبغى يطلب"],bill:["🧾","يبغى الحساب"],coal:["🔥","يبغى تغيير الفحم"],edit:["✏️","يبغى يعدّل طلبه"]};
@@ -2430,6 +2430,7 @@ let pubs={}, pubReady=false, pubTimer=null;
 function pubWant(id){ const s=seats[id], g={}, lk=linkTo(id); if(lk) return {...pubWant(lk),seat:id,sid:s.sid}; seatOrders(id).filter(o=>!o.pd).forEach(o=>{const k=o.name+"|"+o.price, e=(g[k]=g[k]||{n:o.name,p:Number(o.price),q:0,s:0}); e.q+=qty(o); if(o.served) e.s+=qty(o)});
   return {seat:id,sid:s.sid,t:s.type,s:s.startedAt,h:bookedH(s),m:billMode(s),fee:fee(id),total:r2(fee(id)+itemsTotal(id)),items:Object.values(g)}; }
 function syncPub(){ // يحدّث اللي يشوفه الزبون من ملصق جلسته
+  stickEnsure(); // لو زادت جلسات: باركود ثابت لها بعد
   if(!db||!ready||!me||!pubReady||pubTimer) return;
   pubTimer=setTimeout(()=>{ pubTimer=null; if(!db) return;
     const live=new Set(); // صفحة الزبون محفوظة باسم رمز الجلسة، فما أحد يشوفها إلا اللي صوّر باركودها
@@ -3614,7 +3615,7 @@ function listen(){
   db.doc("config/reserve").onSnapshot(d=>{reserves=d.exists?d.data():{}; refresh()},()=>{});
   db.doc("config/waitlist").onSnapshot(d=>{waitlist=(d.exists&&Array.isArray(d.data().items))?d.data().items:[]; refresh()},()=>{});
   db.collection("pub").onSnapshot(s=>{pubs={};s.docs.forEach(d=>pubs[d.id]=d.data());pubReady=true},()=>{});
-  db.doc("config/sticks").onSnapshot(d=>{sticks=d.exists?d.data():{}; stickEnsure(); refresh()},()=>{});
+  db.doc("config/sticks").onSnapshot(d=>{sticks=d.exists?d.data():{}; stickEnsure.loaded=true; stickEnsure(); refresh()},()=>{});
   if(W()||P()) db.collection("attend").where("day",">=",dayKey(Date.now()-30*864e5)).onSnapshot(s=>{attends=s.docs.map(d=>Object.assign({id:d.id},d.data())); refresh()},()=>{});
   if(W()||CA()) db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
   if(P()){ db.collection("calls").onSnapshot(s=>{calls={};s.docs.forEach(d=>calls[d.id]=d.data());refresh()},()=>{});
@@ -3669,7 +3670,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v122";
+const VER="v122b";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
