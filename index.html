@@ -1669,7 +1669,7 @@ const QD=["قطعة حامض حلو","قطعة حامض حار","قطعة حام
 const EXTRAS=["كتشب","شطة","كوكتيل","حمر","ثوم","كمون","ملح","فلفل أسود","جبنة"];
 const FLAV=["فراولة","حبحب","توت أزرق"];
 const CORN={small:5,big:10}, CODERED={plain:6,flav:12}, REDBULL={plain:15,flav:20}, KINZA={plain:3,ice:5};
-const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*(بطاطس(?!.*مشوي)|تشي?كن\s*فرايز)/,ah:/^(?!.*فت[ةه]\s*ورق).*(بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي)/,corn:/ذر[ةه]/,dog:/كورن|كباب/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|فشار|بشاميل|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/,hl:/دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق/,ft:/نودلز|[اأإآ]ندومي|حلا\s*طبقات|^ديو$|^ببسي$/};
+const RX={dw:/(^|\s)[اأآ]شك(\s|$)|منت[وو]\s*(كذاب|[اأ]فغاني)|بليل[ةه]/,fries:/^(?!.*كرات).*(بطاطس(?!.*مشوي)|تشي?كن\s*فرايز)/,ah:/^(?!.*فت[ةه]\s*ورق).*(بطاطس.*مشوي|حبش|ورق\s*عنب|كرات|ملفوف|بصل\s*محشي)/,corn:/ذر[ةه]/,dog:/كورن|كباب/,cr:/كود\s*ري?د/,moj:/موهيتو/,pan:/بان\s*كيك/,rb:/ريد\s*بول/,kz:/كي?نز[ةها]/,st:/ساتي/,pp:/باني\s*بوري/,ly:/سينابون|فرابي|قهو[ةه]\s*تركي|قهو[ةه]\s*حلو|فشار|بشاميل|علب[ةه]\s*حامض|علب[ةه]\s*قمر|^قمر\s*الدين/,hl:/دل[ةه]\s*قهو|بسبوس|فت[ةه]\s*ورق/,ft:/نودلز|[اأإآ]ندومي|حلا\s*طبقات|^ديو$|^ببسي$/};
 const SATAY={n:5,x:4,opts:["لحم","دجاج","قمبري","صوص لوز","سمبل حار"]}; const SATX=5, satT=n=>RX.st.test(n)?((String(n).match(/لحم|دجاج|[جق]مبري/)||[])[0]||""):""; // وجبات الساتي الثلاث، والسيخ الزايد من نفس النوع بـ٥ // ساتي علاء: ٥ أسياخ، والسيخ الزايد بـ٤
 const CATS=[["hot","المشروبات الحارة"],["cold","المشروبات الباردة"],["hookah","المعسلات"],["fries","البطاطس"],["corn","كورن دوق وذرة"],["ah","الحبش والبطاطس المشوية وورق العنب"],["dw","الأشك (داوود)"],["al","الساتي (علاء)"],["pp","باني بوري (منصور)"],["ly","قسم ليان"],["hl","قسم حلا"],["ft","قسم فتون"],["nuts","المكسرات"],["sweet","الحلا"],["games","الألعاب"],["other","أخرى"]];
 function catOf(name){ // تخمين القسم من الاسم، للأصناف اللي ما لها قسم محفوظ
@@ -2996,7 +2996,8 @@ function saleDetail(x){ const r=(a,b,c)=>`<div class="r ${c||""}"><span>${a}</sp
   ${its.map(i=>r(esc(i.name)+(qty(i)>1?` <span class="q">× ${qty(i)}</span>`:"")+(i.note?`<br><span class="q" style="font-size:12.5px">${esc(i.note)}</span>`:"")+(i.by?`<br><span class="q" style="font-size:12px">سجّله ${esc(i.by)}${i.at?" · "+tclock(i.at):""}</span>`:""),i.comp?"ضيافة":money(Number(i.price)*qty(i)))).join("")}
   ${Number(x.disc)>0?r("خصم","− "+money(Number(x.disc)),"sub"):""}${r("المجموع",money(Number(x.total||0)),"tot")}</div>`; }
 const T114=Date.UTC(2026,10,23,19,0); // قبل رفع v114 كان النودلز عند ليان
-const sgi=(n,at)=>Number(at)>0&&Number(at)<T114&&/نودلز/.test(n)?7:SGROUPS.findIndex(x=>x.f(n));
+const T126=Date.UTC(2026,10,27,18,20); // قبل رفع v126 كان السينابون عند الترك
+const sgi=(n,at)=>Number(at)>0&&Number(at)<T114&&/نودلز/.test(n)?7:Number(at)>0&&Number(at)<T126&&/سينابون/.test(n)?SGROUPS.findIndex(x=>x.f("قهوة اليوم")):SGROUPS.findIndex(x=>x.f(n));
 function summarize(S){ // يحسب أرقام يوم من قائمة حساباته
   const z=()=>({cash:0,card:0,none:0}), g=SGROUPS.map(()=>({})), gp=SGROUPS.map(z), pay=z(), fp=z();
   let VIA={rj:0,bq:0}; let tot=0, discSum=0, compN=0, compV=0, compU=0; const freeN=S.filter(x=>x.type==="free").length, sc=[0,1,2,3,4,5,6,7,8,9].map(z);
@@ -3683,7 +3684,7 @@ $("gate-form").addEventListener("submit",async e=>{
   }catch(err){ $("gate-msg").textContent=err&&err.code==="permission-denied"?"الرمز غلط":"ما قدرنا نتصل، حاول مرة ثانية"; gdots("bad"); anim($("gate-form"),[{transform:"none"},{transform:"translateX(-12px)"},{transform:"translateX(10px)"},{transform:"translateX(-6px)"},{transform:"none"}],{duration:420}); try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(x){} setTimeout(()=>{ $("gate-code").value=""; gdots() },DM(900)); }
   $("gate-btn").disabled=false;
 });
-const VER="v125";
+const VER="v126";
 function checkUpdate(){ // لو الجوال فاتح نسخة قديمة محفوظة، يحمّل الجديدة مباشرة
   fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{
     const m=t.match(/const VER="([^"]+)"/);
